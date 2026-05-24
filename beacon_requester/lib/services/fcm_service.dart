@@ -1,5 +1,6 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'identity_service.dart';
+import 'requester_registry_service.dart';
 
 class FCMService {
   FCMService._();
@@ -22,6 +23,12 @@ class FCMService {
 			final token = await _messaging.getToken();
 
 			print("BEACON FCM => token => $token");
+			
+			FirebaseMessaging.instance.onTokenRefresh.listen((newToken) async {
+				print("BEACON FCM => token refreshed => $newToken");
+
+				await RequesterRegistryService.updateToken(newToken);
+			});
 
 			final requesterId =
 					await IdentityService.getOrCreateRequesterId();

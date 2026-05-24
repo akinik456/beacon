@@ -41,4 +41,24 @@ class RequesterRegistryService {
       );
     }
   }
+	
+	static Future<void> updateToken(String token) async {
+		try {
+			final requesterId =
+					await IdentityService.getOrCreateRequesterId();
+
+			await _firestore
+					.collection('requesters')
+					.doc(requesterId)
+					.set({
+				'token': token,
+				'lastTokenRefreshAt': FieldValue.serverTimestamp(),
+				'lastSeen': FieldValue.serverTimestamp(),
+			}, SetOptions(merge: true));
+
+			print("BEACON REQUESTER TOKEN REFRESH => SUCCESS => $requesterId");
+		} catch (e) {
+			print("BEACON REQUESTER TOKEN REFRESH ERROR => $e");
+		}
+	}	
 }
