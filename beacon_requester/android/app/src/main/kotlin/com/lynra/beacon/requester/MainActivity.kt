@@ -1,4 +1,4 @@
-package com.example.beacon_locator
+package com.lynra.beacon.requester
 
 import io.flutter.embedding.android.FlutterActivity
 
