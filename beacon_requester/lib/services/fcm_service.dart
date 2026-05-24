@@ -7,21 +7,31 @@ class FCMService {
       FirebaseMessaging.instance;
 
   static Future<void> initialize() async {
-    try {
-      // Notification izni
-      await _messaging.requestPermission();
+		try {
+			print("BEACON FCM => initialize start");
 
-      // Token al
-      final token = await _messaging.getToken();
+			// Permission
+			final settings = await _messaging.requestPermission();
 
-      print("BEACON FCM TOKEN => $token");
+			print(
+				"BEACON FCM => permission => ${settings.authorizationStatus}",
+			);
 
-      // Topic subscribe test
-      await _messaging.subscribeToTopic("requester_test");
+			// Token
+			final token = await _messaging.getToken();
 
-      print("BEACON FCM TOPIC => SUCCESS");
-    } catch (e) {
-      print("BEACON FCM ERROR => $e");
-    }
-  }
+			print("BEACON FCM => token => $token");
+
+			// Topic subscribe
+			const topic = "requester_test";
+
+			print("BEACON FCM => subscribe start => $topic");
+
+			await _messaging.subscribeToTopic(topic);
+
+			print("BEACON FCM => subscribe success => $topic");
+		} catch (e) {
+			print("BEACON FCM ERROR => $e");
+		}
+	}
 }
