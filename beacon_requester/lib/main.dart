@@ -8,6 +8,7 @@ import 'core/theme/app_fonts.dart';
 import 'core/widgets/app_card.dart';
 import 'services/firebase_test_service.dart';
 import 'services/fcm_service.dart';
+import 'services/requester_registry_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -60,6 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     FirebaseTestService.runTest();
 		FCMService.initialize();
+		RequesterRegistryService.registerRequester();
   }
 
   @override

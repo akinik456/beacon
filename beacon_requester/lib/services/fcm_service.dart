@@ -1,4 +1,5 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'identity_service.dart';
 
 class FCMService {
   FCMService._();
@@ -22,8 +23,10 @@ class FCMService {
 
 			print("BEACON FCM => token => $token");
 
-			// Topic subscribe
-			const topic = "requester_test";
+			final requesterId =
+					await IdentityService.getOrCreateRequesterId();
+
+			final topic = "requester_$requesterId";
 
 			print("BEACON FCM => subscribe start => $topic");
 
