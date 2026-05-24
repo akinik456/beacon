@@ -9,6 +9,7 @@ import 'core/widgets/app_card.dart';
 import 'services/firebase_test_service.dart';
 import 'services/fcm_service.dart';
 import 'services/requester_registry_service.dart';
+import 'services/active_watcher_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -54,7 +55,8 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends State<MyHomePage>
+    with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
@@ -62,7 +64,47 @@ class _MyHomePageState extends State<MyHomePage> {
     FirebaseTestService.runTest();
 		FCMService.initialize();
 		RequesterRegistryService.registerRequester();
+		
+		Future.microtask(() async {
+			_addTestWatcher();
+		});
+		WidgetsBinding.instance.addObserver(this);
   }
+	
+	@override
+	void didChangeAppLifecycleState(AppLifecycleState state) {
+		print("BEACON LIFECYCLE => $state");
+
+		if (state == AppLifecycleState.resumed) {
+			_addTestWatcher();
+		}
+
+		if (state == AppLifecycleState.paused ||
+				state == AppLifecycleState.detached) {
+			_removeTestWatcher();
+		}
+	}
+
+	@override
+	void dispose() {
+		WidgetsBinding.instance.removeObserver(this);
+
+		super.dispose();
+	}
+	
+	Future<void> _addTestWatcher() async {
+		await ActiveWatcherService.addWatcher(
+			groupId: "test_group",
+			locatorId: "locator_1",
+		);
+	}
+
+	Future<void> _removeTestWatcher() async {
+		await ActiveWatcherService.removeWatcher(
+			groupId: "test_group",
+			locatorId: "locator_1",
+		);
+	}	
 
   @override
   Widget build(BuildContext context) {
