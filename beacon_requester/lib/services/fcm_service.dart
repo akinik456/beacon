@@ -1,6 +1,7 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'identity_service.dart';
 import 'requester_registry_service.dart';
+import 'package:flutter/foundation.dart';
 
 class FCMService {
   FCMService._();
@@ -43,5 +44,40 @@ class FCMService {
 		} catch (e) {
 			print("BEACON FCM ERROR => $e");
 		}
+		// ================= FOREGROUND LISTENER =================
+
+		FirebaseMessaging.onMessage.listen((message) {
+			print("BEACON FCM => FOREGROUND MESSAGE RECEIVED");
+
+			print("BEACON FCM => data => ${message.data}");
+
+			print(
+				"BEACON FCM => notification => "
+				"${message.notification?.title}",
+			);
+		});
+
+		// ================= APP OPENED FROM NOTIFICATION =================
+
+		FirebaseMessaging.onMessageOpenedApp.listen((message) {
+			print("BEACON FCM => OPENED FROM NOTIFICATION");
+
+			print("BEACON FCM => data => ${message.data}");
+		});
+
+		// ================= TERMINATED STATE CHECK =================
+
+		final initialMessage =
+				await FirebaseMessaging.instance.getInitialMessage();
+
+		if (initialMessage != null) {
+			print("BEACON FCM => INITIAL MESSAGE");
+
+			print(
+				"BEACON FCM => initial data => "
+				"${initialMessage.data}",
+			);
+		}		
+		
 	}
 }
