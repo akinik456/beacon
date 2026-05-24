@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:beacon_requester/l10n/app_localizations.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 import 'core/theme/app_colors.dart';
 import 'core/theme/app_fonts.dart';
 import 'core/widgets/app_card.dart';
+import 'services/firebase_test_service.dart';
+import 'services/fcm_service.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp();
+
   runApp(const MyApp());
 }
 
@@ -47,12 +54,12 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  @override
+  void initState() {
+    super.initState();
 
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
+    FirebaseTestService.runTest();
+		FCMService.initialize();
   }
 
   @override
