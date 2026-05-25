@@ -16,4 +16,28 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get hello => 'Merhaba';
+
+  @override
+  String get permissionIntroTitle => 'Başlamadan önce';
+
+  @override
+  String get permissionIntroSubtitle => 'Beacon’ın güvenli ve doğru çalışması için birkaç izne ihtiyacı var.';
+
+  @override
+  String get locationPermissionTitle => 'Konum izni';
+
+  @override
+  String get locationPermissionDesc => 'Locator’lara olan uzaklığını göstermek için kullanılır.';
+
+  @override
+  String get cameraPermissionTitle => 'Kamera izni';
+
+  @override
+  String get cameraPermissionDesc => 'Sadece QR kodu okutulurken kullanılır.';
+
+  @override
+  String get createNewGroup => 'Yeni grup oluştur';
+
+  @override
+  String get joinExistingGroup => 'Mevcut gruba katıl';
 }

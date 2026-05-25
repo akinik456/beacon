@@ -16,4 +16,28 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get hello => 'Hello';
+
+  @override
+  String get permissionIntroTitle => 'Before we start';
+
+  @override
+  String get permissionIntroSubtitle => 'Beacon needs a few permissions to work safely and correctly.';
+
+  @override
+  String get locationPermissionTitle => 'Location permission';
+
+  @override
+  String get locationPermissionDesc => 'Used to show your distance to locators.';
+
+  @override
+  String get cameraPermissionTitle => 'Camera permission';
+
+  @override
+  String get cameraPermissionDesc => 'Used only when scanning a QR code.';
+
+  @override
+  String get createNewGroup => 'Create new group';
+
+  @override
+  String get joinExistingGroup => 'Join existing group';
 }

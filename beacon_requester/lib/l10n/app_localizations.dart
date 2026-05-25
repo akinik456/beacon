@@ -112,6 +112,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Hello'**
   String get hello;
+
+  /// No description provided for @permissionIntroTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Before we start'**
+  String get permissionIntroTitle;
+
+  /// No description provided for @permissionIntroSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Beacon needs a few permissions to work safely and correctly.'**
+  String get permissionIntroSubtitle;
+
+  /// No description provided for @locationPermissionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Location permission'**
+  String get locationPermissionTitle;
+
+  /// No description provided for @locationPermissionDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Used to show your distance to locators.'**
+  String get locationPermissionDesc;
+
+  /// No description provided for @cameraPermissionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera permission'**
+  String get cameraPermissionTitle;
+
+  /// No description provided for @cameraPermissionDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Used only when scanning a QR code.'**
+  String get cameraPermissionDesc;
+
+  /// No description provided for @createNewGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Create new group'**
+  String get createNewGroup;
+
+  /// No description provided for @joinExistingGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Join existing group'**
+  String get joinExistingGroup;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

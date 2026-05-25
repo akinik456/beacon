@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:beacon_requester/l10n/app_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
+
+import 'package:beacon_requester/l10n/app_localizations.dart';
 
 import 'core/theme/app_colors.dart';
 import 'core/theme/app_fonts.dart';
@@ -10,12 +11,16 @@ import 'services/firebase_test_service.dart';
 import 'services/fcm_service.dart';
 import 'services/requester_registry_service.dart';
 import 'services/active_watcher_service.dart';
+import 'screens/permission_intro_page.dart';
+import 'screens/requester_home_page.dart';
+import 'services/identity_service.dart';
+import 'services/group_service.dart';
+
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp();
-
   runApp(const MyApp());
 }
 
@@ -42,7 +47,48 @@ class MyApp extends StatelessWidget {
 				Locale('tr'),
 			],
 
-			home: const MyHomePage(),
+			home: FutureBuilder<Map<String, String?>>(
+				future: () async {
+					final requesterId =
+							await IdentityService.getOrCreateRequesterId();
+
+					final groupId =
+							await GroupService.getLocalGroupId();
+
+					return {
+						'requesterId': requesterId,
+						'groupId': groupId,
+					};
+				}(),
+				builder: (context, snapshot) {
+					// loading
+					if (snapshot.connectionState != ConnectionState.done) {
+						return const Scaffold(
+							body: Center(
+								child: CircularProgressIndicator(),
+							),
+						);
+					}
+
+					final data = snapshot.data;
+
+					final requesterId = data?['requesterId'];
+					final groupId = data?['groupId'];
+
+					// requester yoksa onboarding
+					if (requesterId == null || requesterId.isEmpty) {
+						return const PermissionIntroPage();
+					}
+
+					// requester var ama group yoksa setup
+					if (groupId == null || groupId.isEmpty) {
+						return const PermissionIntroPage();
+					}
+
+					// requester + group varsa home
+					return const RequesterHomePage();
+				},
+			),
 		);
   }
 }
@@ -57,6 +103,11 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage>
     with WidgetsBindingObserver {
+	
+	static const _testGroupId = "test_group";
+	static const _testLocatorId = "locator_1";
+		
+		
   @override
   void initState() {
     super.initState();
@@ -94,15 +145,15 @@ class _MyHomePageState extends State<MyHomePage>
 	
 	Future<void> _addTestWatcher() async {
 		await ActiveWatcherService.addWatcher(
-			groupId: "test_group",
-			locatorId: "locator_1",
+			groupId: "_testGroupId",
+			locatorId: "_testLocatorId",
 		);
 	}
 
 	Future<void> _removeTestWatcher() async {
 		await ActiveWatcherService.removeWatcher(
-			groupId: "test_group",
-			locatorId: "locator_1",
+			groupId: "_testGroupId",
+			locatorId: "_testLocatorId",
 		);
 	}	
 
