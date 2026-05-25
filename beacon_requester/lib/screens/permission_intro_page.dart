@@ -5,7 +5,7 @@ import '../core/theme/app_fonts.dart';
 import '../core/widgets/app_card.dart';
 import '../l10n/app_localizations.dart';
 import 'create_group_page.dart';
-import 'requester_name_page.dart';
+import 'join_group_page.dart';
 import 'requester_home_page.dart';
 
 class PermissionIntroPage extends StatelessWidget {
@@ -217,7 +217,7 @@ class PermissionIntroPage extends StatelessWidget {
 										Navigator.push(
 											context,
 											MaterialPageRoute(
-												builder: (_) => RequesterNamePage(),
+												builder: (_) => JoinGroupPage(),
 											),
 										);
 									},

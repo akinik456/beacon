@@ -32,7 +32,7 @@ class FCMService {
 			});
 
 			final requesterId =
-					await IdentityService.getOrCreateRequesterId();
+					await IdentityService.getRequesterId();
 
 			final topic = "requester_$requesterId";
 

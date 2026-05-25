@@ -6,6 +6,8 @@ import '../core/theme/app_colors.dart';
 import '../core/theme/app_fonts.dart';
 import '../core/widgets/app_card.dart';
 import 'requester_home_page.dart';
+import '../services/identity_service.dart';
+import '../services/requester_registry_service.dart';
 
 class JoinGroupPage extends StatefulWidget {
   const JoinGroupPage({super.key});
@@ -53,14 +55,20 @@ class _JoinGroupPageState extends State<JoinGroupPage> {
     }
   }
 
-  void _confirmJoin() {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (_) => const RequesterHomePage(),
-      ),
-    );
-  }
+	Future<void> _confirmJoin() async {
+
+		await IdentityService.createRequesterId();
+		await RequesterRegistryService.registerRequester();
+		
+		if (!context.mounted) return;
+
+		Navigator.pushReplacement(
+			context,
+			MaterialPageRoute(
+				builder: (_) => const RequesterHomePage(),
+			),
+		);
+	}
 
   @override
   Widget build(BuildContext context) {

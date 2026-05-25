@@ -9,7 +9,6 @@ import 'core/theme/app_fonts.dart';
 import 'core/widgets/app_card.dart';
 import 'services/firebase_test_service.dart';
 import 'services/fcm_service.dart';
-import 'services/requester_registry_service.dart';
 import 'services/active_watcher_service.dart';
 import 'screens/permission_intro_page.dart';
 import 'screens/requester_home_page.dart';
@@ -50,7 +49,7 @@ class MyApp extends StatelessWidget {
 			home: FutureBuilder<Map<String, String?>>(
 				future: () async {
 					final requesterId =
-							await IdentityService.getOrCreateRequesterId();
+							await IdentityService.getRequesterId();
 
 					final groupId =
 							await GroupService.getLocalGroupId();
@@ -114,7 +113,6 @@ class _MyHomePageState extends State<MyHomePage>
 
     FirebaseTestService.runTest();
 		FCMService.initialize();
-		RequesterRegistryService.registerRequester();
 		
 		Future.microtask(() async {
 			_addTestWatcher();

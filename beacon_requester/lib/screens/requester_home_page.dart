@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:qr_flutter/qr_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../core/theme/app_colors.dart';
 import '../core/theme/app_fonts.dart';
@@ -7,6 +9,72 @@ import '../services/home_data_service.dart';
 
 class RequesterHomePage extends StatelessWidget {
   const RequesterHomePage({super.key});
+
+  Future<String> _loadGroupCode() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('group_code') ?? '------';
+  }
+
+  void _showGroupQrDialog({
+    required BuildContext context,
+    required String groupId,
+    required String groupCode,
+  }) {
+    showDialog(
+      context: context,
+      builder: (_) => Dialog(
+        backgroundColor: AppColors.surface,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Group QR Code',
+                style: AppFonts.title,
+              ),
+
+              const SizedBox(height: 18),
+
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(18),
+                ),
+                child: QrImageView(
+                  data: groupId,
+                  size: 240,
+                  backgroundColor: Colors.white,
+                ),
+              ),
+
+              const SizedBox(height: 18),
+
+              Text(
+                'Group code',
+                style: AppFonts.caption,
+              ),
+
+              const SizedBox(height: 6),
+
+              Text(
+                groupCode,
+                style: AppFonts.title.copyWith(
+                  color: AppColors.primary,
+                  letterSpacing: 4,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -41,6 +109,7 @@ class RequesterHomePage extends StatelessWidget {
               );
             }
 
+            final groupId = data['groupId'] ?? '';
             final groupName = data['groupName'] ?? '-';
             final requesterName = data['requesterName'] ?? '-';
             final pairedLocators =
@@ -51,16 +120,91 @@ class RequesterHomePage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  
+									
+									Row(
+  crossAxisAlignment: CrossAxisAlignment.start,
+  children: [
+    Expanded(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            groupName,
+            style: AppFonts.title.copyWith(
+              fontSize: 26,
+            ),
+          ),
+
+          const SizedBox(height: 6),
+
+          Text(
+            requesterName,
+            style: AppFonts.caption,
+          ),
+        ],
+      ),
+    ),
+
+    const SizedBox(width: 16),
+
+    FutureBuilder<String>(
+      future: _loadGroupCode(),
+      builder: (context, snapshot) {
+        final groupCode = snapshot.data ?? '------';
+
+        return InkWell(
+          borderRadius: BorderRadius.circular(16),
+          onTap: () {
+            if (groupId.isEmpty) return;
+
+            _showGroupQrDialog(
+              context: context,
+              groupId: groupId,
+              groupCode: groupCode,
+            );
+          },
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
                   Text(
-                    groupName,
-                    style: AppFonts.title.copyWith(fontSize: 26),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    requesterName,
+                    'Group Code',
                     style: AppFonts.caption,
                   ),
-                  const SizedBox(height: 24),
+
+                  const SizedBox(width: 6),
+
+                  const Icon(
+                    Icons.qr_code_2_rounded,
+                    color: AppColors.primary,
+                    size: 22,
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 6),
+
+              Text(
+                groupCode,
+                style: AppFonts.subtitle.copyWith(
+                  color: AppColors.primary,
+                  letterSpacing: 2,
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    ),
+  ],
+),
+
+const SizedBox(height: 18),
+
+const SizedBox(height: 18),
 
                   AppCard(
                     child: Row(
@@ -70,7 +214,9 @@ class RequesterHomePage extends StatelessWidget {
                           color: AppColors.primary,
                           size: 28,
                         ),
+
                         const SizedBox(width: 14),
+
                         Expanded(
                           child: Text(
                             '${pairedLocators.length} paired locator',
@@ -116,7 +262,9 @@ class RequesterHomePage extends StatelessWidget {
                                         color: AppColors.primary,
                                       ),
                                     ),
+
                                     const SizedBox(width: 14),
+
                                     Expanded(
                                       child: Text(
                                         locatorId,
@@ -132,6 +280,7 @@ class RequesterHomePage extends StatelessWidget {
                 ],
               ),
             );
+						
           },
         ),
       ),

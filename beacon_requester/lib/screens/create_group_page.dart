@@ -4,6 +4,9 @@ import '../core/theme/app_fonts.dart';
 import '../core/widgets/app_card.dart';
 import '../services/group_service.dart';
 import 'requester_home_page.dart';
+import '../services/identity_service.dart';
+import '../services/requester_registry_service.dart';
+
 
 class CreateGroupPage extends StatefulWidget {
   const CreateGroupPage({super.key});
@@ -77,6 +80,9 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
               child: ElevatedButton(
                 onPressed: canConfirm 
 									? () async {
+										await IdentityService.createRequesterId();
+										await RequesterRegistryService.registerRequester();
+										
 										final groupId  =await GroupService.createGroup(
 											groupName: groupNameCtrl.text,
 											requesterName: requesterNameCtrl.text,

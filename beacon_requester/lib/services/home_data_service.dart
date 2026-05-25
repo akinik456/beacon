@@ -14,7 +14,7 @@ class HomeDataService {
     try {
       // requesterId
       final requesterId =
-          await IdentityService.getOrCreateRequesterId();
+          await IdentityService.getRequesterId();
 
       // local groupId
       final prefs = await SharedPreferences.getInstance();

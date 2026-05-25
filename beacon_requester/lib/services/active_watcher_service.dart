@@ -13,7 +13,7 @@ class ActiveWatcherService {
   }) async {
     try {
       final requesterId =
-          await IdentityService.getOrCreateRequesterId();
+          await IdentityService.getRequesterId();
 
       await _rtdb
           .ref(
@@ -39,7 +39,7 @@ class ActiveWatcherService {
   }) async {
     try {
       final requesterId =
-          await IdentityService.getOrCreateRequesterId();
+          await IdentityService.getRequesterId();
 
       await _rtdb
           .ref(

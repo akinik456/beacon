@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'identity_service.dart';
+import 'code_service.dart';
 
 class RequesterRegistryService {
   RequesterRegistryService._();
@@ -13,24 +14,25 @@ class RequesterRegistryService {
   static Future<void> registerRequester() async {
     try {
       final requesterId =
-          await IdentityService.getOrCreateRequesterId();
+          await IdentityService.getRequesterId();
+			
+			final requesterCode = await IdentityService.getRequesterCode();
 
       final token =
           await FirebaseMessaging.instance.getToken();
 
       final topic = "requester_$requesterId";
 
-      await _firestore
-          .collection('requesters')
-          .doc(requesterId)
-          .set({
-        'requesterId': requesterId,
-        'token': token,
-        'topic': topic,
-        'platform': Platform.operatingSystem,
-        'lastSeen': FieldValue.serverTimestamp(),
-        'createdAt': FieldValue.serverTimestamp(),
-      }, SetOptions(merge: true));
+      await _firestore.collection('requesters').doc(requesterId).set({
+			'requesterId': requesterId,
+			'requesterCode': requesterCode,
+			'role': 'requester',
+			'token': token,
+			'topic': topic,
+			'platform': Platform.operatingSystem,
+			'lastSeen': FieldValue.serverTimestamp(),
+			'createdAt': FieldValue.serverTimestamp(),
+		}, SetOptions(merge: true));
 
       print(
         "BEACON REQUESTER REGISTRY => SUCCESS => $requesterId",
@@ -45,7 +47,7 @@ class RequesterRegistryService {
 	static Future<void> updateToken(String token) async {
 		try {
 			final requesterId =
-					await IdentityService.getOrCreateRequesterId();
+					await IdentityService.getRequesterId();
 
 			await _firestore
 					.collection('requesters')
