@@ -18,7 +18,9 @@ class RequesterRegistryService {
 			
 			final requesterCode = await IdentityService.getRequesterCode();
 
-      final token =
+			final requesterName = await IdentityService.getRequesterName();
+      
+			final token =
           await FirebaseMessaging.instance.getToken();
 
       final topic = "requester_$requesterId";
@@ -26,6 +28,7 @@ class RequesterRegistryService {
       await _firestore.collection('requesters').doc(requesterId).set({
 			'requesterId': requesterId,
 			'requesterCode': requesterCode,
+			'requesterName': requesterName,
 			'role': 'requester',
 			'token': token,
 			'topic': topic,

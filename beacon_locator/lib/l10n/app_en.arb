@@ -1,0 +1,13 @@
+{
+  "@@locale": "en",
+  "appName": "Beacon Requester",
+	"title": "Beacon Requester",
+  "hello": "Hello","permissionIntroTitle": "Before we start",
+"permissionIntroSubtitle": "Beacon needs a few permissions to work safely and correctly.",
+"locationPermissionTitle": "Location permission",
+"locationPermissionDesc": "Used to show your distance to locators.",
+"cameraPermissionTitle": "Camera permission",
+"cameraPermissionDesc": "Used only when scanning a QR code.",
+"createNewGroup": "Create new group",
+"joinExistingGroup": "Join existing group"
+}

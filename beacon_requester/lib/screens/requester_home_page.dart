@@ -6,6 +6,8 @@ import '../core/theme/app_colors.dart';
 import '../core/theme/app_fonts.dart';
 import '../core/widgets/app_card.dart';
 import '../services/home_data_service.dart';
+import 'add_locator_page.dart';
+
 
 class RequesterHomePage extends StatelessWidget {
   const RequesterHomePage({super.key});
@@ -203,6 +205,41 @@ class RequesterHomePage extends StatelessWidget {
 ),
 
 const SizedBox(height: 18),
+
+SizedBox(
+  width: double.infinity,
+  height: 54,
+  child: OutlinedButton.icon(
+    onPressed: () {
+			Navigator.push(
+				context,
+				MaterialPageRoute(
+					builder: (_) => const AddLocatorPage(),
+				),
+			);
+		},
+    icon: const Icon(
+      Icons.add_rounded,
+      color: AppColors.primary,
+    ),
+    label: Text(
+      'Add Locator',
+      style: AppFonts.button.copyWith(
+        color: AppColors.primary,
+      ),
+    ),
+    style: OutlinedButton.styleFrom(
+      side: BorderSide(
+        color: AppColors.primary.withValues(alpha: 0.25),
+      ),
+      backgroundColor:
+          AppColors.primary.withValues(alpha: 0.04),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(18),
+      ),
+    ),
+  ),
+),
 
 const SizedBox(height: 18),
 

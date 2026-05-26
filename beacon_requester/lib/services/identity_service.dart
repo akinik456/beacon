@@ -49,7 +49,7 @@ class IdentityService {
 			"BEACON IDENTITY => new requesterId => $newId",
 		);
 		
-		final requesterCode = CodeService.generateShortCode();
+		final requesterCode = CodeService.shortCodeFromId(newId);
 
 		await prefs.setString(_requesterIdKey, newId);
 		await prefs.setString('requester_code', requesterCode);
@@ -80,4 +80,51 @@ class IdentityService {
 
 		return null;
 	}
+
+	static const _requesterNameKey =
+			'requester_name';
+
+	static Future<void> setRequesterName(
+		String name,
+	) async {
+		final prefs =
+				await SharedPreferences.getInstance();
+
+		await prefs.setString(
+			_requesterNameKey,
+			name.trim(),
+		);
+
+		print(
+			"BEACON IDENTITY => requesterName "
+			"saved => $name",
+		);
+	}
+
+	static Future<String?> getRequesterName() async {
+		final prefs =
+				await SharedPreferences.getInstance();
+
+		final requesterName =
+				prefs.getString(_requesterNameKey);
+
+		if (requesterName != null &&
+				requesterName.isNotEmpty) {
+
+			print(
+				"BEACON IDENTITY => requesterName "
+				"found => $requesterName",
+			);
+
+			return requesterName;
+		}
+
+		print(
+			"BEACON IDENTITY => requesterName "
+			"not found",
+		);
+
+		return null;
+	}	
+	
 }

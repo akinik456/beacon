@@ -5,37 +5,29 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import '../core/theme/app_colors.dart';
 import '../core/theme/app_fonts.dart';
 import '../core/widgets/app_card.dart';
-import 'requester_home_page.dart';
-import '../services/identity_service.dart';
-import '../services/requester_registry_service.dart';
-import '../services/group_service.dart';
-import '../services/code_service.dart';
+import '../services/locator_pairing_service.dart';
 
-class JoinGroupPage extends StatefulWidget {
-  const JoinGroupPage({super.key});
+
+class AddLocatorPage extends StatefulWidget {
+  const AddLocatorPage({super.key});
 
   @override
-  State<JoinGroupPage> createState() => _JoinGroupPageState();
+  State<AddLocatorPage> createState() => _AddLocatorPageState();
 }
 
-class _JoinGroupPageState extends State<JoinGroupPage> {
-  final requesterNameCtrl = TextEditingController();
+class _AddLocatorPageState extends State<AddLocatorPage> {
   final codeCtrl = TextEditingController();
 
-  bool get canConfirm =>
-      requesterNameCtrl.text.trim().isNotEmpty &&
-      codeCtrl.text.trim().length == 6;
+  bool get canSend => codeCtrl.text.trim().isNotEmpty;
 
   @override
   void initState() {
     super.initState();
-    requesterNameCtrl.addListener(() => setState(() {}));
     codeCtrl.addListener(() => setState(() {}));
   }
 
   @override
   void dispose() {
-    requesterNameCtrl.dispose();
     codeCtrl.dispose();
     super.dispose();
   }
@@ -50,40 +42,12 @@ class _JoinGroupPageState extends State<JoinGroupPage> {
 
     if (result == null) return;
 
-		final raw =
-				result.replaceFirst('code:', '');
+    final code = result.trim();
 
-		final code =
-				CodeService.shortCodeFromId(raw);
-
-		setState(() {
-			codeCtrl.text = code;
-		});
+    if (code.isNotEmpty) {
+      codeCtrl.text = code;
+    }
   }
-
-	Future<void> _confirmJoin() async {
-
-		await IdentityService.createRequesterId();
-
-		await RequesterRegistryService.registerRequester();
-
-		final groupId = await GroupService.joinGroup(
-			groupCode: codeCtrl.text,
-			requesterName: requesterNameCtrl.text,
-		);
-
-		if (!context.mounted) return;
-
-		if (groupId != null && groupId.isNotEmpty) {
-
-			Navigator.pushReplacement(
-				context,
-				MaterialPageRoute(
-					builder: (_) => const RequesterHomePage(),
-				),
-			);
-		}
-	}
 
   @override
   Widget build(BuildContext context) {
@@ -94,7 +58,7 @@ class _JoinGroupPageState extends State<JoinGroupPage> {
         surfaceTintColor: AppColors.background,
         elevation: 0,
         title: Text(
-          'Join group',
+          'Add Locator',
           style: AppFonts.title,
         ),
       ),
@@ -104,24 +68,31 @@ class _JoinGroupPageState extends State<JoinGroupPage> {
           children: [
             AppCard(
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _InputField(
-                    controller: requesterNameCtrl,
-                    label: 'Your name',
-                    hint: 'Requester name',
+                  Text(
+                    'Connect a locator',
+                    style: AppFonts.subtitle,
                   ),
-                  const SizedBox(height: 18),
-                  _InputField(
-                    controller: codeCtrl,
-                    label: 'Group code',
-                    hint: '6-digit code',
-                    keyboardType: TextInputType.text,
-                    maxLength: 6,
-                    inputFormatters: [
-                      FilteringTextInputFormatter.allow(
-												RegExp(r'[A-Za-z0-9]'),
-											),
-                    ],
+                  const SizedBox(height: 8),
+                  Text(
+                    'Scan the locator QR code or enter its short code manually.',
+                    style: AppFonts.caption,
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 18),
+
+            AppCard(
+              child: _InputField(
+                controller: codeCtrl,
+                label: 'Locator code',
+                hint: 'Enter locator short code',
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(
+                    RegExp(r'[a-zA-Z0-9]'),
                   ),
                 ],
               ),
@@ -153,7 +124,7 @@ class _JoinGroupPageState extends State<JoinGroupPage> {
                         Text('Scan QR code', style: AppFonts.subtitle),
                         const SizedBox(height: 4),
                         Text(
-                          'Join instantly with camera',
+                          'Read locator code with camera',
                           style: AppFonts.caption,
                         ),
                       ],
@@ -173,7 +144,14 @@ class _JoinGroupPageState extends State<JoinGroupPage> {
               width: double.infinity,
               height: 58,
               child: ElevatedButton(
-                onPressed: canConfirm ? _confirmJoin : null,
+                onPressed: canSend
+								? () async {
+										await LocatorPairingService
+												.sendPairingRequest(
+											locatorInput: codeCtrl.text,
+										);
+									}
+								: null,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primary,
                   disabledBackgroundColor:
@@ -183,9 +161,9 @@ class _JoinGroupPageState extends State<JoinGroupPage> {
                   ),
                 ),
                 child: Text(
-                  'Confirm',
+                  'Send Pairing Request',
                   style: AppFonts.button.copyWith(
-                    color: canConfirm
+                    color: canSend
                         ? AppColors.background
                         : AppColors.textSecondary,
                   ),
@@ -228,7 +206,7 @@ class _QrScanPageState extends State<_QrScanPage> {
         surfaceTintColor: AppColors.background,
         elevation: 0,
         title: Text(
-          'Scan QR code',
+          'Scan Locator QR',
           style: AppFonts.title,
         ),
       ),
@@ -260,16 +238,12 @@ class _InputField extends StatelessWidget {
   final TextEditingController controller;
   final String label;
   final String hint;
-  final TextInputType? keyboardType;
-  final int? maxLength;
   final List<TextInputFormatter>? inputFormatters;
 
   const _InputField({
     required this.controller,
     required this.label,
     required this.hint,
-    this.keyboardType,
-    this.maxLength,
     this.inputFormatters,
   });
 
@@ -282,12 +256,12 @@ class _InputField extends StatelessWidget {
         const SizedBox(height: 10),
         TextField(
           controller: controller,
-          keyboardType: keyboardType,
-          maxLength: maxLength,
           inputFormatters: inputFormatters,
-          style: AppFonts.body,
+          textCapitalization: TextCapitalization.characters,
+          style: AppFonts.body.copyWith(
+            letterSpacing: 2,
+          ),
           decoration: InputDecoration(
-            counterText: '',
             hintText: hint,
             hintStyle: AppFonts.caption,
             filled: true,

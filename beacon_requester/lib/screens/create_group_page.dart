@@ -80,8 +80,13 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
               child: ElevatedButton(
                 onPressed: canConfirm 
 									? () async {
+										await IdentityService.setRequesterName(
+											requesterNameCtrl.text,
+										);									
+									
 										await IdentityService.createRequesterId();
 										await RequesterRegistryService.registerRequester();
+										
 										
 										final groupId  =await GroupService.createGroup(
 											groupName: groupNameCtrl.text,

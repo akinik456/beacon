@@ -20,7 +20,7 @@ class GroupService {
     final requesterId = await IdentityService.getRequesterId();
 		final requesterCode = await IdentityService.getRequesterCode();
     final groupId = const Uuid().v4();
-		final groupCode = CodeService.generateShortCode();
+		final groupCode = CodeService.shortCodeFromId(groupId);
 		
     final groupRef = _firestore.collection('groups').doc(groupId);
     final requesterRef = groupRef.collection('devices').doc(requesterId);
@@ -66,6 +66,72 @@ class GroupService {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString(_groupIdKey);
   }
+	
+	static Future<String?> joinGroup({
+		required String groupCode,
+		required String requesterName,
+	}) async {
+
+		final requesterId =
+				await IdentityService.getRequesterId();
+
+		final requesterCode =
+				await IdentityService.getRequesterCode();
+
+		if (requesterId == null) {
+			print("BEACON GROUP => requesterId not found");
+			return null;
+		}
+
+		// groupCode normalize
+		final normalizedCode =
+				CodeService.normalizeCode(groupCode);
+
+		// group bul
+		final query = await _firestore
+				.collection('groups')
+				.where('groupCode', isEqualTo: normalizedCode)
+				.limit(1)
+				.get();
+
+		if (query.docs.isEmpty) {
+			print("BEACON GROUP => group not found");
+			return null;
+		}
+
+		final groupDoc = query.docs.first;
+
+		final groupId = groupDoc.id;
+
+		final requesterRef = _firestore
+				.collection('groups')
+				.doc(groupId)
+				.collection('devices')
+				.doc(requesterId);
+
+		final now = FieldValue.serverTimestamp();
+
+		await requesterRef.set({
+			'requesterId': requesterId,
+			'requesterCode': requesterCode,
+			'role': 'requester',
+			'name': requesterName.trim(),
+			'isMaster': false,
+			'active': true,
+			'pairedLocators': {},
+			'joinedAt': now,
+			'createdAt': now,
+		});
+
+		final prefs = await SharedPreferences.getInstance();
+
+		await prefs.setString(_groupIdKey, groupId);
+		await prefs.setString('group_code', normalizedCode);
+
+		print("BEACON GROUP => JOIN SUCCESS => $groupId");
+
+		return groupId;
+	}
 
 	static Future<String?> getLocalGroupCode() async {
 		final prefs = await SharedPreferences.getInstance();
