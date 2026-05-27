@@ -206,6 +206,10 @@ PairingResponseService
     locatorId: locatorId,
   );
 
+	await GroupService.addPairedRequesterToLocator(
+		locatorId: locatorId,
+	);
+	
   ScaffoldMessenger.of(context)
       .showSnackBar(
     const SnackBar(

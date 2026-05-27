@@ -296,7 +296,18 @@ const SizedBox(height: 18),
                                 const SizedBox(height: 12),
                             itemBuilder: (context, index) {
                               final locatorId =
-                                  pairedLocators.keys.elementAt(index);
+																	pairedLocators.keys.elementAt(index);
+
+															final locatorData =
+																	Map<String, dynamic>.from(
+																pairedLocators[locatorId] ?? {},
+															);
+
+															final locatorName =
+																	locatorData['name'] ?? 'Locator';
+
+															final locatorCode =
+																	locatorData['locatorCode'] ?? '------';
 
                               return AppCard(
                                 child: Row(
@@ -319,19 +330,17 @@ const SizedBox(height: 18),
 
                                     Expanded(
 																			child: Column(
-																				crossAxisAlignment: CrossAxisAlignment.start,
+																				crossAxisAlignment:
+																						CrossAxisAlignment.start,
 																				children: [
+
 																					Text(
-																						'Paired locator',
+																						'$locatorName - $locatorCode',
 																						style: AppFonts.subtitle,
 																					),
+
 																					const SizedBox(height: 4),
-																					Text(
-																						locatorId,
-																						style: AppFonts.caption,
-																						maxLines: 1,
-																						overflow: TextOverflow.ellipsis,
-																					),
+
 																				],
 																			),
 																		),

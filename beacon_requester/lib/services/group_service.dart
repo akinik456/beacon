@@ -198,6 +198,21 @@ static Future<void> addPairedLocatorToRequester({
     return;
   }
 
+  final locatorSnap =
+      await _firestore
+          .collection('locators')
+          .doc(locatorId)
+          .get();
+
+  final locatorData =
+      locatorSnap.data() ?? {};
+
+  final locatorName =
+      locatorData['locatorName'] ?? 'Locator';
+
+  final locatorCode =
+      locatorData['locatorCode'] ?? '------';
+
   await _firestore
       .collection('groups')
       .doc(groupId)
@@ -205,15 +220,64 @@ static Future<void> addPairedLocatorToRequester({
       .doc(requesterId)
       .set({
     'pairedLocators': {
-      locatorId: true,
+      locatorId: {
+        'name': locatorName,
+        'locatorCode': locatorCode,
+      },
     },
+
     'updatedAt':
         FieldValue.serverTimestamp(),
+
   }, SetOptions(merge: true));
 
   print(
     "BEACON GROUP => "
     "paired locator added => $locatorId",
   );
-}	
+}
+
+static Future<void> addPairedRequesterToLocator({
+  required String locatorId,
+}) async {
+  final requesterId =
+      await IdentityService.getRequesterId();
+
+  final groupId =
+      await getLocalGroupId();
+			
+	final requesterName =
+    await IdentityService.getRequesterName();
+
+	final requesterCode =
+    await IdentityService.getRequesterCode();
+
+  if (requesterId == null || groupId == null) {
+    print(
+      "BEACON GROUP => "
+      "paired requester update failed",
+    );
+    return;
+  }
+
+  await _firestore
+      .collection('groups')
+      .doc(groupId)
+      .collection('devices')
+      .doc(locatorId)
+      .set({
+    'pairedRequesters': {
+			requesterId: {
+				'requesterName': requesterName,
+				'requesterCode': requesterCode,
+			},
+		},
+    'updatedAt': FieldValue.serverTimestamp(),
+  }, SetOptions(merge: true));
+
+  print(
+    "BEACON GROUP => "
+    "paired requester added => $requesterId",
+  );
+}
 }
