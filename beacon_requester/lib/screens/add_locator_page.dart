@@ -6,7 +6,7 @@ import '../core/theme/app_colors.dart';
 import '../core/theme/app_fonts.dart';
 import '../core/widgets/app_card.dart';
 import '../services/locator_pairing_service.dart';
-
+import '../services/pairing_response_service.dart';
 
 class AddLocatorPage extends StatefulWidget {
   const AddLocatorPage({super.key});
@@ -146,10 +146,92 @@ class _AddLocatorPageState extends State<AddLocatorPage> {
               child: ElevatedButton(
                 onPressed: canSend
 								? () async {
-										await LocatorPairingService
-												.sendPairingRequest(
-											locatorInput: codeCtrl.text,
-										);
+										final result =
+    await LocatorPairingService
+        .sendPairingRequest(
+  locatorInput: codeCtrl.text,
+);
+
+if (result == null) {
+  if (!context.mounted) return;
+
+  ScaffoldMessenger.of(context)
+      .showSnackBar(
+    const SnackBar(
+      content: Text(
+        'Locator not found',
+      ),
+    ),
+  );
+
+  return;
+}
+
+final locatorId =
+    result['locatorId']!;
+
+final requestId =
+    result['requestId']!;
+
+if (!context.mounted) return;
+
+ScaffoldMessenger.of(context)
+    .showSnackBar(
+  const SnackBar(
+    content: Text(
+      'Waiting for locator approval...',
+    ),
+  ),
+);
+
+PairingResponseService
+    .watchPairingResponse(
+  locatorId: locatorId,
+  requestId: requestId,
+).listen((snapshot) async {
+
+  final data = snapshot.data();
+
+  if (data == null) return;
+
+  final status =
+      data['status'] ?? 'pending';
+
+  if (!context.mounted) return;
+
+  if (status == 'approved') {
+
+    ScaffoldMessenger.of(context)
+        .showSnackBar(
+      const SnackBar(
+        content: Text(
+          'Locator paired successfully',
+        ),
+      ),
+    );
+
+    await PairingResponseService
+        .deletePairingRequest(
+      locatorId: locatorId,
+      requestId: requestId,
+    );
+
+    if (!context.mounted) return;
+
+    Navigator.pop(context);
+
+  } else if (status == 'rejected') {
+
+    ScaffoldMessenger.of(context)
+        .showSnackBar(
+      const SnackBar(
+        content: Text(
+          'Pairing request rejected',
+        ),
+      ),
+    );
+  }
+});
 									}
 								: null,
                 style: ElevatedButton.styleFrom(

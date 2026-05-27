@@ -8,7 +8,9 @@ class LocatorPairingService {
 
   static final _firestore = FirebaseFirestore.instance;
 
-  static Future<void> sendPairingRequest({required String locatorInput}) async {
+  static Future<Map<String, String>?> sendPairingRequest({
+    required String locatorInput,
+  }) async {
     try {
       final requesterId = await IdentityService.getRequesterId();
 
@@ -18,11 +20,18 @@ class LocatorPairingService {
 
       final groupId = await GroupService.getLocalGroupId();
 
+      if (requesterId == null ||
+          requesterName == null ||
+          requesterCode == null ||
+          groupId == null) {
+        print("BEACON PAIRING => MISSING REQUESTER DATA");
+        return null;
+      }
+
       final normalized = CodeService.normalizeCode(locatorInput);
 
       String locatorId;
 
-      // SHORT CODE
       if (CodeService.isValidCode(normalized)) {
         final query = await _firestore
             .collection('locators')
@@ -31,40 +40,40 @@ class LocatorPairingService {
             .get();
 
         if (query.docs.isEmpty) {
-          print(
-            "BEACON PAIRING => "
-            "LOCATOR NOT FOUND",
-          );
-          return;
+          print("BEACON PAIRING => LOCATOR NOT FOUND");
+          return null;
         }
 
         locatorId = query.docs.first.id;
-      }
-      // FULL LOCATOR ID
-      else {
+      } else {
         locatorId = locatorInput.trim();
       }
 
-      await _firestore
+      final requestRef = _firestore
           .collection('locators')
           .doc(locatorId)
           .collection('pairing_requests')
-          .doc()
-          .set({
-            'requesterId': requesterId,
-            'requesterName': requesterName,
-            'requesterCode': requesterCode,
-            'groupId': groupId,
-            'status': 'pending',
-            'createdAt': FieldValue.serverTimestamp(),
-          });
+          .doc();
+
+      await requestRef.set({
+        'requesterId': requesterId,
+        'requesterName': requesterName,
+        'requesterCode': requesterCode,
+        'groupId': groupId,
+        'status': 'pending',
+        'createdAt': FieldValue.serverTimestamp(),
+      });
 
       print(
         "BEACON PAIRING => REQUEST SENT "
-        "=> locator:$locatorId",
+        "=> locator:$locatorId "
+        "request:${requestRef.id}",
       );
+
+      return {'locatorId': locatorId, 'requestId': requestRef.id};
     } catch (e) {
       print("BEACON PAIRING ERROR => $e");
+      return null;
     }
   }
 }
