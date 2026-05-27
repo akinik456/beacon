@@ -6,80 +6,65 @@ import 'group_service.dart';
 class LocatorPairingService {
   LocatorPairingService._();
 
-  static final _firestore =
-      FirebaseFirestore.instance;
-			
+  static final _firestore = FirebaseFirestore.instance;
 
-		
-		static Future<void> sendPairingRequest({
-		required String locatorInput,
+  static Future<void> sendPairingRequest({required String locatorInput}) async {
+    try {
+      final requesterId = await IdentityService.getRequesterId();
 
-	}) async {
-		try {
-		
-			final requesterId =
-			await IdentityService.getRequesterId();
-			
-			final requesterName =
-    await IdentityService.getRequesterName();
-			
-			final groupId =
-			await GroupService.getLocalGroupId();	
-			
-			final normalized =
-					CodeService.normalizeCode(locatorInput);
+      final requesterName = await IdentityService.getRequesterName();
 
-			String locatorId;
+      final requesterCode = await IdentityService.getRequesterCode();
 
-			// SHORT CODE
-			if (CodeService.isValidCode(normalized)) {
-				final query = await _firestore
-						.collection('locators')
-						.where(
-							'locatorCode',
-							isEqualTo: normalized,
-						)
-						.limit(1)
-						.get();
+      final groupId = await GroupService.getLocalGroupId();
 
-				if (query.docs.isEmpty) {
-					print(
-						"BEACON PAIRING => "
-						"LOCATOR NOT FOUND",
-					);
-					return;
-				}
+      final normalized = CodeService.normalizeCode(locatorInput);
 
-				locatorId = query.docs.first.id;
-			}
+      String locatorId;
 
-			// FULL LOCATOR ID
-			else {
-				locatorId = locatorInput.trim();
-			}
+      // SHORT CODE
+      if (CodeService.isValidCode(normalized)) {
+        final query = await _firestore
+            .collection('locators')
+            .where('locatorCode', isEqualTo: normalized)
+            .limit(1)
+            .get();
 
-			await _firestore
-					.collection('locators')
-					.doc(locatorId)
-					.collection('pairing_requests')
-					.doc()
-					.set({
-				'requesterId': requesterId,
-				'requesterName': requesterName,
-				'groupId': groupId,
-				'status': 'pending',
-				'createdAt':
-						FieldValue.serverTimestamp(),
-			});
+        if (query.docs.isEmpty) {
+          print(
+            "BEACON PAIRING => "
+            "LOCATOR NOT FOUND",
+          );
+          return;
+        }
 
-			print(
-				"BEACON PAIRING => REQUEST SENT "
-				"=> locator:$locatorId",
-			);
-		} catch (e) {
-			print(
-				"BEACON PAIRING ERROR => $e",
-			);
-		}
-	}
+        locatorId = query.docs.first.id;
+      }
+      // FULL LOCATOR ID
+      else {
+        locatorId = locatorInput.trim();
+      }
+
+      await _firestore
+          .collection('locators')
+          .doc(locatorId)
+          .collection('pairing_requests')
+          .doc()
+          .set({
+            'requesterId': requesterId,
+            'requesterName': requesterName,
+            'requesterCode': requesterCode,
+            'groupId': groupId,
+            'status': 'pending',
+            'createdAt': FieldValue.serverTimestamp(),
+          });
+
+      print(
+        "BEACON PAIRING => REQUEST SENT "
+        "=> locator:$locatorId",
+      );
+    } catch (e) {
+      print("BEACON PAIRING ERROR => $e");
+    }
+  }
 }
