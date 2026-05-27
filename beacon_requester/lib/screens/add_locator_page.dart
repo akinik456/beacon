@@ -7,6 +7,7 @@ import '../core/theme/app_fonts.dart';
 import '../core/widgets/app_card.dart';
 import '../services/locator_pairing_service.dart';
 import '../services/pairing_response_service.dart';
+import '../services/group_service.dart';
 
 class AddLocatorPage extends StatefulWidget {
   const AddLocatorPage({super.key});
@@ -201,26 +202,29 @@ PairingResponseService
 
   if (status == 'approved') {
 
-    ScaffoldMessenger.of(context)
-        .showSnackBar(
-      const SnackBar(
-        content: Text(
-          'Locator paired successfully',
-        ),
+  await GroupService.addPairedLocatorToRequester(
+    locatorId: locatorId,
+  );
+
+  ScaffoldMessenger.of(context)
+      .showSnackBar(
+    const SnackBar(
+      content: Text(
+        'Locator paired successfully',
       ),
-    );
+    ),
+  );
 
-    await PairingResponseService
-        .deletePairingRequest(
-      locatorId: locatorId,
-      requestId: requestId,
-    );
+  await PairingResponseService
+      .deletePairingRequest(
+    locatorId: locatorId,
+    requestId: requestId,
+  );
 
-    if (!context.mounted) return;
+  if (!context.mounted) return;
 
-    Navigator.pop(context);
-
-  } else if (status == 'rejected') {
+  Navigator.pop(context,true);
+}else if (status == 'rejected') {
 
     ScaffoldMessenger.of(context)
         .showSnackBar(

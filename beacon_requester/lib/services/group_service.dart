@@ -176,4 +176,44 @@ class GroupService {
 
     return null;
   }
+	
+static Future<void> addPairedLocatorToRequester({
+  required String locatorId,
+}) async {
+
+  final requesterId =
+      await IdentityService.getRequesterId();
+
+  final groupId =
+      await getLocalGroupId();
+
+  if (requesterId == null ||
+      groupId == null) {
+
+    print(
+      "BEACON GROUP => "
+      "paired locator update failed",
+    );
+
+    return;
+  }
+
+  await _firestore
+      .collection('groups')
+      .doc(groupId)
+      .collection('devices')
+      .doc(requesterId)
+      .set({
+    'pairedLocators': {
+      locatorId: true,
+    },
+    'updatedAt':
+        FieldValue.serverTimestamp(),
+  }, SetOptions(merge: true));
+
+  print(
+    "BEACON GROUP => "
+    "paired locator added => $locatorId",
+  );
+}	
 }

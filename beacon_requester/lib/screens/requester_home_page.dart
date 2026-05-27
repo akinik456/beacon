@@ -210,14 +210,29 @@ SizedBox(
   width: double.infinity,
   height: 54,
   child: OutlinedButton.icon(
-    onPressed: () {
-			Navigator.push(
-				context,
-				MaterialPageRoute(
-					builder: (_) => const AddLocatorPage(),
-				),
-			);
-		},
+    onPressed: () async {
+
+  final changed =
+      await Navigator.push<bool>(
+    context,
+    MaterialPageRoute(
+      builder: (_) =>
+          const AddLocatorPage(),
+    ),
+  );
+
+  if (changed == true &&
+      context.mounted) {
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (_) =>
+            const RequesterHomePage(),
+      ),
+    );
+  }
+},
     icon: const Icon(
       Icons.add_rounded,
       color: AppColors.primary,
@@ -303,11 +318,23 @@ const SizedBox(height: 18),
                                     const SizedBox(width: 14),
 
                                     Expanded(
-                                      child: Text(
-                                        locatorId,
-                                        style: AppFonts.body,
-                                      ),
-                                    ),
+																			child: Column(
+																				crossAxisAlignment: CrossAxisAlignment.start,
+																				children: [
+																					Text(
+																						'Paired locator',
+																						style: AppFonts.subtitle,
+																					),
+																					const SizedBox(height: 4),
+																					Text(
+																						locatorId,
+																						style: AppFonts.caption,
+																						maxLines: 1,
+																						overflow: TextOverflow.ellipsis,
+																					),
+																				],
+																			),
+																		),
                                   ],
                                 ),
                               );
