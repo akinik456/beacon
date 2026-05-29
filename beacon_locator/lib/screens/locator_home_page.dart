@@ -471,6 +471,8 @@ class _LocatorHomePageState extends State<LocatorHomePage>
                   ),
                   const SizedBox(height: 24),
                   _buildPairingArea(),
+									const SizedBox(height: 12),
+									_permissionsButton(),
                   const Spacer(),
                   SizedBox(
                     width: double.infinity,

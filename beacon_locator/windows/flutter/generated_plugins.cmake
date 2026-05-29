@@ -3,8 +3,10 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
+  battery_plus
   cloud_firestore
   firebase_core
+  geolocator_windows
   permission_handler_windows
 )
 

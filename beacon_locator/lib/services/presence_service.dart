@@ -1,4 +1,6 @@
 import 'package:firebase_database/firebase_database.dart';
+import 'package:battery_plus/battery_plus.dart';
+import 'package:geolocator/geolocator.dart';
 
 import 'identity_service.dart';
 
@@ -25,16 +27,28 @@ class PresenceService {
 
       return;
     }
+			final batteryLevel =
+    await Battery().batteryLevel;
 
-    await _db
-        .child(
-          "presence/groups/$groupId/locators/$locatorId",
-        )
-        .set({
-      'status': 'online',
-      'lastSeen':
-          ServerValue.timestamp,
-    });
+			final gpsEnabled =
+					await Geolocator.isLocationServiceEnabled();
+
+			print(
+				"BEACON PRESENCE => "
+				"battery=$batteryLevel "
+				"gps=$gpsEnabled",
+			);
+
+			await _db
+				.child(
+					"presence/groups/$groupId/locators/$locatorId",
+				)
+				.set({
+			'status': 'online',
+			'lastSeen': ServerValue.timestamp,
+			'battery': batteryLevel,
+			'gpsEnabled': gpsEnabled,
+		});
 
     print(
       "BEACON PRESENCE => "
