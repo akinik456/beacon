@@ -8,17 +8,10 @@ class PairingRequestService {
   static final _firestore =
       FirebaseFirestore.instance;
 
-  static Future<Stream<QuerySnapshot<Map<String, dynamic>>>>
-      watchPendingPairingRequests() async {
-    final locatorId =
-        await IdentityService.getLocatorId();
-
-    if (locatorId == null || locatorId.isEmpty) {
-      throw Exception(
-        'Locator id not found',
-      );
-    }
-
+  static Stream<QuerySnapshot<Map<String, dynamic>>>
+      watchPendingPairingRequests({
+    required String locatorId,
+  }) {
     return _firestore
         .collection('locators')
         .doc(locatorId)

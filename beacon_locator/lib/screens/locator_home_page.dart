@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../core/theme/app_colors.dart';
 import '../core/theme/app_fonts.dart';
@@ -7,6 +8,10 @@ import '../core/widgets/app_card.dart';
 import '../services/identity_service.dart';
 import 'locator_permission_page.dart';
 import '../services/locator_permission_service.dart';
+import '../services/presence_service.dart';
+import '../services/pairing_request_service.dart';
+import '../services/pairing_approval_service.dart';
+
 
 class LocatorHomePage extends StatefulWidget {
   const LocatorHomePage({super.key});
@@ -26,6 +31,7 @@ class _LocatorHomePageState extends State<LocatorHomePage>
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _checkPermissionsAndWarn();
     });
+	PresenceService.updateOnline();
   }
 
 	@override
@@ -98,10 +104,59 @@ class _LocatorHomePageState extends State<LocatorHomePage>
     };
   }
 
-  Future<Map<String, String>?> _loadPairedRequesterData() async {
-    return null;
-  }
+	Future<Map<String, String>?> _loadPairedRequesterData() async {
 
+		final groupId =
+				await IdentityService.getGroupId();
+
+		final locatorId =
+				await IdentityService.getLocatorId();
+
+		if (groupId == null ||
+				locatorId == null) {
+			return null;
+		}
+
+		final doc = await FirebaseFirestore.instance
+				.collection('groups')
+				.doc(groupId)
+				.collection('devices')
+				.doc(locatorId)
+				.get();
+
+		final data = doc.data();
+
+		if (data == null) {
+			return null;
+		}
+
+		final pairedRequesters =
+				Map<String, dynamic>.from(
+			data['pairedRequesters'] ?? {},
+		);
+
+		if (pairedRequesters.isEmpty) {
+			return null;
+		}
+
+		final requesterId =
+				pairedRequesters.keys.first;
+
+		final requesterData =
+				Map<String, dynamic>.from(
+			pairedRequesters[requesterId] ?? {},
+		);
+
+		return {
+			'requesterName':
+					requesterData['requesterName'] ??
+							'Requester',
+
+			'requesterCode':
+					requesterData['requesterCode'] ??
+							'------',
+		};
+	}
   void _showLocatorQrDialog({
     required String locatorId,
     required String locatorCode,
@@ -274,6 +329,102 @@ class _LocatorHomePageState extends State<LocatorHomePage>
       },
     );
   }
+	
+	Widget _buildPairingArea() {
+  return FutureBuilder<String?>(
+    future: IdentityService.getLocatorId(),
+    builder: (context, idSnapshot) {
+      final locatorId = idSnapshot.data;
+
+      if (locatorId == null || locatorId.isEmpty) {
+        return _pairedRequesterCard();
+      }
+
+      return StreamBuilder(
+        stream: PairingRequestService.watchPendingPairingRequests(
+          locatorId: locatorId,
+        ),
+        builder: (context, snapshot) {
+          final docs = snapshot.data?.docs ?? [];
+
+          if (docs.isEmpty) {
+            return _pairedRequesterCard();
+          }
+
+          final doc = docs.first;
+          final data = doc.data();
+
+          final requesterName =
+              data['requesterName'] ?? 'Requester';
+
+          final requesterCode =
+              data['requesterCode'] ?? '------';
+
+          return AppCard(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Pairing request',
+                  style: AppFonts.caption,
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  '$requesterName - $requesterCode',
+                  style: AppFonts.subtitle,
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: () {},
+                        child: Text(
+                          'Reject',
+                          style: AppFonts.button.copyWith(
+                            color: AppColors.danger,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          final result =
+                              await PairingApprovalService
+                                  .approvePairingRequest(
+                            requestId: doc.id,
+                            requestData: data,
+                          );
+
+                          if (!context.mounted) return;
+
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(
+                            SnackBar(
+                              content: Text(result),
+                            ),
+                          );
+                        },
+                        child: Text(
+                          'Approve',
+                          style: AppFonts.button.copyWith(
+                            color: AppColors.background,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          );
+        },
+      );
+    },
+  );
+}
 
   @override
   Widget build(BuildContext context) {
@@ -319,7 +470,7 @@ class _LocatorHomePageState extends State<LocatorHomePage>
                     ],
                   ),
                   const SizedBox(height: 24),
-                  _pairedRequesterCard(),
+                  _buildPairingArea(),
                   const Spacer(),
                   SizedBox(
                     width: double.infinity,

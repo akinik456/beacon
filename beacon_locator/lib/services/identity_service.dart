@@ -131,4 +131,16 @@ class IdentityService {
 		return null;
 	}		
 	
+	static const _groupIdKey = 'group_id';
+
+	static Future<void> setGroupId(String groupId) async {
+		final prefs = await SharedPreferences.getInstance();
+		await prefs.setString(_groupIdKey, groupId);
+	}
+
+	static Future<String?> getGroupId() async {
+		final prefs = await SharedPreferences.getInstance();
+		return prefs.getString(_groupIdKey);
+	}	
+	
 }

@@ -91,7 +91,8 @@ class PairingApprovalService {
 				'status': 'approved',
 				'respondedAt': FieldValue.serverTimestamp(),
 			});
-
+			
+			await IdentityService.setGroupId(groupId);
 			return 'approved';
 		});
 
