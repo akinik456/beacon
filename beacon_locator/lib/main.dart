@@ -6,7 +6,7 @@ import 'services/identity_service.dart';
 import 'services/firestore_service.dart';
 import 'screens/permission_intro_page.dart';
 import 'screens/locator_home_page.dart';
-
+import 'services/locator_fcm_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,9 +20,17 @@ Future<void> main() async {
 
   print("locatorId => $locatorId");
 
+  if (locatorId != null &&
+      locatorId.isNotEmpty) {
+
+    await LocatorFcmService.init();
+  }
+
   runApp(
     MyApp(
-      hasLocatorId: locatorId != null,
+      hasLocatorId:
+          locatorId != null &&
+          locatorId.isNotEmpty,
     ),
   );
 }
