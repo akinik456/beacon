@@ -5,25 +5,91 @@ import '../core/theme/app_colors.dart';
 import '../core/theme/app_fonts.dart';
 import '../core/widgets/app_card.dart';
 import '../services/identity_service.dart';
-import '../services/pairing_request_service.dart';
-import '../services/pairing_approval_service.dart';
-import '../services/pairing_reject_service.dart';
+import 'locator_permission_page.dart';
+import '../services/locator_permission_service.dart';
 
-
-class LocatorHomePage extends StatelessWidget {
+class LocatorHomePage extends StatefulWidget {
   const LocatorHomePage({super.key});
 
+  @override
+  State<LocatorHomePage> createState() => _LocatorHomePageState();
+}
+
+class _LocatorHomePageState extends State<LocatorHomePage>
+    with WidgetsBindingObserver {
+	bool hasAllPermissions = false;
+	
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkPermissionsAndWarn();
+    });
+  }
+
+	@override
+	void dispose() {
+		WidgetsBinding.instance.removeObserver(this);
+		super.dispose();
+	}
+
+	Future<void> _checkPermissionsAndWarn() async {
+		final result =
+				await LocatorPermissionService.hasAllRequiredPermissions();
+
+		if (!mounted) return;
+
+		setState(() {
+			hasAllPermissions = result;
+		});
+
+		if (!result) {
+			_showMissingPermissionsDialog();
+		}
+	}
+
+	@override
+	void didChangeAppLifecycleState(AppLifecycleState state) {
+		if (state == AppLifecycleState.resumed) {
+			_checkPermissionsAndWarn();
+		}
+	}	
+	
+  void _showMissingPermissionsDialog() {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        backgroundColor: AppColors.surface,
+        title: Text(
+          'Permissions required',
+          style: AppFonts.title,
+        ),
+        content: Text(
+          'Some permissions are missing. Please open the permissions page and allow the required permissions.',
+          style: AppFonts.body.copyWith(
+            color: AppColors.textSecondary,
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(
+              'OK',
+              style: AppFonts.button.copyWith(
+                color: AppColors.primary,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Future<Map<String, String>> _loadLocatorCodeData() async {
-    final locatorId =
-        await IdentityService.getLocatorId() ?? '';
-
-    final locatorCode =
-        await IdentityService.getLocatorCode() ??
-            '------';
-
-    final locatorName =
-        await IdentityService.getLocatorName() ??
-            'Locator';
+    final locatorId = await IdentityService.getLocatorId() ?? '';
+    final locatorCode = await IdentityService.getLocatorCode() ?? '------';
+    final locatorName = await IdentityService.getLocatorName() ?? 'Locator';
 
     return {
       'locatorId': locatorId,
@@ -32,8 +98,11 @@ class LocatorHomePage extends StatelessWidget {
     };
   }
 
+  Future<Map<String, String>?> _loadPairedRequesterData() async {
+    return null;
+  }
+
   void _showLocatorQrDialog({
-    required BuildContext context,
     required String locatorId,
     required String locatorCode,
   }) {
@@ -49,10 +118,7 @@ class LocatorHomePage extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                'Locator QR Code',
-                style: AppFonts.title,
-              ),
+              Text('Locator QR Code', style: AppFonts.title),
               const SizedBox(height: 18),
               Container(
                 padding: const EdgeInsets.all(16),
@@ -67,10 +133,7 @@ class LocatorHomePage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 18),
-              Text(
-                'Locator code',
-                style: AppFonts.caption,
-              ),
+              Text('Locator code', style: AppFonts.caption),
               const SizedBox(height: 6),
               Text(
                 locatorCode,
@@ -87,7 +150,6 @@ class LocatorHomePage extends StatelessWidget {
   }
 
   Widget _locatorCodeHeader(
-    BuildContext context,
     String locatorId,
     String locatorCode,
   ) {
@@ -97,22 +159,17 @@ class LocatorHomePage extends StatelessWidget {
         if (locatorId.isEmpty) return;
 
         _showLocatorQrDialog(
-          context: context,
           locatorId: locatorId,
           locatorCode: locatorCode,
         );
       },
       child: Column(
-        crossAxisAlignment:
-            CrossAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                'Locator Code',
-                style: AppFonts.caption,
-              ),
+              Text('Locator Code', style: AppFonts.caption),
               const SizedBox(width: 6),
               const Icon(
                 Icons.qr_code_2_rounded,
@@ -133,27 +190,90 @@ class LocatorHomePage extends StatelessWidget {
       ),
     );
   }
-	
-Widget _waitingPairingCard() {
-  return AppCard(
-    child: Row(
-      children: [
-        const Icon(
-          Icons.location_searching_rounded,
-          color: AppColors.primary,
-          size: 28,
-        ),
-        const SizedBox(width: 14),
-        Expanded(
+
+  Widget _permissionsButton() {
+
+		final color = hasAllPermissions
+				? AppColors.primary
+				: AppColors.danger;
+
+		return SizedBox(
+			width: double.infinity,
+			height: 54,
+			child: OutlinedButton.icon(
+				onPressed: () async {
+				final color = hasAllPermissions
+				? AppColors.primary
+				: AppColors.danger;
+					final result = await Navigator.push(
+						context,
+						MaterialPageRoute(
+							builder: (_) => const LocatorPermissionPage(),
+						),
+					);
+					if (result != null) {
+						setState(() {
+							hasAllPermissions = result;
+						});
+					}
+				},
+				
+				icon: Icon(
+					Icons.privacy_tip_outlined,
+					color: color,
+				),
+				label: Text(
+					'Permissions',
+					style: AppFonts.button.copyWith(
+						color: color,
+					),
+				),
+				style: OutlinedButton.styleFrom(
+					side: BorderSide(
+						color: color.withValues(alpha: 0.25),
+					),
+					backgroundColor: color.withValues(alpha: 0.04),
+					shape: RoundedRectangleBorder(
+						borderRadius: BorderRadius.circular(18),
+					),
+				),
+			),
+		);
+	}
+
+  Widget _pairedRequesterCard() {
+    return FutureBuilder<Map<String, String>?>(
+      future: _loadPairedRequesterData(),
+      builder: (context, snapshot) {
+        final data = snapshot.data;
+
+        if (data == null) {
+          return Column(
+            children: [
+              AppCard(
+                child: Text(
+                  'No paired requester',
+                  style: AppFonts.subtitle,
+                ),
+              ),
+              const SizedBox(height: 12),
+              _permissionsButton(),
+            ],
+          );
+        }
+
+        final requesterName = data['requesterName'] ?? 'Requester';
+        final requesterCode = data['requesterCode'] ?? '------';
+
+        return AppCard(
           child: Text(
-            'Waiting for pairing request',
+            'Paired with $requesterName - $requesterCode',
             style: AppFonts.subtitle,
           ),
-        ),
-      ],
-    ),
-  );
-}	
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -163,306 +283,63 @@ Widget _waitingPairingCard() {
         child: FutureBuilder<Map<String, String>>(
           future: _loadLocatorCodeData(),
           builder: (context, snapshot) {
-            final locatorId =
-                snapshot.data?['locatorId'] ?? '';
-
-            final locatorCode =
-                snapshot.data?['locatorCode'] ??
-                    '------';
-
-            final locatorName =
-                snapshot.data?['locatorName'] ??
-                    'Ready to pair';
+            final locatorId = snapshot.data?['locatorId'] ?? '';
+            final locatorCode = snapshot.data?['locatorCode'] ?? '------';
+            final locatorName = snapshot.data?['locatorName'] ?? 'Locator';
 
             return Padding(
               padding: const EdgeInsets.all(20),
               child: Column(
-                crossAxisAlignment:
-                    CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
-                    crossAxisAlignment:
-                        CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Expanded(
                         child: Column(
-                          crossAxisAlignment:
-                              CrossAxisAlignment
-                                  .start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
                               'Locator',
-                              style:
-                                  AppFonts.title
-                                      .copyWith(
-                                fontSize: 28,
-                              ),
+                              style: AppFonts.title.copyWith(fontSize: 28),
                             ),
-                            const SizedBox(
-                                height: 6),
+                            const SizedBox(height: 6),
                             Text(
                               locatorName,
-                              style:
-                                  AppFonts.caption,
+                              style: AppFonts.caption,
                             ),
                           ],
                         ),
                       ),
                       const SizedBox(width: 16),
                       _locatorCodeHeader(
-                        context,
                         locatorId,
                         locatorCode,
                       ),
                     ],
                   ),
-
                   const SizedBox(height: 24),
-
-                  FutureBuilder(
-										future: PairingRequestService.watchPendingPairingRequests(),
-										builder: (context, futureSnapshot) {
-											if (!futureSnapshot.hasData) {
-												return _waitingPairingCard();
-											}
-
-											return StreamBuilder(
-												stream: futureSnapshot.data,
-												builder: (context, streamSnapshot) {
-													final docs = streamSnapshot.data?.docs ?? [];
-
-													if (docs.isEmpty) {
-														return _waitingPairingCard();
-													}
-
-													final data = docs.first.data();
-
-													final requesterName =
-															data['requesterName'] ?? 'Unknown requester';
-
-													final requesterCode =
-															data['requesterCode'] ?? '------';
-
-													return AppCard(
-														child: Column(
-															crossAxisAlignment: CrossAxisAlignment.start,
-															children: [
-																Row(
-																	children: [
-																		Container(
-																			width: 46,
-																			height: 46,
-																			decoration: BoxDecoration(
-																				color: AppColors.primary.withValues(alpha: 0.12),
-																				borderRadius: BorderRadius.circular(15),
-																			),
-																			child: const Icon(
-																				Icons.person_add_alt_1_rounded,
-																				color: AppColors.primary,
-																				size: 26,
-																			),
-																		),
-																		const SizedBox(width: 14),
-																		Expanded(
-																			child: Column(
-																				crossAxisAlignment: CrossAxisAlignment.start,
-																				children: [
-																					Text('Pairing request', style: AppFonts.caption),
-																					const SizedBox(height: 4),
-																					Text(requesterName, style: AppFonts.subtitle),
-																					const SizedBox(height: 2),
-																					Text(
-																						'Requester code: $requesterCode',
-																						style: AppFonts.caption,
-																					),
-																				],
-																			),
-																		),
-																	],
-																),
-																const SizedBox(height: 18),
-																Row(
-																	children: [
-																		Expanded(
-																			child: OutlinedButton(
-																				onPressed: () async {
-																					await PairingRejectService
-																							.rejectPairingRequest(
-																						requestId: docs.first.id,
-																					);
-
-																					if (!context.mounted) return;
-
-																					ScaffoldMessenger.of(context)
-																							.showSnackBar(
-																						const SnackBar(
-																							content: Text(
-																								'Pairing request rejected',
-																							),
-																						),
-																					);
-																				},
-																				child: Text(
-																					'Reject',
-																					style: AppFonts.button.copyWith(
-																						color: AppColors.danger,
-																					),
-																				),
-																			),
-																		),
-																		const SizedBox(width: 12),
-
-																		Expanded(
-																			child: ElevatedButton(
-																				onPressed: () async {
-																					final result =
-																							await PairingApprovalService
-																									.approvePairingRequest(
-																						requestId: docs.first.id,
-																						requestData: data,
-																					);
-
-																					if (!context.mounted) return;
-
-																					String message;
-
-																					switch (result) {
-
-																						case 'approved':
-																							message = 'Locator paired successfully';
-																							break;
-
-																						case 'rejected_capacity':
-																							message =
-																									'Group locator limit reached';
-																							break;
-
-																						case 'rejected_group_not_found':
-																							message = 'Group not found';
-																							break;
-
-																						case 'error_locator_not_found':
-																							message = 'Locator not found';
-																							break;
-
-																						default:
-																							message =
-																									'Failed to approve request';
-																					}
-
-																					ScaffoldMessenger.of(context)
-																							.showSnackBar(
-																						SnackBar(
-																							content: Text(message),
-																						),
-																					);
-																				},
-																				child: Text(
-																					'Approve',
-																					style: AppFonts.button.copyWith(
-																						color: AppColors.background,
-																					),
-																				),
-																			),
-																		),
-																	],
-																),
-															],
-														),
-													);
-												},
-											);
-										},
-									),
-
-                  const SizedBox(height: 18),
-
-                  Row(
-                    children: [
-                      Expanded(
-                        child: AppCard(
-                          child: Column(
-                            children: [
-                              const Icon(
-                                Icons
-                                    .gps_fixed_rounded,
-                                color:
-                                    AppColors
-                                        .success,
-                                size: 28,
-                              ),
-                              const SizedBox(
-                                  height: 10),
-                              Text(
-                                'GPS ON',
-                                style: AppFonts
-                                    .subtitle,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 14),
-                      Expanded(
-                        child: AppCard(
-                          child: Column(
-                            children: [
-                              const Icon(
-                                Icons
-                                    .battery_5_bar_rounded,
-                                color:
-                                    AppColors
-                                        .primary,
-                                size: 28,
-                              ),
-                              const SizedBox(
-                                  height: 10),
-                              Text(
-                                '87%',
-                                style: AppFonts
-                                    .subtitle,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-
+                  _pairedRequesterCard(),
                   const Spacer(),
-
                   SizedBox(
                     width: double.infinity,
                     height: 58,
                     child: OutlinedButton(
                       onPressed: () {},
-                      style:
-                          OutlinedButton.styleFrom(
+                      style: OutlinedButton.styleFrom(
                         side: BorderSide(
-                          color: AppColors.danger
-                              .withValues(
-                            alpha: 0.35,
-                          ),
+                          color: AppColors.danger.withValues(alpha: 0.35),
                         ),
                         backgroundColor:
-                            AppColors.danger
-                                .withValues(
-                          alpha: 0.08,
-                        ),
-                        shape:
-                            RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius
-                                  .circular(18),
+                            AppColors.danger.withValues(alpha: 0.08),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(18),
                         ),
                       ),
                       child: Text(
                         'Stop Sharing',
-                        style:
-                            AppFonts.button
-                                .copyWith(
-                          color:
-                              AppColors.danger,
+                        style: AppFonts.button.copyWith(
+                          color: AppColors.danger,
                         ),
                       ),
                     ),
