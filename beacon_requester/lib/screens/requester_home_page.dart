@@ -1,17 +1,96 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 import '../core/theme/app_colors.dart';
 import '../core/theme/app_fonts.dart';
 import '../core/widgets/app_card.dart';
 import '../services/home_data_service.dart';
 import 'add_locator_page.dart';
+import '../services/locator_list_service.dart';
+import '../services/group_service.dart';
 
 
-class RequesterHomePage extends StatelessWidget {
+class RequesterHomePage extends StatefulWidget {
   const RequesterHomePage({super.key});
 
+  @override
+  State<RequesterHomePage> createState() =>
+      _RequesterHomePageState();
+}
+
+class _RequesterHomePageState
+    extends State<RequesterHomePage> {
+		
+	List<Map<String, dynamic>> _locators = [];
+	final List<StreamSubscription> _subscriptions = [];
+	String? _groupId;
+	
+		@override
+	void initState() {
+		super.initState();
+
+		_loadLocators();
+	}
+	
+	Future<void> _loadLocators() async {
+	_groupId = await GroupService.getLocalGroupId();
+
+if (_groupId == null) return;
+		final locators =
+				await LocatorListService.loadLocators();
+
+		setState(() {
+			_locators = locators;
+		});
+		for (final locator in locators) {
+  _listenLocatorPresence(
+    locator['locatorId'],
+  );
+}
+	}
+	
+void _listenLocatorPresence(String locatorId) {
+  if (_groupId == null) return;
+
+  final sub = FirebaseDatabase.instance
+      .ref(
+        'presence/groups/$_groupId/locators/$locatorId',
+      )
+      .onValue
+      .listen((event) {
+  final value = event.snapshot.value;
+
+  print(
+    "BEACON PRESENCE UPDATE => "
+    "$locatorId => $value",
+  );
+
+  if (value is! Map) return;
+
+  final presence =
+      Map<String, dynamic>.from(value as Map);
+
+  if (!mounted) return;
+
+  setState(() {
+    final index = _locators.indexWhere(
+      (x) => x['locatorId'] == locatorId,
+    );
+
+    if (index == -1) return;
+
+    _locators[index] = {
+      ..._locators[index],
+      ...presence,
+    };
+  });
+});
+
+  _subscriptions.add(sub);
+}
   Future<String> _loadGroupCode() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString('group_code') ?? '------';
@@ -282,7 +361,7 @@ const SizedBox(height: 18),
                   const SizedBox(height: 18),
 
                   Expanded(
-                    child: pairedLocators.isEmpty
+                    child: _locators.isEmpty
                         ? Center(
                             child: Text(
                               'No paired locators yet.',
@@ -291,24 +370,28 @@ const SizedBox(height: 18),
                             ),
                           )
                         : ListView.separated(
-                            itemCount: pairedLocators.length,
+                            itemCount: _locators.length,
                             separatorBuilder: (_, __) =>
                                 const SizedBox(height: 12),
                             itemBuilder: (context, index) {
-                              final locatorId =
-																	pairedLocators.keys.elementAt(index);
-
-															final locatorData =
-																	Map<String, dynamic>.from(
-																pairedLocators[locatorId] ?? {},
-															);
-
+                              final locator = _locators[index];
+															final locatorId =
+																locator['locatorId'] ?? '-';
+															
 															final locatorName =
-																	locatorData['name'] ?? 'Locator';
+    locator['name'] ?? 'Locator';
 
-															final locatorCode =
-																	locatorData['locatorCode'] ?? '------';
+final locatorCode =
+    locator['locatorCode'] ?? '------';
 
+final status =
+    locator['status'] ?? 'offline';
+
+final battery =
+    locator['battery'] ?? 0;
+
+final gpsEnabled =
+    locator['gpsEnabled'] == true;
                               return AppCard(
                                 child: Row(
                                   children: [
@@ -340,6 +423,10 @@ const SizedBox(height: 18),
 																					),
 
 																					const SizedBox(height: 4),
+																					Text(
+  '$status • Battery $battery% • GPS ${gpsEnabled ? 'ON' : 'OFF'}',
+  style: AppFonts.caption,
+),
 
 																				],
 																			),
