@@ -11,6 +11,7 @@ import '../services/home_data_service.dart';
 import 'add_locator_page.dart';
 import '../services/locator_list_service.dart';
 import '../services/group_service.dart';
+import '../core/widgets/locator_status_card.dart';
 
 
 class RequesterHomePage extends StatefulWidget {
@@ -52,45 +53,45 @@ if (_groupId == null) return;
 }
 	}
 	
-void _listenLocatorPresence(String locatorId) {
-  if (_groupId == null) return;
+	void _listenLocatorPresence(String locatorId) {
+		if (_groupId == null) return;
 
-  final sub = FirebaseDatabase.instance
-      .ref(
-        'presence/groups/$_groupId/locators/$locatorId',
-      )
-      .onValue
-      .listen((event) {
-  final value = event.snapshot.value;
+		final sub = FirebaseDatabase.instance
+				.ref(
+					'presence/groups/$_groupId/locators/$locatorId',
+				)
+				.onValue
+				.listen((event) {
+		final value = event.snapshot.value;
 
-  print(
-    "BEACON PRESENCE UPDATE => "
-    "$locatorId => $value",
-  );
+		print(
+			"BEACON PRESENCE UPDATE => "
+			"$locatorId => $value",
+		);
 
-  if (value is! Map) return;
+		if (value is! Map) return;
 
-  final presence =
-      Map<String, dynamic>.from(value as Map);
+		final presence =
+				Map<String, dynamic>.from(value as Map);
 
-  if (!mounted) return;
+		if (!mounted) return;
 
-  setState(() {
-    final index = _locators.indexWhere(
-      (x) => x['locatorId'] == locatorId,
-    );
+		setState(() {
+			final index = _locators.indexWhere(
+				(x) => x['locatorId'] == locatorId,
+			);
 
-    if (index == -1) return;
+			if (index == -1) return;
 
-    _locators[index] = {
-      ..._locators[index],
-      ...presence,
-    };
-  });
-});
+			_locators[index] = {
+				..._locators[index],
+				...presence,
+			};
+		});
+	});
 
-  _subscriptions.add(sub);
-}
+		_subscriptions.add(sub);
+	}
   Future<String> _loadGroupCode() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString('group_code') ?? '------';
@@ -379,61 +380,27 @@ const SizedBox(height: 18),
 																locator['locatorId'] ?? '-';
 															
 															final locatorName =
-    locator['name'] ?? 'Locator';
+																	locator['name'] ?? 'Locator';
 
-final locatorCode =
-    locator['locatorCode'] ?? '------';
+															final locatorCode =
+																	locator['locatorCode'] ?? '------';
 
-final status =
-    locator['status'] ?? 'offline';
+															final status =
+																	locator['status'] ?? 'offline';
 
-final battery =
-    locator['battery'] ?? 0;
+															final battery =
+																	locator['battery'] ?? 0;
 
-final gpsEnabled =
-    locator['gpsEnabled'] == true;
-                              return AppCard(
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      width: 42,
-                                      height: 42,
-                                      decoration: BoxDecoration(
-                                        color: AppColors.primary
-                                            .withValues(alpha: 0.12),
-                                        borderRadius: BorderRadius.circular(14),
-                                      ),
-                                      child: const Icon(
-                                        Icons.person_pin_circle_rounded,
-                                        color: AppColors.primary,
-                                      ),
-                                    ),
-
-                                    const SizedBox(width: 14),
-
-                                    Expanded(
-																			child: Column(
-																				crossAxisAlignment:
-																						CrossAxisAlignment.start,
-																				children: [
-
-																					Text(
-																						'$locatorName - $locatorCode',
-																						style: AppFonts.subtitle,
-																					),
-
-																					const SizedBox(height: 4),
-																					Text(
-  '$status • Battery $battery% • GPS ${gpsEnabled ? 'ON' : 'OFF'}',
-  style: AppFonts.caption,
-),
-
-																				],
-																			),
-																		),
-                                  ],
-                                ),
-                              );
+															final gpsEnabled =
+																	locator['gpsEnabled'] == true;
+		
+                              return LocatorStatusCard(
+															locatorName: locatorName,
+															locatorCode: locatorCode,
+															status: status,
+															battery: battery,
+															gpsEnabled: gpsEnabled,
+														);
                             },
                           ),
                   ),

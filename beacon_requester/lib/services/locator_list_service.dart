@@ -40,7 +40,12 @@ class LocatorListService {
       final List<Map<String, dynamic>> result = [];
 
       for (final locatorId in pairedLocators.keys) {
-
+final pairData =
+    pairedLocators[locatorId] is Map
+        ? Map<String, dynamic>.from(
+            pairedLocators[locatorId],
+          )
+        : <String, dynamic>{};
         final locatorDoc = await _firestore
             .collection('groups')
             .doc(groupId)
@@ -59,10 +64,17 @@ class LocatorListService {
 						: <String, dynamic>{};
 
 				result.add({
-					'locatorId': locatorId,
-					...locatorDoc.data()!,
-					...presenceData,
-				});
+  'locatorId': locatorId,
+
+  // requester'a özel pairing bilgisi
+  ...pairData,
+
+  // locator device meta
+  ...locatorDoc.data()!,
+
+  // canlı RTDB presence
+  ...presenceData,
+});
       }
 
       return result;
