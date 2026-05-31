@@ -14,12 +14,13 @@ import 'screens/permission_intro_page.dart';
 import 'screens/requester_home_page.dart';
 import 'services/identity_service.dart';
 import 'services/group_service.dart';
-
+import 'services/notification_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp();
+	await NotificationService.initialize();
   runApp(const MyApp());
 }
 

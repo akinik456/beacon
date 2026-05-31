@@ -18,6 +18,7 @@ import '../utils/location_helper.dart';
 import '../utils/map_helper.dart';
 import '../services/group_service.dart';
 import '../services/identity_service.dart';
+import '../services/fcm_service.dart';
 
 class RequesterHomePage extends StatefulWidget {
   const RequesterHomePage({super.key});
@@ -42,6 +43,7 @@ class _RequesterHomePageState
 		@override
 	void initState() {
 		super.initState();
+		FCMService.initialize();
 
 		_loadLocators();
 	}
