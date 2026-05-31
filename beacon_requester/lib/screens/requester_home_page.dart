@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../core/theme/app_colors.dart';
 import '../core/theme/app_fonts.dart';
@@ -15,6 +16,8 @@ import '../core/widgets/locator_status_card.dart';
 import '../utils/time_helper.dart';
 import '../utils/location_helper.dart';
 import '../utils/map_helper.dart';
+import '../services/group_service.dart';
+import '../services/identity_service.dart';
 
 class RequesterHomePage extends StatefulWidget {
   const RequesterHomePage({super.key});
@@ -29,6 +32,9 @@ class _RequesterHomePageState
 		
 	List<Map<String, dynamic>> _locators = [];
 	final List<StreamSubscription> _subscriptions = [];
+	Map<String, dynamic>? _callMeData;
+	List<Map<String, dynamic>> _pendingCallMeQueue = [];
+	
 	String? _groupId;
 	double? _myLat;
 	double? _myLng;
@@ -66,6 +72,7 @@ class _RequesterHomePageState
 				locator['locatorId'],
 			);
 		}
+	_listenCallMe();
 	}
 	
 	void _listenLocatorPresence(String locatorId) {
@@ -107,6 +114,64 @@ class _RequesterHomePageState
 
 		_subscriptions.add(sub);
 	}
+	
+	void _listenCallMe() async {
+
+		final groupId =
+				await GroupService.getLocalGroupId();
+
+		final requesterId =
+				await IdentityService.getRequesterId();
+
+		if (groupId == null ||
+				requesterId == null) {
+			return;
+		}
+
+		final sub = FirebaseFirestore.instance
+				.collection('groups')
+				.doc(groupId)
+				.collection('call_me')
+				.doc(requesterId)
+				.collection('items')
+				.snapshots()
+				.listen((snapshot) {
+  for (final change in snapshot.docChanges) {
+    if (change.type != DocumentChangeType.added) {
+      continue;
+    }
+
+    final data = change.doc.data();
+
+    if (data == null) continue;
+
+    if (data['status'] != 'pending') {
+      continue;
+    }
+
+    final item = {
+      ...data,
+      'callMeId': change.doc.id,
+    };
+
+    if (!mounted) return;
+
+    setState(() {
+      final alreadyExists = _pendingCallMeQueue.any(
+        (x) => x['callMeId'] == item['callMeId'],
+      );
+
+      if (!alreadyExists) {
+        _pendingCallMeQueue.add(item);
+      }
+
+      _callMeData ??= item;
+    });
+  }
+});
+		_subscriptions.add(sub);
+	}
+
   Future<String> _loadGroupCode() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString('group_code') ?? '------';
@@ -175,7 +240,9 @@ class _RequesterHomePageState
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Stack(
+  children: [
+    Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
         child: FutureBuilder<Map<String, dynamic>?>(
@@ -457,6 +524,126 @@ const SizedBox(height: 18),
           },
         ),
       ),
-    );
+    ),
+		if (_callMeData != null)
+  _CallMeOverlay(
+    data: _callMeData!,
+    onDismiss: () async {
+
+      final callMeId =
+          _callMeData!['callMeId'];
+
+      final groupId =
+          _callMeData!['groupId'];
+
+      final requesterId =
+          _callMeData!['targetRequesterId'];
+
+      await FirebaseFirestore.instance
+          .collection('groups')
+          .doc(groupId)
+          .collection('call_me')
+          .doc(requesterId)
+          .collection('items')
+          .doc(callMeId)
+          .update({
+        'status': 'dismissed',
+        'dismissedAt':
+            FieldValue.serverTimestamp(),
+      });
+
+      if (!mounted) return;
+
+      setState(() {
+        _pendingCallMeQueue.removeWhere(
+  (x) => x['callMeId'] == callMeId,
+);
+
+_callMeData = _pendingCallMeQueue.isNotEmpty
+    ? _pendingCallMeQueue.first
+    : null;
+      });
+    },
+  ),
+		],
+		);
+
   }
+}
+
+class _CallMeOverlay extends StatelessWidget {
+  final Map<String, dynamic> data;
+  final VoidCallback onDismiss;
+
+  const _CallMeOverlay({
+    required this.data,
+    required this.onDismiss,
+  });
+
+  @override
+Widget build(BuildContext context) {
+  final locatorName = data['locatorName'] ?? 'Locator';
+  final locatorCode = data['locatorCode'] ?? '';
+	
+	final createdAt =
+    data['createdAt'] as Timestamp?;
+
+final timeText =
+    TimeHelper.formatLastSeen(
+      createdAt?.millisecondsSinceEpoch,
+    );
+
+  return Positioned.fill(
+    child: Material(
+      color: Colors.black.withValues(alpha: 0.65),
+      child: Center(
+        child: AppCard(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(
+                Icons.phone_in_talk_rounded,
+                color: AppColors.primary,
+                size: 54,
+              ),
+
+              const SizedBox(height: 18),
+
+              Text(
+                '$locatorName - $locatorCode',
+                style: AppFonts.title,
+                textAlign: TextAlign.center,
+              ),
+const SizedBox(height: 6),
+
+Text(
+  timeText,
+  style: AppFonts.caption.copyWith(
+    color: AppColors.textSecondary,
+  ),
+),
+              const SizedBox(height: 8),
+
+              Text(
+                'wants you to call.',
+                style: AppFonts.body,
+                textAlign: TextAlign.center,
+              ),
+
+              const SizedBox(height: 24),
+
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: onDismiss,
+                  child: const Text('Dismiss'),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    ),
+  );
+}
 }

@@ -12,6 +12,9 @@ import '../services/locator_permission_service.dart';
 import '../services/presence_service.dart';
 import '../services/pairing_request_service.dart';
 import '../services/pairing_approval_service.dart';
+import '../services/call_me_service.dart';
+
+
 
 class LocatorHomePage extends StatefulWidget {
   const LocatorHomePage({super.key});
@@ -142,6 +145,8 @@ class _LocatorHomePageState extends State<LocatorHomePage>
     );
 
     return {
+			'requesterId': requesterId,
+
       'requesterName': requesterData['requesterName'] ?? 'Requester',
 
       'requesterCode': requesterData['requesterCode'] ?? '------',
@@ -284,16 +289,78 @@ class _LocatorHomePageState extends State<LocatorHomePage>
             ],
           );
         }
-
+				final requesterId = data['requesterId'] ?? '';
         final requesterName = data['requesterName'] ?? 'Requester';
         final requesterCode = data['requesterCode'] ?? '------';
 
         return AppCard(
-          child: Text(
-            'Paired with $requesterName - $requesterCode',
-            style: AppFonts.subtitle,
-          ),
-        );
+					child: Column(
+						crossAxisAlignment: CrossAxisAlignment.start,
+						children: [
+							Text(
+								'Paired requester',
+								style: AppFonts.caption,
+							),
+
+							const SizedBox(height: 6),
+
+							Text(
+								'$requesterName - $requesterCode',
+								style: AppFonts.subtitle,
+							),
+
+							const SizedBox(height: 16),
+
+							SizedBox(
+								width: double.infinity,
+								height: 48,
+								child: ElevatedButton.icon(
+									onPressed: () async {
+
+  final groupId =
+      await IdentityService.getGroupId();
+
+  if (groupId == null) {
+    return;
+  }
+
+  await CallMeService.createCallMe(
+    groupId: groupId,
+    targetRequesterId: requesterId,
+  );
+
+  if (!context.mounted) return;
+
+  ScaffoldMessenger.of(context)
+      .showSnackBar(
+    const SnackBar(
+      content: Text(
+        'Call Me sent',
+      ),
+    ),
+  );
+},
+									icon: const Icon(
+										Icons.call_rounded,
+										color: AppColors.background,
+									),
+									label: Text(
+										'Call Me',
+										style: AppFonts.button.copyWith(
+											color: AppColors.background,
+										),
+									),
+									style: ElevatedButton.styleFrom(
+										backgroundColor: AppColors.primary,
+										shape: RoundedRectangleBorder(
+											borderRadius: BorderRadius.circular(16),
+										),
+									),
+								),
+							),
+						],
+					),
+				);
       },
     );
   }
@@ -424,10 +491,43 @@ class _LocatorHomePageState extends State<LocatorHomePage>
                   ),
                   const SizedBox(height: 24),
                   _buildPairingArea(),
-                  const SizedBox(height: 12),
-                  _permissionsButton(),
+                  
                   const Spacer(),
-                  SizedBox(
+									const SizedBox(height: 12),
+
+									SizedBox(
+										width: double.infinity,
+										height: 54,
+										child: OutlinedButton.icon(
+											onPressed: () {
+												// TODO
+											},
+											icon: const Icon(
+												Icons.settings_rounded,
+												color: AppColors.primary,
+											),
+											label: Text(
+												'Open Settings',
+												style: AppFonts.button.copyWith(
+													color: AppColors.primary,
+												),
+											),
+											style: OutlinedButton.styleFrom(
+												side: BorderSide(
+													color: AppColors.primary.withValues(alpha: 0.25),
+												),
+												backgroundColor:
+														AppColors.primary.withValues(alpha: 0.04),
+												shape: RoundedRectangleBorder(
+													borderRadius: BorderRadius.circular(18),
+												),
+											),
+										),
+									),
+									const SizedBox(height: 12),
+                  _permissionsButton(),
+                  const SizedBox(height: 12),
+									SizedBox(
                     width: double.infinity,
                     height: 58,
                     child: OutlinedButton(
