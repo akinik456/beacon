@@ -7,19 +7,14 @@ import 'identity_service.dart';
 class PresenceService {
   PresenceService._();
 
-  static final _db =
-      FirebaseDatabase.instance.ref();
+  static final _db = FirebaseDatabase.instance.ref();
 
   static Future<void> updateOnline() async {
-
     final groupId = await IdentityService.getGroupId();
 
-    final locatorId =
-        await IdentityService.getLocatorId();
+    final locatorId = await IdentityService.getLocatorId();
 
-    if (groupId == null ||
-        locatorId == null) {
-
+    if (groupId == null || locatorId == null) {
       print(
         "BEACON PRESENCE => "
         "missing group/locator",
@@ -27,28 +22,29 @@ class PresenceService {
 
       return;
     }
-			final batteryLevel =
-    await Battery().batteryLevel;
+    final batteryLevel = await Battery().batteryLevel;
 
-			final gpsEnabled =
-					await Geolocator.isLocationServiceEnabled();
+    final gpsEnabled = await Geolocator.isLocationServiceEnabled();
 
-			print(
-				"BEACON PRESENCE => "
-				"battery=$batteryLevel "
-				"gps=$gpsEnabled",
-			);
+    final position = await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.high,
+    );
 
-			await _db
-				.child(
-					"presence/groups/$groupId/locators/$locatorId",
-				)
-				.set({
-			'status': 'online',
-			'lastSeen': ServerValue.timestamp,
-			'battery': batteryLevel,
-			'gpsEnabled': gpsEnabled,
-		});
+    print(
+      "BEACON PRESENCE => "
+      "battery=$batteryLevel "
+      "gps=$gpsEnabled",
+    );
+
+    await _db.child("presence/groups/$groupId/locators/$locatorId").set({
+      'status': 'online',
+      'lastSeen': ServerValue.timestamp,
+      'battery': batteryLevel,
+      'gpsEnabled': gpsEnabled,
+      'lat': position.latitude,
+      'lng': position.longitude,
+      'accuracy': position.accuracy,
+    });
 
     print(
       "BEACON PRESENCE => "

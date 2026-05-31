@@ -12,7 +12,9 @@ import 'add_locator_page.dart';
 import '../services/locator_list_service.dart';
 import '../services/group_service.dart';
 import '../core/widgets/locator_status_card.dart';
-
+import '../utils/time_helper.dart';
+import '../utils/location_helper.dart';
+import '../utils/map_helper.dart';
 
 class RequesterHomePage extends StatefulWidget {
   const RequesterHomePage({super.key});
@@ -28,6 +30,8 @@ class _RequesterHomePageState
 	List<Map<String, dynamic>> _locators = [];
 	final List<StreamSubscription> _subscriptions = [];
 	String? _groupId;
+	double? _myLat;
+	double? _myLng;
 	
 		@override
 	void initState() {
@@ -38,19 +42,30 @@ class _RequesterHomePageState
 	
 	Future<void> _loadLocators() async {
 	_groupId = await GroupService.getLocalGroupId();
+	
+	final position =
+    await LocationHelper.getCurrentPosition();
 
-if (_groupId == null) return;
-		final locators =
-				await LocatorListService.loadLocators();
+		_myLat = position?.latitude;
+		_myLng = position?.longitude;
 
-		setState(() {
-			_locators = locators;
-		});
-		for (final locator in locators) {
-  _listenLocatorPresence(
-    locator['locatorId'],
-  );
-}
+		print(
+			"BEACON REQUESTER POS => "
+			"$_myLat, $_myLng",
+		);
+
+		if (_groupId == null) return;
+				final locators =
+						await LocatorListService.loadLocators();
+
+				setState(() {
+					_locators = locators;
+				});
+				for (final locator in locators) {
+			_listenLocatorPresence(
+				locator['locatorId'],
+			);
+		}
 	}
 	
 	void _listenLocatorPresence(String locatorId) {
@@ -393,6 +408,24 @@ const SizedBox(height: 18),
 
 															final gpsEnabled =
 																	locator['gpsEnabled'] == true;
+																	
+															final lastSeenText =
+																	TimeHelper.formatLastSeen(
+																locator['lastSeen'],
+															);
+															
+															final distanceMeters =
+																	LocationHelper.distanceMeters(
+																fromLat: _myLat,
+																fromLng: _myLng,
+																toLat: locator['lat']?.toDouble(),
+																toLng: locator['lng']?.toDouble(),
+															);
+
+															final distanceText =
+																	distanceMeters == null
+																			? '-'
+																			: '${distanceMeters.round()} m';
 		
                               return LocatorStatusCard(
 															locatorName: locatorName,
@@ -400,6 +433,19 @@ const SizedBox(height: 18),
 															status: status,
 															battery: battery,
 															gpsEnabled: gpsEnabled,
+															lastSeenText: lastSeenText,
+															distanceText: distanceText,
+															onOpenMaps: () async {
+    final lat = locator['lat']?.toDouble();
+    final lng = locator['lng']?.toDouble();
+
+    if (lat == null || lng == null) return;
+
+    await MapHelper.openInMaps(
+      lat: lat,
+      lng: lng,
+    );
+  },
 														);
                             },
                           ),

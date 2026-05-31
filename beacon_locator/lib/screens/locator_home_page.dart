@@ -35,7 +35,7 @@ class _LocatorHomePageState extends State<LocatorHomePage>
 
     PresenceService.updateOnline();
 
-    _presenceTimer = Timer.periodic(const Duration(seconds: 3000), (_) {
+    _presenceTimer = Timer.periodic(const Duration(seconds: 30), (_) {
       PresenceService.updateOnline();
     });
   }

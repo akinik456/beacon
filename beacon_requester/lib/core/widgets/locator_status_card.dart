@@ -14,7 +14,11 @@ class LocatorStatusCard extends StatelessWidget {
 	final int battery;
 
 	final bool gpsEnabled;
-
+	final String lastSeenText;
+	
+	final String distanceText;
+	final VoidCallback onOpenMaps;
+	
 	const LocatorStatusCard({
 		super.key,
 		required this.locatorName,
@@ -22,6 +26,9 @@ class LocatorStatusCard extends StatelessWidget {
 		required this.status,
 		required this.battery,
 		required this.gpsEnabled,
+		required this.lastSeenText,
+		required this.distanceText,
+		required this.onOpenMaps,
 	});
 
   @override
@@ -95,8 +102,57 @@ class LocatorStatusCard extends StatelessWidget {
 								gpsEnabled ? 'GPS ON' : 'GPS OFF',
 								style: AppFonts.caption,
 							),
+							
+							const SizedBox(width: 16),
+
+							const Icon(
+								Icons.access_time_rounded,
+								size: 18,
+								color: AppColors.primary,
+							),
+
+							const SizedBox(width: 4),
+
+							Text(
+								lastSeenText,
+								style: AppFonts.caption,
+							),							
 						],
 					),
+					Row(
+						children: [
+							const Icon(
+								Icons.near_me_rounded,
+								size: 18,
+								color: AppColors.primary,
+							),
+
+							const SizedBox(width: 4),
+
+							Text(
+								'$distanceText away',
+								style: AppFonts.caption,
+							),
+						],
+					),
+					Align(
+  alignment: Alignment.center,
+  child: TextButton.icon(
+    onPressed: onOpenMaps,
+    icon: const Icon(
+      Icons.map_rounded,
+      size: 18,
+			 color: AppColors.primary,
+    ),
+    label: Text(
+  'Open in Maps',
+  style: AppFonts.caption.copyWith(
+    color: AppColors.primary,
+  ),
+),
+  ),
+),
+
 				],
 			),
 		);
