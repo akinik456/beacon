@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../theme/app_fonts.dart';
 import 'app_card.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_fonts.dart';
@@ -18,6 +17,8 @@ class LocatorStatusCard extends StatelessWidget {
 	
 	final String distanceText;
 	final VoidCallback onOpenMaps;
+	final VoidCallback? onLongPress;
+	final String addressText;
 	
 	const LocatorStatusCard({
 		super.key,
@@ -29,13 +30,17 @@ class LocatorStatusCard extends StatelessWidget {
 		required this.lastSeenText,
 		required this.distanceText,
 		required this.onOpenMaps,
+		required this.onLongPress,
+		required this.addressText,
 	});
 
   @override
-  Widget build(BuildContext context) {
-		return AppCard(
-			child: Column(
-				crossAxisAlignment: CrossAxisAlignment.start,
+	Widget build(BuildContext context) {
+  return GestureDetector(
+    onLongPress: onLongPress,
+    child: AppCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
 				children: [
 					Row(
 						children: [
@@ -121,6 +126,14 @@ class LocatorStatusCard extends StatelessWidget {
 					),
 					Row(
 						children: [
+							const SizedBox(width: 4),
+							Text(
+								addressText,
+								style: AppFonts.body,
+								maxLines: 2,
+								overflow: TextOverflow.ellipsis,
+							),
+							const SizedBox(width: 22),
 							const Icon(
 								Icons.near_me_rounded,
 								size: 18,
@@ -136,24 +149,24 @@ class LocatorStatusCard extends StatelessWidget {
 						],
 					),
 					Align(
-  alignment: Alignment.center,
-  child: TextButton.icon(
-    onPressed: onOpenMaps,
-    icon: const Icon(
-      Icons.map_rounded,
-      size: 18,
-			 color: AppColors.primary,
-    ),
-    label: Text(
-  'Open in Maps',
-  style: AppFonts.caption.copyWith(
-    color: AppColors.primary,
-  ),
-),
-  ),
-),
-
+						alignment: Alignment.center,
+						child: TextButton.icon(
+							onPressed: onOpenMaps,
+							icon: const Icon(
+								Icons.map_rounded,
+								size: 18,
+								 color: AppColors.primary,
+							),
+							label: Text(
+								'Open in Maps',
+								style: AppFonts.caption.copyWith(
+									color: AppColors.primary,
+								),
+							),
+						),
+					),
 				],
+			),
 			),
 		);
   }

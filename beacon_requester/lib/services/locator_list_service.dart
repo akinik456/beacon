@@ -64,17 +64,11 @@ final pairData =
 						: <String, dynamic>{};
 
 				result.add({
-  'locatorId': locatorId,
-
-  // requester'a özel pairing bilgisi
-  ...pairData,
-
-  // locator device meta
-  ...locatorDoc.data()!,
-
-  // canlı RTDB presence
-  ...presenceData,
-});
+					'locatorId': locatorId,
+					'address': 'Resolving address...',
+					...locatorDoc.data()!,
+					...presenceData,
+				});
       }
 
       return result;

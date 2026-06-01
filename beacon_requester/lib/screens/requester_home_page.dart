@@ -19,6 +19,8 @@ import '../utils/map_helper.dart';
 import '../services/group_service.dart';
 import '../services/identity_service.dart';
 import '../services/fcm_service.dart';
+import 'locator_settings_page.dart';
+import '../utils/address_helper.dart';
 
 class RequesterHomePage extends StatefulWidget {
   const RequesterHomePage({super.key});
@@ -87,7 +89,7 @@ class _RequesterHomePageState
 					'presence/groups/$_groupId/locators/$locatorId',
 				)
 				.onValue
-				.listen((event) {
+				.listen((event) async {
 		final value = event.snapshot.value;
 
 		print(
@@ -102,6 +104,20 @@ class _RequesterHomePageState
 
 		if (!mounted) return;
 
+final lat = presence['lat']?.toDouble();
+final lng = presence['lng']?.toDouble();
+
+String address = 'Address not available';
+
+if (lat != null && lng != null) {
+  address = await AddressHelper.getAddressFromLatLng(
+    lat: lat,
+    lng: lng,
+  );
+}
+
+		if (!mounted) return;
+
 		setState(() {
 			final index = _locators.indexWhere(
 				(x) => x['locatorId'] == locatorId,
@@ -112,6 +128,7 @@ class _RequesterHomePageState
 			_locators[index] = {
 				..._locators[index],
 				...presence,
+				if (address != null) 'address': address,
 			};
 		});
 	});
@@ -537,32 +554,42 @@ const SizedBox(height: 18),
 																toLat: locator['lat']?.toDouble(),
 																toLng: locator['lng']?.toDouble(),
 															);
-
 															final distanceText =
 																	distanceMeters == null
 																			? '-'
 																			: '${distanceMeters.round()} m';
-		
-                              return LocatorStatusCard(
-															locatorName: locatorName,
-															locatorCode: locatorCode,
-															status: status,
-															battery: battery,
-															gpsEnabled: gpsEnabled,
-															lastSeenText: lastSeenText,
-															distanceText: distanceText,
-															onOpenMaps: () async {
-    final lat = locator['lat']?.toDouble();
-    final lng = locator['lng']?.toDouble();
-
-    if (lat == null || lng == null) return;
-
-    await MapHelper.openInMaps(
-      lat: lat,
-      lng: lng,
-    );
-  },
-														);
+																return LocatorStatusCard(
+																locatorName: locatorName,
+																locatorCode: locatorCode,
+																status: status,
+																battery: battery,
+																gpsEnabled: gpsEnabled,
+																lastSeenText: lastSeenText,
+																distanceText: distanceText,
+																onOpenMaps: () async {
+																	final lat = locator['lat']?.toDouble();
+																	final lng = locator['lng']?.toDouble();
+																	if (lat == null || lng == null) return;
+																	await MapHelper.openInMaps(
+																		lat: lat,
+																		lng: lng,
+																	);
+																},
+																onLongPress: () {
+																	Navigator.push(
+																		context,
+																		MaterialPageRoute(
+																			builder: (_) => LocatorSettingsPage(
+																				locatorId: locatorId,
+																				locatorName: locatorName,
+																				locatorCode: locatorCode,
+																				address: locator['address'] ?? '',
+																			),
+																		),
+																	);
+																},
+																addressText: locator['address'] ?? 'Address not available',
+															);
                             },
                           ),
                   ),
