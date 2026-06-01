@@ -83,3 +83,53 @@ exports.onCallMeCreated = onDocumentCreated(
 		}
   }
 );
+exports.onAlertCreated = onDocumentCreated(
+  "groups/{groupId}/alerts/{requesterId}/items/{alertId}",
+  async (event) => {
+    const data = event.data.data();
+
+    const requesterId = event.params.requesterId;
+    const alertId = event.params.alertId;
+
+    const locatorName = data.locatorName || "Locator";
+    const locatorCode = data.locatorCode || "";
+    const alertType = data.type || "alert";
+
+    const topic = `requester_${requesterId}`;
+
+    console.log("ALERT CREATED", data);
+    console.log("ALERT FCM TOPIC", topic);
+
+    try {
+      const response = await admin.messaging().send({
+        topic,
+
+        notification: {
+          title: "Beacon Alert",
+          body: `${locatorName}: ${alertType}`,
+        },
+
+        android: {
+          priority: "high",
+          notification: {
+            channelId: "call_me",
+            priority: "max",
+            defaultSound: true,
+          },
+        },
+
+        data: {
+          type: "alert",
+          alertId,
+          alertType,
+          locatorName,
+          locatorCode,
+        },
+      });
+
+      console.log("ALERT FCM SENT", topic, response);
+    } catch (error) {
+      console.error("ALERT FCM ERROR", error);
+    }
+  }
+);
