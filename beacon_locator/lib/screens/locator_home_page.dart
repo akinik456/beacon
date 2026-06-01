@@ -292,7 +292,7 @@ class _LocatorHomePageState extends State<LocatorHomePage>
                 child: Text('No paired requester', style: AppFonts.subtitle),
               ),
               const SizedBox(height: 12),
-              _permissionsButton(),
+              //_permissionsButton(),
             ],
           );
         }
