@@ -13,7 +13,8 @@ import '../services/presence_service.dart';
 import '../services/pairing_request_service.dart';
 import '../services/pairing_approval_service.dart';
 import '../services/call_me_service.dart';
-
+import '../services/alert_service.dart';
+import '../services/alert_monitor_service.dart';
 
 
 class LocatorHomePage extends StatefulWidget {
@@ -41,11 +42,17 @@ class _LocatorHomePageState extends State<LocatorHomePage>
     _presenceTimer = Timer.periodic(const Duration(seconds: 30), (_) {
       PresenceService.updateOnline();
     });
+		
+		AlertMonitorService.start();
+		
+		
+		
   }
 
   @override
   void dispose() {
     _presenceTimer?.cancel();
+		AlertMonitorService.stop();
 
     WidgetsBinding.instance.removeObserver(this);
 
