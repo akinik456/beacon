@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:geolocator/geolocator.dart';
+import 'package:battery_plus/battery_plus.dart';
 
 import 'alert_service.dart';
 
@@ -50,5 +51,21 @@ class AlertMonitorService {
         "BEACON ALERT MONITOR ERROR => $e",
       );
     }
+	
+		final batteryLevel =
+				await Battery().batteryLevel;
+
+		print(
+			"BEACON ALERT MONITOR => battery=$batteryLevel",
+		);
+
+		if (batteryLevel <= 20) {
+			await AlertService.sendBatteryLowAlert(
+				batteryLevel: batteryLevel,
+			);
+		}	
+		
   }
+	
+	
 }

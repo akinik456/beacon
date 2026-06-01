@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:uuid/uuid.dart';
+import 'package:battery_plus/battery_plus.dart';
 
 import 'identity_service.dart';
 
@@ -67,4 +68,83 @@ class AlertService {
 
     print("BEACON ALERT => gps_off sent");
   }
+	
+	static Future<void> sendBatteryLowAlert({
+		required int batteryLevel,
+	}) async {
+		await _sendAlertToPairedRequesters(
+			type: 'battery_low',
+			extraData: {
+				'battery': batteryLevel,
+			},
+		);
+
+		print("BEACON ALERT => battery_low sent");
+	}
+
+  static Future<void> _sendAlertToPairedRequesters({
+		required String type,
+		Map<String, dynamic> extraData = const {},
+	}) async {
+    final groupId = await IdentityService.getGroupId();
+    final locatorId = await IdentityService.getLocatorId();
+    final locatorName = await IdentityService.getLocatorName();
+    final locatorCode = await IdentityService.getLocatorCode();
+
+    if (groupId == null || locatorId == null) {
+      print("BEACON ALERT => missing group/locator");
+      return;
+    }
+
+    final locatorDeviceDoc = await _firestore
+        .collection('groups')
+        .doc(groupId)
+        .collection('devices')
+        .doc(locatorId)
+        .get();
+
+    final data = locatorDeviceDoc.data();
+
+    if (data == null) {
+      print("BEACON ALERT => locator device doc not found");
+      return;
+    }
+
+    final pairedRequesters = Map<String, dynamic>.from(
+      data['pairedRequesters'] ?? {},
+    );
+
+    if (pairedRequesters.isEmpty) {
+      print("BEACON ALERT => no paired requesters");
+      return;
+    }
+
+    for (final requesterId in pairedRequesters.keys) {
+      final alertId = const Uuid().v4();
+
+      await _firestore
+          .collection('groups')
+          .doc(groupId)
+          .collection('alerts')
+          .doc(requesterId)
+          .collection('items')
+          .doc(alertId)
+          .set({
+					'alertId': alertId,
+					'groupId': groupId,
+					'type': type,
+					'locatorId': locatorId,
+					'locatorName': locatorName ?? 'Locator',
+					'locatorCode': locatorCode ?? '------',
+					'targetRequesterId': requesterId,
+					'status': 'pending',
+					'createdAt': FieldValue.serverTimestamp(),
+					...extraData,
+				});
+    }
+
+    print("BEACON ALERT => battery_low sent");
+  }
+
+
 }
