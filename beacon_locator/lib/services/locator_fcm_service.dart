@@ -1,6 +1,5 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'identity_service.dart';
 
@@ -35,6 +34,23 @@ static Future<void> init() async {
           FieldValue.serverTimestamp(),
     }, SetOptions(merge: true));
   });
+	FirebaseMessaging.onMessage.listen((message) async {
+		print("BEACON FCM => foreground message");
+		print("BEACON FCM => data => ${message.data}");
+
+		final type = message.data['type'];
+
+		if (type == 'request_location') {
+			print("BEACON FCM => REQUEST LOCATION received");
+
+			// burada locator presence update fonksiyonunu çağıracağız
+			// örn:
+			// await LocatorPresenceService.updatePresence(
+			//   source: "REQUEST_LOCATION",
+			// );
+		}
+	});	
+	
 }	
 
   static Future<void> subscribeLocatorTopic() async {

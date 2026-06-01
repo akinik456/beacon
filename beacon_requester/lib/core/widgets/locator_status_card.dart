@@ -19,6 +19,7 @@ class LocatorStatusCard extends StatelessWidget {
 	final VoidCallback onOpenMaps;
 	final VoidCallback? onLongPress;
 	final String addressText;
+	final VoidCallback? onRequestLocation;
 	
 	const LocatorStatusCard({
 		super.key,
@@ -32,6 +33,7 @@ class LocatorStatusCard extends StatelessWidget {
 		required this.onOpenMaps,
 		required this.onLongPress,
 		required this.addressText,
+		required this.onRequestLocation,
 	});
 
   @override
@@ -148,22 +150,41 @@ class LocatorStatusCard extends StatelessWidget {
 							),
 						],
 					),
-					Align(
-						alignment: Alignment.center,
-						child: TextButton.icon(
-							onPressed: onOpenMaps,
-							icon: const Icon(
-								Icons.map_rounded,
-								size: 18,
-								 color: AppColors.primary,
-							),
-							label: Text(
-								'Open in Maps',
-								style: AppFonts.caption.copyWith(
+					Row(
+						children: [
+
+							TextButton.icon(
+								onPressed: onOpenMaps,
+								icon: const Icon(
+									Icons.map_rounded,
+									size: 18,
 									color: AppColors.primary,
 								),
+								label: Text(
+									'Open in Maps',
+									style: AppFonts.caption.copyWith(
+										color: AppColors.primary,
+									),
+								),
 							),
-						),
+
+							const SizedBox(width: 8),
+
+							TextButton.icon(
+								onPressed: onRequestLocation,
+								icon: const Icon(
+									Icons.my_location_rounded,
+									size: 18,
+									color: AppColors.primary,
+								),
+								label: Text(
+									'Request Location',
+									style: AppFonts.caption.copyWith(
+										color: AppColors.primary,
+									),
+								),
+							),
+						],
 					),
 				],
 			),

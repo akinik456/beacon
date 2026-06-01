@@ -21,6 +21,7 @@ import '../services/identity_service.dart';
 import '../services/fcm_service.dart';
 import 'locator_settings_page.dart';
 import '../utils/address_helper.dart';
+import '../services/request_location_service.dart';
 
 class RequesterHomePage extends StatefulWidget {
   const RequesterHomePage({super.key});
@@ -42,18 +43,20 @@ class _RequesterHomePageState
 	String? _groupId;
 	double? _myLat;
 	double? _myLng;
+	String? _requesterId;
 	
 		@override
 	void initState() {
 		super.initState();
 		FCMService.initialize();
-
+		
 		_loadLocators();
 	}
 	
 	Future<void> _loadLocators() async {
 	_groupId = await GroupService.getLocalGroupId();
-	
+	_requesterId =
+    await IdentityService.getRequesterId();
 	final position =
     await LocationHelper.getCurrentPosition();
 
@@ -573,6 +576,14 @@ const SizedBox(height: 18),
 																	await MapHelper.openInMaps(
 																		lat: lat,
 																		lng: lng,
+																	);
+																},
+																onRequestLocation: () async {
+																	if (_groupId == null || _requesterId == null) return;
+																	await RequestLocationService.createRequestLocation(
+																		groupId: groupId,
+																		requesterId: _requesterId!,
+																		locatorId: locatorId,
 																	);
 																},
 																onLongPress: () {
