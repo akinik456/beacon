@@ -22,6 +22,7 @@ import '../services/fcm_service.dart';
 import 'locator_settings_page.dart';
 import '../utils/address_helper.dart';
 import '../services/request_location_service.dart';
+import '../services/active_watcher_service.dart';
 
 class RequesterHomePage extends StatefulWidget {
   const RequesterHomePage({super.key});
@@ -32,7 +33,8 @@ class RequesterHomePage extends StatefulWidget {
 }
 
 class _RequesterHomePageState
-    extends State<RequesterHomePage> {
+    extends State<RequesterHomePage>
+    with WidgetsBindingObserver {
 		
 	List<Map<String, dynamic>> _locators = [];
 	final List<StreamSubscription> _subscriptions = [];
@@ -47,11 +49,35 @@ class _RequesterHomePageState
 	
 		@override
 	void initState() {
+		WidgetsBinding.instance.addObserver(this);
 		super.initState();
 		FCMService.initialize();
 		
 		_loadLocators();
 	}
+	
+	@override
+	void dispose() {
+		WidgetsBinding.instance.removeObserver(this);
+		_removeActiveWatchers();
+		super.dispose();
+	}
+	
+	@override
+	void didChangeAppLifecycleState(
+		AppLifecycleState state,
+	) async {
+		print("BEACON LIFECYCLE => $state");
+
+		if (state == AppLifecycleState.resumed) {
+			await _addActiveWatchers();
+		}
+
+		if (state == AppLifecycleState.paused ||
+				state == AppLifecycleState.detached) {
+			await _removeActiveWatchers();
+		}
+	}	
 	
 	Future<void> _loadLocators() async {
 	_groupId = await GroupService.getLocalGroupId();
@@ -79,10 +105,41 @@ class _RequesterHomePageState
 			_listenLocatorPresence(
 				locator['locatorId'],
 			);
+		await _addActiveWatchers();	
 		}
 	_listenCallMe();
 	_listenAlerts();
 	}
+	
+	Future<void> _addActiveWatchers() async {
+		if (_groupId == null) return;
+
+		for (final locator in _locators) {
+			final locatorId = locator['locatorId'];
+
+			if (locatorId == null) continue;
+
+			await ActiveWatcherService.addWatcher(
+				groupId: _groupId!,
+				locatorId: locatorId,
+			);
+		}
+	}
+
+	Future<void> _removeActiveWatchers() async {
+		if (_groupId == null) return;
+
+		for (final locator in _locators) {
+			final locatorId = locator['locatorId'];
+
+			if (locatorId == null) continue;
+
+			await ActiveWatcherService.removeWatcher(
+				groupId: _groupId!,
+				locatorId: locatorId,
+			);
+		}
+	}	
 	
 	void _listenLocatorPresence(String locatorId) {
 		if (_groupId == null) return;
