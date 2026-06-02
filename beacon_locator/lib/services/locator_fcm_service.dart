@@ -2,7 +2,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'identity_service.dart';
-import 'presence_service.dart';
+import 'smart_presence_scheduler.dart';
 
 class LocatorFcmService {
   LocatorFcmService._();
@@ -46,7 +46,9 @@ static Future<void> init() async {
 				"BEACON FCM => REQUEST LOCATION received",
 			);
 
-			await PresenceService.updateOnline();
+			await SmartPresenceScheduler.boostAndUpdateNow(
+				reason: 'fcm_foreground',
+			);
 
 			print(
 				"BEACON FCM => REQUEST LOCATION completed",

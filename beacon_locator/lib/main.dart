@@ -8,7 +8,7 @@ import 'services/firestore_service.dart';
 import 'screens/permission_intro_page.dart';
 import 'screens/locator_home_page.dart';
 import 'services/locator_fcm_service.dart';
-import 'services/presence_service.dart';
+import 'services/smart_presence_scheduler.dart';
 
 	@pragma('vm:entry-point')
 	Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -23,7 +23,9 @@ import 'services/presence_service.dart';
 		if (type == 'request_location') {
 			print("BEACON FCM BG => REQUEST LOCATION received");
 
-			await PresenceService.updateOnline();
+			await SmartPresenceScheduler.boostAndUpdateNow(
+				reason: 'fcm_foreground',
+			);
 
 			print("BEACON FCM BG => REQUEST LOCATION completed");
 		}

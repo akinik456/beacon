@@ -9,14 +9,15 @@ import '../core/widgets/app_card.dart';
 import '../services/identity_service.dart';
 import 'locator_permission_page.dart';
 import '../services/locator_permission_service.dart';
-import '../services/presence_service.dart';
+import '../services/smart_presence_scheduler.dart';
 import '../services/pairing_request_service.dart';
 import '../services/pairing_approval_service.dart';
 import '../services/call_me_service.dart';
 import '../services/alert_service.dart';
 import '../services/alert_monitor_service.dart';
 import '../services/geofence_service.dart';
-
+import '../services/motion_service.dart';
+import '../services/active_watcher_service.dart';
 
 class LocatorHomePage extends StatefulWidget {
   const LocatorHomePage({super.key});
@@ -29,6 +30,8 @@ class _LocatorHomePageState extends State<LocatorHomePage>
     with WidgetsBindingObserver {
   bool hasAllPermissions = false;
   Timer? _presenceTimer;
+	
+	//MotionService.start();
 
   @override
   void initState() {
@@ -38,25 +41,18 @@ class _LocatorHomePageState extends State<LocatorHomePage>
       _checkPermissionsAndWarn();
     });
 
-    PresenceService.updateOnline();
-
-    _presenceTimer = Timer.periodic(const Duration(seconds: 30), (_) async {
-      PresenceService.updateOnline();
-							
-				
-    });
-		
-		AlertMonitorService.start();
-		
-		
+    SmartPresenceScheduler.start();
+		MotionService.start();
+		ActiveWatcherService.start();
 		
   }
 
   @override
   void dispose() {
     _presenceTimer?.cancel();
-		AlertMonitorService.stop();
-
+		MotionService.stop();
+		SmartPresenceScheduler.stop();
+		ActiveWatcherService.stop();
     WidgetsBinding.instance.removeObserver(this);
 
     super.dispose();
