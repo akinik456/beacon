@@ -2,6 +2,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'identity_service.dart';
+import 'presence_service.dart';
 
 class LocatorFcmService {
   LocatorFcmService._();
@@ -41,13 +42,15 @@ static Future<void> init() async {
 		final type = message.data['type'];
 
 		if (type == 'request_location') {
-			print("BEACON FCM => REQUEST LOCATION received");
+			print(
+				"BEACON FCM => REQUEST LOCATION received",
+			);
 
-			// burada locator presence update fonksiyonunu çağıracağız
-			// örn:
-			// await LocatorPresenceService.updatePresence(
-			//   source: "REQUEST_LOCATION",
-			// );
+			await PresenceService.updateOnline();
+
+			print(
+				"BEACON FCM => REQUEST LOCATION completed",
+			);
 		}
 	});	
 	
