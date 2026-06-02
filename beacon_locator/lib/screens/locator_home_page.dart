@@ -15,6 +15,7 @@ import '../services/pairing_approval_service.dart';
 import '../services/call_me_service.dart';
 import '../services/alert_service.dart';
 import '../services/alert_monitor_service.dart';
+import '../services/geofence_service.dart';
 
 
 class LocatorHomePage extends StatefulWidget {
@@ -39,8 +40,10 @@ class _LocatorHomePageState extends State<LocatorHomePage>
 
     PresenceService.updateOnline();
 
-    _presenceTimer = Timer.periodic(const Duration(seconds: 30), (_) {
+    _presenceTimer = Timer.periodic(const Duration(seconds: 30), (_) async {
       PresenceService.updateOnline();
+							
+				
     });
 		
 		AlertMonitorService.start();

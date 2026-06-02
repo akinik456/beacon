@@ -3,6 +3,7 @@ import 'package:battery_plus/battery_plus.dart';
 import 'package:geolocator/geolocator.dart';
 
 import 'identity_service.dart';
+import 'geofence_service.dart';
 
 class PresenceService {
   PresenceService._();
@@ -50,5 +51,12 @@ class PresenceService {
       "BEACON PRESENCE => "
       "online updated",
     );
+		
+		await GeofenceService.checkPlaces(
+			groupId: groupId,
+			locatorId: locatorId,
+			lat: position.latitude,
+			lng: position.longitude,
+		);
   }
 }

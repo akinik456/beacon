@@ -145,6 +145,20 @@ class AlertService {
 
     print("BEACON ALERT => battery_low sent");
   }
+	
+	static Future<void> sendPlaceAlert({
+		required String type, // place_enter / place_exit
+		required String placeName,
+	}) async {
+		await _sendAlertToPairedRequesters(
+			type: type,
+			extraData: {
+				'placeName': placeName,
+			},
+		);
+
+		print("BEACON ALERT => $type sent => $placeName");
+	}
 
 
 }
