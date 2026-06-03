@@ -20,6 +20,8 @@ class LocatorStatusCard extends StatelessWidget {
 	final VoidCallback? onLongPress;
 	final String addressText;
 	final VoidCallback? onRequestLocation;
+	final VoidCallback? onNotificationSettings;
+	final VoidCallback? onSettings;
 	
 	const LocatorStatusCard({
 		super.key,
@@ -34,6 +36,8 @@ class LocatorStatusCard extends StatelessWidget {
 		required this.onLongPress,
 		required this.addressText,
 		required this.onRequestLocation,
+		required this.onNotificationSettings,
+		required this.onSettings,
 	});
 
   @override
@@ -151,44 +155,75 @@ class LocatorStatusCard extends StatelessWidget {
 						],
 					),
 					Row(
-						children: [
-
-							TextButton.icon(
-								onPressed: onOpenMaps,
-								icon: const Icon(
-									Icons.map_rounded,
-									size: 18,
-									color: AppColors.primary,
-								),
-								label: Text(
-									'Open in Maps',
-									style: AppFonts.caption.copyWith(
-										color: AppColors.primary,
-									),
-								),
-							),
-
-							const SizedBox(width: 8),
-
-							TextButton.icon(
-								onPressed: onRequestLocation,
-								icon: const Icon(
-									Icons.my_location_rounded,
-									size: 18,
-									color: AppColors.primary,
-								),
-								label: Text(
-									'Request Location',
-									style: AppFonts.caption.copyWith(
-										color: AppColors.primary,
-									),
-								),
-							),
-						],
-					),
+  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  children: [
+    _MiniAction(
+      icon: Icons.my_location_rounded,
+      label: 'Request',
+      onTap: onRequestLocation,
+    ),
+    _MiniAction(
+      icon: Icons.map_rounded,
+      label: 'Map',
+      onTap: onOpenMaps,
+    ),
+    _MiniAction(
+      icon: Icons.notifications_active_rounded,
+      label: 'Notify',
+      onTap: onNotificationSettings,
+    ),
+    _MiniAction(
+      icon: Icons.settings_rounded,
+      label: 'Settings',
+      onTap: onSettings,
+    ),
+  ],
+),
 				],
 			),
 			),
 		);
+  }
+}
+class _MiniAction extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final VoidCallback? onTap;
+
+  const _MiniAction({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(8),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 4,
+          vertical: 4,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              icon,
+              size: 18,
+              color: AppColors.primary,
+            ),
+            const SizedBox(height: 2),
+            Text(
+              label,
+              style: AppFonts.caption.copyWith(
+                color: AppColors.primary,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

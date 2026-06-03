@@ -2,13 +2,27 @@ import 'package:geolocator/geolocator.dart';
 import 'package:battery_plus/battery_plus.dart';
 
 import 'alert_service.dart';
+import 'locator_settings_service.dart';
 
 class AlertMonitorService {
   AlertMonitorService._();
 
   static bool _lastGpsEnabled = true;
+	
+	
 
   static Future<void> checkNow() async {
+	final settings = await LocatorSettingsService.loadSettings();
+	
+	final gpsOffAlertEnabled =
+    settings['gpsOffAlert'] == true;
+
+	final batteryLowAlertEnabled =
+			settings['batteryLowAlert'] == true;
+
+	final batteryLowLevel =
+			settings['batteryLowLevel'] ?? 20;	
+	
     try {
       final gpsEnabled =
           await Geolocator.isLocationServiceEnabled();
@@ -17,9 +31,11 @@ class AlertMonitorService {
         "BEACON ALERT MONITOR => gpsEnabled=$gpsEnabled",
       );
 
-      if (!gpsEnabled && _lastGpsEnabled) {
-        await AlertService.sendGpsOffAlert();
-      }
+      if (settings['gpsOffAlert'] == true &&
+					!gpsEnabled &&
+					_lastGpsEnabled) {
+				await AlertService.sendGpsOffAlert();
+			}
 
       _lastGpsEnabled = gpsEnabled;
     } catch (e) {
@@ -35,11 +51,10 @@ class AlertMonitorService {
 			"BEACON ALERT MONITOR => battery=$batteryLevel",
 		);
 
-		if (batteryLevel <= 20) {
-			await AlertService.sendBatteryLowAlert(
-				batteryLevel: batteryLevel,
-			);
-		}	
+		if (batteryLowAlertEnabled &&
+				batteryLevel <= batteryLowLevel) {
+			await AlertService.sendBatteryLowAlert(batteryLevel: batteryLevel);
+		}
 		
   }
 	

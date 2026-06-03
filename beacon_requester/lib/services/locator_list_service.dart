@@ -67,6 +67,7 @@ final pairData =
 					'locatorId': locatorId,
 					'address': 'Resolving address...',
 					...locatorDoc.data()!,
+					...pairData,
 					...presenceData,
 				});
       }

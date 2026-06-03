@@ -46,6 +46,8 @@ class _RequesterHomePageState
 	double? _myLat;
 	double? _myLng;
 	String? _requesterId;
+	bool _isMaster = false;
+	
 	
 		@override
 	void initState() {
@@ -81,6 +83,8 @@ class _RequesterHomePageState
 	
 	Future<void> _loadLocators() async {
 	_groupId = await GroupService.getLocalGroupId();
+	_isMaster = await GroupService.getLocalIsMaster();
+	
 	_requesterId =
     await IdentityService.getRequesterId();
 	final position =
@@ -97,6 +101,7 @@ class _RequesterHomePageState
 		if (_groupId == null) return;
 				final locators =
 						await LocatorListService.loadLocators();
+						
 
 				setState(() {
 					_locators = locators;
@@ -579,46 +584,21 @@ const SizedBox(height: 18),
                             ),
                           )
                         : ListView.separated(
-                            itemCount: _locators.length,
+                            itemCount: _locators.length,//itemCount: _locators.isEmpty ? 0 : 4,//itemCount: _locators.length,
                             separatorBuilder: (_, __) =>
                                 const SizedBox(height: 12),
                             itemBuilder: (context, index) {
-                              final locator = _locators[index];
-															final locatorId =
-																locator['locatorId'] ?? '-';
-															
-															final locatorName =
-																	locator['name'] ?? 'Locator';
-
-															final locatorCode =
-																	locator['locatorCode'] ?? '------';
-
-															final status =
-																	locator['status'] ?? 'offline';
-
-															final battery =
-																	locator['battery'] ?? 0;
-
-															final gpsEnabled =
-																	locator['gpsEnabled'] == true;
-																	
-															final lastSeenText =
-																	TimeHelper.formatLastSeen(
-																locator['lastSeen'],
-															);
-															
-															final distanceMeters =
-																	LocationHelper.distanceMeters(
-																fromLat: _myLat,
-																fromLng: _myLng,
-																toLat: locator['lat']?.toDouble(),
-																toLng: locator['lng']?.toDouble(),
-															);
-															final distanceText =
-																	distanceMeters == null
-																			? '-'
-																			: '${distanceMeters.round()} m';
-																return LocatorStatusCard(
+                              final locator = _locators[index];//final locator = _locators[0];//final locator = _locators[index];
+															final locatorId = locator['locatorId'] ?? '-';															
+															final locatorName = locator['name'] ?? 'Locator';
+															final locatorCode = locator['locatorCode'] ?? '------';
+															final status = locator['status'] ?? 'offline';
+															final battery = locator['battery'] ?? 0;
+															final gpsEnabled = locator['gpsEnabled'] == true;																	
+															final lastSeenText = TimeHelper.formatLastSeen(locator['lastSeen'],);															
+															final distanceMeters = LocationHelper.distanceMeters(fromLat: _myLat,fromLng: _myLng,toLat: locator['lat']?.toDouble(),toLng: locator['lng']?.toDouble(),);
+															final distanceText = distanceMeters == null ? '-' : '${distanceMeters.round()} m';
+															return LocatorStatusCard(
 																locatorName: locatorName,
 																locatorCode: locatorCode,
 																status: status,
@@ -652,11 +632,29 @@ const SizedBox(height: 18),
 																				locatorName: locatorName,
 																				locatorCode: locatorCode,
 																				address: locator['address'] ?? '',
+																				isMaster: _isMaster,
 																			),
 																		),
 																	);
 																},
 																addressText: locator['address'] ?? 'Address not available',
+																onNotificationSettings: () {
+																	print('NOTIFY SETTINGS => $locatorId');
+																},
+																onSettings: () {
+																	Navigator.push(
+																		context,
+																		MaterialPageRoute(
+																			builder: (_) => LocatorSettingsPage(
+																				locatorId: locatorId,
+																				locatorName: locatorName,
+																				locatorCode: locatorCode,
+																				address: locator['address'] ?? '',
+																				isMaster: _isMaster,
+																			),
+																		),
+																	);
+																},
 															);
                             },
                           ),

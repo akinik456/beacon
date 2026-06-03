@@ -11,6 +11,19 @@ class GroupService {
   static final _firestore = FirebaseFirestore.instance;
 
   static const _groupIdKey = 'group_id';
+	
+	static const _isMasterKey = 'is_master';
+
+	static Future<void> setLocalIsMaster(bool value) async {
+		final prefs = await SharedPreferences.getInstance();
+		await prefs.setBool(_isMasterKey, value);
+	}
+
+	static Future<bool> getLocalIsMaster() async {
+		final prefs = await SharedPreferences.getInstance();
+		return prefs.getBool(_isMasterKey) ?? false;
+	}
+	
 
   static Future<String> createGroup({
     required String groupName,

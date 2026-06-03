@@ -4,6 +4,7 @@ import 'package:geolocator/geolocator.dart';
 
 import 'identity_service.dart';
 import 'geofence_service.dart';
+import 'locator_settings_service.dart';
 
 class PresenceService {
   PresenceService._();
@@ -27,6 +28,10 @@ class PresenceService {
 
     final gpsEnabled = await Geolocator.isLocationServiceEnabled();
 
+		final settings = await LocatorSettingsService.loadSettings();
+		final geofenceAlertEnabled =
+    settings['geofenceAlert'] == true;
+		
     final position = await Geolocator.getCurrentPosition(
       desiredAccuracy: LocationAccuracy.high,
     );
@@ -52,11 +57,13 @@ class PresenceService {
       "online updated",
     );
 		
-		await GeofenceService.checkPlaces(
-			groupId: groupId,
-			locatorId: locatorId,
-			lat: position.latitude,
-			lng: position.longitude,
-		);
+		if (geofenceAlertEnabled) {
+			await GeofenceService.checkPlaces(
+				groupId: groupId,
+				locatorId: locatorId,
+				lat: position.latitude,
+				lng: position.longitude,
+			);
+		}
   }
 }

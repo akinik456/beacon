@@ -71,6 +71,8 @@ class _JoinGroupPageState extends State<JoinGroupPage> {
 			groupCode: codeCtrl.text,
 			requesterName: requesterNameCtrl.text,
 		);
+		
+		await GroupService.setLocalIsMaster(false);
 
 		if (!context.mounted) return;
 
