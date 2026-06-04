@@ -18,6 +18,7 @@ import '../services/alert_monitor_service.dart';
 import '../services/geofence_service.dart';
 import '../services/motion_service.dart';
 import '../services/active_watcher_service.dart';
+import '../services/locator_settings_service.dart';
 
 class LocatorHomePage extends StatefulWidget {
   const LocatorHomePage({super.key});
@@ -36,7 +37,7 @@ class _LocatorHomePageState extends State<LocatorHomePage>
   @override
   void initState() {
     super.initState();
-
+		LocatorSettingsService.startListeners();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _checkPermissionsAndWarn();
     });
@@ -50,6 +51,7 @@ class _LocatorHomePageState extends State<LocatorHomePage>
   @override
   void dispose() {
     _presenceTimer?.cancel();
+		LocatorSettingsService.stopListeners();
 		MotionService.stop();
 		SmartPresenceScheduler.stop();
 		ActiveWatcherService.stop();

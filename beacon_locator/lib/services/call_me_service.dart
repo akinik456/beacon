@@ -26,6 +26,25 @@ class CallMeService {
     if (locatorId == null) {
       return;
     }
+		
+		final notifyDoc = await _firestore
+				.collection('groups')
+				.doc(groupId)
+				.collection('devices')
+				.doc(locatorId)
+				.collection('notifyRequesters')
+				.doc(targetRequesterId)
+				.get();
+
+		final notifyData =
+				notifyDoc.data() ?? {};
+
+		if (notifyData['callMe'] != true) {
+			print(
+				"BEACON CALLME => disabled by requester",
+			);
+			return;
+		}
 
     final callMeId =
         const Uuid().v4();
