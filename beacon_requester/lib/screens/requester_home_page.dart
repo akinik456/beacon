@@ -23,6 +23,7 @@ import 'locator_settings_page.dart';
 import '../utils/address_helper.dart';
 import '../services/request_location_service.dart';
 import '../services/active_watcher_service.dart';
+import 'locator_notify_page.dart';
 
 class RequesterHomePage extends StatefulWidget {
   const RequesterHomePage({super.key});
@@ -638,9 +639,21 @@ const SizedBox(height: 18),
 																	);
 																},
 																addressText: locator['address'] ?? 'Address not available',
+																
+																
 																onNotificationSettings: () {
-																	print('NOTIFY SETTINGS => $locatorId');
+																	 Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (_) => LocatorNotifyPage(
+        locatorId: locatorId,
+        locatorName: locatorName,
+        locatorCode: locatorCode,
+      ),
+    ),
+  );
 																},
+																
 																onSettings: () {
 																	Navigator.push(
 																		context,
