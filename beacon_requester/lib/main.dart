@@ -115,9 +115,6 @@ class _MyHomePageState extends State<MyHomePage>
     FirebaseTestService.runTest();
 		FCMService.initialize();
 		
-		Future.microtask(() async {
-			_addTestWatcher();
-		});
 		WidgetsBinding.instance.addObserver(this);
   }
 	
@@ -125,15 +122,7 @@ class _MyHomePageState extends State<MyHomePage>
 	void didChangeAppLifecycleState(AppLifecycleState state) {
 		print("BEACON LIFECYCLE => $state");
 
-		if (state == AppLifecycleState.resumed) {
-			_addTestWatcher();
-		}
-
-		if (state == AppLifecycleState.paused ||
-				state == AppLifecycleState.detached) {
-			_removeTestWatcher();
-		}
-	}
+			}
 
 	@override
 	void dispose() {
@@ -142,21 +131,7 @@ class _MyHomePageState extends State<MyHomePage>
 		super.dispose();
 	}
 	
-	Future<void> _addTestWatcher() async {
-		await ActiveWatcherService.addWatcher(
-			groupId: "_testGroupId",
-			locatorId: "_testLocatorId",
-		);
-	}
-
-	Future<void> _removeTestWatcher() async {
-		await ActiveWatcherService.removeWatcher(
-			groupId: "_testGroupId",
-			locatorId: "_testLocatorId",
-		);
-	}	
-
-  @override
+	@override
   Widget build(BuildContext context) {
     return Scaffold(
 			backgroundColor: AppColors.background,

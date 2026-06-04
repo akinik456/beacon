@@ -459,6 +459,99 @@ class _LocatorHomePageState extends State<LocatorHomePage>
       },
     );
   }
+	
+Widget _activeWatchersCard() {
+  return ValueListenableBuilder<List<Map<String, dynamic>>>(
+    valueListenable: ActiveWatcherService.activeWatchers,
+    builder: (context, watchers, _) {
+      if (watchers.isEmpty) {
+        return AppCard(
+          child: Column(
+            children: [
+              const Icon(
+                Icons.check_circle_outline_rounded,
+                color: AppColors.primary,
+                size: 42,
+              ),
+              const SizedBox(height: 12),
+              Text(
+                'Locator Ready',
+                style: AppFonts.subtitle,
+              ),
+              const SizedBox(height: 4),
+              Text(
+                'No active watchers',
+                style: AppFonts.caption,
+              ),
+            ],
+          ),
+        );
+      }
+
+      return AppCard(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Active Watchers (${watchers.length})',
+              style: AppFonts.subtitle,
+            ),
+
+            const SizedBox(height: 16),
+
+            ...watchers.map((watcher) {
+              final requesterName =
+                  watcher['requesterName'] ?? 'Requester';
+
+              final requesterCode =
+                  watcher['requesterCode'] ?? '------';
+
+              return Container(
+                margin: const EdgeInsets.only(bottom: 10),
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: AppColors.surface,
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(
+                    color: Colors.white.withValues(alpha: 0.05),
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(
+                      Icons.visibility_rounded,
+                      color: AppColors.primary,
+                    ),
+
+                    const SizedBox(width: 12),
+
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment:
+                            CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            requesterName,
+                            style: AppFonts.subtitle,
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            requesterCode,
+                            style: AppFonts.caption,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }),
+          ],
+        ),
+      );
+    },
+  );
+}	
 
   @override
   Widget build(BuildContext context) {
@@ -499,66 +592,16 @@ class _LocatorHomePageState extends State<LocatorHomePage>
                   ),
                   const SizedBox(height: 24),
                   _buildPairingArea(),
+
+									const SizedBox(height: 12),
+
+									_activeWatchersCard(),
+									
                   
                   const Spacer(),
 									const SizedBox(height: 12),
-
-									SizedBox(
-										width: double.infinity,
-										height: 54,
-										child: OutlinedButton.icon(
-											onPressed: () {
-												// TODO
-											},
-											icon: const Icon(
-												Icons.settings_rounded,
-												color: AppColors.primary,
-											),
-											label: Text(
-												'Open Settings',
-												style: AppFonts.button.copyWith(
-													color: AppColors.primary,
-												),
-											),
-											style: OutlinedButton.styleFrom(
-												side: BorderSide(
-													color: AppColors.primary.withValues(alpha: 0.25),
-												),
-												backgroundColor:
-														AppColors.primary.withValues(alpha: 0.04),
-												shape: RoundedRectangleBorder(
-													borderRadius: BorderRadius.circular(18),
-												),
-											),
-										),
-									),
-									const SizedBox(height: 12),
                   _permissionsButton(),
                   const SizedBox(height: 12),
-									SizedBox(
-                    width: double.infinity,
-                    height: 58,
-                    child: OutlinedButton(
-                      onPressed: () {},
-                      style: OutlinedButton.styleFrom(
-                        side: BorderSide(
-                          color: AppColors.danger.withValues(alpha: 0.35),
-                        ),
-                        backgroundColor: AppColors.danger.withValues(
-                          alpha: 0.08,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(18),
-                        ),
-                      ),
-                      child: Text(
-                        'Stop Sharing',
-                        style: AppFonts.button.copyWith(
-                          color: AppColors.danger,
-                        ),
-                      ),
-                    ),
-                  ),
                 ],
               ),
             );

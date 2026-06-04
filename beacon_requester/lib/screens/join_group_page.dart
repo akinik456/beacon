@@ -66,6 +66,10 @@ class _JoinGroupPageState extends State<JoinGroupPage> {
 		await IdentityService.createRequesterId();
 
 		await RequesterRegistryService.registerRequester();
+		
+		await IdentityService.setRequesterName(
+											requesterNameCtrl.text,
+										);
 
 		final groupId = await GroupService.joinGroup(
 			groupCode: codeCtrl.text,

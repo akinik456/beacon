@@ -119,6 +119,9 @@ class _RequesterHomePageState
 	
 	Future<void> _addActiveWatchers() async {
 		if (_groupId == null) return;
+		
+		final _requesterName = await IdentityService.getRequesterName();
+		final _requesterCode = await IdentityService.getRequesterCode();
 
 		for (final locator in _locators) {
 			final locatorId = locator['locatorId'];
@@ -126,6 +129,8 @@ class _RequesterHomePageState
 			if (locatorId == null) continue;
 
 			await ActiveWatcherService.addWatcher(
+				requesterName: _requesterName!,
+				requesterCode: _requesterCode!,
 				groupId: _groupId!,
 				locatorId: locatorId,
 			);
