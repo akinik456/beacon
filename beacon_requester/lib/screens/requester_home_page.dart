@@ -629,36 +629,19 @@ const SizedBox(height: 18),
 																		locatorId: locatorId,
 																	);
 																},
-																onLongPress: () {
-																	Navigator.push(
+																addressText: locator['address'] ?? 'Address not available',
+																onNotificationSettings: () {
+																	 Navigator.push(
 																		context,
 																		MaterialPageRoute(
-																			builder: (_) => LocatorSettingsPage(
+																			builder: (_) => LocatorNotifyPage(
 																				locatorId: locatorId,
 																				locatorName: locatorName,
 																				locatorCode: locatorCode,
-																				address: locator['address'] ?? '',
-																				isMaster: _isMaster,
 																			),
 																		),
 																	);
 																},
-																addressText: locator['address'] ?? 'Address not available',
-																
-																
-																onNotificationSettings: () {
-																	 Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (_) => LocatorNotifyPage(
-        locatorId: locatorId,
-        locatorName: locatorName,
-        locatorCode: locatorCode,
-      ),
-    ),
-  );
-																},
-																
 																onSettings: () {
 																	Navigator.push(
 																		context,
@@ -672,6 +655,68 @@ const SizedBox(height: 18),
 																			),
 																		),
 																	);
+																},
+																onRemove: () async {
+																	final result = await showDialog<bool>(
+																		context: context,
+																		builder: (_) => AlertDialog(
+																			backgroundColor: AppColors.surface,
+																			title: Text(
+																				'Remove Locator',
+																				style: AppFonts.title,
+																			),
+																			content: Text(
+																				'This locator will be removed from your paired list.',
+																				style: AppFonts.body.copyWith(
+																					color: AppColors.textSecondary,
+																				),
+																			),
+																			actions: [
+																				TextButton(
+																					onPressed: () {
+																						Navigator.pop(context, false);
+																					},
+																					child: Text(
+																						'Cancel',
+																						style: AppFonts.button.copyWith(
+																							color: AppColors.textSecondary,
+																						),
+																					),
+																				),
+																				TextButton(
+																					onPressed: () {
+																						Navigator.pop(context, true);
+																					},
+																					child: Text(
+																						'Remove',
+																						style: AppFonts.button.copyWith(
+																							color: AppColors.danger,
+																						),
+																					),
+																				),
+																			],
+																		),
+																	);
+
+																	if (result != true) return;
+
+																	await GroupService.removePairedLocator(
+																		locatorId: locatorId,
+																	);
+
+																	if (!context.mounted) return;
+																	
+																	await _loadLocators();
+																	
+																	if (!context.mounted) return;
+
+																	ScaffoldMessenger.of(context).showSnackBar(
+																		const SnackBar(
+																			content: Text('Locator removed'),
+																		),
+																	);
+
+																	setState(() {});
 																},
 															);
                             },
