@@ -201,15 +201,19 @@ PairingResponseService
   if (!context.mounted) return;
 
   if (status == 'approved') {
-
   await GroupService.addPairedLocatorToRequester(
     locatorId: locatorId,
   );
-
 	await GroupService.addPairedRequesterToLocator(
 		locatorId: locatorId,
+	);	
+	await GroupService.ensureLocatorDefaultSettings(
+		locatorId: locatorId,
 	);
-	
+
+	await GroupService.ensureRequesterNotifySettings(
+		locatorId: locatorId,
+	);
   ScaffoldMessenger.of(context)
       .showSnackBar(
     const SnackBar(
@@ -218,18 +222,14 @@ PairingResponseService
       ),
     ),
   );
-
   await PairingResponseService
       .deletePairingRequest(
     locatorId: locatorId,
     requestId: requestId,
   );
-
   if (!context.mounted) return;
-
   Navigator.pop(context,true);
 }else if (status == 'rejected') {
-
     ScaffoldMessenger.of(context)
         .showSnackBar(
       const SnackBar(

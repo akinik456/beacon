@@ -293,4 +293,61 @@ static Future<void> addPairedRequesterToLocator({
     "paired requester added => $requesterId",
   );
 }
+
+static Future<void> ensureLocatorDefaultSettings({
+  required String locatorId,
+}) async {
+  final groupId = await getLocalGroupId();
+
+  if (groupId == null) {
+    print("GROUP SERVICE => groupId missing");
+    return;
+  }
+
+  await FirebaseFirestore.instance
+      .collection('groups')
+      .doc(groupId)
+      .collection('devices')
+      .doc(locatorId)
+      .collection('settings')
+      .doc('config')
+      .set({
+    'gpsOffAlert': true,
+    'batteryLowAlert': true,
+    'batteryLowLevel': 20,
+    'geofenceAlert': false,
+    'createdAt': FieldValue.serverTimestamp(),
+    'updatedAt': FieldValue.serverTimestamp(),
+  }, SetOptions(merge: true));
+}
+
+static Future<void> ensureRequesterNotifySettings({
+  required String locatorId,
+}) async {
+  final groupId = await getLocalGroupId();
+  final requesterId = await IdentityService.getRequesterId();
+
+  if (groupId == null || requesterId == null) {
+    print("GROUP SERVICE => groupId/requesterId missing");
+    return;
+  }
+
+  await FirebaseFirestore.instance
+      .collection('groups')
+      .doc(groupId)
+      .collection('devices')
+      .doc(locatorId)
+      .collection('notifyRequesters')
+      .doc(requesterId)
+      .set({
+    'callMe': true,
+    'gpsOff': true,
+    'batteryLow': true,
+    'geofence': false,
+    'createdAt': FieldValue.serverTimestamp(),
+    'updatedAt': FieldValue.serverTimestamp(),
+  }, SetOptions(merge: true));
+}
+
+
 }
