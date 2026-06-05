@@ -116,50 +116,53 @@ class _LocatorHomePageState extends State<LocatorHomePage>
     };
   }
 
-  Future<Map<String, String>?> _loadPairedRequesterData() async {
-    final groupId = await IdentityService.getGroupId();
+Future<List<Map<String, String>>> _loadPairedRequesterData() async {
+  final groupId = await IdentityService.getGroupId();
+  final locatorId = await IdentityService.getLocatorId();
 
-    final locatorId = await IdentityService.getLocatorId();
+  if (groupId == null || locatorId == null) {
+    return [];
+  }
 
-    if (groupId == null || locatorId == null) {
-      return null;
-    }
+  final doc = await FirebaseFirestore.instance
+      .collection('groups')
+      .doc(groupId)
+      .collection('devices')
+      .doc(locatorId)
+      .get();
 
-    final doc = await FirebaseFirestore.instance
-        .collection('groups')
-        .doc(groupId)
-        .collection('devices')
-        .doc(locatorId)
-        .get();
+  final data = doc.data();
 
-    final data = doc.data();
+  if (data == null) {
+    return [];
+  }
 
-    if (data == null) {
-      return null;
-    }
+  final pairedRequesters = Map<String, dynamic>.from(
+    data['pairedRequesters'] ?? {},
+  );
 
-    final pairedRequesters = Map<String, dynamic>.from(
-      data['pairedRequesters'] ?? {},
-    );
+  if (pairedRequesters.isEmpty) {
+    return [];
+  }
 
-    if (pairedRequesters.isEmpty) {
-      return null;
-    }
+  final result = <Map<String, String>>[];
 
-    final requesterId = pairedRequesters.keys.first;
-
+  for (final requesterId in pairedRequesters.keys) {
     final requesterData = Map<String, dynamic>.from(
       pairedRequesters[requesterId] ?? {},
     );
 
-    return {
-			'requesterId': requesterId,
-
-      'requesterName': requesterData['requesterName'] ?? 'Requester',
-
-      'requesterCode': requesterData['requesterCode'] ?? '------',
-    };
+    result.add({
+      'requesterId': requesterId,
+      'requesterName':
+          requesterData['requesterName'] ?? 'Requester',
+      'requesterCode':
+          requesterData['requesterCode'] ?? '------',
+    });
   }
+
+  return result;
+}
 
   void _showLocatorQrDialog({
     required String locatorId,
@@ -280,98 +283,124 @@ class _LocatorHomePageState extends State<LocatorHomePage>
     );
   }
 
-  Widget _pairedRequesterCard() {
-    return FutureBuilder<Map<String, String>?>(
-      future: _loadPairedRequesterData(),
-      builder: (context, snapshot) {
-        final data = snapshot.data;
+Widget _pairedRequesterCard() {
+  return FutureBuilder<List<Map<String, String>>>(
+    future: _loadPairedRequesterData(),
+    builder: (context, snapshot) {
+      final requesters = snapshot.data ?? [];
 
-        if (data == null) {
-          return Column(
-            children: [
-              AppCard(
-                child: Text('No paired requester', style: AppFonts.subtitle),
-              ),
-              const SizedBox(height: 12),
-              //_permissionsButton(),
-            ],
-          );
-        }
-				final requesterId = data['requesterId'] ?? '';
-        final requesterName = data['requesterName'] ?? 'Requester';
-        final requesterCode = data['requesterCode'] ?? '------';
-
+      if (requesters.isEmpty) {
         return AppCard(
-					child: Column(
-						crossAxisAlignment: CrossAxisAlignment.start,
-						children: [
-							Text(
-								'Paired requester',
-								style: AppFonts.caption,
-							),
+          child: Text(
+            'No paired requester',
+            style: AppFonts.subtitle,
+          ),
+        );
+      }
 
-							const SizedBox(height: 6),
+      return AppCard(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Paired requesters',
+              style: AppFonts.caption,
+            ),
 
-							Text(
-								'$requesterName - $requesterCode',
-								style: AppFonts.subtitle,
-							),
+            const SizedBox(height: 12),
 
-							const SizedBox(height: 16),
+            ...requesters.map((requester) {
+              final requesterId = requester['requesterId'] ?? '';
+              final requesterName =
+                  requester['requesterName'] ?? 'Requester';
+              final requesterCode =
+                  requester['requesterCode'] ?? '------';
 
-							SizedBox(
-								width: double.infinity,
-								height: 48,
-								child: ElevatedButton.icon(
-									onPressed: () async {
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        '$requesterName - $requesterCode',
+                        style: AppFonts.subtitle,
+                      ),
+                    ),
+                    OutlinedButton.icon(
+                      onPressed: () async {
+                        final groupId =
+                            await IdentityService.getGroupId();
 
-  final groupId =
-      await IdentityService.getGroupId();
+                        if (groupId == null) return;
 
-  if (groupId == null) {
-    return;
-  }
+                        await CallMeService.createCallMe(
+                          groupId: groupId,
+                          targetRequesterId: requesterId,
+                        );
+                      },
+                      icon: const Icon(
+                        Icons.call_rounded,
+                        color: AppColors.primary,
+                      ),
+                      label: Text(
+                        'Call Me',
+                        style: AppFonts.button.copyWith(
+                          color: AppColors.primary,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );			
+            }),
+						SizedBox(
+							width: double.infinity,
+							height: 48,
+							child: OutlinedButton.icon(
+								onPressed: () async {
+									final groupId =
+											await IdentityService.getGroupId();
 
-  await CallMeService.createCallMe(
-    groupId: groupId,
-    targetRequesterId: requesterId,
-  );
+									if (groupId == null) return;
 
-  if (!context.mounted) return;
+									for (final requester in requesters) {
+										final requesterId =
+												requester['requesterId'] ?? '';
 
-  ScaffoldMessenger.of(context)
-      .showSnackBar(
-    const SnackBar(
-      content: Text(
-        'Call Me sent',
-      ),
-    ),
-  );
-},
-									icon: const Icon(
-										Icons.call_rounded,
-										color: AppColors.background,
-									),
-									label: Text(
-										'Call Me',
-										style: AppFonts.button.copyWith(
-											color: AppColors.background,
+										if (requesterId.isEmpty) continue;
+
+										await CallMeService.createCallMe(
+											groupId: groupId,
+											targetRequesterId: requesterId,
+										);
+									}
+									if (!context.mounted) return;
+									ScaffoldMessenger.of(context).showSnackBar(
+										const SnackBar(
+											content: Text(
+												'Call Me sent to all requesters',
+											),
 										),
-									),
-									style: ElevatedButton.styleFrom(
-										backgroundColor: AppColors.primary,
-										shape: RoundedRectangleBorder(
-											borderRadius: BorderRadius.circular(16),
-										),
+									);
+								},
+								icon: const Icon(
+									Icons.campaign_outlined,
+									color: AppColors.primary,
+								),
+								label: Text(
+									'Ask Everybody To Call Me',
+									style: AppFonts.button.copyWith(
+										color: AppColors.primary,
 									),
 								),
 							),
-						],
-					),
-				);
-      },
-    );
-  }
+						),
+          ],
+        ),
+      );
+    },
+  );
+}
 
   Widget _buildPairingArea() {
     return FutureBuilder<String?>(
@@ -499,56 +528,70 @@ Widget _activeWatchersCard() {
 
             const SizedBox(height: 16),
 
-            ...watchers.map((watcher) {
-              final requesterName =
-                  watcher['requesterName'] ?? 'Requester';
+            Column(
+  children: List.generate(
+    watchers.length,
+    (index) {
+      final watcher = watchers[index];
 
-              final requesterCode =
-                  watcher['requesterCode'] ?? '------';
+      final requesterName =
+          watcher['requesterName'] ?? 'Requester';
 
-              return Container(
-                margin: const EdgeInsets.only(bottom: 10),
-                padding: const EdgeInsets.all(14),
-                decoration: BoxDecoration(
-                  color: AppColors.surface,
-                  borderRadius: BorderRadius.circular(14),
-                  border: Border.all(
-                    color: Colors.white.withValues(alpha: 0.05),
-                  ),
-                ),
-                child: Row(
+      final requesterCode =
+          watcher['requesterCode'] ?? '------';
+
+      return Column(
+        children: [
+          Row(
+            children: [
+              const Icon(
+                Icons.visibility_rounded,
+                color: AppColors.primary,
+                size: 20,
+              ),
+
+              const SizedBox(width: 12),
+
+              Expanded(
+                child: Column(
+                  crossAxisAlignment:
+                      CrossAxisAlignment.start,
                   children: [
-                    const Icon(
-                      Icons.visibility_rounded,
-                      color: AppColors.primary,
+                    Text(
+                      requesterName,
+                      style: AppFonts.subtitle,
                     ),
-
-                    const SizedBox(width: 12),
-
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment:
-                            CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            requesterName,
-                            style: AppFonts.subtitle,
-                          ),
-                          const SizedBox(height: 2),
-                          Text(
-                            requesterCode,
-                            style: AppFonts.caption,
-                          ),
-                        ],
-                      ),
+                    const SizedBox(height: 2),
+                    Text(
+                      requesterCode,
+                      style: AppFonts.caption,
                     ),
                   ],
                 ),
-              );
-            }),
+              ),
+            ],
+          ),
+
+          if (index != watchers.length - 1) ...[
+            const SizedBox(height: 12),
+            Divider(
+              color: Colors.white.withValues(
+                alpha: 0.08,
+              ),
+              height: 1,
+            ),
+            const SizedBox(height: 12),
+          ],
+        ],
+      );
+    },
+  ),
+),
+						
           ],
         ),
       );
+			
     },
   );
 }	

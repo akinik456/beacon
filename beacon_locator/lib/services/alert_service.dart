@@ -145,6 +145,8 @@ class AlertService {
 	static String _notifyFieldForType(String type) {
 		switch (type) {
 			
+			case 'call_me':
+      return 'callMe';
 			
 			case 'gps_off':
 				return 'gpsOff';
