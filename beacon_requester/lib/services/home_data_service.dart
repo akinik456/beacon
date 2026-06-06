@@ -59,9 +59,16 @@ class HomeDataService {
           .get();
 
       if (!requesterDoc.exists) {
-        print("BEACON HOME => requester doc not found");
-        return null;
-      }
+				return {
+					'hasGroup': true,
+					'isPending': true,
+					'groupId': groupId,
+					'groupName': groupData['groupName'],
+					'requesterId': requesterId,
+					'requesterName': requesterName,
+					'pairedLocators': <String, dynamic>{},
+				};
+			}
 
       final requesterData = requesterDoc.data()!;
 

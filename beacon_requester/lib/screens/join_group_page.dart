@@ -19,19 +19,16 @@ class JoinGroupPage extends StatefulWidget {
 }
 
 class _JoinGroupPageState extends State<JoinGroupPage> {
-  final requesterNameCtrl = TextEditingController();
   final codeCtrl = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    requesterNameCtrl.addListener(() => setState(() {}));
     codeCtrl.addListener(() => setState(() {}));
   }
 
   @override
   void dispose() {
-    requesterNameCtrl.dispose();
     codeCtrl.dispose();
     super.dispose();
   }
@@ -58,18 +55,11 @@ class _JoinGroupPageState extends State<JoinGroupPage> {
   }
 
 	Future<void> _confirmJoin() async {
-
-		/*await IdentityService.createRequesterId();
-
-		await RequesterRegistryService.registerRequester();
-		
-		await IdentityService.setRequesterName(
-											requesterNameCtrl.text,
-										);*/
+	final _requesterName = await IdentityService.getRequesterName();
 
 		final groupId = await GroupService.joinGroup(
 			groupCode: codeCtrl.text,
-			requesterName: requesterNameCtrl.text,
+			requesterName: _requesterName!,
 		);
 		
 		await GroupService.setLocalIsMaster(false);
@@ -107,11 +97,6 @@ class _JoinGroupPageState extends State<JoinGroupPage> {
             AppCard(
               child: Column(
                 children: [
-                  /*_InputField(
-                    controller: requesterNameCtrl,
-                    label: 'Your name',
-                    hint: 'Requester name',
-                  ),*/
                   const SizedBox(height: 18),
                   _InputField(
                     controller: codeCtrl,

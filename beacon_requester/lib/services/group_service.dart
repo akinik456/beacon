@@ -80,96 +80,61 @@ class GroupService {
   }
 
   static Future<String?> joinGroup({
-    required String groupCode,
-    required String requesterName,
-  }) async {
-    final requesterId = await IdentityService.getRequesterId();
+		required String groupCode,
+		required String requesterName,
+	}) async {
+		final requesterId = await IdentityService.getRequesterId();
+		final requesterCode = await IdentityService.getRequesterCode();
 
-    final requesterCode = await IdentityService.getRequesterCode();
+		if (requesterId == null) {
+			print("BEACON GROUP => requesterId not found");
+			return null;
+		}
 
-    if (requesterId == null) {
-      print("BEACON GROUP => requesterId not found");
+		final normalizedCode =
+				CodeService.normalizeCode(groupCode);
 
-      return null;
-    }
+		final query = await _firestore
+				.collection('groups')
+				.where('groupCode', isEqualTo: normalizedCode)
+				.limit(1)
+				.get();
 
-    // groupCode normalize
-    final normalizedCode = CodeService.normalizeCode(groupCode);
+		if (query.docs.isEmpty) {
+			print("BEACON GROUP => group not found");
+			return null;
+		}
 
-    // group bul
-    final query = await _firestore
-        .collection('groups')
-        .where('groupCode', isEqualTo: normalizedCode)
-        .limit(1)
-        .get();
+		final groupDoc = query.docs.first;
+		final groupId = groupDoc.id;
 
-    if (query.docs.isEmpty) {
-      print("BEACON GROUP => group not found");
+		final joinRequestRef = _firestore
+				.collection('groups')
+				.doc(groupId)
+				.collection('join_requests')
+				.doc(requesterId);
 
-      return null;
-    }
+		await joinRequestRef.set({
+			'requesterId': requesterId,
+			'requesterCode': requesterCode,
+			'requesterName': requesterName.trim(),
+			'status': 'pending',
+			'createdAt': FieldValue.serverTimestamp(),
+			'updatedAt': FieldValue.serverTimestamp(),
+		}, SetOptions(merge: true));
 
-    final groupDoc = query.docs.first;
+		final prefs = await SharedPreferences.getInstance();
 
-    final groupId = groupDoc.id;
+		await prefs.setString(_groupIdKey, groupId);
+		await prefs.setString('group_code', normalizedCode);
+		await prefs.setString('join_status', 'pending');
 
-    final groupRef = _firestore.collection('groups').doc(groupId);
+		print(
+			"BEACON GROUP => JOIN REQUEST SENT => $groupId",
+		);
 
-    final requesterRef = groupRef.collection('devices').doc(requesterId);
-
-    final result = await _firestore.runTransaction<String>((tx) async {
-      final freshGroup = await tx.get(groupRef);
-
-      final groupData = freshGroup.data() ?? {};
-
-      final maxRequesters = groupData['maxRequesters'] ?? 1;
-
-      final activeRequesterCount = groupData['activeRequesterCount'] ?? 0;
-
-      if (activeRequesterCount >= maxRequesters) {
-        return 'rejected_capacity';
-      }
-
-      final now = FieldValue.serverTimestamp();
-
-      tx.set(requesterRef, {
-        'requesterId': requesterId,
-        'requesterCode': requesterCode,
-        'role': 'requester',
-        'name': requesterName.trim(),
-        'isMaster': false,
-        'active': true,
-        'pairedLocators': {},
-        'joinedAt': now,
-        'createdAt': now,
-      });
-
-      tx.update(groupRef, {
-        'activeRequesterCount': FieldValue.increment(1),
-
-        'updatedAt': FieldValue.serverTimestamp(),
-      });
-
-      return groupId;
-    });
-
-    if (result == 'rejected_capacity') {
-      return 'rejected_capacity';
-    }
-
-    final prefs = await SharedPreferences.getInstance();
-
-    await prefs.setString(_groupIdKey, groupId);
-
-    await prefs.setString('group_code', normalizedCode);
-
-    print(
-      "BEACON GROUP => JOIN SUCCESS "
-      "=> $groupId",
-    );
-
-    return groupId;
-  }
+		return groupId;
+	}
 
   static Future<String?> getLocalGroupCode() async {
     final prefs = await SharedPreferences.getInstance();

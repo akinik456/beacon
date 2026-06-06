@@ -24,6 +24,7 @@ import 'locator_settings_page.dart';
 import '../utils/address_helper.dart';
 import '../services/request_location_service.dart';
 import '../services/active_watcher_service.dart';
+import '../services/join_request_service.dart';
 import 'locator_notify_page.dart';
 
 class RequesterHomePage extends StatefulWidget {
@@ -545,6 +546,70 @@ void _listenAlerts() async {
                 ),
               );
             }
+						
+						if (data['isPending'] == true) {
+  final groupId = data['groupId'];
+  final requesterId = data['requesterId'];
+
+  return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+    stream: FirebaseFirestore.instance
+        .collection('groups')
+        .doc(groupId)
+        .collection('devices')
+        .doc(requesterId)
+        .snapshots(),
+    builder: (context, deviceSnapshot) {
+      if (deviceSnapshot.hasData &&
+          deviceSnapshot.data!.exists) {
+        Future.microtask(() {
+          if (!context.mounted) return;
+
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (_) => const RequesterHomePage(),
+            ),
+          );
+        });
+      }
+
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: AppCard(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(
+                  Icons.hourglass_top_rounded,
+                  color: AppColors.primary,
+                  size: 48,
+                ),
+
+                const SizedBox(height: 16),
+
+                Text(
+                  'Waiting for approval',
+                  style: AppFonts.title,
+                ),
+
+                const SizedBox(height: 8),
+
+                Text(
+                  'Your request has been sent to the group master.',
+                  textAlign: TextAlign.center,
+                  style: AppFonts.body.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    },
+  );
+}
 
             final hasGroup =
                 data['hasGroup'] == true;
@@ -652,6 +717,135 @@ void _listenAlerts() async {
 
 const SizedBox(height: 18),
 
+if (_isMaster && _groupId != null)
+  StreamBuilder(
+    stream: JoinRequestService.watchPendingJoinRequests(
+      groupId: _groupId!,
+    ),
+    builder: (context, snapshot) {
+      if (!snapshot.hasData ||
+          snapshot.data!.docs.isEmpty) {
+        return const SizedBox.shrink();
+      }
+
+      final doc = snapshot.data!.docs.first;
+      final data = doc.data();
+
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 16),
+        child: AppCard(
+          child: Column(
+            crossAxisAlignment:
+                CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Join Request',
+                style: AppFonts.subtitle,
+              ),
+
+              const SizedBox(height: 8),
+
+              Text(
+                data['requesterName'] ?? '-',
+                style: AppFonts.body,
+              ),
+
+              Text(
+                data['requesterCode'] ?? '-',
+                style: AppFonts.caption,
+              ),
+
+              const SizedBox(height: 12),
+
+              Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () async {
+  final joinData = doc.data();
+
+  final requesterId =
+      joinData['requesterId'];
+
+  final requesterRef = FirebaseFirestore
+      .instance
+      .collection('groups')
+      .doc(_groupId)
+      .collection('devices')
+      .doc(requesterId);
+
+  final joinRequestRef = doc.reference;
+
+  final groupRef = FirebaseFirestore
+      .instance
+      .collection('groups')
+      .doc(_groupId);
+
+  await FirebaseFirestore.instance
+      .runTransaction((tx) async {
+    tx.set(
+      requesterRef,
+      {
+        'requesterId':
+            joinData['requesterId'],
+        'requesterCode':
+            joinData['requesterCode'],
+        'role': 'requester',
+        'name':
+            joinData['requesterName'],
+        'isMaster': false,
+        'active': true,
+        'pairedLocators': {},
+        'joinedAt':
+            FieldValue.serverTimestamp(),
+        'createdAt':
+            FieldValue.serverTimestamp(),
+      },
+    );
+
+    tx.update(groupRef, {
+      'activeRequesterCount':
+          FieldValue.increment(1),
+      'updatedAt':
+          FieldValue.serverTimestamp(),
+    });
+
+    tx.delete(joinRequestRef);
+  });
+
+  print(
+    "BEACON JOIN APPROVED => $requesterId",
+  );
+},
+                      child: const Text(
+                        'Approve',
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(width: 12),
+
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () {
+                        print(
+                          "REJECT => ${doc.id}",
+                        );
+                      },
+                      child: const Text(
+                        'Reject',
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  ),
+
 SizedBox(
   width: double.infinity,
   height: 54,
@@ -679,6 +873,8 @@ SizedBox(
     );
   }
 },
+
+
     icon: const Icon(
       Icons.add_rounded,
       color: AppColors.primary,
