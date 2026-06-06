@@ -17,23 +17,23 @@ class CreateGroupPage extends StatefulWidget {
 
 class _CreateGroupPageState extends State<CreateGroupPage> {
   final groupNameCtrl = TextEditingController();
-  final requesterNameCtrl = TextEditingController();
+  //final requesterNameCtrl = TextEditingController();
 
   bool get canConfirm =>
-      groupNameCtrl.text.trim().isNotEmpty &&
-      requesterNameCtrl.text.trim().isNotEmpty;
+      groupNameCtrl.text.trim().isNotEmpty ;
+			//&& requesterNameCtrl.text.trim().isNotEmpty;
 
   @override
   void initState() {
     super.initState();
     groupNameCtrl.addListener(() => setState(() {}));
-    requesterNameCtrl.addListener(() => setState(() {}));
+    //requesterNameCtrl.addListener(() => setState(() {}));
   }
 
   @override
   void dispose() {
     groupNameCtrl.dispose();
-    requesterNameCtrl.dispose();
+    //requesterNameCtrl.dispose();
     super.dispose();
   }
 
@@ -63,11 +63,11 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                     hint: 'Family, Team, Home...',
                   ),
                   const SizedBox(height: 18),
-                  _InputField(
+                 /* _InputField(
                     controller: requesterNameCtrl,
                     label: 'Your name',
                     hint: 'Requester name',
-                  ),
+                  ),*/
                 ],
               ),
             ),
@@ -80,17 +80,19 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
               child: ElevatedButton(
                 onPressed: canConfirm 
 									? () async {
-										await IdentityService.setRequesterName(
+										/*await IdentityService.setRequesterName(
 											requesterNameCtrl.text,
 										);									
 									
 										await IdentityService.createRequesterId();
-										await RequesterRegistryService.registerRequester();
+										await RequesterRegistryService.registerRequester();*/
+										final _requesterName = await IdentityService.getRequesterName();
+										final _requesterCode = await IdentityService.getRequesterCode();
 										
 										
 										final groupId  =await GroupService.createGroup(
 											groupName: groupNameCtrl.text,
-											requesterName: requesterNameCtrl.text,
+											requesterName: _requesterName!,
 										);
 										
 										await GroupService.setLocalIsMaster(true);

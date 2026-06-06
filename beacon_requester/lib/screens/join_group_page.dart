@@ -22,10 +22,6 @@ class _JoinGroupPageState extends State<JoinGroupPage> {
   final requesterNameCtrl = TextEditingController();
   final codeCtrl = TextEditingController();
 
-  bool get canConfirm =>
-      requesterNameCtrl.text.trim().isNotEmpty &&
-      codeCtrl.text.trim().length == 6;
-
   @override
   void initState() {
     super.initState();
@@ -63,13 +59,13 @@ class _JoinGroupPageState extends State<JoinGroupPage> {
 
 	Future<void> _confirmJoin() async {
 
-		await IdentityService.createRequesterId();
+		/*await IdentityService.createRequesterId();
 
 		await RequesterRegistryService.registerRequester();
 		
 		await IdentityService.setRequesterName(
 											requesterNameCtrl.text,
-										);
+										);*/
 
 		final groupId = await GroupService.joinGroup(
 			groupCode: codeCtrl.text,
@@ -111,11 +107,11 @@ class _JoinGroupPageState extends State<JoinGroupPage> {
             AppCard(
               child: Column(
                 children: [
-                  _InputField(
+                  /*_InputField(
                     controller: requesterNameCtrl,
                     label: 'Your name',
                     hint: 'Requester name',
-                  ),
+                  ),*/
                   const SizedBox(height: 18),
                   _InputField(
                     controller: codeCtrl,
@@ -179,7 +175,7 @@ class _JoinGroupPageState extends State<JoinGroupPage> {
               width: double.infinity,
               height: 58,
               child: ElevatedButton(
-                onPressed: canConfirm ? _confirmJoin : null,
+                onPressed: _confirmJoin,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primary,
                   disabledBackgroundColor:
@@ -191,9 +187,7 @@ class _JoinGroupPageState extends State<JoinGroupPage> {
                 child: Text(
                   'Confirm',
                   style: AppFonts.button.copyWith(
-                    color: canConfirm
-                        ? AppColors.background
-                        : AppColors.textSecondary,
+                    color: AppColors.background,
                   ),
                 ),
               ),

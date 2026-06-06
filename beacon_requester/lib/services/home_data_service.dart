@@ -15,16 +15,27 @@ class HomeDataService {
       // requesterId
       final requesterId =
           await IdentityService.getRequesterId();
+					
+			final requesterName =
+          await IdentityService.getRequesterName();		
 
       // local groupId
       final prefs = await SharedPreferences.getInstance();
 
       final groupId = prefs.getString(_groupIdKey);
 
-      if (groupId == null) {
-        print("BEACON HOME => groupId not found");
-        return null;
-      }
+      if (groupId == null || groupId.isEmpty) {
+				print("BEACON HOME => groupId not found");
+
+				return {
+					'hasGroup': false,
+					'requesterId': requesterId,
+					'groupId': null,
+					'groupName': null,
+					'requesterName': requesterName,
+					'pairedLocators': <String, dynamic>{},
+				};
+			}
 
       // group doc
       final groupDoc = await _firestore
@@ -61,10 +72,11 @@ class HomeDataService {
       );
 
       return {
+				'hasGroup': true,
         'groupId': groupId,
         'groupName': groupData['groupName'],
         'requesterId': requesterId,
-        'requesterName': requesterData['name'],
+        'requesterName': requesterName,
         'pairedLocators': pairedLocators,
       };
     } catch (e) {

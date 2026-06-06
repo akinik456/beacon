@@ -4,9 +4,8 @@ import '../core/theme/app_colors.dart';
 import '../core/theme/app_fonts.dart';
 import '../core/widgets/app_card.dart';
 import '../l10n/app_localizations.dart';
-import 'create_group_page.dart';
 import 'join_group_page.dart';
-import 'requester_home_page.dart';
+import 'requester_name_page.dart';
 
 class PermissionIntroPage extends StatelessWidget {
   const PermissionIntroPage({super.key});
@@ -156,8 +155,8 @@ class PermissionIntroPage extends StatelessWidget {
                   ],
                 ),
               ),
-
-              const Spacer(),
+							
+							const Spacer(),
 
               // ================= CREATE BUTTON =================
               SizedBox(
@@ -185,7 +184,58 @@ class PermissionIntroPage extends StatelessWidget {
 											Navigator.push(
 												context,
 												MaterialPageRoute(
-													builder: (_) => const CreateGroupPage(),
+													builder: (_) => const RequesterNamePage(),
+												),
+											);
+										},
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.transparent,
+                      shadowColor: Colors.transparent,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(18),
+                      ),
+                    ),
+                    child: Text(
+                      'CONTINUE',
+                      style: AppFonts.button.copyWith(
+                        color: AppColors.background,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 34),
+
+             /* const Spacer(),
+
+              // ================= CREATE BUTTON =================
+              SizedBox(
+                width: double.infinity,
+                height: 58,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(18),
+                    gradient: LinearGradient(
+                      colors: [
+                        AppColors.primary,
+                        AppColors.accent,
+                      ],
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.primary.withValues(alpha: 0.25),
+                        blurRadius: 24,
+                        spreadRadius: 1,
+                      ),
+                    ],
+                  ),
+                  child: ElevatedButton(
+                    onPressed: () {
+											Navigator.push(
+												context,
+												MaterialPageRoute(
+													builder: (_) => const RequesterNamePage(),
 												),
 											);
 										},
@@ -206,9 +256,9 @@ class PermissionIntroPage extends StatelessWidget {
                 ),
               ),
 
-              const SizedBox(height: 14),
+              const SizedBox(height: 34),*/
 
-              // ================= JOIN BUTTON =================
+              /*// ================= JOIN BUTTON =================
               SizedBox(
                 width: double.infinity,
                 height: 58,
@@ -235,7 +285,7 @@ class PermissionIntroPage extends StatelessWidget {
                     style: AppFonts.button,
                   ),
                 ),
-              ),
+              ),*/
 
               const SizedBox(height: 28),
             ],

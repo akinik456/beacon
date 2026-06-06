@@ -10,13 +10,14 @@ import '../core/theme/app_fonts.dart';
 import '../core/widgets/app_card.dart';
 import '../services/home_data_service.dart';
 import 'add_locator_page.dart';
+import 'create_group_page.dart';
+import 'join_group_page.dart';
 import '../services/locator_list_service.dart';
 import '../services/group_service.dart';
 import '../core/widgets/locator_status_card.dart';
 import '../utils/time_helper.dart';
 import '../utils/location_helper.dart';
 import '../utils/map_helper.dart';
-import '../services/group_service.dart';
 import '../services/identity_service.dart';
 import '../services/fcm_service.dart';
 import 'locator_settings_page.dart';
@@ -83,13 +84,17 @@ class _RequesterHomePageState
 	}	
 	
 	Future<void> _loadLocators() async {
-	_groupId = await GroupService.getLocalGroupId();
-	_isMaster = await GroupService.getLocalIsMaster();
-	
-	_requesterId =
-    await IdentityService.getRequesterId();
-	final position =
-    await LocationHelper.getCurrentPosition();
+		_groupId = await GroupService.getLocalGroupId();
+		_isMaster = await GroupService.getLocalIsMaster();
+		_requesterId = await IdentityService.getRequesterId();
+
+		if (_groupId == null || _groupId!.isEmpty) {
+			print("BEACON HOME => no group yet, skip locator load");
+			return;
+		}
+
+		final position =
+				await LocationHelper.getCurrentPosition();
 
 		_myLat = position?.latitude;
 		_myLng = position?.longitude;
@@ -99,9 +104,8 @@ class _RequesterHomePageState
 			"$_myLat, $_myLng",
 		);
 
-		if (_groupId == null) return;
-				final locators =
-						await LocatorListService.loadLocators();
+		final locators =
+				await LocatorListService.loadLocators();
 						
 
 				setState(() {
@@ -314,6 +318,7 @@ void _listenAlerts() async {
     return prefs.getString('group_code') ?? '------';
   }
 
+
   void _showGroupQrDialog({
     required BuildContext context,
     required String groupId,
@@ -375,6 +380,137 @@ void _listenAlerts() async {
   }
 
 
+	Widget _buildNoGroupHome({
+		required String requesterName,
+	}) {
+		return Padding(
+			padding: const EdgeInsets.all(20),
+			child: Column(
+				crossAxisAlignment: CrossAxisAlignment.start,
+				children: [
+					Text(
+						'Welcome',
+						style: AppFonts.title.copyWith(
+							fontSize: 26,
+						),
+					),
+
+					const SizedBox(height: 6),
+
+					Text(
+						requesterName,
+						style: AppFonts.caption,
+					),
+
+					const SizedBox(height: 24),
+
+					AppCard(
+						child: Column(
+							crossAxisAlignment: CrossAxisAlignment.start,
+							children: [
+								Text(
+									'No group yet',
+									style: AppFonts.subtitle,
+								),
+
+								const SizedBox(height: 8),
+
+								Text(
+									'Create a new group or join an existing group.',
+									style: AppFonts.body.copyWith(
+										color: AppColors.textSecondary,
+									),
+								),
+
+								const SizedBox(height: 20),
+
+								SizedBox(
+									width: double.infinity,
+									height: 52,
+									child: ElevatedButton(
+										onPressed: () async {
+											final changed =
+													await Navigator.push<bool>(
+												context,
+												MaterialPageRoute(
+													builder: (_) =>
+															CreateGroupPage(),
+												),
+											);
+
+											if (changed == true &&
+													context.mounted) {
+												Navigator.pushReplacement(
+													context,
+													MaterialPageRoute(
+														builder: (_) =>
+																const RequesterHomePage(),
+													),
+												);
+											}
+										},
+										child: const Text(
+											'Create Group',
+										),
+									),
+								),
+
+								const SizedBox(height: 12),
+
+								SizedBox(
+									width: double.infinity,
+									height: 52,
+									child: OutlinedButton(
+										onPressed: () async {
+											final changed =
+													await Navigator.push<bool>(
+												context,
+												MaterialPageRoute(
+													builder: (_) =>
+															JoinGroupPage(),
+												),
+											);
+
+											if (changed == true &&
+													context.mounted) {
+												Navigator.pushReplacement(
+													context,
+													MaterialPageRoute(
+														builder: (_) =>
+																const RequesterHomePage(),
+													),
+												);
+											}
+										},
+										style: OutlinedButton.styleFrom(
+											side: BorderSide(
+												color: AppColors.primary
+														.withValues(alpha: 0.25),
+											),
+											backgroundColor: AppColors.primary
+													.withValues(alpha: 0.04),
+											shape: RoundedRectangleBorder(
+												borderRadius:
+														BorderRadius.circular(18),
+											),
+										),
+										child: Text(
+											'Join Group',
+											style: AppFonts.button.copyWith(
+												color: AppColors.primary,
+											),
+										),
+									),
+								),
+							],
+						),
+					),
+				],
+			),
+		);
+	}
+
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -410,9 +546,20 @@ void _listenAlerts() async {
               );
             }
 
+            final hasGroup =
+                data['hasGroup'] == true;
+
+            final requesterName =
+                data['requesterName'] ?? '-';
+
+            if (!hasGroup) {
+              return _buildNoGroupHome(
+                requesterName: requesterName,
+              );
+            }
+
             final groupId = data['groupId'] ?? '';
             final groupName = data['groupName'] ?? '-';
-            final requesterName = data['requesterName'] ?? '-';
             final pairedLocators =
                 Map<String, dynamic>.from(data['pairedLocators'] ?? {});
 
@@ -891,6 +1038,7 @@ class _AlertOverlay extends StatelessWidget {
     required this.onDismiss,
   });
 
+	
   @override
   Widget build(BuildContext context) {
     final locatorName =

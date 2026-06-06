@@ -80,11 +80,6 @@ class MyApp extends StatelessWidget {
 						return const PermissionIntroPage();
 					}
 
-					// requester var ama group yoksa setup
-					if (groupId == null || groupId.isEmpty) {
-						return const PermissionIntroPage();
-					}
-
 					// requester + group varsa home
 					return const RequesterHomePage();
 				},
