@@ -48,6 +48,7 @@ class GroupService {
         'planStatus': 'trial',
         'maxRequesters': 1,
         'maxLocators': 1,
+				'activeRequesterCount': 1,
         'createdAt': now,
         'trialStartedAt': now,
       });
@@ -371,4 +372,14 @@ static Future<void> removePairedLocator({
     "GROUP SERVICE => locator removed => $locatorId",
   );
 }
+
+static Future<void> clearLocalGroup() async {
+  final prefs = await SharedPreferences.getInstance();
+
+  await prefs.remove(_groupIdKey);
+  await prefs.remove('group_code');
+  await prefs.remove('join_status');
+  await prefs.remove(_isMasterKey);
+}
+
 }

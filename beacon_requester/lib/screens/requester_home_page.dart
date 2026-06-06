@@ -555,57 +555,125 @@ void _listenAlerts() async {
     stream: FirebaseFirestore.instance
         .collection('groups')
         .doc(groupId)
-        .collection('devices')
+        .collection('join_requests')
         .doc(requesterId)
         .snapshots(),
-    builder: (context, deviceSnapshot) {
-      if (deviceSnapshot.hasData &&
-          deviceSnapshot.data!.exists) {
-        Future.microtask(() {
-          if (!context.mounted) return;
+    builder: (context, joinSnapshot) {
+      final joinData = joinSnapshot.data?.data();
+      final status = joinData?['status'];
 
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (_) => const RequesterHomePage(),
+      if (status == 'rejected') {
+  return Center(
+    child: Padding(
+      padding: const EdgeInsets.all(24),
+      child: AppCard(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(
+              Icons.block_rounded,
+              color: AppColors.danger,
+              size: 48,
+            ),
+
+            const SizedBox(height: 16),
+
+            Text(
+              'REJECTED',
+              style: AppFonts.title.copyWith(
+                color: AppColors.danger,
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () async {
+
+                  await FirebaseFirestore.instance
+                      .collection('groups')
+                      .doc(groupId)
+                      .collection('join_requests')
+                      .doc(requesterId)
+                      .delete();
+
+                  await GroupService.clearLocalGroup();
+
+                  if (!context.mounted) return;
+
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) =>
+                          const RequesterHomePage(),
+                    ),
+                  );
+                },
+                child: const Text('OK'),
+              ),
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
+      return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+        stream: FirebaseFirestore.instance
+            .collection('groups')
+            .doc(groupId)
+            .collection('devices')
+            .doc(requesterId)
+            .snapshots(),
+        builder: (context, deviceSnapshot) {
+          if (deviceSnapshot.hasData &&
+              deviceSnapshot.data!.exists) {
+            Future.microtask(() {
+              if (!context.mounted) return;
+
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const RequesterHomePage(),
+                ),
+              );
+            });
+          }
+
+          return Center(
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: AppCard(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(
+                      Icons.hourglass_top_rounded,
+                      color: AppColors.primary,
+                      size: 48,
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      'Waiting for approval',
+                      style: AppFonts.title,
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Your request has been sent to the group master.',
+                      textAlign: TextAlign.center,
+                      style: AppFonts.body.copyWith(
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
           );
-        });
-      }
-
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: AppCard(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Icon(
-                  Icons.hourglass_top_rounded,
-                  color: AppColors.primary,
-                  size: 48,
-                ),
-
-                const SizedBox(height: 16),
-
-                Text(
-                  'Waiting for approval',
-                  style: AppFonts.title,
-                ),
-
-                const SizedBox(height: 8),
-
-                Text(
-                  'Your request has been sent to the group master.',
-                  textAlign: TextAlign.center,
-                  style: AppFonts.body.copyWith(
-                    color: AppColors.textSecondary,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
+        },
       );
     },
   );
@@ -762,61 +830,84 @@ if (_isMaster && _groupId != null)
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () async {
-  final joinData = doc.data();
+												final joinData = doc.data();
 
-  final requesterId =
-      joinData['requesterId'];
+												final requesterId = joinData['requesterId'];
 
-  final requesterRef = FirebaseFirestore
-      .instance
-      .collection('groups')
-      .doc(_groupId)
-      .collection('devices')
-      .doc(requesterId);
+												if (requesterId == null || _groupId == null) {
+													return;
+												}
 
-  final joinRequestRef = doc.reference;
+												final firestore = FirebaseFirestore.instance;
 
-  final groupRef = FirebaseFirestore
-      .instance
-      .collection('groups')
-      .doc(_groupId);
+												final groupRef = firestore
+														.collection('groups')
+														.doc(_groupId);
 
-  await FirebaseFirestore.instance
-      .runTransaction((tx) async {
-    tx.set(
-      requesterRef,
-      {
-        'requesterId':
-            joinData['requesterId'],
-        'requesterCode':
-            joinData['requesterCode'],
-        'role': 'requester',
-        'name':
-            joinData['requesterName'],
-        'isMaster': false,
-        'active': true,
-        'pairedLocators': {},
-        'joinedAt':
-            FieldValue.serverTimestamp(),
-        'createdAt':
-            FieldValue.serverTimestamp(),
-      },
-    );
+												final requesterRef = groupRef
+														.collection('devices')
+														.doc(requesterId);
 
-    tx.update(groupRef, {
-      'activeRequesterCount':
-          FieldValue.increment(1),
-      'updatedAt':
-          FieldValue.serverTimestamp(),
-    });
+												final joinRequestRef = doc.reference;
 
-    tx.delete(joinRequestRef);
+												try {
+													await firestore.runTransaction((tx) async {
+														final freshGroup = await tx.get(groupRef);
+
+														final groupData = freshGroup.data() ?? {};
+
+														final maxRequesters =
+																groupData['maxRequesters'] ?? 1;
+
+														final activeRequesterCount =
+																groupData['activeRequesterCount'] ?? 0;
+
+														if (activeRequesterCount >= maxRequesters) {
+															throw Exception('requester_capacity_reached');
+														}
+
+														tx.set(requesterRef, {
+															'requesterId': joinData['requesterId'],
+															'requesterCode': joinData['requesterCode'],
+															'role': 'requester',
+															'name': joinData['requesterName'],
+															'isMaster': false,
+															'active': true,
+															'pairedLocators': {},
+															'joinedAt': FieldValue.serverTimestamp(),
+															'createdAt': FieldValue.serverTimestamp(),
+														});
+
+														tx.update(groupRef, {
+															'activeRequesterCount':
+																	FieldValue.increment(1),
+															'updatedAt':
+																	FieldValue.serverTimestamp(),
+														});
+
+														tx.delete(joinRequestRef);
+													});
+
+													print(
+														"BEACON JOIN APPROVED => $requesterId",
+													);
+												} catch (e) {
+  await doc.reference.update({
+    'status': 'rejected',
+    'rejectedAt': FieldValue.serverTimestamp(),
   });
 
-  print(
-    "BEACON JOIN APPROVED => $requesterId",
+  if (!context.mounted) return;
+
+  ScaffoldMessenger.of(context).showSnackBar(
+    const SnackBar(
+      content: Text(
+        'Requester capacity reached',
+      ),
+    ),
   );
-},
+}
+											},
                       child: const Text(
                         'Approve',
                       ),
@@ -827,11 +918,16 @@ if (_isMaster && _groupId != null)
 
                   Expanded(
                     child: OutlinedButton(
-                      onPressed: () {
-                        print(
-                          "REJECT => ${doc.id}",
-                        );
-                      },
+                      onPressed: () async {
+												await doc.reference.update({
+													'status': 'rejected',
+													'rejectedAt': FieldValue.serverTimestamp(),
+												});
+
+												print(
+													"BEACON JOIN REJECTED => ${doc.id}",
+												);
+											},
                       child: const Text(
                         'Reject',
                       ),
