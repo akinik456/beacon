@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'identity_service.dart';
+import 'group_service.dart';
 
 class HomeDataService {
   HomeDataService._();
@@ -59,16 +60,37 @@ class HomeDataService {
           .get();
 
       if (!requesterDoc.exists) {
-				return {
-					'hasGroup': true,
-					'isPending': true,
-					'groupId': groupId,
-					'groupName': groupData['groupName'],
-					'requesterId': requesterId,
-					'requesterName': requesterName,
-					'pairedLocators': <String, dynamic>{},
-				};
-			}
+  final joinRequestDoc = await _firestore
+      .collection('groups')
+      .doc(groupId)
+      .collection('join_requests')
+      .doc(requesterId)
+      .get();
+
+  if (joinRequestDoc.exists) {
+    return {
+      'hasGroup': true,
+      'isPending': true,
+      'groupId': groupId,
+      'groupName': groupData['groupName'],
+      'requesterId': requesterId,
+      'requesterName': requesterName,
+      'pairedLocators': <String, dynamic>{},
+    };
+  }
+
+ print("BEACON HOME => requester doc not ready yet");
+
+return {
+  'hasGroup': true,
+  'isPending': true,
+  'groupId': groupId,
+  'groupName': groupData['groupName'],
+  'requesterId': requesterId,
+  'requesterName': requesterName,
+  'pairedLocators': <String, dynamic>{},
+};
+}
 
       final requesterData = requesterDoc.data()!;
 

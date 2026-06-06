@@ -941,6 +941,119 @@ if (_isMaster && _groupId != null)
       );
     },
   ),
+	
+if (_isMaster && _groupId != null)
+  StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+    stream: FirebaseFirestore.instance
+        .collection('groups')
+        .doc(_groupId)
+        .collection('devices')
+        .where('role', isEqualTo: 'requester')
+        .where('active', isEqualTo: true)
+        .snapshots(),
+    builder: (context, snapshot) {
+      final docs = snapshot.data?.docs ?? [];
+
+      if (docs.isEmpty) {
+        return const SizedBox.shrink();
+      }
+
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 16),
+        child: AppCard(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Requesters (${docs.length})',
+                style: AppFonts.subtitle,
+              ),
+
+              const SizedBox(height: 12),
+
+              ...docs.map((doc) {
+                final data = doc.data();
+
+                final name = data['name'] ?? 'Requester';
+                final code = data['requesterCode'] ?? '';
+                final isMasterMember = data['isMaster'] == true;
+
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: Row(
+                    children: [
+                      Icon(
+                        isMasterMember
+                            ? Icons.workspace_premium_rounded
+                            : Icons.person_rounded,
+                        color: isMasterMember
+                            ? AppColors.primary
+                            : AppColors.textSecondary,
+                        size: 20,
+                      ),
+
+                      const SizedBox(width: 10),
+
+                      Expanded(
+                        child: Text(
+                          '$name - $code',
+                          style: AppFonts.body,
+                        ),
+                      ),
+
+                      if (isMasterMember)
+                        Text(
+                          'Master',
+                          style: AppFonts.caption.copyWith(
+                            color: AppColors.primary,
+                          ),
+                        )
+                      else
+                        IconButton(
+                          onPressed: () async {
+  final requesterId = doc.id;
+
+  final groupRef = FirebaseFirestore.instance
+      .collection('groups')
+      .doc(_groupId);
+
+  final requesterRef = groupRef
+      .collection('devices')
+      .doc(requesterId);
+
+  await FirebaseFirestore.instance
+      .runTransaction((tx) async {
+
+    tx.delete(requesterRef);
+
+    tx.update(groupRef, {
+      'activeRequesterCount':
+          FieldValue.increment(-1),
+      'updatedAt':
+          FieldValue.serverTimestamp(),
+    });
+  });
+
+  print(
+    "BEACON REQUESTER REMOVED => $requesterId",
+  );
+},
+                          icon: const Icon(
+                            Icons.person_remove_rounded,
+                            color: AppColors.danger,
+                            size: 20,
+                          ),
+                        ),
+                    ],
+                  ),
+                );
+              }),
+            ],
+          ),
+        ),
+      );
+    },
+  ),	
 
 SizedBox(
   width: double.infinity,
