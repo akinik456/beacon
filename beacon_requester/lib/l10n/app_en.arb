@@ -1,9 +1,9 @@
 {
   "@@locale": "en",
-  "appName": "Beacon Requester",
-	"title": "Beacon Requester",
+  "appName": "LynraFamily",
+	"title": "LynraFamily",
   "hello": "Hello","permissionIntroTitle": "Before we start",
-"permissionIntroSubtitle": "Beacon needs a few permissions to work safely and correctly.",
+"permissionIntroSubtitle": "LynraFamily needs a few permissions to work safely and correctly.",
 "locationPermissionTitle": "Location permission",
 "locationPermissionDesc": "Used to show your distance to locators.",
 "cameraPermissionTitle": "Camera permission",

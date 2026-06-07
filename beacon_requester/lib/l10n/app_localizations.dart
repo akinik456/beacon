@@ -122,7 +122,7 @@ abstract class AppLocalizations {
   /// No description provided for @permissionIntroSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Beacon needs a few permissions to work safely and correctly.'**
+  /// **'LynraFamily needs a few permissions to work safely and correctly.'**
   String get permissionIntroSubtitle;
 
   /// No description provided for @locationPermissionTitle.

@@ -65,8 +65,8 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                   const SizedBox(height: 18),
                  /* _InputField(
                     controller: requesterNameCtrl,
-                    label: 'Your name',
-                    hint: 'Requester name',
+                    label: 'Your Name',
+										hint: 'Enter your name',
                   ),*/
                 ],
               ),

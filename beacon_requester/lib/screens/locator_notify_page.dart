@@ -131,7 +131,7 @@ class _LocatorNotifyPageState extends State<LocatorNotifyPage> {
         surfaceTintColor: AppColors.background,
         elevation: 0,
         title: Text(
-          'Locator Notifications',
+          'Member Notifications',
           style: AppFonts.title,
         ),
       ),

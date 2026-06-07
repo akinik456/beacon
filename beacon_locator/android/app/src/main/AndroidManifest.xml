@@ -11,7 +11,7 @@
 				
 		
 		<application
-        android:label="beacon_locator"
+        android:label="LynraFamily Member"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

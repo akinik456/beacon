@@ -21,7 +21,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get permissionIntroTitle => 'Before we start';
 
   @override
-  String get permissionIntroSubtitle => 'Beacon needs a few permissions to work safely and correctly.';
+  String get permissionIntroSubtitle => 'LynraFamily needs a few permissions to work safely and correctly.';
 
   @override
   String get locationPermissionTitle => 'Location permission';

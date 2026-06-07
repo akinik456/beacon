@@ -187,7 +187,7 @@ static Future<void> addPairedLocatorToRequester({
       locatorSnap.data() ?? {};
 
   final locatorName =
-      locatorData['locatorName'] ?? 'Locator';
+      locatorData['locatorName'] ?? 'Member';
 
   final locatorCode =
       locatorData['locatorCode'] ?? '------';

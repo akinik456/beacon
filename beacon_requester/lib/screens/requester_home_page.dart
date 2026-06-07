@@ -902,7 +902,7 @@ if (_isMaster && _groupId != null)
   ScaffoldMessenger.of(context).showSnackBar(
     const SnackBar(
       content: Text(
-        'Requester capacity reached',
+        'Maximum family members reached',
       ),
     ),
   );
@@ -974,7 +974,7 @@ if (_isMaster && _groupId != null)
               ...docs.map((doc) {
                 final data = doc.data();
 
-                final name = data['name'] ?? 'Requester';
+                final name = data['name'] ?? 'Your Name';
                 final code = data['requesterCode'] ?? '';
                 final isMasterMember = data['isMaster'] == true;
 
@@ -1089,7 +1089,7 @@ SizedBox(
       color: AppColors.primary,
     ),
     label: Text(
-      'Add Locator',
+      'Add Member',
       style: AppFonts.button.copyWith(
         color: AppColors.primary,
       ),
@@ -1148,7 +1148,7 @@ const SizedBox(height: 18),
                             itemBuilder: (context, index) {
                               final locator = _locators[index];//final locator = _locators[0];//final locator = _locators[index];
 															final locatorId = locator['locatorId'] ?? '-';															
-															final locatorName = locator['name'] ?? 'Locator';
+															final locatorName = locator['name'] ?? 'Member';
 															final locatorCode = locator['locatorCode'] ?? '------';
 															final status = locator['status'] ?? 'offline';
 															final battery = locator['battery'] ?? 0;
@@ -1264,7 +1264,7 @@ const SizedBox(height: 18),
 
 																	ScaffoldMessenger.of(context).showSnackBar(
 																		const SnackBar(
-																			content: Text('Locator removed'),
+																			content: Text('Member removed'),
 																		),
 																	);
 
@@ -1368,7 +1368,7 @@ class _CallMeOverlay extends StatelessWidget {
 
   @override
 Widget build(BuildContext context) {
-  final locatorName = data['locatorName'] ?? 'Locator';
+  final locatorName = data['locatorName'] ?? 'Member';
   final locatorCode = data['locatorCode'] ?? '';
 	
 	final createdAt =
@@ -1447,7 +1447,7 @@ class _AlertOverlay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final locatorName =
-        data['locatorName'] ?? 'Locator';
+        data['locatorName'] ?? 'Member';
 
     final locatorCode =
         data['locatorCode'] ?? '';

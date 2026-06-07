@@ -59,7 +59,7 @@ class _AddLocatorPageState extends State<AddLocatorPage> {
         surfaceTintColor: AppColors.background,
         elevation: 0,
         title: Text(
-          'Add Locator',
+          'Add Member',
           style: AppFonts.title,
         ),
       ),
@@ -89,8 +89,8 @@ class _AddLocatorPageState extends State<AddLocatorPage> {
             AppCard(
               child: _InputField(
                 controller: codeCtrl,
-                label: 'Locator code',
-                hint: 'Enter locator short code',
+                label: 'Member code',
+                hint: 'Enter member short code',
                 inputFormatters: [
                   FilteringTextInputFormatter.allow(
                     RegExp(r'[a-zA-Z0-9]'),
@@ -160,7 +160,7 @@ if (result == null) {
       .showSnackBar(
     const SnackBar(
       content: Text(
-        'Locator not found',
+        'Member not found',
       ),
     ),
   );
@@ -218,7 +218,7 @@ PairingResponseService
       .showSnackBar(
     const SnackBar(
       content: Text(
-        'Locator paired successfully',
+        'Member paired successfully',
       ),
     ),
   );
@@ -296,7 +296,7 @@ class _QrScanPageState extends State<_QrScanPage> {
         surfaceTintColor: AppColors.background,
         elevation: 0,
         title: Text(
-          'Scan Locator QR',
+          'Scan Member QR',
           style: AppFonts.title,
         ),
       ),

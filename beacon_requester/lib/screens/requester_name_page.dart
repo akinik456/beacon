@@ -49,7 +49,7 @@ class _RequesterNamePageState extends State<RequesterNamePage> {
         surfaceTintColor: AppColors.background,
         elevation: 0,
         title: Text(
-          'Requester name',
+          'Your Name',
           style: AppFonts.title,
         ),
       ),

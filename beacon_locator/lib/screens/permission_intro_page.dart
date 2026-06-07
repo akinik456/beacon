@@ -1,3 +1,5 @@
+// https://youtube.com/shorts/uz_d2RcNNc0?feature=share
+
 import 'package:flutter/material.dart';
 
 import '../core/theme/app_colors.dart';
@@ -52,9 +54,9 @@ class PermissionIntroPage extends StatelessWidget {
               const SizedBox(height: 18),
 
               Text(
-                'Beacon Locator needs location permission to share live location updates with your paired requester.\n\n'
-                'Your location is only shared with your connected group.',
-                style: AppFonts.body.copyWith(
+'LynraFamily Member needs location permission to respond to family location requests and share location updates.\n\n'
+  'Background location access allows the app to provide location updates even when the app is not open.\n\n'
+  'Your location is only shared with trusted members of your family group.',                style: AppFonts.body.copyWith(
                   color: AppColors.textSecondary,
                   height: 1.6,
                 ),

@@ -187,7 +187,7 @@ class _LocatorSettingsPageState extends State<LocatorSettingsPage> {
         surfaceTintColor: AppColors.background,
         elevation: 0,
         title: Text(
-          'Locator Settings',
+          'Member Settings',
           style: AppFonts.title,
         ),
       ),
