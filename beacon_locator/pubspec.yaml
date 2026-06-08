@@ -62,6 +62,7 @@ dev_dependencies:
   change_app_package_name: ^1.5.0
   
   flutter_launcher_icons: ^0.14.4
+  flutter_native_splash: ^2.4.6
 
 flutter_launcher_icons:
   android: true
@@ -70,3 +71,10 @@ flutter_launcher_icons:
 flutter:
   uses-material-design: true
   generate: true
+  
+flutter_native_splash:
+  color: "#091220"
+  image: assets/images/splash_logo.png
+  android_12:
+    color: "#091220"
+    image: assets/images/splash_logo.png
