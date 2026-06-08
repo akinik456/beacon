@@ -9,10 +9,10 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appName => 'Beacon Requester';
+  String get appName => 'LynraFamily';
 
   @override
-  String get title => 'Beacon Requester';
+  String get title => 'LynraFamily';
 
   @override
   String get hello => 'Hello';
@@ -27,7 +27,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get locationPermissionTitle => 'Location permission';
 
   @override
-  String get locationPermissionDesc => 'Used to show your distance to locators.';
+  String get locationPermissionDesc => 'Used to show your distance to members.';
 
   @override
   String get cameraPermissionTitle => 'Camera permission';

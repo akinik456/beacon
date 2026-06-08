@@ -98,13 +98,13 @@ abstract class AppLocalizations {
   /// No description provided for @appName.
   ///
   /// In en, this message translates to:
-  /// **'Beacon Requester'**
+  /// **'LynraFamily'**
   String get appName;
 
   /// No description provided for @title.
   ///
   /// In en, this message translates to:
-  /// **'Beacon Requester'**
+  /// **'LynraFamily'**
   String get title;
 
   /// No description provided for @hello.
@@ -134,7 +134,7 @@ abstract class AppLocalizations {
   /// No description provided for @locationPermissionDesc.
   ///
   /// In en, this message translates to:
-  /// **'Used to show your distance to locators.'**
+  /// **'Used to show your distance to members.'**
   String get locationPermissionDesc;
 
   /// No description provided for @cameraPermissionTitle.

@@ -82,12 +82,15 @@ class _JoinGroupPageState extends State<JoinGroupPage> {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
+			  centerTitle: true,
         backgroundColor: AppColors.background,
         surfaceTintColor: AppColors.background,
         elevation: 0,
         title: Text(
           'Join group',
-          style: AppFonts.title,
+          style: AppFonts.title.copyWith(
+					color: AppColors.primary,
+					),
         ),
       ),
       body: Padding(

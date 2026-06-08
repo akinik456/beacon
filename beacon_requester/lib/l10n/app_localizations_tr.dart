@@ -9,10 +9,10 @@ class AppLocalizationsTr extends AppLocalizations {
   AppLocalizationsTr([String locale = 'tr']) : super(locale);
 
   @override
-  String get appName => 'Beacon Requester';
+  String get appName => 'LynraFamily';
 
   @override
-  String get title => 'Beacon Requester';
+  String get title => 'LynraFamily';
 
   @override
   String get hello => 'Merhaba';
@@ -27,7 +27,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get locationPermissionTitle => 'Konum izni';
 
   @override
-  String get locationPermissionDesc => 'Locator’lara olan uzaklığını göstermek için kullanılır.';
+  String get locationPermissionDesc => 'Family Member\'a olan uzaklığını göstermek için kullanılır.';
 
   @override
   String get cameraPermissionTitle => 'Kamera izni';

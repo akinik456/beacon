@@ -393,6 +393,7 @@ void _listenAlerts() async {
 						'Welcome',
 						style: AppFonts.title.copyWith(
 							fontSize: 26,
+							color: AppColors.primary,
 						),
 					),
 
@@ -461,7 +462,7 @@ void _listenAlerts() async {
 								SizedBox(
 									width: double.infinity,
 									height: 52,
-									child: OutlinedButton(
+									child: ElevatedButton(
 										onPressed: () async {
 											final changed =
 													await Navigator.push<bool>(
@@ -483,26 +484,12 @@ void _listenAlerts() async {
 												);
 											}
 										},
-										style: OutlinedButton.styleFrom(
-											side: BorderSide(
-												color: AppColors.primary
-														.withValues(alpha: 0.25),
-											),
-											backgroundColor: AppColors.primary
-													.withValues(alpha: 0.04),
-											shape: RoundedRectangleBorder(
-												borderRadius:
-														BorderRadius.circular(18),
-											),
-										),
-										child: Text(
+										child: const Text(
 											'Join Group',
-											style: AppFonts.button.copyWith(
-												color: AppColors.primary,
-											),
 										),
 									),
 								),
+
 							],
 						),
 					),
@@ -714,6 +701,7 @@ void _listenAlerts() async {
             groupName,
             style: AppFonts.title.copyWith(
               fontSize: 26,
+							color: AppColors.primary,
             ),
           ),
 
@@ -752,7 +740,7 @@ void _listenAlerts() async {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    'Group Code',
+                    'Group\nCode',
                     style: AppFonts.caption,
                   ),
 

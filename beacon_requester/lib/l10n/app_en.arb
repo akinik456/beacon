@@ -5,7 +5,7 @@
   "hello": "Hello","permissionIntroTitle": "Before we start",
 "permissionIntroSubtitle": "LynraFamily needs a few permissions to work safely and correctly.",
 "locationPermissionTitle": "Location permission",
-"locationPermissionDesc": "Used to show your distance to locators.",
+"locationPermissionDesc": "Used to show your distance to members.",
 "cameraPermissionTitle": "Camera permission",
 "cameraPermissionDesc": "Used only when scanning a QR code.",
 "createNewGroup": "Create new group",

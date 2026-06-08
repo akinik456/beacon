@@ -45,12 +45,15 @@ class _RequesterNamePageState extends State<RequesterNamePage> {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        backgroundColor: AppColors.background,
+				centerTitle: true,
+				backgroundColor: AppColors.background,
         surfaceTintColor: AppColors.background,
         elevation: 0,
         title: Text(
-          'Your Name',
-          style: AppFonts.title,
+          'LynraFamily',
+          style: AppFonts.title.copyWith(
+					color: AppColors.primary,
+					),
         ),
       ),
       body: Padding(
@@ -62,7 +65,7 @@ class _RequesterNamePageState extends State<RequesterNamePage> {
                 controller: nameCtrl,
                 style: AppFonts.body,
                 decoration: InputDecoration(
-                  hintText: 'Enter requester name',
+                  hintText: 'Enter your name',
                   hintStyle: AppFonts.caption,
                   border: InputBorder.none,
                 ),

@@ -42,12 +42,15 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
+			  centerTitle: true,
         backgroundColor: AppColors.background,
         surfaceTintColor: AppColors.background,
         elevation: 0,
         title: Text(
           'Create group',
-          style: AppFonts.title,
+          style: AppFonts.title.copyWith(
+					color: AppColors.primary,
+					),
         ),
       ),
       body: Padding(
