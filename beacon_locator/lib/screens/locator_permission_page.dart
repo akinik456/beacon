@@ -74,11 +74,14 @@ class LocatorPermissionPage extends StatefulWidget {
             children: [
               Text(
                 'Permissions',
-                style: AppFonts.title.copyWith(fontSize: 28),
+								style: AppFonts.title.copyWith(
+								fontSize: 28,
+								color: AppColors.primary,
+								),
               ),
               const SizedBox(height: 6),
               Text(
-                'Beacon Locator requires these permissions to work in background.',
+                'LynraFamily Member requires these permissions to work in background.',
                 style: AppFonts.caption,
               ),
 
@@ -173,14 +176,14 @@ class LocatorPermissionPage extends StatefulWidget {
 							_PermissionItem(
 								icon: Icons.power_settings_new_rounded,
 								title: 'Auto-Start',
-								subtitle: 'Enable Beacon in Autostart list',
+								subtitle: 'Enable LynraFamily Member in Autostart list',
 								granted: autoStartGranted,
 								onTap: () async {
 									showDialog(
 										context: context,
 										barrierDismissible: false,
 										builder: (dialogContext) {
-											Future.delayed(const Duration(seconds: 5), () {
+											Future.delayed(const Duration(seconds: 10), () {
 												if (Navigator.canPop(dialogContext)) {
 													Navigator.pop(dialogContext);
 												}
@@ -205,7 +208,7 @@ class LocatorPermissionPage extends StatefulWidget {
 													],
 												),
 												content: Text(
-													"In the opening screen, please find 'Beacon' and turn the switch ON to ensure background reliability.\n\nThis window will close in 5 seconds...",
+													"In the opening screen, please find 'LynraFamily Member' and turn the switch ON to ensure background reliability.\n\nThis window will close in 10 seconds...",
 													style: AppFonts.body.copyWith(
 														color: AppColors.textSecondary,
 													),
@@ -230,7 +233,7 @@ class LocatorPermissionPage extends StatefulWidget {
 							_PermissionItem(
 								icon: Icons.app_settings_alt_rounded,
 								title: 'Memory Lock',
-								subtitle: 'Prevent system from killing Beacon',
+								subtitle: 'Prevent system from killing LynraFamily Member',
 								granted: memoryLockGranted,
 								onTap: () async {
 									showDialog(
@@ -255,9 +258,9 @@ class LocatorPermissionPage extends StatefulWidget {
 												],
 											),
 											content: Text(
-												"To keep Beacon running in the background, please follow these steps:\n\n"
-												"• Xiaomi: Security app > Boost Speed > Settings > App Lock > Enable Beacon.\n"
-												"• Others: Open Recent Apps, long press Beacon or swipe down, then tap the Lock icon.\n\n"
+												"To keep LynraFamily Member running in the background, please follow these steps:\n\n"
+												"• Xiaomi: Security app > Boost Speed > Settings > App Lock > Enable LynraFamily Member.\n"
+												"• Others: Open Recent Apps, long press LynraFamily Member or swipe down, then tap the Lock icon.\n\n"
 												"This helps prevent the system from closing the app to save RAM.",
 												style: AppFonts.body.copyWith(
 													color: AppColors.textSecondary,

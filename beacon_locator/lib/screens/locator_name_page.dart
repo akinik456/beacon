@@ -45,14 +45,17 @@ class _LocatorNamePageState extends State<LocatorNamePage> {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        backgroundColor: AppColors.background,
-        surfaceTintColor: AppColors.background,
-        elevation: 0,
-        title: Text(
-          'Locator name',
-          style: AppFonts.title,
-        ),
-      ),
+				centerTitle: true,
+				backgroundColor: AppColors.background,
+				surfaceTintColor: AppColors.primary,
+				elevation: 0,
+				title: Text(
+					'LynraFamily Member',
+					style: AppFonts.title.copyWith(
+					color: AppColors.primary,
+					),
+				),
+			),
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -62,7 +65,7 @@ class _LocatorNamePageState extends State<LocatorNamePage> {
                 controller: nameCtrl,
                 style: AppFonts.body,
                 decoration: InputDecoration(
-                  hintText: 'Enter locator name',
+                  hintText: 'Enter member name',
                   hintStyle: AppFonts.caption,
                   border: InputBorder.none,
                 ),

@@ -107,7 +107,7 @@ class _LocatorHomePageState extends State<LocatorHomePage>
   Future<Map<String, String>> _loadLocatorCodeData() async {
     final locatorId = await IdentityService.getLocatorId() ?? '';
     final locatorCode = await IdentityService.getLocatorCode() ?? '------';
-    final locatorName = await IdentityService.getLocatorName() ?? 'Locator';
+    final locatorName = await IdentityService.getLocatorName() ?? 'Member';
 
     return {
       'locatorId': locatorId,
@@ -178,7 +178,7 @@ Future<List<Map<String, String>>> _loadPairedRequesterData() async {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text('Locator QR Code', style: AppFonts.title),
+              Text('Member QR Code', style: AppFonts.title),
               const SizedBox(height: 18),
               Container(
                 padding: const EdgeInsets.all(16),
@@ -193,7 +193,7 @@ Future<List<Map<String, String>>> _loadPairedRequesterData() async {
                 ),
               ),
               const SizedBox(height: 18),
-              Text('Locator code', style: AppFonts.caption),
+              Text('Member code', style: AppFonts.caption),
               const SizedBox(height: 6),
               Text(
                 locatorCode,
@@ -223,7 +223,11 @@ Future<List<Map<String, String>>> _loadPairedRequesterData() async {
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text('Locator Code', style: AppFonts.caption),
+              Text(
+								'Member\nCode',
+								textAlign: TextAlign.center,
+								style: AppFonts.caption,
+							),
               const SizedBox(width: 6),
               const Icon(
                 Icons.qr_code_2_rounded,
@@ -504,7 +508,7 @@ Widget _activeWatchersCard() {
               ),
               const SizedBox(height: 12),
               Text(
-                'Locator Ready',
+                'Member Ready',
                 style: AppFonts.subtitle,
               ),
               const SizedBox(height: 4),
@@ -606,7 +610,7 @@ Widget _activeWatchersCard() {
           builder: (context, snapshot) {
             final locatorId = snapshot.data?['locatorId'] ?? '';
             final locatorCode = snapshot.data?['locatorCode'] ?? '------';
-            final locatorName = snapshot.data?['locatorName'] ?? 'Locator';
+            final locatorName = snapshot.data?['locatorName'] ?? 'Member';
 
             return Padding(
               padding: const EdgeInsets.all(20),
@@ -621,11 +625,12 @@ Widget _activeWatchersCard() {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Locator',
-                              style: AppFonts.title.copyWith(fontSize: 28),
+                              'LynraFamily\nMember',
+                              style: AppFonts.title.copyWith(fontSize: 28,color: AppColors.primary,),
                             ),
                             const SizedBox(height: 6),
-                            Text(locatorName, style: AppFonts.caption),
+                            Text(locatorName, 
+														style: AppFonts.caption),
                           ],
                         ),
                       ),
