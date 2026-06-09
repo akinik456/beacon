@@ -127,12 +127,15 @@ class _LocatorNotifyPageState extends State<LocatorNotifyPage> {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
+				centerTitle: true,
         backgroundColor: AppColors.background,
         surfaceTintColor: AppColors.background,
         elevation: 0,
         title: Text(
           'Member Notifications',
-          style: AppFonts.title,
+          style: AppFonts.title.copyWith(
+					color: AppColors.primary,
+					),
         ),
       ),
       body: loading
@@ -149,7 +152,9 @@ class _LocatorNotifyPageState extends State<LocatorNotifyPage> {
                     children: [
                       TextSpan(
                         text: widget.locatorName,
-                        style: AppFonts.title,
+                        style: AppFonts.title.copyWith(
+                          color: AppColors.textSecondary,
+                        ),
                       ),
                       TextSpan(
                         text: '  •  ',
@@ -160,7 +165,7 @@ class _LocatorNotifyPageState extends State<LocatorNotifyPage> {
                       TextSpan(
                         text: widget.locatorCode,
                         style: AppFonts.title.copyWith(
-                          color: AppColors.primary,
+                          color: AppColors.textSecondary,
                         ),
                       ),
                     ],
@@ -170,7 +175,7 @@ class _LocatorNotifyPageState extends State<LocatorNotifyPage> {
                 const SizedBox(height: 8),
 
                 Text(
-                  'Choose which notifications you want to receive from this locator.',
+                  'Choose which notifications you want to receive from this member.',
                   style: AppFonts.caption,
                 ),
 
@@ -178,7 +183,7 @@ class _LocatorNotifyPageState extends State<LocatorNotifyPage> {
 
                 _NotifySwitchCard(
                   title: 'Call Me',
-                  subtitle: 'Receive wake-up requests from this locator',
+                  subtitle: 'Receive wake-up requests from this member',
                   value: callMe,
                   enabled: true,
                   onChanged: (v) => setState(() => callMe = v),
@@ -190,7 +195,7 @@ class _LocatorNotifyPageState extends State<LocatorNotifyPage> {
                   title: 'GPS Off Alert',
                   subtitle: gpsOffEnabledByMaster
                       ? 'Receive GPS off alerts'
-                      : 'Disabled by master requester',
+                      : 'Disabled by master ',
                   value: gpsOff,
                   enabled: gpsOffEnabledByMaster,
                   onChanged: (v) => setState(() => gpsOff = v),
@@ -202,7 +207,7 @@ class _LocatorNotifyPageState extends State<LocatorNotifyPage> {
                   title: 'Battery Low Alert',
                   subtitle: batteryLowEnabledByMaster
                       ? 'Receive low battery alerts'
-                      : 'Disabled by master requester',
+                      : 'Disabled by master ',
                   value: batteryLow,
                   enabled: batteryLowEnabledByMaster,
                   onChanged: (v) => setState(() => batteryLow = v),
@@ -214,7 +219,7 @@ class _LocatorNotifyPageState extends State<LocatorNotifyPage> {
                   title: 'Geofence Alert',
                   subtitle: geofenceEnabledByMaster
                       ? 'Receive place enter / leave alerts'
-                      : 'Disabled by master requester',
+                      : 'Disabled by master ',
                   value: geofence,
                   enabled: geofenceEnabledByMaster,
                   onChanged: (v) => setState(() => geofence = v),

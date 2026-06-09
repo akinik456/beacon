@@ -183,12 +183,15 @@ class _LocatorSettingsPageState extends State<LocatorSettingsPage> {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
+			  centerTitle: true,
         backgroundColor: AppColors.background,
         surfaceTintColor: AppColors.background,
         elevation: 0,
         title: Text(
           'Member Settings',
-          style: AppFonts.title,
+          style: AppFonts.title.copyWith(
+					color: AppColors.primary,
+					),
         ),
       ),
       body: SafeArea(
@@ -207,7 +210,7 @@ class _LocatorSettingsPageState extends State<LocatorSettingsPage> {
 														TextSpan(
 															text: widget.locatorName,
 															style: AppFonts.title.copyWith(
-																color: AppColors.primary,
+																color: AppColors.textSecondary,
 															),
 														),
 														TextSpan(
@@ -219,7 +222,7 @@ class _LocatorSettingsPageState extends State<LocatorSettingsPage> {
 														TextSpan(
 															text: widget.locatorCode,
 															style: AppFonts.title.copyWith(
-																color: AppColors.primary,
+																color: AppColors.textSecondary,
 															),
 														),
 													],
@@ -242,7 +245,7 @@ class _LocatorSettingsPageState extends State<LocatorSettingsPage> {
               const SizedBox(height: 16),
               AppCard(
                 child: Text(
-                  'Only the master requester can edit these settings.',
+                  'Only the master can edit these settings.',
                   style: AppFonts.caption,
                 ),
               ),
@@ -254,7 +257,7 @@ class _LocatorSettingsPageState extends State<LocatorSettingsPage> {
             const SizedBox(height: 10),
             _SwitchCard(
               title: 'GPS Off Alert',
-              subtitle: 'Notify requester when GPS is turned off',
+              subtitle: 'Notify when GPS is turned off',
               value: gpsOffAlert,
               enabled: widget.isMaster,
               onChanged: (v) => setState(() => gpsOffAlert = v),
@@ -263,7 +266,7 @@ class _LocatorSettingsPageState extends State<LocatorSettingsPage> {
             const SizedBox(height: 12),
             _SwitchCard(
               title: 'Battery Low Alert',
-              subtitle: 'Notify requester when battery is low',
+              subtitle: 'Notify when battery is low',
               value: batteryLowAlert,
               enabled: widget.isMaster,
               onChanged: (v) => setState(() => batteryLowAlert = v),
@@ -322,7 +325,7 @@ class _LocatorSettingsPageState extends State<LocatorSettingsPage> {
             const SizedBox(height: 4),
             _SwitchCard(
               title: 'Geofence Alert',
-              subtitle: 'Notify requester when locator enters or leaves places',
+              subtitle: 'Notify when member enters or leaves places',
               value: geofenceAlert,
               enabled: widget.isMaster,
               onChanged: (v) => setState(() => geofenceAlert = v),
@@ -360,7 +363,7 @@ class _LocatorSettingsPageState extends State<LocatorSettingsPage> {
                       : AppColors.textSecondary,
                 ),
                 label: Text(
-                  'Save locator location as place',
+                  'Save member location as place',
                   style: AppFonts.button.copyWith(
                     color: canSavePlace
                         ? AppColors.primary
@@ -416,7 +419,7 @@ class _LocatorSettingsPageState extends State<LocatorSettingsPage> {
     return Text(
       text,
       style: AppFonts.caption.copyWith(
-        color: AppColors.primary,
+        color: AppColors.textSecondary,
         fontSize: 11,
         fontWeight: FontWeight.w700,
         letterSpacing: 1.2,

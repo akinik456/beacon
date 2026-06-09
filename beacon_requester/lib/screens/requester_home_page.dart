@@ -49,6 +49,7 @@ class _RequesterHomePageState
 	Map<String, dynamic>? _callMeData;
 	List<Map<String, dynamic>> _pendingCallMeQueue = [];
 	Map<String, dynamic>? _alertData;
+	late Future<Map<String, dynamic>?> _homeDataFuture;
 	
 	String? _groupId;
 	double? _myLat;
@@ -62,7 +63,7 @@ class _RequesterHomePageState
 		WidgetsBinding.instance.addObserver(this);
 		super.initState();
 		FCMService.initialize();
-		
+		_homeDataFuture = HomeDataService.loadHomeData();
 		_loadLocators();
 	}
 	
@@ -512,7 +513,7 @@ void _listenAlerts() async {
       backgroundColor: AppColors.background,
       body: SafeArea(
         child: FutureBuilder<Map<String, dynamic>?>(
-          future: HomeDataService.loadHomeData(),
+          future: _homeDataFuture,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
@@ -540,136 +541,136 @@ void _listenAlerts() async {
             }
 						
 						if (data['isPending'] == true) {
-  final groupId = data['groupId'];
-  final requesterId = data['requesterId'];
+				final groupId = data['groupId'];
+				final requesterId = data['requesterId'];
 
-  return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-    stream: FirebaseFirestore.instance
-        .collection('groups')
-        .doc(groupId)
-        .collection('join_requests')
-        .doc(requesterId)
-        .snapshots(),
-    builder: (context, joinSnapshot) {
-      final joinData = joinSnapshot.data?.data();
-      final status = joinData?['status'];
+				return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+					stream: FirebaseFirestore.instance
+							.collection('groups')
+							.doc(groupId)
+							.collection('join_requests')
+							.doc(requesterId)
+							.snapshots(),
+					builder: (context, joinSnapshot) {
+						final joinData = joinSnapshot.data?.data();
+						final status = joinData?['status'];
 
-      if (status == 'rejected') {
-  return Center(
-    child: Padding(
-      padding: const EdgeInsets.all(24),
-      child: AppCard(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(
-              Icons.block_rounded,
-              color: AppColors.danger,
-              size: 48,
-            ),
+						if (status == 'rejected') {
+							return Center(
+								child: Padding(
+									padding: const EdgeInsets.all(24),
+									child: AppCard(
+										child: Column(
+											mainAxisSize: MainAxisSize.min,
+											children: [
+												const Icon(
+													Icons.block_rounded,
+													color: AppColors.danger,
+													size: 48,
+												),
 
-            const SizedBox(height: 16),
+												const SizedBox(height: 16),
 
-            Text(
-              'REJECTED',
-              style: AppFonts.title.copyWith(
-                color: AppColors.danger,
-              ),
-            ),
+												Text(
+													'REJECTED',
+													style: AppFonts.title.copyWith(
+														color: AppColors.danger,
+													),
+												),
 
-            const SizedBox(height: 20),
+												const SizedBox(height: 20),
 
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () async {
+												SizedBox(
+													width: double.infinity,
+													child: ElevatedButton(
+														onPressed: () async {
 
-                  await FirebaseFirestore.instance
-                      .collection('groups')
-                      .doc(groupId)
-                      .collection('join_requests')
-                      .doc(requesterId)
-                      .delete();
+															await FirebaseFirestore.instance
+																	.collection('groups')
+																	.doc(groupId)
+																	.collection('join_requests')
+																	.doc(requesterId)
+																	.delete();
 
-                  await GroupService.clearLocalGroup();
+															await GroupService.clearLocalGroup();
 
-                  if (!context.mounted) return;
+															if (!context.mounted) return;
 
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) =>
-                          const RequesterHomePage(),
-                    ),
-                  );
-                },
-                child: const Text('OK'),
-              ),
-            ),
-          ],
-        ),
-      ),
-    ),
-  );
-}
+															Navigator.pushReplacement(
+																context,
+																MaterialPageRoute(
+																	builder: (_) =>
+																			const RequesterHomePage(),
+																),
+															);
+														},
+														child: const Text('OK'),
+													),
+												),
+											],
+										),
+									),
+								),
+							);
+						}
 
-      return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-        stream: FirebaseFirestore.instance
-            .collection('groups')
-            .doc(groupId)
-            .collection('devices')
-            .doc(requesterId)
-            .snapshots(),
-        builder: (context, deviceSnapshot) {
-          if (deviceSnapshot.hasData &&
-              deviceSnapshot.data!.exists) {
-            Future.microtask(() {
-              if (!context.mounted) return;
+						return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+							stream: FirebaseFirestore.instance
+									.collection('groups')
+									.doc(groupId)
+									.collection('devices')
+									.doc(requesterId)
+									.snapshots(),
+								builder: (context, deviceSnapshot) {
+								if (deviceSnapshot.hasData &&
+										deviceSnapshot.data!.exists) {
+									Future.microtask(() {
+										if (!context.mounted) return;
 
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => const RequesterHomePage(),
-                ),
-              );
-            });
-          }
+										Navigator.pushReplacement(
+											context,
+											MaterialPageRoute(
+												builder: (_) => const RequesterHomePage(),
+											),
+										);
+									});
+								}
 
-          return Center(
-            child: Padding(
-              padding: const EdgeInsets.all(24),
-              child: AppCard(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Icon(
-                      Icons.hourglass_top_rounded,
-                      color: AppColors.primary,
-                      size: 48,
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      'Waiting for approval',
-                      style: AppFonts.title,
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'Your request has been sent to the group master.',
-                      textAlign: TextAlign.center,
-                      style: AppFonts.body.copyWith(
-                        color: AppColors.textSecondary,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          );
-        },
-      );
-    },
-  );
-}
+								return Center(
+									child: Padding(
+										padding: const EdgeInsets.all(24),
+										child: AppCard(
+											child: Column(
+												mainAxisSize: MainAxisSize.min,
+												children: [
+													const Icon(
+														Icons.hourglass_top_rounded,
+														color: AppColors.primary,
+														size: 48,
+													),
+													const SizedBox(height: 16),
+													Text(
+														'Waiting for approval',
+														style: AppFonts.title,
+													),
+													const SizedBox(height: 8),
+													Text(
+														'Your request has been sent to the group master.',
+														textAlign: TextAlign.center,
+														style: AppFonts.body.copyWith(
+															color: AppColors.textSecondary,
+														),
+													),
+												],
+											),
+										),
+									),
+								);
+							},
+						);
+					},
+				);
+			}
 
             final hasGroup =
                 data['hasGroup'] == true;
@@ -776,71 +777,86 @@ void _listenAlerts() async {
   ],
 ),
 
-const SizedBox(height: 18),
+		const SizedBox(height: 18),
 
-if (_isMaster && _groupId != null)
-  JoinRequestCard(
-    groupId: _groupId!,
-  ),
-	
-	if (_isMaster && _groupId != null)
-  RequesterListCard(
-    groupId: _groupId!,
-  ),
+		if (_isMaster && _groupId != null)
+			JoinRequestCard(
+				groupId: _groupId!,
+			),
+			
+			if (_isMaster && _groupId != null)
+			RequesterListCard(
+				groupId: _groupId!,
+			),
 
-SizedBox(
-  width: double.infinity,
-  height: 54,
-  child: OutlinedButton.icon(
-    onPressed: () async {
+		StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+  stream: FirebaseFirestore.instance
+      .collection('groups')
+      .doc(groupId)
+      .snapshots(),
+  builder: (context, snapshot) {
+    final data = snapshot.data?.data();
 
-  final changed =
-      await Navigator.push<bool>(
-    context,
-    MaterialPageRoute(
-      builder: (_) =>
-          const AddLocatorPage(),
-    ),
-  );
+    final maxLocators = data?['maxLocators'] ?? 1;
+    final activeLocatorCount = data?['activeLocatorCount'] ?? 0;
+    final isFull = activeLocatorCount >= maxLocators;
 
-  if (changed == true &&
-      context.mounted) {
+    return SizedBox(
+      width: double.infinity,
+      height: 54,
+      child: OutlinedButton.icon(
+        onPressed: isFull
+            ? null
+            : () async {
+                final changed = await Navigator.push<bool>(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const AddLocatorPage(),
+                  ),
+                );
 
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (_) =>
-            const RequesterHomePage(),
+                if (changed == true && context.mounted) {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const RequesterHomePage(),
+                    ),
+                  );
+                }
+              },
+        icon: Icon(
+          Icons.add_rounded,
+          color: isFull
+              ? AppColors.textSecondary
+              : AppColors.primary,
+        ),
+        label: Text(
+          isFull ? 'Member Limit Reached' : 'Add Member',
+          style: AppFonts.button.copyWith(
+            color: isFull
+                ? AppColors.textSecondary
+                : AppColors.primary,
+          ),
+        ),
+        style: OutlinedButton.styleFrom(
+          side: BorderSide(
+            color: isFull
+                ? AppColors.textSecondary.withValues(alpha: 0.20)
+                : AppColors.primary.withValues(alpha: 0.25),
+          ),
+          backgroundColor: isFull
+              ? AppColors.textSecondary.withValues(alpha: 0.04)
+              : AppColors.primary.withValues(alpha: 0.04),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(18),
+          ),
+        ),
       ),
     );
-  }
-},
-
-
-    icon: const Icon(
-      Icons.add_rounded,
-      color: AppColors.primary,
-    ),
-    label: Text(
-      'Add Member',
-      style: AppFonts.button.copyWith(
-        color: AppColors.primary,
-      ),
-    ),
-    style: OutlinedButton.styleFrom(
-      side: BorderSide(
-        color: AppColors.primary.withValues(alpha: 0.25),
-      ),
-      backgroundColor:
-          AppColors.primary.withValues(alpha: 0.04),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(18),
-      ),
-    ),
-  ),
+  },
 ),
 
-const SizedBox(height: 18),
+							const SizedBox(height: 18),
 
                   AppCard(
                     child: Row(
