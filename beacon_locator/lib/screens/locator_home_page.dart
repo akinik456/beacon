@@ -116,52 +116,63 @@ class _LocatorHomePageState extends State<LocatorHomePage>
     };
   }
 
-Future<List<Map<String, String>>> _loadPairedRequesterData() async {
+Stream<List<Map<String, String>>> _watchPairedRequesterData() async* {
   final groupId = await IdentityService.getGroupId();
   final locatorId = await IdentityService.getLocatorId();
 
   if (groupId == null || locatorId == null) {
-    return [];
+    yield [];
+    return;
   }
 
-  final doc = await FirebaseFirestore.instance
+  yield* FirebaseFirestore.instance
       .collection('groups')
       .doc(groupId)
       .collection('devices')
       .doc(locatorId)
-      .get();
+      .snapshots()
+      .map((doc) {
+    final data = doc.data();
 
-  final data = doc.data();
+    if (data == null) {
+      return <Map<String, String>>[];
+    }
 
-  if (data == null) {
-    return [];
-  }
-
-  final pairedRequesters = Map<String, dynamic>.from(
-    data['pairedRequesters'] ?? {},
-  );
-
-  if (pairedRequesters.isEmpty) {
-    return [];
-  }
-
-  final result = <Map<String, String>>[];
-
-  for (final requesterId in pairedRequesters.keys) {
-    final requesterData = Map<String, dynamic>.from(
-      pairedRequesters[requesterId] ?? {},
+    final pairedRequesters = Map<String, dynamic>.from(
+      data['pairedRequesters'] ?? {},
     );
 
-    result.add({
-      'requesterId': requesterId,
-      'requesterName':
-          requesterData['requesterName'] ?? 'Requester',
-      'requesterCode':
-          requesterData['requesterCode'] ?? '------',
-    });
-  }
+    if (pairedRequesters.isEmpty) {
+      return <Map<String, String>>[];
+    }
 
-  return result;
+    final result = <Map<String, String>>[];
+
+    for (final requesterId in pairedRequesters.keys) {
+      final requesterData = Map<String, dynamic>.from(
+        pairedRequesters[requesterId] ?? {},
+      );
+
+      result.add({
+        'requesterId': requesterId,
+        'requesterName':
+            requesterData['requesterName'] ?? 'Requester',
+        'requesterCode':
+            requesterData['requesterCode'] ?? '------',
+      });
+    }
+
+    result.sort((a, b) {
+      final aName =
+          (a['requesterName'] ?? '').toLowerCase();
+      final bName =
+          (b['requesterName'] ?? '').toLowerCase();
+
+      return aName.compareTo(bName);
+    });
+
+    return result;
+  });
 }
 
   void _showLocatorQrDialog({
@@ -288,8 +299,8 @@ Future<List<Map<String, String>>> _loadPairedRequesterData() async {
   }
 
 Widget _pairedRequesterCard() {
-  return FutureBuilder<List<Map<String, String>>>(
-    future: _loadPairedRequesterData(),
+  return StreamBuilder<List<Map<String, String>>>(
+    stream: _watchPairedRequesterData(),
     builder: (context, snapshot) {
       final requesters = snapshot.data ?? [];
 
@@ -314,7 +325,8 @@ Widget _pairedRequesterCard() {
             const SizedBox(height: 12),
 
             ...requesters.map((requester) {
-              final requesterId = requester['requesterId'] ?? '';
+              final requesterId =
+                  requester['requesterId'] ?? '';
               final requesterName =
                   requester['requesterName'] ?? 'Requester';
               final requesterCode =
@@ -330,18 +342,21 @@ Widget _pairedRequesterCard() {
                         style: AppFonts.subtitle,
                       ),
                     ),
+
                     OutlinedButton.icon(
-                      onPressed: () async {
-                        final groupId =
-                            await IdentityService.getGroupId();
+                      onPressed: requesterId.isEmpty
+                          ? null
+                          : () async {
+                              final groupId =
+                                  await IdentityService.getGroupId();
 
-                        if (groupId == null) return;
+                              if (groupId == null) return;
 
-                        await CallMeService.createCallMe(
-                          groupId: groupId,
-                          targetRequesterId: requesterId,
-                        );
-                      },
+                              await CallMeService.createCallMe(
+                                groupId: groupId,
+                                targetRequesterId: requesterId,
+                              );
+                            },
                       icon: const Icon(
                         Icons.call_rounded,
                         color: AppColors.primary,
@@ -355,50 +370,55 @@ Widget _pairedRequesterCard() {
                     ),
                   ],
                 ),
-              );			
+              );
             }),
-						SizedBox(
-							width: double.infinity,
-							height: 48,
-							child: OutlinedButton.icon(
-								onPressed: () async {
-									final groupId =
-											await IdentityService.getGroupId();
 
-									if (groupId == null) return;
+            const SizedBox(height: 4),
 
-									for (final requester in requesters) {
-										final requesterId =
-												requester['requesterId'] ?? '';
+            SizedBox(
+              width: double.infinity,
+              height: 48,
+              child: OutlinedButton.icon(
+                onPressed: () async {
+                  final groupId =
+                      await IdentityService.getGroupId();
 
-										if (requesterId.isEmpty) continue;
+                  if (groupId == null) return;
 
-										await CallMeService.createCallMe(
-											groupId: groupId,
-											targetRequesterId: requesterId,
-										);
-									}
-									if (!context.mounted) return;
-									ScaffoldMessenger.of(context).showSnackBar(
-										const SnackBar(
-											content: Text(
-												'Call Me sent to all requesters',
-											),
-										),
-									);
-								},
-								icon: const Icon(
-									Icons.campaign_outlined,
-									color: AppColors.primary,
-								),
-								label: Text(
-									'Ask Everybody To Call Me',
-									style: AppFonts.button.copyWith(
-										color: AppColors.primary,
-									),
-								),
-							),
-						),
+                  for (final requester in requesters) {
+                    final requesterId =
+                        requester['requesterId'] ?? '';
+
+                    if (requesterId.isEmpty) continue;
+
+                    await CallMeService.createCallMe(
+                      groupId: groupId,
+                      targetRequesterId: requesterId,
+                    );
+                  }
+
+                  if (!context.mounted) return;
+
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text(
+                        'Call Me sent to all requesters',
+                      ),
+                    ),
+                  );
+                },
+                icon: const Icon(
+                  Icons.campaign_outlined,
+                  color: AppColors.primary,
+                ),
+                label: Text(
+                  'Ask Everybody To Call Me',
+                  style: AppFonts.button.copyWith(
+                    color: AppColors.primary,
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       );
@@ -449,7 +469,20 @@ Widget _pairedRequesterCard() {
                     children: [
                       Expanded(
                         child: OutlinedButton(
-                          onPressed: () {},
+                          onPressed: () async {
+														await PairingApprovalService.rejectPairingRequest(
+															requestId: doc.id,
+															requestData: data,
+														);
+
+														if (!context.mounted) return;
+
+														ScaffoldMessenger.of(context).showSnackBar(
+															const SnackBar(
+																content: Text('Pairing request rejected'),
+															),
+														);
+													},
                           child: Text(
                             'Reject',
                             style: AppFonts.button.copyWith(

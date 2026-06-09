@@ -1233,11 +1233,11 @@ const SizedBox(height: 18),
 																		builder: (_) => AlertDialog(
 																			backgroundColor: AppColors.surface,
 																			title: Text(
-																				'Remove Locator',
+																				'Remove Member',
 																				style: AppFonts.title,
 																			),
 																			content: Text(
-																				'This locator will be removed from your paired list.',
+																				'This Member will be removed from your paired list.',
 																				style: AppFonts.body.copyWith(
 																					color: AppColors.textSecondary,
 																				),
@@ -1270,6 +1270,13 @@ const SizedBox(height: 18),
 																	);
 
 																	if (result != true) return;
+																	
+																	if (_groupId == null) return;
+
+																	await ActiveWatcherService.removeWatcher(
+																		groupId: _groupId!,
+																		locatorId: locatorId,
+																	);
 
 																	await GroupService.removePairedLocator(
 																		locatorId: locatorId,

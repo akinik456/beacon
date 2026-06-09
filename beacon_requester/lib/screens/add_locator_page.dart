@@ -234,7 +234,7 @@ PairingResponseService
   );
   if (!context.mounted) return;
   Navigator.pop(context,true);
-}else if (status == 'rejected') {
+}else if (status == 'rejected_capacity') {
     ScaffoldMessenger.of(context)
         .showSnackBar(
       const SnackBar(
@@ -244,6 +244,14 @@ PairingResponseService
       ),
     );
   }
+	else if (status.toString().startsWith('rejected')) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    const SnackBar(
+      content: Text('Pairing request rejected'),
+    ),
+  );
+}
+	
 });
 									}
 								: null,

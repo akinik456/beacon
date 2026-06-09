@@ -99,4 +99,23 @@ class PairingApprovalService {
 		return result;
     print("BEACON APPROVE => SUCCESS => $locatorId");
   }
+	
+	static Future<void> rejectPairingRequest({
+		required String requestId,
+		required Map<String, dynamic> requestData,
+	}) async {
+		final locatorId = await IdentityService.getLocatorId();
+
+		if (locatorId == null) return;
+
+		await FirebaseFirestore.instance
+				.collection('locators')
+				.doc(locatorId)
+				.collection('pairing_requests')
+				.doc(requestId)
+				.update({
+			'status': 'rejected',
+			'respondedAt': FieldValue.serverTimestamp(),
+		});
+	}	
 }

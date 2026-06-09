@@ -1,2 +1,3 @@
  app cihazdan kaldırılırsa FS den nasıl sileceğiz ?
  Tablet auto-start ayarı
+ isimler için max. karakter sayı sınırlaması
