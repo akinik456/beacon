@@ -55,12 +55,15 @@ class _AddLocatorPageState extends State<AddLocatorPage> {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
+			  centerTitle: true,
         backgroundColor: AppColors.background,
         surfaceTintColor: AppColors.background,
         elevation: 0,
         title: Text(
-          'Add Member',
-          style: AppFonts.title,
+          'Add Member',          
+					style: AppFonts.title.copyWith(
+					color: AppColors.primary,
+					),
         ),
       ),
       body: Padding(
@@ -72,12 +75,14 @@ class _AddLocatorPageState extends State<AddLocatorPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Connect a locator',
-                    style: AppFonts.subtitle,
+                    'Connect a Member',
+										style: AppFonts.subtitle.copyWith(
+										color: AppColors.primary,
+										),
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Scan the locator QR code or enter its short code manually.',
+                    'Scan the member QR code or enter its short code manually.',
                     style: AppFonts.caption,
                   ),
                 ],
@@ -125,7 +130,7 @@ class _AddLocatorPageState extends State<AddLocatorPage> {
                         Text('Scan QR code', style: AppFonts.subtitle),
                         const SizedBox(height: 4),
                         Text(
-                          'Read locator code with camera',
+                          'Read member code with camera',
                           style: AppFonts.caption,
                         ),
                       ],
@@ -297,7 +302,9 @@ class _QrScanPageState extends State<_QrScanPage> {
         elevation: 0,
         title: Text(
           'Scan Member QR',
-          style: AppFonts.title,
+          style: AppFonts.title.copyWith(
+					color: AppColors.primary,
+					),					
         ),
       ),
       body: Stack(
@@ -342,7 +349,9 @@ class _InputField extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: AppFonts.caption),
+        Text(label, style: AppFonts.caption.copyWith(
+    color: AppColors.primary,
+  ),),
         const SizedBox(height: 10),
         TextField(
           controller: controller,

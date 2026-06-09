@@ -1,17 +1,2 @@
-Eksik kalan kritikler:
-
-Spam / cooldown
-RL, call me, alert tekrarları için kısa cooldown şart.
-Permission health
-Locator’da location/notification/battery optimization eksikse net uyarı; requester’da location/notification durumu.
-Boot / restart garanti
-Locator tarafında boot sonrası topic subscribe + presence init net olsun.
-Place yönetimi
-Kaydedilen place listesi, silme, isim değiştirme sonra lazım.
-Offline / failed states
-RL basıldı ama locator cevap veremedi: “Last update failed / still waiting” gibi küçük feedback.
-UI polish
-Boş ekranlar, loading, hata snackbarları, metinler, localization.
-Store öncesi test
-İki farklı cihaz, reboot, swipe, internet off/on, battery saver, 1 saat bekleme testi.
-
+ app cihazdan kaldırılırsa FS den nasıl sileceğiz ?
+ Tablet auto-start ayarı

@@ -53,7 +53,9 @@ class LocatorStatusCard extends StatelessWidget {
 							Expanded(
 								child: Text(
 									'$locatorName - $locatorCode',
-									style: AppFonts.subtitle,
+									style: AppFonts.subtitle.copyWith(
+									color: AppColors.primary,
+									),
 								),
 							),
 							Container(
@@ -84,7 +86,7 @@ class LocatorStatusCard extends StatelessWidget {
 							const Icon(
 								Icons.battery_charging_full_rounded,
 								size: 18,
-								color: AppColors.primary,
+								color: AppColors.accent,
 							),
 							const SizedBox(width: 4),
 							Text(
@@ -97,7 +99,7 @@ class LocatorStatusCard extends StatelessWidget {
 										? Icons.gps_fixed_rounded
 										: Icons.gps_off_rounded,
 								size: 18,
-								color: AppColors.primary,
+								color: AppColors.accent,
 							),
 							const SizedBox(width: 4),
 							Text(
@@ -108,7 +110,7 @@ class LocatorStatusCard extends StatelessWidget {
 							const Icon(
 								Icons.access_time_rounded,
 								size: 18,
-								color: AppColors.primary,
+								color: AppColors.accent,
 							),
 							const SizedBox(width: 4),
 							Text(
@@ -130,7 +132,7 @@ class LocatorStatusCard extends StatelessWidget {
 							const Icon(
 								Icons.near_me_rounded,
 								size: 18,
-								color: AppColors.primary,
+								color: AppColors.accent,
 							),
 							const SizedBox(width: 4),
 							Text(

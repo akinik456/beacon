@@ -930,7 +930,7 @@ if (_isMaster && _groupId != null)
     },
   ),
 	
-if (_isMaster && _groupId != null)
+	if (_isMaster && _groupId != null)
   StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
     stream: FirebaseFirestore.instance
         .collection('groups')
@@ -940,24 +940,46 @@ if (_isMaster && _groupId != null)
         .where('active', isEqualTo: true)
         .snapshots(),
     builder: (context, snapshot) {
-      final docs = snapshot.data?.docs ?? [];
+      /*final docs = snapshot.data?.docs ?? [];
 
       if (docs.isEmpty) {
         return const SizedBox.shrink();
-      }
+      }*/
+			
+			final docs = [...(snapshot.data?.docs ?? [])];
+
+docs.sort((a, b) {
+  final aData = a.data();
+  final bData = b.data();
+
+  final aMaster = aData['isMaster'] == true;
+  final bMaster = bData['isMaster'] == true;
+
+  // Master en üstte
+  if (aMaster && !bMaster) return -1;
+  if (!aMaster && bMaster) return 1;
+
+  // Sonra isim alfabetik
+  final aName = (aData['name'] ?? '').toString().toLowerCase();
+  final bName = (bData['name'] ?? '').toString().toLowerCase();
+
+  return aName.compareTo(bName);
+});
 
       return Padding(
-        padding: const EdgeInsets.only(bottom: 16),
+        padding: const EdgeInsets.only(bottom: 4),
         child: AppCard(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 'Requesters (${docs.length})',
-                style: AppFonts.subtitle,
+								style: AppFonts.subtitle.copyWith(
+								color: AppColors.primary,
+								),
               ),
 
-              const SizedBox(height: 12),
+              const SizedBox(height: 2),
 
               ...docs.map((doc) {
                 final data = doc.data();
@@ -967,74 +989,83 @@ if (_isMaster && _groupId != null)
                 final isMasterMember = data['isMaster'] == true;
 
                 return Padding(
-                  padding: const EdgeInsets.only(bottom: 10),
-                  child: Row(
-                    children: [
-                      Icon(
-                        isMasterMember
-                            ? Icons.workspace_premium_rounded
-                            : Icons.person_rounded,
-                        color: isMasterMember
-                            ? AppColors.primary
-                            : AppColors.textSecondary,
-                        size: 20,
-                      ),
+  padding: const EdgeInsets.only(bottom: 0),
+  child: SizedBox(
+    height: 30,
+    child: Row(
+      children: [
+        Icon(
+          isMasterMember
+              ? Icons.workspace_premium_rounded
+              : Icons.person_rounded,
+          color: AppColors.primary,
+          size: 18,
+        ),
 
-                      const SizedBox(width: 10),
+        const SizedBox(width: 6),
 
-                      Expanded(
-                        child: Text(
-                          '$name - $code',
-                          style: AppFonts.body,
-                        ),
-                      ),
+        Expanded(
+          child: Text(
+            '$name - $code',
+            style: AppFonts.body.copyWith(
+              height: 1.0,
+            ),
+          ),
+        ),
 
-                      if (isMasterMember)
-                        Text(
-                          'Master',
-                          style: AppFonts.caption.copyWith(
-                            color: AppColors.primary,
-                          ),
-                        )
-                      else
-                        IconButton(
-                          onPressed: () async {
-  final requesterId = doc.id;
+        if (isMasterMember)
+          Text(
+            'Master',
+            style: AppFonts.caption.copyWith(
+              color: AppColors.primary,
+              height: 1.0,
+            ),
+          )
+        else
+          IconButton(
+            constraints: const BoxConstraints(
+              minWidth: 30,
+              minHeight: 30,
+            ),
+            padding: EdgeInsets.zero,
+            visualDensity: VisualDensity.compact,
+            onPressed: () async {
+              final requesterId = doc.id;
 
-  final groupRef = FirebaseFirestore.instance
-      .collection('groups')
-      .doc(_groupId);
+              final groupRef = FirebaseFirestore.instance
+                  .collection('groups')
+                  .doc(_groupId);
 
-  final requesterRef = groupRef
-      .collection('devices')
-      .doc(requesterId);
+              final requesterRef = groupRef
+                  .collection('devices')
+                  .doc(requesterId);
 
-  await FirebaseFirestore.instance
-      .runTransaction((tx) async {
+              await FirebaseFirestore.instance
+                  .runTransaction((tx) async {
+                tx.delete(requesterRef);
 
-    tx.delete(requesterRef);
+                tx.update(groupRef, {
+                  'activeRequesterCount':
+                      FieldValue.increment(-1),
+                  'updatedAt':
+                      FieldValue.serverTimestamp(),
+                });
+              });
 
-    tx.update(groupRef, {
-      'activeRequesterCount':
-          FieldValue.increment(-1),
-      'updatedAt':
-          FieldValue.serverTimestamp(),
-    });
-  });
-
-  print(
-    "BEACON REQUESTER REMOVED => $requesterId",
-  );
-},
-                          icon: const Icon(
-                            Icons.person_remove_rounded,
-                            color: AppColors.danger,
-                            size: 20,
-                          ),
-                        ),
-                    ],
-                  ),
-                );
+              print(
+                "BEACON REQUESTER REMOVED => $requesterId",
+              );
+            },
+            icon: const Icon(
+              Icons.person_remove_rounded,
+              color: AppColors.danger,
+              size: 18,
+            ),
+          ),
+      ],
+    ),
+  ),
+);
               }),
             ],
           ),
