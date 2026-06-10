@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:beacon_requester/l10n/app_localizations.dart';
 
 import 'core/theme/app_colors.dart';
@@ -32,67 +32,104 @@ Future<void> main() async {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  static _MyAppState of(BuildContext context) {
+    return context.findAncestorStateOfType<_MyAppState>()!;
+  }
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  Locale? _locale;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadLocale();
+  }
+
+  Future<void> _loadLocale() async {
+    final prefs = await SharedPreferences.getInstance();
+    final code = prefs.getString('languageCode');
+
+    if (code == null) return;
+
+    setState(() {
+      _locale = Locale(code);
+    });
+  }
+
+  Future<void> setLocale(String code) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('languageCode', code);
+
+    setState(() {
+      _locale = Locale(code);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-			debugShowCheckedModeBanner: false,
+      debugShowCheckedModeBanner: false,
 
-			onGenerateTitle: (context) =>
-					AppLocalizations.of(context)!.appName,
+      locale: _locale,
 
-			localizationsDelegates: const [
-				AppLocalizations.delegate,
-				GlobalMaterialLocalizations.delegate,
-				GlobalWidgetsLocalizations.delegate,
-				GlobalCupertinoLocalizations.delegate,
-			],
+      onGenerateTitle: (context) =>
+          AppLocalizations.of(context)!.appName,
 
-			supportedLocales: const [
-				Locale('en'),
-				Locale('tr'),
-			],
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
 
-			home: FutureBuilder<Map<String, String?>>(
-				future: () async {
-					final requesterId =
-							await IdentityService.getRequesterId();
+      supportedLocales: const [
+        Locale('en'),
+        Locale('tr'),
+      ],
 
-					final groupId =
-							await GroupService.getLocalGroupId();
+      home: FutureBuilder<Map<String, String?>>(
+        future: () async {
+          final requesterId =
+              await IdentityService.getRequesterId();
 
-					return {
-						'requesterId': requesterId,
-						'groupId': groupId,
-					};
-				}(),
-				builder: (context, snapshot) {
-					// loading
-					if (snapshot.connectionState != ConnectionState.done) {
-						return const Scaffold(
-							body: Center(
-								child: CircularProgressIndicator(),
-							),
-						);
-					}
+          final groupId =
+              await GroupService.getLocalGroupId();
 
-					final data = snapshot.data;
+          return {
+            'requesterId': requesterId,
+            'groupId': groupId,
+          };
+        }(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState !=
+              ConnectionState.done) {
+            return const Scaffold(
+              body: Center(
+                child: CircularProgressIndicator(),
+              ),
+            );
+          }
 
-					final requesterId = data?['requesterId'];
-					final groupId = data?['groupId'];
+          final data = snapshot.data;
 
-					// requester yoksa onboarding
-					if (requesterId == null || requesterId.isEmpty) {
-						return const PermissionIntroPage();
-					}
+          final requesterId = data?['requesterId'];
 
-					// requester + group varsa home
-					return const RequesterHomePage();
-				},
-			),
-		);
+          if (requesterId == null ||
+              requesterId.isEmpty) {
+            return const PermissionIntroPage();
+          }
+
+          return const RequesterHomePage();
+        },
+      ),
+    );
   }
 }
 

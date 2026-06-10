@@ -6,6 +6,7 @@ import '../services/group_service.dart';
 import 'requester_home_page.dart';
 import '../services/identity_service.dart';
 import '../services/requester_registry_service.dart';
+import '../l10n/app_localizations.dart';
 
 
 class CreateGroupPage extends StatefulWidget {
@@ -17,28 +18,23 @@ class CreateGroupPage extends StatefulWidget {
 
 class _CreateGroupPageState extends State<CreateGroupPage> {
   final groupNameCtrl = TextEditingController();
-  //final requesterNameCtrl = TextEditingController();
-
-  bool get canConfirm =>
-      groupNameCtrl.text.trim().isNotEmpty ;
-			//&& requesterNameCtrl.text.trim().isNotEmpty;
+  bool get canConfirm => groupNameCtrl.text.trim().isNotEmpty ;
 
   @override
   void initState() {
     super.initState();
     groupNameCtrl.addListener(() => setState(() {}));
-    //requesterNameCtrl.addListener(() => setState(() {}));
   }
 
   @override
   void dispose() {
     groupNameCtrl.dispose();
-    //requesterNameCtrl.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+		final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
@@ -47,7 +43,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
         surfaceTintColor: AppColors.background,
         elevation: 0,
         title: Text(
-          'Create group',
+          l10n.createNewGroup,
           style: AppFonts.title.copyWith(
 					color: AppColors.primary,
 					),
@@ -62,15 +58,10 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                 children: [
                   _InputField(
                     controller: groupNameCtrl,
-                    label: 'Group name',
-                    hint: 'Family, Team, Home...',
+                    label: l10n.groupName,
+                    hint: l10n.familyHome,
                   ),
                   const SizedBox(height: 18),
-                 /* _InputField(
-                    controller: requesterNameCtrl,
-                    label: 'Your Name',
-										hint: 'Enter your name',
-                  ),*/
                 ],
               ),
             ),
@@ -83,12 +74,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
               child: ElevatedButton(
                 onPressed: canConfirm 
 									? () async {
-										/*await IdentityService.setRequesterName(
-											requesterNameCtrl.text,
-										);									
-									
-										await IdentityService.createRequesterId();
-										await RequesterRegistryService.registerRequester();*/
+										
 										final _requesterName = await IdentityService.getRequesterName();
 										final _requesterCode = await IdentityService.getRequesterCode();
 										
@@ -121,7 +107,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                   ),
                 ),
                 child: Text(
-                  'Confirm',
+                  l10n.confirm,
                   style: AppFonts.button.copyWith(
                     color: canConfirm
                         ? AppColors.background

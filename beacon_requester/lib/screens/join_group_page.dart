@@ -10,6 +10,7 @@ import '../services/identity_service.dart';
 import '../services/requester_registry_service.dart';
 import '../services/group_service.dart';
 import '../services/code_service.dart';
+import '../l10n/app_localizations.dart';
 
 class JoinGroupPage extends StatefulWidget {
   const JoinGroupPage({super.key});
@@ -79,6 +80,7 @@ class _JoinGroupPageState extends State<JoinGroupPage> {
 
   @override
   Widget build(BuildContext context) {
+		final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
@@ -87,7 +89,7 @@ class _JoinGroupPageState extends State<JoinGroupPage> {
         surfaceTintColor: AppColors.background,
         elevation: 0,
         title: Text(
-          'Join group',
+          l10n.joinGroup,
           style: AppFonts.title.copyWith(
 					color: AppColors.primary,
 					),
@@ -103,8 +105,8 @@ class _JoinGroupPageState extends State<JoinGroupPage> {
                   const SizedBox(height: 18),
                   _InputField(
                     controller: codeCtrl,
-                    label: 'Group code',
-                    hint: '6-digit code',
+                    label: l10n.groupCode,
+                    hint: l10n.sixdigitcode,
                     keyboardType: TextInputType.text,
                     maxLength: 6,
                     inputFormatters: [
@@ -140,10 +142,10 @@ class _JoinGroupPageState extends State<JoinGroupPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Scan QR code', style: AppFonts.subtitle),
+                        Text(l10n.scanQRcode, style: AppFonts.subtitle),
                         const SizedBox(height: 4),
                         Text(
-                          'Join instantly with camera',
+                          l10n.joinInstantlyWithCamera,
                           style: AppFonts.caption,
                         ),
                       ],
@@ -173,7 +175,7 @@ class _JoinGroupPageState extends State<JoinGroupPage> {
                   ),
                 ),
                 child: Text(
-                  'Confirm',
+                  l10n.confirm,
                   style: AppFonts.button.copyWith(
                     color: AppColors.background,
                   ),

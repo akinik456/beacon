@@ -30,6 +30,8 @@ import '../core/widgets/call_me_overlay.dart';
 import '../core/widgets/alert_overlay.dart';
 import '../core/widgets/requester_list_card.dart';
 import '../core/widgets/join_request_card.dart';
+import 'language_select_page.dart';
+import '../l10n/app_localizations.dart';
 
 
 class RequesterHomePage extends StatefulWidget {
@@ -327,13 +329,17 @@ void _listenAlerts() async {
 
 
   void _showGroupQrDialog({
-    required BuildContext context,
-    required String groupId,
-    required String groupCode,
-  }) {
-    showDialog(
-      context: context,
-      builder: (_) => Dialog(
+  required BuildContext context,
+  required String groupId,
+  required String groupCode,
+}) {
+  showDialog(
+    context: context,
+    builder: (dialogContext) {
+      final l10n =
+          AppLocalizations.of(dialogContext)!;
+
+      return Dialog(
         backgroundColor: AppColors.surface,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(24),
@@ -344,7 +350,7 @@ void _listenAlerts() async {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                'Group QR Code',
+                l10n.groupQRCode,
                 style: AppFonts.title,
               ),
 
@@ -366,7 +372,7 @@ void _listenAlerts() async {
               const SizedBox(height: 18),
 
               Text(
-                'Group code',
+                l10n.groupCode,
                 style: AppFonts.caption,
               ),
 
@@ -382,21 +388,23 @@ void _listenAlerts() async {
             ],
           ),
         ),
-      ),
-    );
-  }
+      );
+    },
+  );
+}
 
 
 	Widget _buildNoGroupHome({
 		required String requesterName,
 	}) {
+	final l10n = AppLocalizations.of(context)!;
 		return Padding(
 			padding: const EdgeInsets.all(20),
 			child: Column(
 				crossAxisAlignment: CrossAxisAlignment.start,
 				children: [
 					Text(
-						'Welcome',
+						l10n.wellcome,
 						style: AppFonts.title.copyWith(
 							fontSize: 26,
 							color: AppColors.primary,
@@ -406,7 +414,7 @@ void _listenAlerts() async {
 					const SizedBox(height: 6),
 
 					Text(
-						requesterName,
+						l10n.adminName,
 						style: AppFonts.caption,
 					),
 
@@ -417,14 +425,14 @@ void _listenAlerts() async {
 							crossAxisAlignment: CrossAxisAlignment.start,
 							children: [
 								Text(
-									'No group yet',
+									l10n.noGroupYet,
 									style: AppFonts.subtitle,
 								),
 
 								const SizedBox(height: 8),
 
 								Text(
-									'Create a new group or join an existing group.',
+									l10n.createOrJoin,
 									style: AppFonts.body.copyWith(
 										color: AppColors.textSecondary,
 									),
@@ -457,8 +465,8 @@ void _listenAlerts() async {
 												);
 											}
 										},
-										child: const Text(
-											'Create Group',
+										child: Text(
+											l10n.createNewGroup,
 										),
 									),
 								),
@@ -490,8 +498,8 @@ void _listenAlerts() async {
 												);
 											}
 										},
-										child: const Text(
-											'Join Group',
+										child: Text(
+											l10n.joinGroup,
 										),
 									),
 								),
@@ -507,6 +515,7 @@ void _listenAlerts() async {
 
   @override
   Widget build(BuildContext context) {
+	final l10n = AppLocalizations.of(context)!;
     return Stack(
   children: [
     Scaffold(
@@ -572,7 +581,7 @@ void _listenAlerts() async {
 												const SizedBox(height: 16),
 
 												Text(
-													'REJECTED',
+													l10n.rejected,
 													style: AppFonts.title.copyWith(
 														color: AppColors.danger,
 													),
@@ -604,7 +613,7 @@ void _listenAlerts() async {
 																),
 															);
 														},
-														child: const Text('OK'),
+														child: Text(l10n.ok),
 													),
 												),
 											],
@@ -650,12 +659,12 @@ void _listenAlerts() async {
 													),
 													const SizedBox(height: 16),
 													Text(
-														'Waiting for approval',
+														l10n.waitingForApprovale,
 														style: AppFonts.title,
 													),
 													const SizedBox(height: 8),
 													Text(
-														'Your request has been sent to the group master.',
+														l10n.yourrequest,
 														textAlign: TextAlign.center,
 														style: AppFonts.body.copyWith(
 															color: AppColors.textSecondary,
@@ -707,12 +716,10 @@ void _listenAlerts() async {
             groupName,
             style: AppFonts.title.copyWith(
               fontSize: 26,
-							color: AppColors.primary,
+              color: AppColors.primary,
             ),
           ),
-
           const SizedBox(height: 6),
-
           Text(
             requesterName,
             style: AppFonts.caption,
@@ -721,7 +728,30 @@ void _listenAlerts() async {
       ),
     ),
 
-    const SizedBox(width: 16),
+    TextButton.icon(
+      onPressed: () async {
+        await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => const LanguageSelectPage(),
+          ),
+        );
+
+        if (!mounted) return;
+        setState(() {});
+      },
+      icon: const Icon(
+        Icons.language_rounded,
+        size: 18,
+      ),
+      label: Text(
+        Localizations.localeOf(context).languageCode == 'tr'
+            ? 'Türkçe'
+            : 'English',
+      ),
+    ),
+
+    const SizedBox(width: 10),
 
     FutureBuilder<String>(
       future: _loadGroupCode(),
@@ -746,12 +776,11 @@ void _listenAlerts() async {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    'Group\nCode',
-                    style: AppFonts.caption,
-                  ),
-
+										'${l10n.group}\n'
+										'${l10n.code}',
+										style: AppFonts.caption,
+									),
                   const SizedBox(width: 6),
-
                   const Icon(
                     Icons.qr_code_2_rounded,
                     color: AppColors.primary,
@@ -759,9 +788,7 @@ void _listenAlerts() async {
                   ),
                 ],
               ),
-
               const SizedBox(height: 6),
-
               Text(
                 groupCode,
                 style: AppFonts.subtitle.copyWith(
@@ -831,7 +858,7 @@ void _listenAlerts() async {
               : AppColors.primary,
         ),
         label: Text(
-          isFull ? 'Member Limit Reached' : 'Add Member',
+          isFull ? l10n.memberlimitreached : l10n.addMember,
           style: AppFonts.button.copyWith(
             color: isFull
                 ? AppColors.textSecondary
@@ -871,7 +898,7 @@ void _listenAlerts() async {
 
                         Expanded(
                           child: Text(
-                            '${pairedLocators.length} paired locator',
+                            '${pairedLocators.length}  ${l10n.pairedMember}',
                             style: AppFonts.subtitle,
                           ),
                         ),
@@ -885,7 +912,7 @@ void _listenAlerts() async {
                     child: _locators.isEmpty
                         ? Center(
                             child: Text(
-                              'No paired locators yet.',
+                              l10n.noPairedMemberYet,
                               style: AppFonts.caption,
                               textAlign: TextAlign.center,
                             ),
@@ -963,11 +990,11 @@ void _listenAlerts() async {
 																		builder: (_) => AlertDialog(
 																			backgroundColor: AppColors.surface,
 																			title: Text(
-																				'Remove Member',
+																				l10n.removeMember,
 																				style: AppFonts.title,
 																			),
 																			content: Text(
-																				'This Member will be removed from your paired list.',
+																				l10n.thismember,
 																				style: AppFonts.body.copyWith(
 																					color: AppColors.textSecondary,
 																				),
@@ -978,7 +1005,7 @@ void _listenAlerts() async {
 																						Navigator.pop(context, false);
 																					},
 																					child: Text(
-																						'Cancel',
+																						l10n.cancel,
 																						style: AppFonts.button.copyWith(
 																							color: AppColors.textSecondary,
 																						),
@@ -989,7 +1016,7 @@ void _listenAlerts() async {
 																						Navigator.pop(context, true);
 																					},
 																					child: Text(
-																						'Remove',
+																						l10n.remove,
 																						style: AppFonts.button.copyWith(
 																							color: AppColors.danger,
 																						),
@@ -1019,8 +1046,8 @@ void _listenAlerts() async {
 																	if (!context.mounted) return;
 
 																	ScaffoldMessenger.of(context).showSnackBar(
-																		const SnackBar(
-																			content: Text('Member removed'),
+																		SnackBar(
+																			content: Text(l10n.memberremoved),
 																		),
 																	);
 

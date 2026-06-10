@@ -4,6 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_fonts.dart';
 import 'app_card.dart';
+import '../../l10n/app_localizations.dart';
+
 
 class RequesterListCard extends StatelessWidget {
   final String groupId;
@@ -15,6 +17,7 @@ class RequesterListCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+	final l10n = AppLocalizations.of(context)!;
     return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
       stream: FirebaseFirestore.instance
           .collection('groups')
@@ -55,7 +58,7 @@ class RequesterListCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Requesters (${docs.length})',
+								  '${l10n.requesters} ${docs.length}',
                   style: AppFonts.subtitle.copyWith(
                     color: AppColors.primary,
                   ),
@@ -97,7 +100,7 @@ class RequesterListCard extends StatelessWidget {
 
                           if (isMasterMember)
                             Text(
-                              'Master',
+                              l10n.master,
                               style: AppFonts.caption.copyWith(
                                 color: AppColors.primary,
                                 height: 1.0,

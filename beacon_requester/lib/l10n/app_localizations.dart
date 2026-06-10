@@ -95,47 +95,23 @@ abstract class AppLocalizations {
     Locale('tr')
   ];
 
+  /// No description provided for @addMember.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Member'**
+  String get addMember;
+
+  /// No description provided for @adminName.
+  ///
+  /// In en, this message translates to:
+  /// **'Admin Name'**
+  String get adminName;
+
   /// No description provided for @appName.
   ///
   /// In en, this message translates to:
   /// **'LynraFamily'**
   String get appName;
-
-  /// No description provided for @title.
-  ///
-  /// In en, this message translates to:
-  /// **'LynraFamily'**
-  String get title;
-
-  /// No description provided for @hello.
-  ///
-  /// In en, this message translates to:
-  /// **'Hello'**
-  String get hello;
-
-  /// No description provided for @permissionIntroTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Before we start'**
-  String get permissionIntroTitle;
-
-  /// No description provided for @permissionIntroSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'LynraFamily needs a few permissions to work safely and correctly.'**
-  String get permissionIntroSubtitle;
-
-  /// No description provided for @locationPermissionTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Location permission'**
-  String get locationPermissionTitle;
-
-  /// No description provided for @locationPermissionDesc.
-  ///
-  /// In en, this message translates to:
-  /// **'Used to show your distance to members.'**
-  String get locationPermissionDesc;
 
   /// No description provided for @cameraPermissionTitle.
   ///
@@ -149,17 +125,239 @@ abstract class AppLocalizations {
   /// **'Used only when scanning a QR code.'**
   String get cameraPermissionDesc;
 
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
+
+  /// No description provided for @cntinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get cntinue;
+
+  /// No description provided for @code.
+  ///
+  /// In en, this message translates to:
+  /// **'Code'**
+  String get code;
+
+  /// No description provided for @confirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm'**
+  String get confirm;
+
+  /// No description provided for @createOrJoin.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a new group or join an existing group'**
+  String get createOrJoin;
+
   /// No description provided for @createNewGroup.
   ///
   /// In en, this message translates to:
-  /// **'Create new group'**
+  /// **'Create a new group'**
   String get createNewGroup;
 
-  /// No description provided for @joinExistingGroup.
+  /// No description provided for @enteryourname.
   ///
   /// In en, this message translates to:
-  /// **'Join existing group'**
-  String get joinExistingGroup;
+  /// **'Enter Your Name (Other members will see this name.)'**
+  String get enteryourname;
+
+  /// No description provided for @familyHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Family,Home...'**
+  String get familyHome;
+
+  /// No description provided for @hello.
+  ///
+  /// In en, this message translates to:
+  /// **'Hello'**
+  String get hello;
+
+  /// No description provided for @joinGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Join group'**
+  String get joinGroup;
+
+  /// No description provided for @joinInstantlyWithCamera.
+  ///
+  /// In en, this message translates to:
+  /// **'Join instantly with camera'**
+  String get joinInstantlyWithCamera;
+
+  /// No description provided for @group.
+  ///
+  /// In en, this message translates to:
+  /// **'Group'**
+  String get group;
+
+  /// No description provided for @groupCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Group Code'**
+  String get groupCode;
+
+  /// No description provided for @groupQRCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Group QR Code'**
+  String get groupQRCode;
+
+  /// No description provided for @groupName.
+  ///
+  /// In en, this message translates to:
+  /// **'Group Name'**
+  String get groupName;
+
+  /// No description provided for @language.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get language;
+
+  /// No description provided for @locationPermissionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Location permission'**
+  String get locationPermissionTitle;
+
+  /// No description provided for @locationPermissionDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Used to show your distance to members.'**
+  String get locationPermissionDesc;
+
+  /// No description provided for @master.
+  ///
+  /// In en, this message translates to:
+  /// **'Master'**
+  String get master;
+
+  /// No description provided for @memberlimitreached.
+  ///
+  /// In en, this message translates to:
+  /// **'Member Limit Reached'**
+  String get memberlimitreached;
+
+  /// No description provided for @memberremoved.
+  ///
+  /// In en, this message translates to:
+  /// **'Member Removed'**
+  String get memberremoved;
+
+  /// No description provided for @noGroupYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No group yet'**
+  String get noGroupYet;
+
+  /// No description provided for @noPairedMemberYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No paired locators yet.'**
+  String get noPairedMemberYet;
+
+  /// No description provided for @ok.
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get ok;
+
+  /// No description provided for @pairedMember.
+  ///
+  /// In en, this message translates to:
+  /// **'Paired Member'**
+  String get pairedMember;
+
+  /// No description provided for @permissionIntroTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Before we start'**
+  String get permissionIntroTitle;
+
+  /// No description provided for @permissionIntroSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'LynraFamily needs a few permissions to work safely and correctly.'**
+  String get permissionIntroSubtitle;
+
+  /// No description provided for @rejected.
+  ///
+  /// In en, this message translates to:
+  /// **'REJECTED'**
+  String get rejected;
+
+  /// No description provided for @remove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get remove;
+
+  /// No description provided for @removeMember.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove Member'**
+  String get removeMember;
+
+  /// No description provided for @requesters.
+  ///
+  /// In en, this message translates to:
+  /// **'Admins'**
+  String get requesters;
+
+  /// No description provided for @scanQRcode.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan QR code'**
+  String get scanQRcode;
+
+  /// No description provided for @sixdigitcode.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter 6-digit code'**
+  String get sixdigitcode;
+
+  /// No description provided for @sva.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get sva;
+
+  /// No description provided for @thismember.
+  ///
+  /// In en, this message translates to:
+  /// **'This Member will be removed from your paired list.'**
+  String get thismember;
+
+  /// No description provided for @title.
+  ///
+  /// In en, this message translates to:
+  /// **'LynraFamily'**
+  String get title;
+
+  /// No description provided for @waitingForApprovale.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for approval'**
+  String get waitingForApprovale;
+
+  /// No description provided for @wellcome.
+  ///
+  /// In en, this message translates to:
+  /// **'Wellcome'**
+  String get wellcome;
+
+  /// No description provided for @yourrequest.
+  ///
+  /// In en, this message translates to:
+  /// **'Your request has been sent to the group master.'**
+  String get yourrequest;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

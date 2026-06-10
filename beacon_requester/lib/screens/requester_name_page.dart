@@ -6,6 +6,8 @@ import '../core/widgets/app_card.dart';
 import 'requester_home_page.dart';
 import '../services/identity_service.dart';
 import '../services/requester_registry_service.dart';
+import '../l10n/app_localizations.dart';
+
 
 class RequesterNamePage extends StatefulWidget {
   const RequesterNamePage({super.key});
@@ -42,6 +44,7 @@ class _RequesterNamePageState extends State<RequesterNamePage> {
 
   @override
   Widget build(BuildContext context) {
+		final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
@@ -65,7 +68,7 @@ class _RequesterNamePageState extends State<RequesterNamePage> {
                 controller: nameCtrl,
                 style: AppFonts.body,
                 decoration: InputDecoration(
-                  hintText: 'Enter your name',
+                  hintText: l10n.enteryourname,
                   hintStyle: AppFonts.caption,
                   border: InputBorder.none,
                 ),
@@ -102,7 +105,7 @@ class _RequesterNamePageState extends State<RequesterNamePage> {
                   ),
                 ),
                 child: Text(
-                  'Confirm',
+                  l10n.confirm,
                   style: AppFonts.button.copyWith(
                     color: canConfirm
                         ? AppColors.background

@@ -6,9 +6,18 @@ import '../core/widgets/app_card.dart';
 import '../l10n/app_localizations.dart';
 import 'join_group_page.dart';
 import 'requester_name_page.dart';
+import 'language_select_page.dart';
 
-class PermissionIntroPage extends StatelessWidget {
+class PermissionIntroPage extends StatefulWidget {
   const PermissionIntroPage({super.key});
+
+  @override
+  State<PermissionIntroPage> createState() =>
+      _PermissionIntroPageState();
+}
+
+class _PermissionIntroPageState
+    extends State<PermissionIntroPage> {
 
   @override
   Widget build(BuildContext context) {
@@ -21,6 +30,36 @@ class PermissionIntroPage extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(
             children: [
+											Align(
+												alignment: Alignment.centerRight,
+												child: TextButton.icon(
+													onPressed: () async {
+														await Navigator.push(
+															context,
+															MaterialPageRoute(
+																builder: (_) =>
+																		const LanguageSelectPage(),
+															),
+														);
+
+														if (!mounted) return;
+														setState(() {});
+													},
+													icon: const Icon(
+														Icons.language_rounded,
+														size: 18,
+														color: AppColors.primary,
+													),
+													label: Text(
+														Localizations.localeOf(context).languageCode == 'tr'
+															? 'Türkçe'
+															: 'English',
+															style: AppFonts.caption.copyWith(
+																color: AppColors.primary,
+															),
+									),
+								),
+							),
               const Spacer(),
 
               // ================= ICON =================
@@ -196,7 +235,7 @@ class PermissionIntroPage extends StatelessWidget {
                       ),
                     ),
                     child: Text(
-                      'CONTINUE',
+                      l10n.cntinue,
                       style: AppFonts.button.copyWith(
                         color: AppColors.background,
                       ),
