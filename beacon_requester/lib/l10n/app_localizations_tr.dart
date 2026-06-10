@@ -12,10 +12,28 @@ class AppLocalizationsTr extends AppLocalizations {
   String get addMember => 'Üye Ekle';
 
   @override
+  String get addressNotAvailable => 'Adres bilgisi mevcut değil.';
+
+  @override
   String get adminName => 'Yönetici İsmi';
 
   @override
+  String get alerts => 'ALARMLAR';
+
+  @override
   String get appName => 'LynraFamily';
+
+  @override
+  String get approve => 'Approve';
+
+  @override
+  String get batteryLowAlert => 'Düşük Pil Alarmı';
+
+  @override
+  String get batteryAlertlevel => 'Pil Alarm Seviyesi';
+
+  @override
+  String get callme => 'Arama İsteği';
 
   @override
   String get cameraPermissionTitle => 'Kamera izni';
@@ -25,6 +43,9 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get cancel => 'İptal';
+
+  @override
+  String get chooseWhichNotif => 'Bu üyeden hangi bildirimleri almak istediğinizi seçin.';
 
   @override
   String get cntinue => 'Devam';
@@ -42,6 +63,12 @@ class AppLocalizationsTr extends AppLocalizations {
   String get createNewGroup => 'Yeni grup oluşturun';
 
   @override
+  String get disabledByMaster => 'Grup yöneticisi tarafından devre dışı bırakıldı';
+
+  @override
+  String get dismiss => 'Kapat';
+
+  @override
   String get enteryourname => 'İsminiz (Diğer üyeler bu ismi görür)';
 
   @override
@@ -55,6 +82,15 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get joinInstantlyWithCamera => 'Kamerayla anında katılın';
+
+  @override
+  String get joinRequest => 'Gruba Katılma İsteği';
+
+  @override
+  String get geofenceAlert => 'Konum Alarmı';
+
+  @override
+  String get gpsOffAlert => 'GPS Kapalı Alarmı';
 
   @override
   String get group => 'Grup';
@@ -81,10 +117,22 @@ class AppLocalizationsTr extends AppLocalizations {
   String get master => 'Grup Yöneticisi';
 
   @override
+  String get maxFamilyMembersReached => 'Maximum family members reached';
+
+  @override
+  String get maximum3Places => 'En fazla 3 konum kaydedilebilir';
+
+  @override
   String get memberlimitreached => 'Üye Limitine Ulaşıldı';
 
   @override
+  String get memberNotifications => 'Üye Bildirimleri';
+
+  @override
   String get memberremoved => 'Member Removed';
+
+  @override
+  String get memberSettings => 'Üye Ayarları';
 
   @override
   String get noGroupYet => 'Henüz Bir Gruba Girmediniz';
@@ -93,7 +141,22 @@ class AppLocalizationsTr extends AppLocalizations {
   String get noPairedMemberYet => 'Eşleştirilmiş Üye Yok';
 
   @override
+  String get notificationSettingsSaved => 'Bildirim ayarları kaydedildi.';
+
+  @override
+  String get notifyBattery => 'Pil seviyesi düşük olduğunda bildir';
+
+  @override
+  String get notifyGPS => 'GPS kapatıldığında bildir';
+
+  @override
+  String get notifyPlaces => 'Üye belirlenen yerlere girdiğinde veya ayrıldığında bildir';
+
+  @override
   String get ok => 'Tamam';
+
+  @override
+  String get onlyTheMaster => 'Bu ayarları yalnızca grup yöneticisi değiştirebilir.';
 
   @override
   String get pairedMember => 'Eşleştirilmiş Üye';
@@ -103,6 +166,21 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get permissionIntroSubtitle => 'LynraFamily’nin güvenli ve doğru çalışması için birkaç izne ihtiyacı var.';
+
+  @override
+  String get placeSaved => 'Konum kaydedildi';
+
+  @override
+  String get receiveCallMe => 'Bu üyeden gelen arama isteklerini alın.';
+
+  @override
+  String get receiveGPSalerts => 'GPS kapalı uyarılarını alın';
+
+  @override
+  String get receivelowbattery => 'Pil seviyesi düşük uyarısı alın';
+
+  @override
+  String get reject => 'Reddet';
 
   @override
   String get rejected => 'REDDEDİLDİ';
@@ -117,7 +195,16 @@ class AppLocalizationsTr extends AppLocalizations {
   String get requesters => 'Yöneticiler';
 
   @override
+  String get saveMemberLocation => 'Üye konumunu kaydet';
+
+  @override
+  String get saveSettings => 'Ayarları Kaydet';
+
+  @override
   String get scanQRcode => 'QR kodu taratınız';
+
+  @override
+  String get settingsSaved => 'Ayarlar kaydedildi';
 
   @override
   String get sixdigitcode => '6 haneli kod giriniz';
@@ -132,7 +219,13 @@ class AppLocalizationsTr extends AppLocalizations {
   String get title => 'LynraFamily';
 
   @override
+  String get viewOnly => 'Görüntüleme Modu';
+
+  @override
   String get waitingForApprovale => 'Onay Bekleniyor';
+
+  @override
+  String get wantsYoutoCall => 'Aramanızı istiyor';
 
   @override
   String get wellcome => 'Hoşgeldiniz';

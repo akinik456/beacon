@@ -101,17 +101,53 @@ abstract class AppLocalizations {
   /// **'Add Member'**
   String get addMember;
 
+  /// No description provided for @addressNotAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Address not available'**
+  String get addressNotAvailable;
+
   /// No description provided for @adminName.
   ///
   /// In en, this message translates to:
   /// **'Admin Name'**
   String get adminName;
 
+  /// No description provided for @alerts.
+  ///
+  /// In en, this message translates to:
+  /// **'ALERTS'**
+  String get alerts;
+
   /// No description provided for @appName.
   ///
   /// In en, this message translates to:
   /// **'LynraFamily'**
   String get appName;
+
+  /// No description provided for @approve.
+  ///
+  /// In en, this message translates to:
+  /// **'Approve'**
+  String get approve;
+
+  /// No description provided for @batteryLowAlert.
+  ///
+  /// In en, this message translates to:
+  /// **'Battery Low Alert'**
+  String get batteryLowAlert;
+
+  /// No description provided for @batteryAlertlevel.
+  ///
+  /// In en, this message translates to:
+  /// **'Battery Alert Level'**
+  String get batteryAlertlevel;
+
+  /// No description provided for @callme.
+  ///
+  /// In en, this message translates to:
+  /// **'Call Me'**
+  String get callme;
 
   /// No description provided for @cameraPermissionTitle.
   ///
@@ -130,6 +166,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Cancel'**
   String get cancel;
+
+  /// No description provided for @chooseWhichNotif.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose which notifications you want to receive from this member.'**
+  String get chooseWhichNotif;
 
   /// No description provided for @cntinue.
   ///
@@ -161,6 +203,18 @@ abstract class AppLocalizations {
   /// **'Create a new group'**
   String get createNewGroup;
 
+  /// No description provided for @disabledByMaster.
+  ///
+  /// In en, this message translates to:
+  /// **'Disabled by master'**
+  String get disabledByMaster;
+
+  /// No description provided for @dismiss.
+  ///
+  /// In en, this message translates to:
+  /// **'Dismiss'**
+  String get dismiss;
+
   /// No description provided for @enteryourname.
   ///
   /// In en, this message translates to:
@@ -190,6 +244,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Join instantly with camera'**
   String get joinInstantlyWithCamera;
+
+  /// No description provided for @joinRequest.
+  ///
+  /// In en, this message translates to:
+  /// **'Join Request'**
+  String get joinRequest;
+
+  /// No description provided for @geofenceAlert.
+  ///
+  /// In en, this message translates to:
+  /// **'Geofence Alert'**
+  String get geofenceAlert;
+
+  /// No description provided for @gpsOffAlert.
+  ///
+  /// In en, this message translates to:
+  /// **'GPS Off Alert'**
+  String get gpsOffAlert;
 
   /// No description provided for @group.
   ///
@@ -239,17 +311,41 @@ abstract class AppLocalizations {
   /// **'Master'**
   String get master;
 
+  /// No description provided for @maxFamilyMembersReached.
+  ///
+  /// In en, this message translates to:
+  /// **'Maximum family members reached'**
+  String get maxFamilyMembersReached;
+
+  /// No description provided for @maximum3Places.
+  ///
+  /// In en, this message translates to:
+  /// **'Maximum 3 places allowed'**
+  String get maximum3Places;
+
   /// No description provided for @memberlimitreached.
   ///
   /// In en, this message translates to:
   /// **'Member Limit Reached'**
   String get memberlimitreached;
 
+  /// No description provided for @memberNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Member Notifications'**
+  String get memberNotifications;
+
   /// No description provided for @memberremoved.
   ///
   /// In en, this message translates to:
   /// **'Member Removed'**
   String get memberremoved;
+
+  /// No description provided for @memberSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Member Settings'**
+  String get memberSettings;
 
   /// No description provided for @noGroupYet.
   ///
@@ -263,11 +359,41 @@ abstract class AppLocalizations {
   /// **'No paired locators yet.'**
   String get noPairedMemberYet;
 
+  /// No description provided for @notificationSettingsSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Notification settings saved'**
+  String get notificationSettingsSaved;
+
+  /// No description provided for @notifyBattery.
+  ///
+  /// In en, this message translates to:
+  /// **'Notify when battery is low'**
+  String get notifyBattery;
+
+  /// No description provided for @notifyGPS.
+  ///
+  /// In en, this message translates to:
+  /// **'Notify when GPS is turned off'**
+  String get notifyGPS;
+
+  /// No description provided for @notifyPlaces.
+  ///
+  /// In en, this message translates to:
+  /// **'Notify when member enters or leaves places'**
+  String get notifyPlaces;
+
   /// No description provided for @ok.
   ///
   /// In en, this message translates to:
   /// **'OK'**
   String get ok;
+
+  /// No description provided for @onlyTheMaster.
+  ///
+  /// In en, this message translates to:
+  /// **'Only the master can edit these settings.'**
+  String get onlyTheMaster;
 
   /// No description provided for @pairedMember.
   ///
@@ -286,6 +412,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'LynraFamily needs a few permissions to work safely and correctly.'**
   String get permissionIntroSubtitle;
+
+  /// No description provided for @placeSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Place Saved'**
+  String get placeSaved;
+
+  /// No description provided for @receiveCallMe.
+  ///
+  /// In en, this message translates to:
+  /// **'Receive call me requests from this member'**
+  String get receiveCallMe;
+
+  /// No description provided for @receiveGPSalerts.
+  ///
+  /// In en, this message translates to:
+  /// **'Receive GPS off alerts'**
+  String get receiveGPSalerts;
+
+  /// No description provided for @receivelowbattery.
+  ///
+  /// In en, this message translates to:
+  /// **'Receive low battery alerts'**
+  String get receivelowbattery;
+
+  /// No description provided for @reject.
+  ///
+  /// In en, this message translates to:
+  /// **'Reject'**
+  String get reject;
 
   /// No description provided for @rejected.
   ///
@@ -311,11 +467,29 @@ abstract class AppLocalizations {
   /// **'Admins'**
   String get requesters;
 
+  /// No description provided for @saveMemberLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Save member location as place'**
+  String get saveMemberLocation;
+
+  /// No description provided for @saveSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Settings'**
+  String get saveSettings;
+
   /// No description provided for @scanQRcode.
   ///
   /// In en, this message translates to:
   /// **'Scan QR code'**
   String get scanQRcode;
+
+  /// No description provided for @settingsSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings saved'**
+  String get settingsSaved;
 
   /// No description provided for @sixdigitcode.
   ///
@@ -341,11 +515,23 @@ abstract class AppLocalizations {
   /// **'LynraFamily'**
   String get title;
 
+  /// No description provided for @viewOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'View Only'**
+  String get viewOnly;
+
   /// No description provided for @waitingForApprovale.
   ///
   /// In en, this message translates to:
   /// **'Waiting for approval'**
   String get waitingForApprovale;
+
+  /// No description provided for @wantsYoutoCall.
+  ///
+  /// In en, this message translates to:
+  /// **'Wants You to Call'**
+  String get wantsYoutoCall;
 
   /// No description provided for @wellcome.
   ///

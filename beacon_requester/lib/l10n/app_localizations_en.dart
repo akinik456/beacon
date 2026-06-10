@@ -12,10 +12,28 @@ class AppLocalizationsEn extends AppLocalizations {
   String get addMember => 'Add Member';
 
   @override
+  String get addressNotAvailable => 'Address not available';
+
+  @override
   String get adminName => 'Admin Name';
 
   @override
+  String get alerts => 'ALERTS';
+
+  @override
   String get appName => 'LynraFamily';
+
+  @override
+  String get approve => 'Approve';
+
+  @override
+  String get batteryLowAlert => 'Battery Low Alert';
+
+  @override
+  String get batteryAlertlevel => 'Battery Alert Level';
+
+  @override
+  String get callme => 'Call Me';
 
   @override
   String get cameraPermissionTitle => 'Camera permission';
@@ -25,6 +43,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get cancel => 'Cancel';
+
+  @override
+  String get chooseWhichNotif => 'Choose which notifications you want to receive from this member.';
 
   @override
   String get cntinue => 'Continue';
@@ -42,6 +63,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get createNewGroup => 'Create a new group';
 
   @override
+  String get disabledByMaster => 'Disabled by master';
+
+  @override
+  String get dismiss => 'Dismiss';
+
+  @override
   String get enteryourname => 'Enter Your Name (Other members will see this name.)';
 
   @override
@@ -55,6 +82,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get joinInstantlyWithCamera => 'Join instantly with camera';
+
+  @override
+  String get joinRequest => 'Join Request';
+
+  @override
+  String get geofenceAlert => 'Geofence Alert';
+
+  @override
+  String get gpsOffAlert => 'GPS Off Alert';
 
   @override
   String get group => 'Group';
@@ -81,10 +117,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get master => 'Master';
 
   @override
+  String get maxFamilyMembersReached => 'Maximum family members reached';
+
+  @override
+  String get maximum3Places => 'Maximum 3 places allowed';
+
+  @override
   String get memberlimitreached => 'Member Limit Reached';
 
   @override
+  String get memberNotifications => 'Member Notifications';
+
+  @override
   String get memberremoved => 'Member Removed';
+
+  @override
+  String get memberSettings => 'Member Settings';
 
   @override
   String get noGroupYet => 'No group yet';
@@ -93,7 +141,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noPairedMemberYet => 'No paired locators yet.';
 
   @override
+  String get notificationSettingsSaved => 'Notification settings saved';
+
+  @override
+  String get notifyBattery => 'Notify when battery is low';
+
+  @override
+  String get notifyGPS => 'Notify when GPS is turned off';
+
+  @override
+  String get notifyPlaces => 'Notify when member enters or leaves places';
+
+  @override
   String get ok => 'OK';
+
+  @override
+  String get onlyTheMaster => 'Only the master can edit these settings.';
 
   @override
   String get pairedMember => 'Paired Member';
@@ -103,6 +166,21 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get permissionIntroSubtitle => 'LynraFamily needs a few permissions to work safely and correctly.';
+
+  @override
+  String get placeSaved => 'Place Saved';
+
+  @override
+  String get receiveCallMe => 'Receive call me requests from this member';
+
+  @override
+  String get receiveGPSalerts => 'Receive GPS off alerts';
+
+  @override
+  String get receivelowbattery => 'Receive low battery alerts';
+
+  @override
+  String get reject => 'Reject';
 
   @override
   String get rejected => 'REJECTED';
@@ -117,7 +195,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get requesters => 'Admins';
 
   @override
+  String get saveMemberLocation => 'Save member location as place';
+
+  @override
+  String get saveSettings => 'Save Settings';
+
+  @override
   String get scanQRcode => 'Scan QR code';
+
+  @override
+  String get settingsSaved => 'Settings saved';
 
   @override
   String get sixdigitcode => 'Enter 6-digit code';
@@ -132,7 +219,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get title => 'LynraFamily';
 
   @override
+  String get viewOnly => 'View Only';
+
+  @override
   String get waitingForApprovale => 'Waiting for approval';
+
+  @override
+  String get wantsYoutoCall => 'Wants You to Call';
 
   @override
   String get wellcome => 'Wellcome';

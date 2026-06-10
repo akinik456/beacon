@@ -6,6 +6,7 @@ import '../core/theme/app_fonts.dart';
 import '../core/widgets/app_card.dart';
 import '../services/group_service.dart';
 import '../services/identity_service.dart';
+import '../l10n/app_localizations.dart';
 
 class LocatorNotifyPage extends StatefulWidget {
   final String locatorId;
@@ -93,7 +94,8 @@ class _LocatorNotifyPageState extends State<LocatorNotifyPage> {
   Future<void> _saveSettings() async {
     final groupId = await GroupService.getLocalGroupId();
     final requesterId = await IdentityService.getRequesterId();
-
+		final l10n = AppLocalizations.of(context)!;
+		
     if (groupId == null || requesterId == null) return;
 
     await FirebaseFirestore.instance
@@ -114,8 +116,8 @@ class _LocatorNotifyPageState extends State<LocatorNotifyPage> {
     if (!mounted) return;
 
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Notification settings saved'),
+        SnackBar(
+        content: Text(l10n.notificationSettingsSaved,),
       ),
     );
 
@@ -124,6 +126,7 @@ class _LocatorNotifyPageState extends State<LocatorNotifyPage> {
 
   @override
   Widget build(BuildContext context) {
+		final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
@@ -132,7 +135,7 @@ class _LocatorNotifyPageState extends State<LocatorNotifyPage> {
         surfaceTintColor: AppColors.background,
         elevation: 0,
         title: Text(
-          'Member Notifications',
+          l10n.memberNotifications,
           style: AppFonts.title.copyWith(
 					color: AppColors.primary,
 					),
@@ -175,15 +178,15 @@ class _LocatorNotifyPageState extends State<LocatorNotifyPage> {
                 const SizedBox(height: 8),
 
                 Text(
-                  'Choose which notifications you want to receive from this member.',
+                  l10n.chooseWhichNotif,
                   style: AppFonts.caption,
                 ),
 
                 const SizedBox(height: 26),
 
                 _NotifySwitchCard(
-                  title: 'Call Me',
-                  subtitle: 'Receive wake-up requests from this member',
+                  title: l10n.callme,
+                  subtitle: l10n.receiveCallMe,
                   value: callMe,
                   enabled: true,
                   onChanged: (v) => setState(() => callMe = v),
@@ -192,10 +195,10 @@ class _LocatorNotifyPageState extends State<LocatorNotifyPage> {
                 const SizedBox(height: 12),
 
                 _NotifySwitchCard(
-                  title: 'GPS Off Alert',
+                  title: l10n.gpsOffAlert,
                   subtitle: gpsOffEnabledByMaster
-                      ? 'Receive GPS off alerts'
-                      : 'Disabled by master ',
+                      ? l10n.receiveGPSalerts
+                      : l10n.disabledByMaster,
                   value: gpsOff,
                   enabled: gpsOffEnabledByMaster,
                   onChanged: (v) => setState(() => gpsOff = v),
@@ -204,10 +207,10 @@ class _LocatorNotifyPageState extends State<LocatorNotifyPage> {
                 const SizedBox(height: 12),
 
                 _NotifySwitchCard(
-                  title: 'Battery Low Alert',
+                  title: l10n.batteryLowAlert,
                   subtitle: batteryLowEnabledByMaster
-                      ? 'Receive low battery alerts'
-                      : 'Disabled by master ',
+                      ? l10n.receivelowbattery
+                      : l10n.disabledByMaster,
                   value: batteryLow,
                   enabled: batteryLowEnabledByMaster,
                   onChanged: (v) => setState(() => batteryLow = v),
@@ -216,10 +219,10 @@ class _LocatorNotifyPageState extends State<LocatorNotifyPage> {
                 const SizedBox(height: 12),
 
                 _NotifySwitchCard(
-                  title: 'Geofence Alert',
+                  title: l10n.geofenceAlert,
                   subtitle: geofenceEnabledByMaster
                       ? 'Receive place enter / leave alerts'
-                      : 'Disabled by master ',
+                      : l10n.disabledByMaster,
                   value: geofence,
                   enabled: geofenceEnabledByMaster,
                   onChanged: (v) => setState(() => geofence = v),
@@ -239,7 +242,7 @@ class _LocatorNotifyPageState extends State<LocatorNotifyPage> {
                       ),
                     ),
                     child: Text(
-                      'Save Settings',
+                      l10n.saveSettings,
                       style: AppFonts.button.copyWith(
                         color: AppColors.background,
                       ),
@@ -269,6 +272,7 @@ class _NotifySwitchCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+		final l10n = AppLocalizations.of(context)!;
     final color = enabled ? AppColors.primary : AppColors.textSecondary;
 
     return AppCard(

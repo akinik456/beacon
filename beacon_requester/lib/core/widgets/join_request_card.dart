@@ -4,8 +4,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_fonts.dart';
 import 'app_card.dart';
-
 import '../../services/join_request_service.dart';
+import '../../l10n/app_localizations.dart';
+
 
 class JoinRequestCard extends StatelessWidget {
   final String groupId;
@@ -17,6 +18,7 @@ class JoinRequestCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+		final l10n = AppLocalizations.of(context)!;
     return StreamBuilder(
       stream: JoinRequestService.watchPendingJoinRequests(
         groupId: groupId,
@@ -39,7 +41,7 @@ class JoinRequestCard extends StatelessWidget {
                 CrossAxisAlignment.start,
             children: [
               Text(
-                'Join Request',
+                l10n.joinRequest,
                 style: AppFonts.subtitle,
               ),
 
@@ -132,16 +134,16 @@ class JoinRequestCard extends StatelessWidget {
   if (!context.mounted) return;
 
   ScaffoldMessenger.of(context).showSnackBar(
-    const SnackBar(
+    SnackBar(
       content: Text(
-        'Maximum family members reached',
+				l10n.maxFamilyMembersReached,
       ),
     ),
   );
 }
 											},
-                      child: const Text(
-                        'Approve',
+                      child: Text(
+											l10n.approve,
                       ),
                     ),
                   ),
@@ -160,8 +162,8 @@ class JoinRequestCard extends StatelessWidget {
 													"BEACON JOIN REJECTED => ${doc.id}",
 												);
 											},
-                      child: const Text(
-                        'Reject',
+                      child: Text(
+                        l10n.reject,
                       ),
                     ),
                   ),

@@ -5,6 +5,7 @@ import '../theme/app_colors.dart';
 import '../theme/app_fonts.dart';
 import 'app_card.dart';
 import '../../utils/time_helper.dart';
+import '../../l10n/app_localizations.dart';
 
 class CallMeOverlay extends StatelessWidget {
   final Map<String, dynamic> data;
@@ -17,6 +18,7 @@ class CallMeOverlay extends StatelessWidget {
 
   @override
 	Widget build(BuildContext context) {
+	final l10n = AppLocalizations.of(context)!;
   final locatorName = data['locatorName'] ?? 'Member';
   final locatorCode = data['locatorCode'] ?? '';
 	
@@ -60,7 +62,7 @@ class CallMeOverlay extends StatelessWidget {
               const SizedBox(height: 8),
 
               Text(
-                'wants you to call.',
+                l10n.wantsYoutoCall,
                 style: AppFonts.body,
                 textAlign: TextAlign.center,
               ),
@@ -71,7 +73,7 @@ class CallMeOverlay extends StatelessWidget {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: onDismiss,
-                  child: const Text('Dismiss'),
+                  child: Text(l10n.dismiss),
                 ),
               ),
             ],

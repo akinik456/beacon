@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_fonts.dart';
 import 'app_card.dart';
+import '../../l10n/app_localizations.dart';
 
 class AlertOverlay extends StatelessWidget {
   final Map<String, dynamic> data;
@@ -16,6 +17,7 @@ class AlertOverlay extends StatelessWidget {
 	
   @override
   Widget build(BuildContext context) {
+	final l10n = AppLocalizations.of(context)!;
     final locatorName =
         data['locatorName'] ?? 'Member';
 
@@ -64,8 +66,8 @@ class AlertOverlay extends StatelessWidget {
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: onDismiss,
-                    child: const Text(
-                      'Dismiss',
+                    child: Text(
+                      l10n.dismiss,
                     ),
                   ),
                 ),

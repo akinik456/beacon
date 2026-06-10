@@ -6,6 +6,8 @@ import '../core/theme/app_colors.dart';
 import '../core/theme/app_fonts.dart';
 import '../core/widgets/app_card.dart';
 import '../services/group_service.dart';
+import '../../l10n/app_localizations.dart';
+
 
 class LocatorSettingsPage extends StatefulWidget {
   final String locatorId;
@@ -63,11 +65,11 @@ class _LocatorSettingsPageState extends State<LocatorSettingsPage> {
 
   Future<void> _saveLocatorLocationAsPlace() async {
     if (!widget.isMaster) return;
-
+		final l10n = AppLocalizations.of(context)!;
     if (_placeCount >= 3) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Maximum 3 places allowed'),
+        SnackBar(
+          content: Text(l10n.maximum3Places),
         ),
       );
       return;
@@ -100,7 +102,7 @@ class _LocatorSettingsPageState extends State<LocatorSettingsPage> {
       'accuracy': data['accuracy'],
       'address': widget.address.isNotEmpty
           ? widget.address
-          : 'Address not available',
+          : l10n.addressNotAvailable,
       'isActive': true,
       'createdAt': FieldValue.serverTimestamp(),
     });
@@ -110,8 +112,8 @@ class _LocatorSettingsPageState extends State<LocatorSettingsPage> {
     if (!mounted) return;
 
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Place saved'),
+      SnackBar(
+        content: Text(l10n.placeSaved),
       ),
     );
   }
@@ -145,7 +147,7 @@ class _LocatorSettingsPageState extends State<LocatorSettingsPage> {
 
   Future<void> _saveSettings() async {
     if (!widget.isMaster) return;
-
+		final l10n = AppLocalizations.of(context)!;
     final groupId = await GroupService.getLocalGroupId();
     if (groupId == null) return;
 
@@ -167,8 +169,8 @@ class _LocatorSettingsPageState extends State<LocatorSettingsPage> {
     if (!mounted) return;
 
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Settings saved'),
+      SnackBar(
+        content: Text(l10n.settingsSaved),
       ),
     );
   }
@@ -179,7 +181,7 @@ class _LocatorSettingsPageState extends State<LocatorSettingsPage> {
   @override
   Widget build(BuildContext context) {
     final readOnly = !widget.isMaster;
-
+		final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
@@ -188,7 +190,7 @@ class _LocatorSettingsPageState extends State<LocatorSettingsPage> {
         surfaceTintColor: AppColors.background,
         elevation: 0,
         title: Text(
-          'Member Settings',
+          l10n.memberSettings,
           style: AppFonts.title.copyWith(
 					color: AppColors.primary,
 					),
@@ -233,7 +235,7 @@ class _LocatorSettingsPageState extends State<LocatorSettingsPage> {
                 ),
                 if (readOnly)
                   Text(
-                    'View only',
+                    l10n.viewOnly,
                     style: AppFonts.caption.copyWith(
                       color: AppColors.warning,
                     ),
@@ -245,19 +247,19 @@ class _LocatorSettingsPageState extends State<LocatorSettingsPage> {
               const SizedBox(height: 16),
               AppCard(
                 child: Text(
-                  'Only the master can edit these settings.',
+                  l10n.onlyTheMaster,
                   style: AppFonts.caption,
                 ),
               ),
             ],
 
             const SizedBox(height: 12),
-            _sectionTitle('ALERTS'),
+            _sectionTitle(l10n.alerts),
 
             const SizedBox(height: 10),
             _SwitchCard(
-              title: 'GPS Off Alert',
-              subtitle: 'Notify when GPS is turned off',
+              title: l10n.gpsOffAlert,
+              subtitle: l10n.notifyGPS,
               value: gpsOffAlert,
               enabled: widget.isMaster,
               onChanged: (v) => setState(() => gpsOffAlert = v),
@@ -265,8 +267,8 @@ class _LocatorSettingsPageState extends State<LocatorSettingsPage> {
 
             const SizedBox(height: 12),
             _SwitchCard(
-              title: 'Battery Low Alert',
-              subtitle: 'Notify when battery is low',
+              title: l10n.batteryLowAlert,
+              subtitle: l10n.notifyBattery,
               value: batteryLowAlert,
               enabled: widget.isMaster,
               onChanged: (v) => setState(() => batteryLowAlert = v),
@@ -277,7 +279,7 @@ class _LocatorSettingsPageState extends State<LocatorSettingsPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Battery Low Level', style: AppFonts.subtitle),
+                  Text(l10n.batteryAlertlevel, style: AppFonts.subtitle),
                   const SizedBox(height: 12),
                   Row(
                     children: [15, 20, 25].map((level) {
@@ -319,13 +321,10 @@ class _LocatorSettingsPageState extends State<LocatorSettingsPage> {
               ),
             ),
 
-           // const SizedBox(height: 12),
-           // _sectionTitle('GEOFENCE'),
-
             const SizedBox(height: 4),
             _SwitchCard(
-              title: 'Geofence Alert',
-              subtitle: 'Notify when member enters or leaves places',
+              title: l10n.geofenceAlert,
+              subtitle: l10n.notifyPlaces,
               value: geofenceAlert,
               enabled: widget.isMaster,
               onChanged: (v) => setState(() => geofenceAlert = v),
@@ -363,7 +362,7 @@ class _LocatorSettingsPageState extends State<LocatorSettingsPage> {
                       : AppColors.textSecondary,
                 ),
                 label: Text(
-                  'Save member location as place',
+                  l10n.saveMemberLocation,
                   style: AppFonts.button.copyWith(
                     color: canSavePlace
                         ? AppColors.primary
@@ -400,7 +399,7 @@ class _LocatorSettingsPageState extends State<LocatorSettingsPage> {
                   ),
                 ),
                 child: Text(
-                  'Save Settings',
+                  l10n.saveSettings,
                   style: AppFonts.button.copyWith(
                     color: widget.isMaster
                         ? AppColors.background
