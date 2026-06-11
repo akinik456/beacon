@@ -9,6 +9,12 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
+  String get actionRequired => 'Action Required';
+
+  @override
+  String get activeWatchers => 'Active Watchers';
+
+  @override
   String get addMember => 'Add Member';
 
   @override
@@ -21,19 +27,43 @@ class AppLocalizationsEn extends AppLocalizations {
   String get alerts => 'ALERTS';
 
   @override
+  String get allPermissionsGranted => 'All Permissions Granted';
+
+  @override
   String get appName => 'LynraFamily';
 
   @override
   String get approve => 'Approve';
 
   @override
-  String get batteryLowAlert => 'Battery Low Alert';
+  String get askEverybody => 'Ask Everybody To Call Me';
+
+  @override
+  String get autoStart => 'Auto-Start';
+
+  @override
+  String get backgroundPermissions => 'LynraFamily Member requires these permissions to work in background.';
+
+  @override
+  String get backgroundAccessInstructions => 'In the opening screen, please find \"LynraFamily Member\" and turn the switch ON to ensure background reliability.\n\nThis window will close in 10 seconds...';
 
   @override
   String get batteryAlertlevel => 'Battery Alert Level';
 
   @override
+  String get batteryLowAlert => 'Battery Low Alert';
+
+  @override
+  String get batteryOptimization => 'Battery Optimization';
+
+  @override
+  String get batteryOptimizationDescription => 'Set to \"No Restrictions\" for background operation';
+
+  @override
   String get callme => 'Call Me';
+
+  @override
+  String get callMeSentAll => 'Call Me sent to all requesters';
 
   @override
   String get cameraPermissionTitle => 'Camera permission';
@@ -72,10 +102,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dismiss => 'Dismiss';
 
   @override
+  String get enableAutostart => 'Enable LynraFamily Member in Autostart list';
+
+  @override
   String get enteryourname => 'Enter Your Name (Other members will see this name.)';
 
   @override
   String get enterMemberCode => 'Enter Member Code';
+
+  @override
+  String get enterMemberName => 'Enter Member Name';
 
   @override
   String get familyHome => 'Family,Home...';
@@ -99,6 +135,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get gpsOffAlert => 'GPS Off Alert';
 
   @override
+  String get granted => 'Granted';
+
+  @override
+  String get grantRequiredPermissions => 'Grant Required Permissions';
+
+  @override
   String get group => 'Group';
 
   @override
@@ -111,13 +153,28 @@ class AppLocalizationsEn extends AppLocalizations {
   String get groupName => 'Group Name';
 
   @override
+  String get iUnderstand => 'I UNDERSTAND';
+
+  @override
+  String get importantFor => 'Important for request visibility';
+
+  @override
   String get language => 'Language';
+
+  @override
+  String get locationAccess => 'Location Access';
+
+  @override
+  String get locationAlwaysDescription => 'Set to \"Allow all the time\" for tracking';
 
   @override
   String get locationPermissionTitle => 'Location permission';
 
   @override
   String get locationPermissionDescription => 'LynraFamily Member needs location permission to respond to family location requests and share location updates.\n\nBackground location access allows the app to provide location updates even when the app is not open.\n\nYour location is only shared with trusted members of your family group.';
+
+  @override
+  String get manufacturerSettings => 'MANUFACTURER SETTINGS';
 
   @override
   String get master => 'Master';
@@ -127,6 +184,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get maximum3Places => 'Maximum 3 places allowed';
+
+  @override
+  String get member => 'Member';
 
   @override
   String get memberCode => 'Member Code';
@@ -144,16 +204,43 @@ class AppLocalizationsEn extends AppLocalizations {
   String get memberpaired => 'Member paired successfully';
 
   @override
+  String get memberQRCode => 'Member QR Code';
+
+  @override
   String get memberremoved => 'Member Removed';
 
   @override
   String get memberSettings => 'Member Settings';
 
   @override
+  String get memoryLock => 'Memory Lock';
+
+  @override
+  String get memoryProtection => 'Memory Protection';
+
+  @override
+  String get memoryProtectionInstructions => 'To keep LynraFamily Member running in the background, please follow these steps:\n\n• Xiaomi: Security app > Boost Speed > Settings > App Lock > Enable LynraFamily Member.\n• Others: Open Recent Apps, long press LynraFamily Member or swipe down, then tap the Lock icon.\n\nThis helps prevent the system from closing the app to save RAM.';
+
+  @override
+  String get memberReady => 'Member Ready';
+
+  @override
+  String get missing => 'Missing';
+
+  @override
+  String get noActiveWatchers => 'No Active Watchers';
+
+  @override
   String get noGroupYet => 'No group yet';
 
   @override
   String get noPairedMemberYet => 'No paired locators yet.';
+
+  @override
+  String get noPairedRequester => 'No Paired Admin';
+
+  @override
+  String get notifications => 'Notifications';
 
   @override
   String get notificationSettingsSaved => 'Notification settings saved';
@@ -177,16 +264,34 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pairedMember => 'Paired Member';
 
   @override
+  String get pairedRequesters => 'Paired Admins';
+
+  @override
   String get pairingRejected => 'Pairing request rejected';
+
+  @override
+  String get pairingRequest => 'Pairing request';
 
   @override
   String get permissionIntroTitle => 'Before we start';
 
   @override
+  String get permissions => 'Permissions';
+
+  @override
   String get permissionIntroSubtitle => 'LynraFamily needs a few permissions to work safely and correctly.';
 
   @override
+  String get permissionsRequired => 'Permissions Required';
+
+  @override
+  String get physicalActivity => 'Physical Activity';
+
+  @override
   String get placeSaved => 'Place Saved';
+
+  @override
+  String get preventSystemKillDescription => 'Prevent the system from killing LynraFamily Member';
 
   @override
   String get receiveCallMe => 'Receive call me requests from this member';
@@ -213,6 +318,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get requesters => 'Admins';
 
   @override
+  String get requiredForMotion => 'Required for motion detection';
+
+  @override
   String get saveMemberLocation => 'Save member location as place';
 
   @override
@@ -237,7 +345,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sixdigitcode => 'Enter 6-digit code';
 
   @override
+  String get somePermissions => 'Some permissions are missing. Please open the permissions page and allow the required permissions.';
+
+  @override
   String get sva => 'Save';
+
+  @override
+  String get systemPermissions => 'SYSTEM PERMISSIONS';
 
   @override
   String get thismember => 'This Member will be removed from your paired list.';

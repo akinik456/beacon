@@ -1,3 +1,17 @@
  app cihazdan kaldırılırsa FS den nasıl sileceğiz ?
  Tablet auto-start ayarı
  isimler için max. karakter sayı sınırlaması
+ 
+ ********
+ 
+ I/flutter (19004): locatorId => 321b05e4-f2bf-4004-9167-31a8b5718f99
+I/flutter (19004): BEACON FCM => subscribe start
+I/flutter (19004): BEACON IDENTITY => locatorId found => 321b05e4-f2bf-4004-9167-31a8b5718f99
+I/flutter (19004): BEACON FCM => locatorId => 321b05e4-f2bf-4004-9167-31a8b5718f99
+I/flutter (19004): BEACON FCM => topic => locator_321b05e4-f2bf-4004-9167-31a8b5718f99
+
+burda takıldı
+
+********
+
+loc gruba girmeden presence yazmayı deniyor

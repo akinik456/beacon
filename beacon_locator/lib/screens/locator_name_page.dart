@@ -6,6 +6,9 @@ import '../core/widgets/app_card.dart';
 import 'locator_home_page.dart';
 import '../services/identity_service.dart';
 import '../services/locator_registry_service.dart';
+import 'language_select_page.dart';
+import '../l10n/app_localizations.dart';
+
 
 class LocatorNamePage extends StatefulWidget {
   const LocatorNamePage({super.key});
@@ -42,6 +45,7 @@ class _LocatorNamePageState extends State<LocatorNamePage> {
 
   @override
   Widget build(BuildContext context) {
+	final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
@@ -50,7 +54,7 @@ class _LocatorNamePageState extends State<LocatorNamePage> {
 				surfaceTintColor: AppColors.primary,
 				elevation: 0,
 				title: Text(
-					'LynraFamily Member',
+					l10n.title,
 					style: AppFonts.title.copyWith(
 					color: AppColors.primary,
 					),
@@ -65,7 +69,7 @@ class _LocatorNamePageState extends State<LocatorNamePage> {
                 controller: nameCtrl,
                 style: AppFonts.body,
                 decoration: InputDecoration(
-                  hintText: 'Enter member name',
+                  hintText: l10n.enterMemberName,
                   hintStyle: AppFonts.caption,
                   border: InputBorder.none,
                 ),
@@ -102,7 +106,7 @@ class _LocatorNamePageState extends State<LocatorNamePage> {
                   ),
                 ),
                 child: Text(
-                  'Confirm',
+                  l10n.confirm,
                   style: AppFonts.button.copyWith(
                     color: canConfirm
                         ? AppColors.background

@@ -59,6 +59,16 @@ static Future<void> init() async {
 }	
 
   static Future<void> subscribeLocatorTopic() async {
+	print("BEACON FCM => getToken start");
+
+final token = await getFcmTokenSafe();
+
+if (token == null || token.isEmpty) {
+  print("BEACON FCM ERROR => token not available, skip subscribe");
+  return;
+}
+
+print("BEACON FCM => token => $token");
 
   print(
     "BEACON FCM => subscribe start",
@@ -80,7 +90,8 @@ static Future<void> init() async {
     return;
   }
 
-  final topic = 'locator_$locatorId';
+  final safeLocatorId = locatorId.replaceAll('-', '_');
+	final topic = 'locator_$safeLocatorId';
 
   print(
     "BEACON FCM => topic => $topic",
@@ -102,6 +113,22 @@ static Future<void> init() async {
     );
   }
 }
+
+static Future<String?> getFcmTokenSafe() async {
+  try {
+    print("BEACON FCM => getToken start");
+
+    final token = await FirebaseMessaging.instance.getToken();
+
+    print("BEACON FCM => token => $token");
+
+    return token;
+  } catch (e) {
+    print("BEACON FCM ERROR => getToken failed => $e");
+    return null;
+  }
+}
+
 
 static Future<void> updateFcmToken() async {
 

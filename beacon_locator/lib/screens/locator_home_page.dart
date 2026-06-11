@@ -19,6 +19,9 @@ import '../services/geofence_service.dart';
 import '../services/motion_service.dart';
 import '../services/active_watcher_service.dart';
 import '../services/locator_settings_service.dart';
+import '../l10n/app_localizations.dart';
+import 'language_select_page.dart';
+
 
 class LocatorHomePage extends StatefulWidget {
   const LocatorHomePage({super.key});
@@ -82,20 +85,21 @@ class _LocatorHomePageState extends State<LocatorHomePage>
   }
 
   void _showMissingPermissionsDialog() {
+		final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
         backgroundColor: AppColors.surface,
-        title: Text('Permissions required', style: AppFonts.title),
+        title: Text(l10n.permissionsRequired, style: AppFonts.title),
         content: Text(
-          'Some permissions are missing. Please open the permissions page and allow the required permissions.',
+          l10n.somePermissions,
           style: AppFonts.body.copyWith(color: AppColors.textSecondary),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
             child: Text(
-              'OK',
+              l10n.ok,
               style: AppFonts.button.copyWith(color: AppColors.primary),
             ),
           ),
@@ -179,9 +183,11 @@ Stream<List<Map<String, String>>> _watchPairedRequesterData() async* {
     required String locatorId,
     required String locatorCode,
   }) {
-    showDialog(
-      context: context,
-      builder: (_) => Dialog(
+      builder: (dialogContext){
+			final l10n =
+					AppLocalizations.of(dialogContext)!;
+
+			return Dialog(
         backgroundColor: AppColors.surface,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
         child: Padding(
@@ -189,7 +195,7 @@ Stream<List<Map<String, String>>> _watchPairedRequesterData() async* {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text('Member QR Code', style: AppFonts.title),
+              Text(l10n.memberQRCode, style: AppFonts.title),
               const SizedBox(height: 18),
               Container(
                 padding: const EdgeInsets.all(16),
@@ -204,7 +210,7 @@ Stream<List<Map<String, String>>> _watchPairedRequesterData() async* {
                 ),
               ),
               const SizedBox(height: 18),
-              Text('Member code', style: AppFonts.caption),
+              Text(l10n.memberCode, style: AppFonts.caption),
               const SizedBox(height: 6),
               Text(
                 locatorCode,
@@ -216,11 +222,12 @@ Stream<List<Map<String, String>>> _watchPairedRequesterData() async* {
             ],
           ),
         ),
-      ),
-    );
+      );
+			};
   }
 
   Widget _locatorCodeHeader(String locatorId, String locatorCode) {
+	final l10n = AppLocalizations.of(context)!;
     return InkWell(
       borderRadius: BorderRadius.circular(16),
       onTap: () {
@@ -235,7 +242,8 @@ Stream<List<Map<String, String>>> _watchPairedRequesterData() async* {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-								'Member\nCode',
+							    '${l10n.member}\n'
+									'${l10n.code}',
 								textAlign: TextAlign.center,
 								style: AppFonts.caption,
 							),
@@ -262,7 +270,7 @@ Stream<List<Map<String, String>>> _watchPairedRequesterData() async* {
 
   Widget _permissionsButton() {
     final color = hasAllPermissions ? AppColors.primary : AppColors.danger;
-
+		final l10n = AppLocalizations.of(context)!;
     return SizedBox(
       width: double.infinity,
       height: 54,
@@ -284,7 +292,7 @@ Stream<List<Map<String, String>>> _watchPairedRequesterData() async* {
 
         icon: Icon(Icons.privacy_tip_outlined, color: color),
         label: Text(
-          'Permissions',
+          l10n.permissions,
           style: AppFonts.button.copyWith(color: color),
         ),
         style: OutlinedButton.styleFrom(
@@ -303,11 +311,11 @@ Widget _pairedRequesterCard() {
     stream: _watchPairedRequesterData(),
     builder: (context, snapshot) {
       final requesters = snapshot.data ?? [];
-
+			final l10n = AppLocalizations.of(context)!;
       if (requesters.isEmpty) {
         return AppCard(
           child: Text(
-            'No paired requester',
+            l10n.noPairedRequester,
             style: AppFonts.subtitle,
           ),
         );
@@ -318,7 +326,7 @@ Widget _pairedRequesterCard() {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Paired requesters',
+              l10n.pairedRequesters,
               style: AppFonts.caption,
             ),
 
@@ -362,7 +370,7 @@ Widget _pairedRequesterCard() {
                         color: AppColors.primary,
                       ),
                       label: Text(
-                        'Call Me',
+                        l10n.callme,
                         style: AppFonts.button.copyWith(
                           color: AppColors.primary,
                         ),
@@ -400,19 +408,19 @@ Widget _pairedRequesterCard() {
                   if (!context.mounted) return;
 
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
+                    SnackBar(
                       content: Text(
-                        'Call Me sent to all requesters',
+                        l10n.callMeSentAll,
                       ),
                     ),
                   );
                 },
-                icon: const Icon(
+                icon: Icon(
                   Icons.campaign_outlined,
                   color: AppColors.primary,
                 ),
                 label: Text(
-                  'Ask Everybody To Call Me',
+                  l10n.askEverybody,
                   style: AppFonts.button.copyWith(
                     color: AppColors.primary,
                   ),
@@ -431,7 +439,7 @@ Widget _pairedRequesterCard() {
       future: IdentityService.getLocatorId(),
       builder: (context, idSnapshot) {
         final locatorId = idSnapshot.data;
-
+				final l10n = AppLocalizations.of(context)!;
         if (locatorId == null || locatorId.isEmpty) {
           return _pairedRequesterCard();
         }
@@ -458,7 +466,7 @@ Widget _pairedRequesterCard() {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Pairing request', style: AppFonts.caption),
+                  Text(l10n.pairingRequest, style: AppFonts.caption),
                   const SizedBox(height: 6),
                   Text(
                     '$requesterName - $requesterCode',
@@ -478,13 +486,13 @@ Widget _pairedRequesterCard() {
 														if (!context.mounted) return;
 
 														ScaffoldMessenger.of(context).showSnackBar(
-															const SnackBar(
-																content: Text('Pairing request rejected'),
+															SnackBar(
+																content: Text(l10n.pairingRejected),
 															),
 														);
 													},
                           child: Text(
-                            'Reject',
+                            l10n.reject,
                             style: AppFonts.button.copyWith(
                               color: AppColors.danger,
                             ),
@@ -508,7 +516,7 @@ Widget _pairedRequesterCard() {
                             ).showSnackBar(SnackBar(content: Text(result)));
                           },
                           child: Text(
-                            'Approve',
+                            l10n.approve,
                             style: AppFonts.button.copyWith(
                               color: AppColors.background,
                             ),
@@ -530,6 +538,7 @@ Widget _activeWatchersCard() {
   return ValueListenableBuilder<List<Map<String, dynamic>>>(
     valueListenable: ActiveWatcherService.activeWatchers,
     builder: (context, watchers, _) {
+			final l10n = AppLocalizations.of(context)!;
       if (watchers.isEmpty) {
         return AppCard(
           child: Column(
@@ -541,12 +550,12 @@ Widget _activeWatchersCard() {
               ),
               const SizedBox(height: 12),
               Text(
-                'Member Ready',
+                l10n.memberReady,
                 style: AppFonts.subtitle,
               ),
               const SizedBox(height: 4),
               Text(
-                'No active watchers',
+                l10n.noActiveWatchers,
                 style: AppFonts.caption,
               ),
             ],
@@ -559,76 +568,74 @@ Widget _activeWatchersCard() {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Active Watchers (${watchers.length})',
+              '${l10n.activeWatchers} (${watchers.length})',
               style: AppFonts.subtitle,
             ),
 
             const SizedBox(height: 16),
 
             Column(
-  children: List.generate(
-    watchers.length,
-    (index) {
-      final watcher = watchers[index];
+							children: List.generate(
+								watchers.length,
+								(index) {
+									final watcher = watchers[index];
 
-      final requesterName =
-          watcher['requesterName'] ?? 'Requester';
+									final requesterName =
+											watcher['requesterName'] ?? 'Requester';
 
-      final requesterCode =
-          watcher['requesterCode'] ?? '------';
+									final requesterCode =
+											watcher['requesterCode'] ?? '------';
 
-      return Column(
-        children: [
-          Row(
-            children: [
-              const Icon(
-                Icons.visibility_rounded,
-                color: AppColors.primary,
-                size: 20,
-              ),
+									return Column(
+										children: [
+											Row(
+												children: [
+													const Icon(
+														Icons.visibility_rounded,
+														color: AppColors.primary,
+														size: 20,
+													),
 
-              const SizedBox(width: 12),
+													const SizedBox(width: 12),
 
-              Expanded(
-                child: Column(
-                  crossAxisAlignment:
-                      CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      requesterName,
-                      style: AppFonts.subtitle,
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      requesterCode,
-                      style: AppFonts.caption,
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
+													Expanded(
+														child: Column(
+															crossAxisAlignment:
+																	CrossAxisAlignment.start,
+															children: [
+																Text(
+																	requesterName,
+																	style: AppFonts.subtitle,
+																),
+																const SizedBox(height: 2),
+																Text(
+																	requesterCode,
+																	style: AppFonts.caption,
+																),
+															],
+														),
+													),
+												],
+											),
 
-          if (index != watchers.length - 1) ...[
-            const SizedBox(height: 12),
-            Divider(
-              color: Colors.white.withValues(
-                alpha: 0.08,
-              ),
-              height: 1,
-            ),
-            const SizedBox(height: 12),
-          ],
-        ],
-      );
-    },
-  ),
-),
-						
+											if (index != watchers.length - 1) ...[
+												const SizedBox(height: 12),
+												Divider(
+													color: Colors.white.withValues(
+														alpha: 0.08,
+													),
+													height: 1,
+												),
+												const SizedBox(height: 12),
+											],
+										],
+									);
+								},
+							),
+						),						
           ],
         ),
-      );
-			
+      );			
     },
   );
 }	
@@ -644,7 +651,7 @@ Widget _activeWatchersCard() {
             final locatorId = snapshot.data?['locatorId'] ?? '';
             final locatorCode = snapshot.data?['locatorCode'] ?? '------';
             final locatorName = snapshot.data?['locatorName'] ?? 'Member';
-
+						final l10n = AppLocalizations.of(context)!;
             return Padding(
               padding: const EdgeInsets.all(20),
               child: Column(
@@ -667,18 +674,43 @@ Widget _activeWatchersCard() {
                           ],
                         ),
                       ),
+											Align(
+												alignment: Alignment.centerRight,
+												child: TextButton.icon(
+													onPressed: () async {
+														await Navigator.push(
+															context,
+															MaterialPageRoute(
+																builder: (_) =>
+																		const LanguageSelectPage(),
+															),
+														);
+														if (!mounted) return;
+														setState(() {});
+													},
+													icon: const Icon(
+														Icons.language_rounded,
+														size: 18,
+														color: AppColors.primary,
+													),
+													label: Text(
+														Localizations.localeOf(context).languageCode == 'tr'
+															? 'Türkçe'
+															: 'English',
+															style: AppFonts.caption.copyWith(
+																color: AppColors.primary,
+															),
+													),
+												),
+											),
                       const SizedBox(width: 16),
-                      _locatorCodeHeader(locatorId, locatorCode),
+                      _locatorCodeHeader(locatorId, locatorCode),									
                     ],
                   ),
                   const SizedBox(height: 24),
                   _buildPairingArea(),
-
 									const SizedBox(height: 12),
-
-									_activeWatchersCard(),
-									
-                  
+									_activeWatchersCard(),						
                   const Spacer(),
 									const SizedBox(height: 12),
                   _permissionsButton(),

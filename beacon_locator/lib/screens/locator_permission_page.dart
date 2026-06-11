@@ -4,6 +4,7 @@ import '../core/theme/app_colors.dart';
 import '../core/theme/app_fonts.dart';
 import '../core/widgets/app_card.dart';
 import '../services/locator_permission_service.dart';
+import '../l10n/app_localizations.dart';
 
 
 class LocatorPermissionPage extends StatefulWidget {
@@ -64,6 +65,7 @@ class LocatorPermissionPage extends StatefulWidget {
 
   @override
   Widget build(BuildContext context) {
+	final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
@@ -72,29 +74,31 @@ class LocatorPermissionPage extends StatefulWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Permissions',
-								style: AppFonts.title.copyWith(
-								fontSize: 28,
-								color: AppColors.primary,
+              Center(
+								child: Text(
+									l10n.permissions,
+									style: AppFonts.title.copyWith(
+										fontSize: 28,
+										color: AppColors.primary,
+									),
 								),
-              ),
+							),
               const SizedBox(height: 6),
               Text(
-                'LynraFamily Member requires these permissions to work in background.',
+                l10n.backgroundPermissions,
                 style: AppFonts.caption,
               ),
 
               const SizedBox(height: 26),
 
-              _SectionTitle('SYSTEM PERMISSIONS'),
+              _SectionTitle(l10n.systemPermissions),
 
               const SizedBox(height: 10),
 
               _PermissionItem(
 								icon: Icons.location_on_rounded,
-								title: 'Location Access',
-								subtitle: 'Set to “Allow all the time” for tracking',
+								title: l10n.locationAccess,
+								subtitle: l10n.locationAlwaysDescription,
 								granted: locationGranted,
 								onTap: () async {
 									await LocatorPermissionService.requestLocationAlways();
@@ -112,8 +116,8 @@ class LocatorPermissionPage extends StatefulWidget {
 
               _PermissionItem(
                 icon: Icons.directions_run_rounded,
-                title: 'Physical Activity',
-                subtitle: 'Required for motion detection',
+                title: l10n.physicalActivity,
+                subtitle: l10n.requiredForMotion,
                 granted: activityGranted,
                 onTap: () async {
 									await LocatorPermissionService.requestActivityRecognition();
@@ -131,8 +135,8 @@ class LocatorPermissionPage extends StatefulWidget {
 
               _PermissionItem(
 								icon: Icons.battery_charging_full_rounded,
-								title: 'Battery Optimization',
-								subtitle: 'Set to “No Restrictions” for background life',
+								title: l10n.batteryOptimization,
+								subtitle: l10n.batteryOptimizationDescription,
 								granted: batteryGranted,
 								onTap: () async {
 									await LocatorPermissionService
@@ -152,8 +156,8 @@ class LocatorPermissionPage extends StatefulWidget {
 
               _PermissionItem(
 								icon: Icons.notifications_active_rounded,
-								title: 'Notifications',
-								subtitle: 'Important for request visibility',
+								title: l10n.notifications,
+								subtitle: l10n.importantFor,
 								granted: notificationGranted,
 								onTap: () async {
 									await LocatorPermissionService.requestNotification();
@@ -169,14 +173,14 @@ class LocatorPermissionPage extends StatefulWidget {
 
               const SizedBox(height: 26),
 
-              _SectionTitle('MANUFACTURER SETTINGS'),
+              _SectionTitle(l10n.manufacturerSettings),
 
               const SizedBox(height: 10),
 
 							_PermissionItem(
 								icon: Icons.power_settings_new_rounded,
-								title: 'Auto-Start',
-								subtitle: 'Enable LynraFamily Member in Autostart list',
+								title: l10n.autoStart,
+								subtitle: l10n.enableAutostart,
 								granted: autoStartGranted,
 								onTap: () async {
 									showDialog(
@@ -202,13 +206,13 @@ class LocatorPermissionPage extends StatefulWidget {
 														),
 														const SizedBox(width: 10),
 														Text(
-															'Action Required',
+															l10n.actionRequired,
 															style: AppFonts.title,
 														),
 													],
 												),
 												content: Text(
-													"In the opening screen, please find 'LynraFamily Member' and turn the switch ON to ensure background reliability.\n\nThis window will close in 10 seconds...",
+													l10n.backgroundAccessInstructions,
 													style: AppFonts.body.copyWith(
 														color: AppColors.textSecondary,
 													),
@@ -232,8 +236,8 @@ class LocatorPermissionPage extends StatefulWidget {
 
 							_PermissionItem(
 								icon: Icons.app_settings_alt_rounded,
-								title: 'Memory Lock',
-								subtitle: 'Prevent system from killing LynraFamily Member',
+								title: l10n.memoryLock,
+								subtitle: l10n.preventSystemKillDescription,
 								granted: memoryLockGranted,
 								onTap: () async {
 									showDialog(
@@ -252,16 +256,13 @@ class LocatorPermissionPage extends StatefulWidget {
 													),
 													const SizedBox(width: 12),
 													Text(
-														'Memory Protection',
+														l10n.memoryProtection,
 														style: AppFonts.title,
 													),
 												],
 											),
 											content: Text(
-												"To keep LynraFamily Member running in the background, please follow these steps:\n\n"
-												"• Xiaomi: Security app > Boost Speed > Settings > App Lock > Enable LynraFamily Member.\n"
-												"• Others: Open Recent Apps, long press LynraFamily Member or swipe down, then tap the Lock icon.\n\n"
-												"This helps prevent the system from closing the app to save RAM.",
+												l10n.memoryProtectionInstructions,
 												style: AppFonts.body.copyWith(
 													color: AppColors.textSecondary,
 													height: 1.5,
@@ -283,7 +284,7 @@ class LocatorPermissionPage extends StatefulWidget {
 														),
 													),
 													child: Text(
-														'I UNDERSTAND',
+														l10n.iUnderstand,
 														style: AppFonts.button.copyWith(
 															color: AppColors.background,
 														),
@@ -316,8 +317,8 @@ class LocatorPermissionPage extends StatefulWidget {
 									),
 									child: Text(
 										allGranted
-												? 'ALL PERMISSIONS GRANTED'
-												: 'GRANT REQUIRED PERMISSIONS',
+												? l10n.allPermissionsGranted
+												: l10n.grantRequiredPermissions,
 										style: AppFonts.button.copyWith(
 											color: allGranted
 													? AppColors.background
@@ -371,6 +372,7 @@ class _PermissionItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+		final l10n = AppLocalizations.of(context)!;
     final statusColor = granted ? AppColors.accent : AppColors.textSecondary;
 
     return AppCard(
@@ -415,7 +417,7 @@ class _PermissionItem extends StatelessWidget {
 							const SizedBox(height: 4),
 
 							Text(
-								granted ? 'Granted' : 'Missing',
+								granted ? l10n.granted : l10n.missing,
 								style: AppFonts.caption.copyWith(
 									fontSize: 10,
 									color: granted
