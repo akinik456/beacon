@@ -191,6 +191,12 @@ abstract class AppLocalizations {
   /// **'Confirm'**
   String get confirm;
 
+  /// No description provided for @connectAMember.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect A Member'**
+  String get connectAMember;
+
   /// No description provided for @createOrJoin.
   ///
   /// In en, this message translates to:
@@ -220,6 +226,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Enter Your Name (Other members will see this name.)'**
   String get enteryourname;
+
+  /// No description provided for @enterMemberCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter Member Code'**
+  String get enterMemberCode;
 
   /// No description provided for @familyHome.
   ///
@@ -323,6 +335,12 @@ abstract class AppLocalizations {
   /// **'Maximum 3 places allowed'**
   String get maximum3Places;
 
+  /// No description provided for @memberCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Member Code'**
+  String get memberCode;
+
   /// No description provided for @memberlimitreached.
   ///
   /// In en, this message translates to:
@@ -334,6 +352,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Member Notifications'**
   String get memberNotifications;
+
+  /// No description provided for @memberNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Member Not Found'**
+  String get memberNotFound;
+
+  /// No description provided for @memberpaired.
+  ///
+  /// In en, this message translates to:
+  /// **'Member paired successfully'**
+  String get memberpaired;
 
   /// No description provided for @memberremoved.
   ///
@@ -400,6 +430,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Paired Member'**
   String get pairedMember;
+
+  /// No description provided for @pairingRejected.
+  ///
+  /// In en, this message translates to:
+  /// **'Pairing request rejected'**
+  String get pairingRejected;
 
   /// No description provided for @permissionIntroTitle.
   ///
@@ -479,11 +515,29 @@ abstract class AppLocalizations {
   /// **'Save Settings'**
   String get saveSettings;
 
+  /// No description provided for @scanMemberCodeWithCamera.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan member code with camera'**
+  String get scanMemberCodeWithCamera;
+
   /// No description provided for @scanQRcode.
   ///
   /// In en, this message translates to:
   /// **'Scan QR code'**
   String get scanQRcode;
+
+  /// No description provided for @scanTheMember.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan the member QR code or enter its short code manually.'**
+  String get scanTheMember;
+
+  /// No description provided for @sendPairingRequest.
+  ///
+  /// In en, this message translates to:
+  /// **'Send Pairing Request'**
+  String get sendPairingRequest;
 
   /// No description provided for @settingsSaved.
   ///
@@ -521,11 +575,17 @@ abstract class AppLocalizations {
   /// **'View Only'**
   String get viewOnly;
 
-  /// No description provided for @waitingForApprovale.
+  /// No description provided for @waitingForApproval.
   ///
   /// In en, this message translates to:
   /// **'Waiting for approval'**
-  String get waitingForApprovale;
+  String get waitingForApproval;
+
+  /// No description provided for @waitingForLocator.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for locator approval...'**
+  String get waitingForLocator;
 
   /// No description provided for @wantsYoutoCall.
   ///

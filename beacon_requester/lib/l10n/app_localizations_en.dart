@@ -57,6 +57,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get confirm => 'Confirm';
 
   @override
+  String get connectAMember => 'Connect A Member';
+
+  @override
   String get createOrJoin => 'Create a new group or join an existing group';
 
   @override
@@ -70,6 +73,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get enteryourname => 'Enter Your Name (Other members will see this name.)';
+
+  @override
+  String get enterMemberCode => 'Enter Member Code';
 
   @override
   String get familyHome => 'Family,Home...';
@@ -123,10 +129,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get maximum3Places => 'Maximum 3 places allowed';
 
   @override
+  String get memberCode => 'Member Code';
+
+  @override
   String get memberlimitreached => 'Member Limit Reached';
 
   @override
   String get memberNotifications => 'Member Notifications';
+
+  @override
+  String get memberNotFound => 'Member Not Found';
+
+  @override
+  String get memberpaired => 'Member paired successfully';
 
   @override
   String get memberremoved => 'Member Removed';
@@ -160,6 +175,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pairedMember => 'Paired Member';
+
+  @override
+  String get pairingRejected => 'Pairing request rejected';
 
   @override
   String get permissionIntroTitle => 'Before we start';
@@ -201,7 +219,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get saveSettings => 'Save Settings';
 
   @override
+  String get scanMemberCodeWithCamera => 'Scan member code with camera';
+
+  @override
   String get scanQRcode => 'Scan QR code';
+
+  @override
+  String get scanTheMember => 'Scan the member QR code or enter its short code manually.';
+
+  @override
+  String get sendPairingRequest => 'Send Pairing Request';
 
   @override
   String get settingsSaved => 'Settings saved';
@@ -222,7 +249,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get viewOnly => 'View Only';
 
   @override
-  String get waitingForApprovale => 'Waiting for approval';
+  String get waitingForApproval => 'Waiting for approval';
+
+  @override
+  String get waitingForLocator => 'Waiting for locator approval...';
 
   @override
   String get wantsYoutoCall => 'Wants You to Call';

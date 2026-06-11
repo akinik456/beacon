@@ -57,6 +57,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get confirm => 'Onay';
 
   @override
+  String get connectAMember => 'Bir üyeye bağlan';
+
+  @override
   String get createOrJoin => 'Yeni bir grup oluşturun veya mevcut bir gruba katılın.';
 
   @override
@@ -70,6 +73,9 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get enteryourname => 'İsminiz (Diğer üyeler bu ismi görür)';
+
+  @override
+  String get enterMemberCode => 'Üye Kodunu Girin';
 
   @override
   String get familyHome => 'Aile,Ev...';
@@ -123,10 +129,19 @@ class AppLocalizationsTr extends AppLocalizations {
   String get maximum3Places => 'En fazla 3 konum kaydedilebilir';
 
   @override
+  String get memberCode => 'Üye Kodu';
+
+  @override
   String get memberlimitreached => 'Üye Limitine Ulaşıldı';
 
   @override
   String get memberNotifications => 'Üye Bildirimleri';
+
+  @override
+  String get memberNotFound => 'Üye Bulunamadı';
+
+  @override
+  String get memberpaired => 'Üye ile Bağlantı Kuruldu';
 
   @override
   String get memberremoved => 'Member Removed';
@@ -160,6 +175,9 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get pairedMember => 'Eşleştirilmiş Üye';
+
+  @override
+  String get pairingRejected => 'Bağlantı isteği reddedildi';
 
   @override
   String get permissionIntroTitle => 'Başlamadan önce';
@@ -201,7 +219,16 @@ class AppLocalizationsTr extends AppLocalizations {
   String get saveSettings => 'Ayarları Kaydet';
 
   @override
+  String get scanMemberCodeWithCamera => 'Üye kodunu kamera ile taratın';
+
+  @override
   String get scanQRcode => 'QR kodu taratınız';
+
+  @override
+  String get scanTheMember => 'Üye QR kodunu taratın veya kısa kodunu manuel olarak girin.';
+
+  @override
+  String get sendPairingRequest => 'Bağlantı isteği gönder';
 
   @override
   String get settingsSaved => 'Ayarlar kaydedildi';
@@ -222,7 +249,10 @@ class AppLocalizationsTr extends AppLocalizations {
   String get viewOnly => 'Görüntüleme Modu';
 
   @override
-  String get waitingForApprovale => 'Onay Bekleniyor';
+  String get waitingForApproval => 'Onay Bekleniyor';
+
+  @override
+  String get waitingForLocator => 'Üyenin onay vermesi bekleniyor...';
 
   @override
   String get wantsYoutoCall => 'Aramanızı istiyor';

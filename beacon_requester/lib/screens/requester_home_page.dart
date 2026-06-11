@@ -659,7 +659,7 @@ void _listenAlerts() async {
 													),
 													const SizedBox(height: 16),
 													Text(
-														l10n.waitingForApprovale,
+														l10n.waitingForApproval,
 														style: AppFonts.title,
 													),
 													const SizedBox(height: 8),

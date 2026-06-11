@@ -8,6 +8,8 @@ import '../core/widgets/app_card.dart';
 import '../services/locator_pairing_service.dart';
 import '../services/pairing_response_service.dart';
 import '../services/group_service.dart';
+import '../l10n/app_localizations.dart';
+
 
 class AddLocatorPage extends StatefulWidget {
   const AddLocatorPage({super.key});
@@ -52,6 +54,7 @@ class _AddLocatorPageState extends State<AddLocatorPage> {
 
   @override
   Widget build(BuildContext context) {
+	final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
@@ -60,7 +63,7 @@ class _AddLocatorPageState extends State<AddLocatorPage> {
         surfaceTintColor: AppColors.background,
         elevation: 0,
         title: Text(
-          'Add Member',          
+          l10n.addMember,          
 					style: AppFonts.title.copyWith(
 					color: AppColors.primary,
 					),
@@ -75,14 +78,14 @@ class _AddLocatorPageState extends State<AddLocatorPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Connect a Member',
+                    l10n.connectAMember,
 										style: AppFonts.subtitle.copyWith(
 										color: AppColors.primary,
 										),
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Scan the member QR code or enter its short code manually.',
+                    l10n.scanTheMember,
                     style: AppFonts.caption,
                   ),
                 ],
@@ -94,8 +97,8 @@ class _AddLocatorPageState extends State<AddLocatorPage> {
             AppCard(
               child: _InputField(
                 controller: codeCtrl,
-                label: 'Member code',
-                hint: 'Enter member short code',
+                label: l10n.memberCode,
+                hint: l10n.enterMemberCode,
                 inputFormatters: [
                   FilteringTextInputFormatter.allow(
                     RegExp(r'[a-zA-Z0-9]'),
@@ -127,10 +130,10 @@ class _AddLocatorPageState extends State<AddLocatorPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Scan QR code', style: AppFonts.subtitle),
+                        Text(l10n.scanQRcode, style: AppFonts.subtitle),
                         const SizedBox(height: 4),
                         Text(
-                          'Read member code with camera',
+                          l10n.scanMemberCodeWithCamera,
                           style: AppFonts.caption,
                         ),
                       ],
@@ -163,9 +166,9 @@ if (result == null) {
 
   ScaffoldMessenger.of(context)
       .showSnackBar(
-    const SnackBar(
+    SnackBar(
       content: Text(
-        'Member not found',
+        l10n.memberNotFound,
       ),
     ),
   );
@@ -183,9 +186,9 @@ if (!context.mounted) return;
 
 ScaffoldMessenger.of(context)
     .showSnackBar(
-  const SnackBar(
+  SnackBar(
     content: Text(
-      'Waiting for locator approval...',
+      l10n.waitingForLocator,
     ),
   ),
 );
@@ -221,9 +224,9 @@ PairingResponseService
 	);
   ScaffoldMessenger.of(context)
       .showSnackBar(
-    const SnackBar(
+    SnackBar(
       content: Text(
-        'Member paired successfully',
+        l10n.memberpaired,
       ),
     ),
   );
@@ -237,17 +240,17 @@ PairingResponseService
 }else if (status == 'rejected_capacity') {
     ScaffoldMessenger.of(context)
         .showSnackBar(
-      const SnackBar(
+      SnackBar(
         content: Text(
-          'Pairing request rejected',
+          l10n.pairingRejected,
         ),
       ),
     );
   }
 	else if (status.toString().startsWith('rejected')) {
   ScaffoldMessenger.of(context).showSnackBar(
-    const SnackBar(
-      content: Text('Pairing request rejected'),
+    SnackBar(
+      content: Text(l10n.pairingRejected),
     ),
   );
 }
@@ -264,7 +267,7 @@ PairingResponseService
                   ),
                 ),
                 child: Text(
-                  'Send Pairing Request',
+                  l10n.sendPairingRequest,
                   style: AppFonts.button.copyWith(
                     color: canSend
                         ? AppColors.background
@@ -302,6 +305,7 @@ class _QrScanPageState extends State<_QrScanPage> {
 
   @override
   Widget build(BuildContext context) {
+	final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
@@ -309,7 +313,7 @@ class _QrScanPageState extends State<_QrScanPage> {
         surfaceTintColor: AppColors.background,
         elevation: 0,
         title: Text(
-          'Scan Member QR',
+          l10n.scanTheMember,
           style: AppFonts.title.copyWith(
 					color: AppColors.primary,
 					),					
@@ -354,6 +358,7 @@ class _InputField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+	final l10n = AppLocalizations.of(context)!;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
