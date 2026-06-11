@@ -95,47 +95,59 @@ abstract class AppLocalizations {
     Locale('tr')
   ];
 
+  /// No description provided for @addMember.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Member'**
+  String get addMember;
+
+  /// No description provided for @addressNotAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Address not available'**
+  String get addressNotAvailable;
+
+  /// No description provided for @adminName.
+  ///
+  /// In en, this message translates to:
+  /// **'Admin Name'**
+  String get adminName;
+
+  /// No description provided for @alerts.
+  ///
+  /// In en, this message translates to:
+  /// **'ALERTS'**
+  String get alerts;
+
   /// No description provided for @appName.
   ///
   /// In en, this message translates to:
-  /// **'Beacon Requester'**
+  /// **'LynraFamily'**
   String get appName;
 
-  /// No description provided for @title.
+  /// No description provided for @approve.
   ///
   /// In en, this message translates to:
-  /// **'Beacon Requester'**
-  String get title;
+  /// **'Approve'**
+  String get approve;
 
-  /// No description provided for @hello.
+  /// No description provided for @batteryLowAlert.
   ///
   /// In en, this message translates to:
-  /// **'Hello'**
-  String get hello;
+  /// **'Battery Low Alert'**
+  String get batteryLowAlert;
 
-  /// No description provided for @permissionIntroTitle.
+  /// No description provided for @batteryAlertlevel.
   ///
   /// In en, this message translates to:
-  /// **'Before we start'**
-  String get permissionIntroTitle;
+  /// **'Battery Alert Level'**
+  String get batteryAlertlevel;
 
-  /// No description provided for @permissionIntroSubtitle.
+  /// No description provided for @callme.
   ///
   /// In en, this message translates to:
-  /// **'Beacon needs a few permissions to work safely and correctly.'**
-  String get permissionIntroSubtitle;
-
-  /// No description provided for @locationPermissionTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Location permission'**
-  String get locationPermissionTitle;
-
-  /// No description provided for @locationPermissionDesc.
-  ///
-  /// In en, this message translates to:
-  /// **'Used to show your distance to locators.'**
-  String get locationPermissionDesc;
+  /// **'Call Me'**
+  String get callme;
 
   /// No description provided for @cameraPermissionTitle.
   ///
@@ -149,17 +161,449 @@ abstract class AppLocalizations {
   /// **'Used only when scanning a QR code.'**
   String get cameraPermissionDesc;
 
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
+
+  /// No description provided for @chooseWhichNotif.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose which notifications you want to receive from this member.'**
+  String get chooseWhichNotif;
+
+  /// No description provided for @cntinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get cntinue;
+
+  /// No description provided for @code.
+  ///
+  /// In en, this message translates to:
+  /// **'Code'**
+  String get code;
+
+  /// No description provided for @confirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm'**
+  String get confirm;
+
+  /// No description provided for @connectAMember.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect A Member'**
+  String get connectAMember;
+
+  /// No description provided for @createOrJoin.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a new group or join an existing group'**
+  String get createOrJoin;
+
   /// No description provided for @createNewGroup.
   ///
   /// In en, this message translates to:
-  /// **'Create new group'**
+  /// **'Create a new group'**
   String get createNewGroup;
 
-  /// No description provided for @joinExistingGroup.
+  /// No description provided for @disabledByMaster.
   ///
   /// In en, this message translates to:
-  /// **'Join existing group'**
-  String get joinExistingGroup;
+  /// **'Disabled by master'**
+  String get disabledByMaster;
+
+  /// No description provided for @dismiss.
+  ///
+  /// In en, this message translates to:
+  /// **'Dismiss'**
+  String get dismiss;
+
+  /// No description provided for @enteryourname.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter Your Name (Other members will see this name.)'**
+  String get enteryourname;
+
+  /// No description provided for @enterMemberCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter Member Code'**
+  String get enterMemberCode;
+
+  /// No description provided for @familyHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Family,Home...'**
+  String get familyHome;
+
+  /// No description provided for @hello.
+  ///
+  /// In en, this message translates to:
+  /// **'Hello'**
+  String get hello;
+
+  /// No description provided for @joinGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Join group'**
+  String get joinGroup;
+
+  /// No description provided for @joinInstantlyWithCamera.
+  ///
+  /// In en, this message translates to:
+  /// **'Join instantly with camera'**
+  String get joinInstantlyWithCamera;
+
+  /// No description provided for @joinRequest.
+  ///
+  /// In en, this message translates to:
+  /// **'Join Request'**
+  String get joinRequest;
+
+  /// No description provided for @geofenceAlert.
+  ///
+  /// In en, this message translates to:
+  /// **'Geofence Alert'**
+  String get geofenceAlert;
+
+  /// No description provided for @gpsOffAlert.
+  ///
+  /// In en, this message translates to:
+  /// **'GPS Off Alert'**
+  String get gpsOffAlert;
+
+  /// No description provided for @group.
+  ///
+  /// In en, this message translates to:
+  /// **'Group'**
+  String get group;
+
+  /// No description provided for @groupCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Group Code'**
+  String get groupCode;
+
+  /// No description provided for @groupQRCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Group QR Code'**
+  String get groupQRCode;
+
+  /// No description provided for @groupName.
+  ///
+  /// In en, this message translates to:
+  /// **'Group Name'**
+  String get groupName;
+
+  /// No description provided for @language.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get language;
+
+  /// No description provided for @locationPermissionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Location permission'**
+  String get locationPermissionTitle;
+
+  /// No description provided for @locationPermissionDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'LynraFamily Member needs location permission to respond to family location requests and share location updates.\n\nBackground location access allows the app to provide location updates even when the app is not open.\n\nYour location is only shared with trusted members of your family group.'**
+  String get locationPermissionDescription;
+
+  /// No description provided for @master.
+  ///
+  /// In en, this message translates to:
+  /// **'Master'**
+  String get master;
+
+  /// No description provided for @maxFamilyMembersReached.
+  ///
+  /// In en, this message translates to:
+  /// **'Maximum family members reached'**
+  String get maxFamilyMembersReached;
+
+  /// No description provided for @maximum3Places.
+  ///
+  /// In en, this message translates to:
+  /// **'Maximum 3 places allowed'**
+  String get maximum3Places;
+
+  /// No description provided for @memberCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Member Code'**
+  String get memberCode;
+
+  /// No description provided for @memberlimitreached.
+  ///
+  /// In en, this message translates to:
+  /// **'Member Limit Reached'**
+  String get memberlimitreached;
+
+  /// No description provided for @memberNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Member Notifications'**
+  String get memberNotifications;
+
+  /// No description provided for @memberNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Member Not Found'**
+  String get memberNotFound;
+
+  /// No description provided for @memberpaired.
+  ///
+  /// In en, this message translates to:
+  /// **'Member paired successfully'**
+  String get memberpaired;
+
+  /// No description provided for @memberremoved.
+  ///
+  /// In en, this message translates to:
+  /// **'Member Removed'**
+  String get memberremoved;
+
+  /// No description provided for @memberSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Member Settings'**
+  String get memberSettings;
+
+  /// No description provided for @noGroupYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No group yet'**
+  String get noGroupYet;
+
+  /// No description provided for @noPairedMemberYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No paired locators yet.'**
+  String get noPairedMemberYet;
+
+  /// No description provided for @notificationSettingsSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Notification settings saved'**
+  String get notificationSettingsSaved;
+
+  /// No description provided for @notifyBattery.
+  ///
+  /// In en, this message translates to:
+  /// **'Notify when battery is low'**
+  String get notifyBattery;
+
+  /// No description provided for @notifyGPS.
+  ///
+  /// In en, this message translates to:
+  /// **'Notify when GPS is turned off'**
+  String get notifyGPS;
+
+  /// No description provided for @notifyPlaces.
+  ///
+  /// In en, this message translates to:
+  /// **'Notify when member enters or leaves places'**
+  String get notifyPlaces;
+
+  /// No description provided for @ok.
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get ok;
+
+  /// No description provided for @onlyTheMaster.
+  ///
+  /// In en, this message translates to:
+  /// **'Only the master can edit these settings.'**
+  String get onlyTheMaster;
+
+  /// No description provided for @pairedMember.
+  ///
+  /// In en, this message translates to:
+  /// **'Paired Member'**
+  String get pairedMember;
+
+  /// No description provided for @pairingRejected.
+  ///
+  /// In en, this message translates to:
+  /// **'Pairing request rejected'**
+  String get pairingRejected;
+
+  /// No description provided for @permissionIntroTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Before we start'**
+  String get permissionIntroTitle;
+
+  /// No description provided for @permissionIntroSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'LynraFamily needs a few permissions to work safely and correctly.'**
+  String get permissionIntroSubtitle;
+
+  /// No description provided for @placeSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Place Saved'**
+  String get placeSaved;
+
+  /// No description provided for @receiveCallMe.
+  ///
+  /// In en, this message translates to:
+  /// **'Receive call me requests from this member'**
+  String get receiveCallMe;
+
+  /// No description provided for @receiveGPSalerts.
+  ///
+  /// In en, this message translates to:
+  /// **'Receive GPS off alerts'**
+  String get receiveGPSalerts;
+
+  /// No description provided for @receivelowbattery.
+  ///
+  /// In en, this message translates to:
+  /// **'Receive low battery alerts'**
+  String get receivelowbattery;
+
+  /// No description provided for @reject.
+  ///
+  /// In en, this message translates to:
+  /// **'Reject'**
+  String get reject;
+
+  /// No description provided for @rejected.
+  ///
+  /// In en, this message translates to:
+  /// **'REJECTED'**
+  String get rejected;
+
+  /// No description provided for @remove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get remove;
+
+  /// No description provided for @removeMember.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove Member'**
+  String get removeMember;
+
+  /// No description provided for @requesters.
+  ///
+  /// In en, this message translates to:
+  /// **'Admins'**
+  String get requesters;
+
+  /// No description provided for @saveMemberLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Save member location as place'**
+  String get saveMemberLocation;
+
+  /// No description provided for @saveSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Settings'**
+  String get saveSettings;
+
+  /// No description provided for @scanMemberCodeWithCamera.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan member code with camera'**
+  String get scanMemberCodeWithCamera;
+
+  /// No description provided for @scanQRcode.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan QR code'**
+  String get scanQRcode;
+
+  /// No description provided for @scanTheMember.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan the member QR code or enter its short code manually.'**
+  String get scanTheMember;
+
+  /// No description provided for @sendPairingRequest.
+  ///
+  /// In en, this message translates to:
+  /// **'Send Pairing Request'**
+  String get sendPairingRequest;
+
+  /// No description provided for @settingsSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings saved'**
+  String get settingsSaved;
+
+  /// No description provided for @sixdigitcode.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter 6-digit code'**
+  String get sixdigitcode;
+
+  /// No description provided for @sva.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get sva;
+
+  /// No description provided for @thismember.
+  ///
+  /// In en, this message translates to:
+  /// **'This Member will be removed from your paired list.'**
+  String get thismember;
+
+  /// No description provided for @title.
+  ///
+  /// In en, this message translates to:
+  /// **'LynraFamily'**
+  String get title;
+
+  /// No description provided for @viewOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'View Only'**
+  String get viewOnly;
+
+  /// No description provided for @waitingForApproval.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for approval'**
+  String get waitingForApproval;
+
+  /// No description provided for @waitingForLocator.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for locator approval...'**
+  String get waitingForLocator;
+
+  /// No description provided for @wantsYoutoCall.
+  ///
+  /// In en, this message translates to:
+  /// **'Wants You to Call'**
+  String get wantsYoutoCall;
+
+  /// No description provided for @wellcome.
+  ///
+  /// In en, this message translates to:
+  /// **'Wellcome'**
+  String get wellcome;
+
+  /// No description provided for @yourrequest.
+  ///
+  /// In en, this message translates to:
+  /// **'Your request has been sent to the group master.'**
+  String get yourrequest;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

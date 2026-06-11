@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:beacon_locator/l10n/app_localizations.dart';
 
 import 'firebase_options.dart';
 import 'services/identity_service.dart';
@@ -67,22 +70,78 @@ Future<void> main() async {
   );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+
   final bool hasLocatorId;
 
   const MyApp({
     super.key,
     required this.hasLocatorId,
   });
-	
+
+  static _MyAppState of(BuildContext context) {
+    return context.findAncestorStateOfType<_MyAppState>()!;
+  }
+
   @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  Locale? _locale;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadLocale();
+  }
+
+  Future<void> _loadLocale() async {
+    final prefs = await SharedPreferences.getInstance();
+    final code = prefs.getString('languageCode');
+
+    if (code == null) return;
+
+    setState(() {
+      _locale = Locale(code);
+    });
+  }
+
+  Future<void> setLocale(String code) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('languageCode', code);
+
+    setState(() {
+      _locale = Locale(code);
+    });
+  }
+	
+	@override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Beacon Locator',
-      home: hasLocatorId
-          ? const LocatorHomePage()
-          : const PermissionIntroPage(),
-    );
+    		
+		return MaterialApp(
+			debugShowCheckedModeBanner: false,
+
+			locale: _locale,
+
+			onGenerateTitle: (context) =>
+					AppLocalizations.of(context)!.appName,
+
+			localizationsDelegates: const [
+				AppLocalizations.delegate,
+				GlobalMaterialLocalizations.delegate,
+				GlobalWidgetsLocalizations.delegate,
+				GlobalCupertinoLocalizations.delegate,
+			],
+
+			supportedLocales: const [
+				Locale('en'),
+				Locale('tr'),
+			],
+
+			home: widget.hasLocatorId
+					? const LocatorHomePage()
+					: const PermissionIntroPage(),
+		);
   }
 }

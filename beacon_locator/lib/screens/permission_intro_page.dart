@@ -4,14 +4,27 @@ import 'package:flutter/material.dart';
 
 import '../core/theme/app_colors.dart';
 import '../core/theme/app_fonts.dart';
+import '../l10n/app_localizations.dart';
+
 import 'locator_name_page.dart';
+import 'language_select_page.dart';
 
 
-class PermissionIntroPage extends StatelessWidget {
+class PermissionIntroPage extends StatefulWidget {
   const PermissionIntroPage({super.key});
 
   @override
+  State<PermissionIntroPage> createState() =>
+      _PermissionIntroPageState();
+}
+
+class _PermissionIntroPageState
+    extends State<PermissionIntroPage> {
+
+
+  @override
   Widget build(BuildContext context) {
+	final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
@@ -19,6 +32,37 @@ class PermissionIntroPage extends StatelessWidget {
           padding: const EdgeInsets.all(24),
           child: Column(
             children: [
+						
+						Align(
+												alignment: Alignment.centerRight,
+												child: TextButton.icon(
+													onPressed: () async {
+														await Navigator.push(
+															context,
+															MaterialPageRoute(
+																builder: (_) =>
+																		const LanguageSelectPage(),
+															),
+														);
+
+														if (!mounted) return;
+														setState(() {});
+													},
+													icon: const Icon(
+														Icons.language_rounded,
+														size: 18,
+														color: AppColors.primary,
+													),
+													label: Text(
+														Localizations.localeOf(context).languageCode == 'tr'
+															? 'Türkçe'
+															: 'English',
+															style: AppFonts.caption.copyWith(
+																color: AppColors.primary,
+															),
+									),
+								),
+							),
               const Spacer(),
 
               Container(
@@ -44,7 +88,7 @@ class PermissionIntroPage extends StatelessWidget {
               const SizedBox(height: 32),
 
               Text(
-                'Location Permission',
+                l10n.locationPermissionTitle,
                 style: AppFonts.title.copyWith(
                   fontSize: 28,
                 ),
@@ -54,14 +98,13 @@ class PermissionIntroPage extends StatelessWidget {
               const SizedBox(height: 18),
 
               Text(
-'LynraFamily Member needs location permission to respond to family location requests and share location updates.\n\n'
-  'Background location access allows the app to provide location updates even when the app is not open.\n\n'
-  'Your location is only shared with trusted members of your family group.',                style: AppFonts.body.copyWith(
-                  color: AppColors.textSecondary,
-                  height: 1.6,
-                ),
-                textAlign: TextAlign.center,
-              ),
+								l10n.locationPermissionDescription,
+								style: AppFonts.body.copyWith(
+									color: AppColors.textSecondary,
+									height: 1.6,
+								),
+								textAlign: TextAlign.center,
+							),
 
               const Spacer(),
 
@@ -84,11 +127,11 @@ class PermissionIntroPage extends StatelessWidget {
                     ),
                   ),
                   child: Text(
-                    'Continue',
-                    style: AppFonts.button.copyWith(
-                      color: AppColors.background,
+                      l10n.cntinue,
+                      style: AppFonts.button.copyWith(
+                        color: AppColors.background,
+                      ),
                     ),
-                  ),
                 ),
               ),
 
