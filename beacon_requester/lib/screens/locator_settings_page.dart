@@ -8,7 +8,6 @@ import '../core/widgets/app_card.dart';
 import '../services/group_service.dart';
 import '../../l10n/app_localizations.dart';
 
-
 class LocatorSettingsPage extends StatefulWidget {
   final String locatorId;
   final String locatorName;
@@ -40,7 +39,7 @@ class _LocatorSettingsPageState extends State<LocatorSettingsPage> {
   @override
   void initState() {
     super.initState();
-		_loadSettings();
+    _loadSettings();
     _loadPlaceCount();
   }
 
@@ -65,13 +64,11 @@ class _LocatorSettingsPageState extends State<LocatorSettingsPage> {
 
   Future<void> _saveLocatorLocationAsPlace() async {
     if (!widget.isMaster) return;
-		final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context)!;
     if (_placeCount >= 3) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.maximum3Places),
-        ),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.maximum3Places)));
       return;
     }
 
@@ -111,89 +108,82 @@ class _LocatorSettingsPageState extends State<LocatorSettingsPage> {
 
     if (!mounted) return;
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(l10n.placeSaved),
-      ),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(l10n.placeSaved)));
   }
-	
-		Future<void> _loadSettings() async {
-		final groupId = await GroupService.getLocalGroupId();
-		if (groupId == null) return;
 
-		final doc = await FirebaseFirestore.instance
-				.collection('groups')
-				.doc(groupId)
-				.collection('devices')
-				.doc(widget.locatorId)
-				.get();
+  Future<void> _loadSettings() async {
+    final groupId = await GroupService.getLocalGroupId();
+    if (groupId == null) return;
 
-		if (!doc.exists) return;
+    final doc = await FirebaseFirestore.instance
+        .collection('groups')
+        .doc(groupId)
+        .collection('devices')
+        .doc(widget.locatorId)
+        .collection('settings')
+        .doc('config')
+        .get();
 
-		final data = doc.data();
-		final settings =
-				Map<String, dynamic>.from(data?['settings'] ?? {});
+    if (!doc.exists) return;
 
-		if (!mounted) return;
+    final settings = doc.data() ?? {};
 
-		setState(() {
-			gpsOffAlert = settings['gpsOffAlert'] ?? true;
-			batteryLowAlert = settings['batteryLowAlert'] ?? true;
-			batteryLowLevel = settings['batteryLowLevel'] ?? 20;
-			geofenceAlert = settings['geofenceAlert'] ?? false;
-		});
-	}
+    if (!mounted) return;
+
+    setState(() {
+      gpsOffAlert = settings['gpsOffAlert'] ?? true;
+      batteryLowAlert = settings['batteryLowAlert'] ?? true;
+      batteryLowLevel = settings['batteryLowLevel'] ?? 20;
+      geofenceAlert = settings['geofenceAlert'] ?? false;
+    });
+  }
 
   Future<void> _saveSettings() async {
     if (!widget.isMaster) return;
-		final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context)!;
     final groupId = await GroupService.getLocalGroupId();
     if (groupId == null) return;
 
     await FirebaseFirestore.instance
-				.collection('groups')
-				.doc(groupId)
-				.collection('devices')
-				.doc(widget.locatorId)
-				.collection('settings')
-				.doc('config')
-				.set({
-			'gpsOffAlert': gpsOffAlert,
-			'batteryLowAlert': batteryLowAlert,
-			'batteryLowLevel': batteryLowLevel,
-			'geofenceAlert': geofenceAlert,
-			'updatedAt': FieldValue.serverTimestamp(),
-		});
+        .collection('groups')
+        .doc(groupId)
+        .collection('devices')
+        .doc(widget.locatorId)
+        .collection('settings')
+        .doc('config')
+        .set({
+          'gpsOffAlert': gpsOffAlert,
+          'batteryLowAlert': batteryLowAlert,
+          'batteryLowLevel': batteryLowLevel,
+          'geofenceAlert': geofenceAlert,
+          'updatedAt': FieldValue.serverTimestamp(),
+        });
 
     if (!mounted) return;
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(l10n.settingsSaved),
-      ),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(l10n.settingsSaved)));
   }
 
-  bool get canSavePlace =>
-      widget.isMaster && geofenceAlert && _placeCount < 3;
+  bool get canSavePlace => widget.isMaster && geofenceAlert && _placeCount < 3;
 
   @override
   Widget build(BuildContext context) {
     final readOnly = !widget.isMaster;
-		final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-			  centerTitle: true,
+        centerTitle: true,
         backgroundColor: AppColors.background,
         surfaceTintColor: AppColors.background,
         elevation: 0,
         title: Text(
           l10n.memberSettings,
-          style: AppFonts.title.copyWith(
-					color: AppColors.primary,
-					),
+          style: AppFonts.title.copyWith(color: AppColors.primary),
         ),
       ),
       body: SafeArea(
@@ -207,50 +197,43 @@ class _LocatorSettingsPageState extends State<LocatorSettingsPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       RichText(
-												text: TextSpan(
-													children: [
-														TextSpan(
-															text: widget.locatorName,
-															style: AppFonts.title.copyWith(
-																color: AppColors.textSecondary,
-															),
-														),
-														TextSpan(
-															text: '  -  ',
-															style: AppFonts.title.copyWith(
-																color: AppColors.textSecondary,
-															),
-														),
-														TextSpan(
-															text: widget.locatorCode,
-															style: AppFonts.title.copyWith(
-																color: AppColors.textSecondary,
-															),
-														),
-													],
-												),
-											)
+                        text: TextSpan(
+                          children: [
+                            TextSpan(
+                              text: widget.locatorName,
+                              style: AppFonts.title.copyWith(
+                                color: AppColors.textSecondary,
+                              ),
+                            ),
+                            TextSpan(
+                              text: '  -  ',
+                              style: AppFonts.title.copyWith(
+                                color: AppColors.textSecondary,
+                              ),
+                            ),
+                            TextSpan(
+                              text: widget.locatorCode,
+                              style: AppFonts.title.copyWith(
+                                color: AppColors.textSecondary,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ],
                   ),
                 ),
                 if (readOnly)
                   Text(
                     l10n.viewOnly,
-                    style: AppFonts.caption.copyWith(
-                      color: AppColors.warning,
-                    ),
+                    style: AppFonts.caption.copyWith(color: AppColors.warning),
                   ),
               ],
             ),
 
             if (readOnly) ...[
               const SizedBox(height: 16),
-              AppCard(
-                child: Text(
-                  l10n.onlyTheMaster,
-                  style: AppFonts.caption,
-                ),
-              ),
+              AppCard(child: Text(l10n.onlyTheMaster, style: AppFonts.caption)),
             ],
 
             const SizedBox(height: 12),
@@ -299,8 +282,9 @@ class _LocatorSettingsPageState extends State<LocatorSettingsPage> {
                                     });
                                   }
                                 : null,
-                            selectedColor:
-                                AppColors.primary.withValues(alpha: 0.20),
+                            selectedColor: AppColors.primary.withValues(
+                              alpha: 0.20,
+                            ),
                             backgroundColor: AppColors.surface,
                             labelStyle: AppFonts.button.copyWith(
                               color: selected
@@ -334,10 +318,7 @@ class _LocatorSettingsPageState extends State<LocatorSettingsPage> {
             AppCard(
               child: Row(
                 children: [
-                  const Icon(
-                    Icons.place_rounded,
-                    color: AppColors.primary,
-                  ),
+                  const Icon(Icons.place_rounded, color: AppColors.primary),
                   const SizedBox(width: 4),
                   Expanded(
                     child: Text(
@@ -348,7 +329,7 @@ class _LocatorSettingsPageState extends State<LocatorSettingsPage> {
                 ],
               ),
             ),
-
+						if (widget.isMaster) ...[
             const SizedBox(height: 4),
             SizedBox(
               width: double.infinity,
@@ -408,6 +389,7 @@ class _LocatorSettingsPageState extends State<LocatorSettingsPage> {
                 ),
               ),
             ),
+						],
           ],
         ),
       ),

@@ -8,7 +8,7 @@ class AlertMonitorService {
   AlertMonitorService._();
 
   static bool _lastGpsEnabled = true;
-	
+	static bool _lastBatteryLow = false;
 	
 
   static Future<void> checkNow() async {
@@ -46,16 +46,24 @@ class AlertMonitorService {
 		}
 	
 		final batteryLevel =
-				await Battery().batteryLevel;
+    await Battery().batteryLevel;
 
 		print(
 			"BEACON ALERT MONITOR => battery=$batteryLevel",
 		);
 
+		final isBatteryLow =
+				batteryLevel <= batteryLowLevel;
+
 		if (batteryLowAlertEnabled &&
-				batteryLevel <= batteryLowLevel) {
-			await AlertService.sendBatteryLowAlert(batteryLevel: batteryLevel);
+				isBatteryLow &&
+				!_lastBatteryLow) {
+			await AlertService.sendBatteryLowAlert(
+				batteryLevel: batteryLevel,
+			);
 		}
+
+		_lastBatteryLow = isBatteryLow;
 		
   }
 	

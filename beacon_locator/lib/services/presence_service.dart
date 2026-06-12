@@ -11,59 +11,55 @@ class PresenceService {
 
   static final _db = FirebaseDatabase.instance.ref();
 
-  static Future<void> updateOnline() async {
-    final groupId = await IdentityService.getGroupId();
+ static Future<void> updateOnline() async {
+  final groupId = await IdentityService.getGroupId();
+  final locatorId = await IdentityService.getLocatorId();
 
-    final locatorId = await IdentityService.getLocatorId();
+  if (groupId == null || locatorId == null) {
+    print(
+      "BEACON PRESENCE => "
+      "missing group/locator",
+    );
+    return;
+  }
 
-    if (groupId == null || locatorId == null) {
+  final batteryLevel = await Battery().batteryLevel;
+  final gpsEnabled = await Geolocator.isLocationServiceEnabled();
+
+  Position? position;
+
+  if (gpsEnabled) {
+    try {
+      position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+    } catch (e) {
       print(
         "BEACON PRESENCE => "
-        "missing group/locator",
+        "getCurrentPosition failed => $e",
       );
-
-      return;
     }
-    final batteryLevel = await Battery().batteryLevel;
-
-    final gpsEnabled = await Geolocator.isLocationServiceEnabled();
-
-		final settings = await LocatorSettingsService.loadSettings();
-		final geofenceAlertEnabled =
-    settings['geofenceAlert'] == true;
-		
-    final position = await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.high,
-    );
-
-    print(
-      "BEACON PRESENCE => "
-      "battery=$batteryLevel "
-      "gps=$gpsEnabled",
-    );
-
-    await _db.child("presence/groups/$groupId/locators/$locatorId").set({
-      'status': 'online',
-      'lastSeen': ServerValue.timestamp,
-      'battery': batteryLevel,
-      'gpsEnabled': gpsEnabled,
-      'lat': position.latitude,
-      'lng': position.longitude,
-      'accuracy': position.accuracy,
-    });
-
-    print(
-      "BEACON PRESENCE => "
-      "online updated",
-    );
-		
-		if (geofenceAlertEnabled) {
-			await GeofenceService.checkPlaces(
-				groupId: groupId,
-				locatorId: locatorId,
-				lat: position.latitude,
-				lng: position.longitude,
-			);
-		}
   }
+
+  print(
+    "BEACON PRESENCE => "
+    "battery=$batteryLevel "
+    "gps=$gpsEnabled",
+  );
+
+  await _db.child("presence/groups/$groupId/locators/$locatorId").set({
+    'status': 'online',
+    'lastSeen': ServerValue.timestamp,
+    'battery': batteryLevel,
+    'gpsEnabled': gpsEnabled,
+    'lat': position?.latitude,
+    'lng': position?.longitude,
+    'accuracy': position?.accuracy,
+  });
+
+  print(
+    "BEACON PRESENCE => "
+    "online updated",
+  );
+}
 }

@@ -183,6 +183,8 @@ Stream<List<Map<String, String>>> _watchPairedRequesterData() async* {
     required String locatorId,
     required String locatorCode,
   }) {
+	showDialog(
+    context: context,
       builder: (dialogContext){
 			final l10n =
 					AppLocalizations.of(dialogContext)!;
@@ -223,7 +225,8 @@ Stream<List<Map<String, String>>> _watchPairedRequesterData() async* {
           ),
         ),
       );
-			};
+			},
+			);
   }
 
   Widget _locatorCodeHeader(String locatorId, String locatorCode) {
@@ -241,18 +244,20 @@ Stream<List<Map<String, String>>> _watchPairedRequesterData() async* {
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
+              const Icon(
+                Icons.qr_code_2_rounded,
+                color: AppColors.primary,
+                size: 22,
+              ),
+						
+              const SizedBox(width: 6),
               Text(
 							    '${l10n.member}\n'
 									'${l10n.code}',
 								textAlign: TextAlign.center,
 								style: AppFonts.caption,
 							),
-              const SizedBox(width: 6),
-              const Icon(
-                Icons.qr_code_2_rounded,
-                color: AppColors.primary,
-                size: 22,
-              ),
+							
             ],
           ),
           const SizedBox(height: 6),
@@ -382,7 +387,7 @@ Widget _pairedRequesterCard() {
             }),
 
             const SizedBox(height: 4),
-
+						if (requesters.length > 1) ...[
             SizedBox(
               width: double.infinity,
               height: 48,
@@ -427,6 +432,7 @@ Widget _pairedRequesterCard() {
                 ),
               ),
             ),
+						],
           ],
         ),
       );
