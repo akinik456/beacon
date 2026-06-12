@@ -832,48 +832,41 @@ void _listenAlerts() async {
       width: double.infinity,
       height: 54,
       child: OutlinedButton.icon(
-        onPressed: isFull
-            ? null
-            : () async {
-                final changed = await Navigator.push<bool>(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const AddLocatorPage(),
-                  ),
-                );
+        onPressed: () async {
+          final changed = await Navigator.push<bool>(
+            context,
+            MaterialPageRoute(
+              builder: (_) => const AddLocatorPage(),
+            ),
+          );
 
-                if (changed == true && context.mounted) {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const RequesterHomePage(),
-                    ),
-                  );
-                }
-              },
-        icon: Icon(
+          if (changed == true && context.mounted) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (_) => const RequesterHomePage(),
+              ),
+            );
+          }
+        },
+        icon: const Icon(
           Icons.add_rounded,
-          color: isFull
-              ? AppColors.textSecondary
-              : AppColors.primary,
+          color: AppColors.primary,
         ),
         label: Text(
-          isFull ? l10n.memberlimitreached : l10n.addMember,
+          isFull
+              ? '${l10n.addMember} (${l10n.memberlimitreached})'
+              : l10n.addMember,
           style: AppFonts.button.copyWith(
-            color: isFull
-                ? AppColors.textSecondary
-                : AppColors.primary,
+            color: AppColors.primary,
           ),
         ),
         style: OutlinedButton.styleFrom(
           side: BorderSide(
-            color: isFull
-                ? AppColors.textSecondary.withValues(alpha: 0.20)
-                : AppColors.primary.withValues(alpha: 0.25),
+            color: AppColors.primary.withValues(alpha: 0.25),
           ),
-          backgroundColor: isFull
-              ? AppColors.textSecondary.withValues(alpha: 0.04)
-              : AppColors.primary.withValues(alpha: 0.04),
+          backgroundColor:
+              AppColors.primary.withValues(alpha: 0.04),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(18),
           ),
@@ -1080,17 +1073,13 @@ void _listenAlerts() async {
           _callMeData!['targetRequesterId'];
 
       await FirebaseFirestore.instance
-          .collection('groups')
-          .doc(groupId)
-          .collection('call_me')
-          .doc(requesterId)
-          .collection('items')
-          .doc(callMeId)
-          .update({
-        'status': 'dismissed',
-        'dismissedAt':
-            FieldValue.serverTimestamp(),
-      });
+    .collection('groups')
+    .doc(groupId)
+    .collection('call_me')
+    .doc(requesterId)
+    .collection('items')
+    .doc(callMeId)
+    .delete();
 
       if (!mounted) return;
 
@@ -1115,16 +1104,13 @@ if (_alertData != null)
   final requesterId = _alertData!['targetRequesterId'];
 
   await FirebaseFirestore.instance
-      .collection('groups')
-      .doc(groupId)
-      .collection('alerts')
-      .doc(requesterId)
-      .collection('items')
-      .doc(alertDocId)
-      .update({
-    'status': 'dismissed',
-    'dismissedAt': FieldValue.serverTimestamp(),
-  });
+    .collection('groups')
+    .doc(groupId)
+    .collection('alerts')
+    .doc(requesterId)
+    .collection('items')
+    .doc(alertDocId)
+    .delete();
 
   if (!mounted) return;
 

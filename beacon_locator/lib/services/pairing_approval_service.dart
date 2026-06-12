@@ -8,97 +8,121 @@ class PairingApprovalService {
   static final _firestore = FirebaseFirestore.instance;
 
   static Future<String> approvePairingRequest({
-    required String requestId,
-    required Map<String, dynamic> requestData,
-  }) async {
-    final locatorId = await IdentityService.getLocatorId();
+  required String requestId,
+  required Map<String, dynamic> requestData,
+}) async {
+  final locatorId = await IdentityService.getLocatorId();
 
-    if (locatorId == null || locatorId.isEmpty) {
-      print("BEACON APPROVE ERROR => locatorId not found");
-      return 'error_locator_not_found';
+  if (locatorId == null || locatorId.isEmpty) {
+    print("BEACON APPROVE ERROR => locatorId not found");
+    return 'error_locator_not_found';
+  }
+
+  final groupId = requestData['groupId'];
+  final requesterId = requestData['requesterId'];
+
+  if (groupId == null || requesterId == null) {
+    print("BEACON APPROVE ERROR => invalid request data");
+    return 'invalid_request_data';
+  }
+
+  final requestRef = _firestore
+      .collection('locators')
+      .doc(locatorId)
+      .collection('pairing_requests')
+      .doc(requestId);
+
+  final groupRef = _firestore.collection('groups').doc(groupId);
+
+  final deviceRef = groupRef
+      .collection('devices')
+      .doc(locatorId);
+
+  final locatorRef = _firestore
+      .collection('locators')
+      .doc(locatorId);
+
+  final result =
+      await _firestore.runTransaction<String>((tx) async {
+    final groupSnap = await tx.get(groupRef);
+
+    if (!groupSnap.exists) {
+      tx.update(requestRef, {
+        'status': 'rejected_group_not_found',
+        'respondedAt': FieldValue.serverTimestamp(),
+      });
+
+      return 'rejected_group_not_found';
     }
 
-    final groupId = requestData['groupId'];
-    final requesterId = requestData['requesterId'];
+    final deviceSnap = await tx.get(deviceRef);
 
-    if (groupId == null || requesterId == null) {
-      print("BEACON APPROVE ERROR => invalid request data");
-      return 'invalid request data';
+    final locatorAlreadyInGroup = deviceSnap.exists;
+
+    final groupData = groupSnap.data() ?? {};
+
+    if (!locatorAlreadyInGroup) {
+      final maxLocators = groupData['maxLocators'] ?? 1;
+      final currentLocators =
+          groupData['activeLocatorCount'] ?? 0;
+
+      if (currentLocators >= maxLocators) {
+        tx.update(requestRef, {
+          'status': 'rejected_capacity',
+          'respondedAt': FieldValue.serverTimestamp(),
+        });
+
+        return 'rejected_capacity';
+      }
+
+      tx.set(deviceRef, {
+        'deviceId': locatorId,
+        'role': 'locator',
+        'active': true,
+        'joinedAt': FieldValue.serverTimestamp(),
+      }, SetOptions(merge: true));
+
+      tx.update(groupRef, {
+        'activeLocatorCount': FieldValue.increment(1),
+        'updatedAt': FieldValue.serverTimestamp(),
+      });
     }
 
-    final requestRef = _firestore
-        .collection('locators')
-        .doc(locatorId)
-        .collection('pairing_requests')
-        .doc(requestId);
+    tx.set(deviceRef, {
+      'pairedRequesters': {
+        requesterId: {
+          'requesterId': requesterId,
+          'requesterName':
+              requestData['requesterName'] ?? 'Requester',
+          'requesterCode':
+              requestData['requesterCode'] ?? '------',
+          'pairedAt': FieldValue.serverTimestamp(),
+        },
+      },
+      'updatedAt': FieldValue.serverTimestamp(),
+    }, SetOptions(merge: true));
 
-    final groupRef = _firestore.collection('groups').doc(groupId);
+    tx.set(locatorRef, {
+      'groupId': groupId,
+      'pairedRequesterId': requesterId,
+      'updatedAt': FieldValue.serverTimestamp(),
+    }, SetOptions(merge: true));
 
-    final deviceRef = groupRef.collection('devices').doc(locatorId);
+    tx.update(requestRef, {
+      'status': 'approved',
+      'respondedAt': FieldValue.serverTimestamp(),
+    });
 
-    final locatorRef = _firestore.collection('locators').doc(locatorId);
+    return 'approved';
+  });
 
-		final result = await _firestore.runTransaction<String>((tx) async {
-			final groupSnap = await tx.get(groupRef);
-
-			if (!groupSnap.exists) {
-				tx.update(requestRef, {
-					'status': 'rejected_group_not_found',
-					'respondedAt': FieldValue.serverTimestamp(),
-				});
-
-				return 'rejected_group_not_found';
-			}
-
-			final groupData = groupSnap.data() ?? {};
-
-			final maxLocators =
-					groupData['maxLocators'] ?? 1;
-
-			final currentLocators =
-					groupData['activeLocatorCount'] ?? 0;
-
-			if (currentLocators >= maxLocators) {
-				tx.update(requestRef, {
-					'status': 'rejected_capacity',
-					'respondedAt': FieldValue.serverTimestamp(),
-				});
-
-				return 'rejected_capacity';
-			}
-
-			tx.set(deviceRef, {
-				'deviceId': locatorId,
-				'role': 'locator',
-				'active': true,
-				'joinedAt': FieldValue.serverTimestamp(),
-			}, SetOptions(merge: true));
-
-			tx.set(locatorRef, {
-				'groupId': groupId,
-				'pairedRequesterId': requesterId,
-				'updatedAt': FieldValue.serverTimestamp(),
-			}, SetOptions(merge: true));
-
-			tx.update(groupRef, {
-				'activeLocatorCount':
-						FieldValue.increment(1),
-				'updatedAt':
-						FieldValue.serverTimestamp(),
-			});
-
-			tx.update(requestRef, {
-				'status': 'approved',
-				'respondedAt': FieldValue.serverTimestamp(),
-			});
-			
-			await IdentityService.setGroupId(groupId);
-			return 'approved';
-		});
-
-		return result;
+  if (result == 'approved') {
+    await IdentityService.setGroupId(groupId);
     print("BEACON APPROVE => SUCCESS => $locatorId");
   }
+
+  return result;
+}
 	
 	static Future<void> rejectPairingRequest({
 		required String requestId,
