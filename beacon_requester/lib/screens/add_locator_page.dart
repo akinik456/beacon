@@ -99,6 +99,8 @@ class _AddLocatorPageState extends State<AddLocatorPage> {
                 controller: codeCtrl,
                 label: l10n.memberCode,
                 hint: l10n.enterMemberCode,
+								keyboardType: TextInputType.text,
+                maxLength: 6,
                 inputFormatters: [
                   FilteringTextInputFormatter.allow(
                     RegExp(r'[a-zA-Z0-9]'),
@@ -347,12 +349,16 @@ class _InputField extends StatelessWidget {
   final TextEditingController controller;
   final String label;
   final String hint;
+	final TextInputType? keyboardType;
+  final int? maxLength;
   final List<TextInputFormatter>? inputFormatters;
 
   const _InputField({
     required this.controller,
     required this.label,
     required this.hint,
+    this.keyboardType,
+    this.maxLength,
     this.inputFormatters,
   });
 

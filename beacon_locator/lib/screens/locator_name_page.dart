@@ -67,6 +67,7 @@ class _LocatorNamePageState extends State<LocatorNamePage> {
             AppCard(
               child: TextField(
                 controller: nameCtrl,
+								maxLength: 14,
                 style: AppFonts.body,
                 decoration: InputDecoration(
                   hintText: l10n.enterMemberName,
