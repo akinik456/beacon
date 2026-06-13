@@ -18,3 +18,5 @@ loc gruba girmeden presence yazmayı deniyor
 
 SMS
 Messaging
+
+isim değiştirme

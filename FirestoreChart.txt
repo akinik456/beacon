@@ -12,20 +12,22 @@ FIRESTORE
 						callmeid - (callmeid,createdAt,groupId,locatorCode,locatorId,locatorName,status,targetRequesterId)
 						
 			devices
-				locatorid - (active,deviceId,joinedAt,pairedRequesters,role,updateAt)
-																								|_requesterid(pairedAt,requesterCode,requesterId,requesterName)													
+				locatorid - (active,joinedAt,locatorName,locatorCode,pairedRequesters,role,updateAt)
+																								              |_requesterid(pairedAt,requesterCode,requesterName)													
 					notifyRequesters	
 						requesterid - (batteryLow,callMe,createdAt,geofence,gpsOff,updateAt)
 					settings
 						config - (batteryLowAlert,batteryLowLevel,createdAt,geofenceAlert,gpsOffAlert,updateAt)
 					
-				requesterid - (active,createdAt,isMaster,joinedAt,name,pairedLocators,requesterCode,requesterId,role,updateAt)
-																																	|_locatorid(locatorCode,name)
+				requesterid - (active,isMaster,joinedAt,pairedLocators,requesterCode,requesterId,requesterName,role,updateAt)
+																								 |_locatorid(locatorCode,locatorName,pairedAt)
 	locators
-		locatorid	-	(active,createdAt,fcmToken,groupId,lastSeen,lastTokenRefreshAt,locatorCode,locatorId,locatorName,pairedRequesterId,platform,role,token,topic,updateAt)
+		locatorid	-	(active,createdAt,groupId,locatorCode,locatorName,platform,updateAt)
+			pairing_requests 
+				pairing_requestid - (createdAt,groupId,requesterCode,requesterid,requesterName,status)
 	
 	requesters
-		requesterid	-	(createdAt,lastSeen,platform,requesterCode,requesterId,requesterName,role,token,topic)
+		requesterid	-	(active,createdAt,groupId,platform,requesterCode,requesterName,updateAt)
 	
 RTDB
 	presence
@@ -34,5 +36,6 @@ RTDB
 			  active_watchers
 					locatorid
 						requesterid - (active,lastSeen,requesterCode,requesterName)
-				locatorid - (accuracy,battery,gpsEnabled,lastSeen,lat,lng,status)
+				locators
+					locatorid - (accuracy,battery,gpsEnabled,lastSeen,lat,lng,status)
 	

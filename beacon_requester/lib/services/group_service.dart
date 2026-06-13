@@ -54,17 +54,22 @@ class GroupService {
       });
 
       tx.set(requesterRef, {
-        'requesterId': requesterId,
-        'requesterCode': requesterCode,
-        'role': 'requester',
-        'name': requesterName.trim(),
-        'isMaster': true,
         'active': true,
-        'pairedLocators': {},
+        'isMaster': true,
         'joinedAt': now,
-        'createdAt': now,
+        'pairedLocators': {},
+        'requesterCode': requesterCode,
+        'requesterId': requesterId,
+        'requesterName': requesterName.trim(),
+        'role': 'requester',
+				'updateAt': FieldValue.serverTimestamp(),
       });
     });
+		
+		await _firestore.collection('requesters').doc(requesterId).set({
+			'groupId':groupId,
+			'updateAt': FieldValue.serverTimestamp(),
+		}, SetOptions(merge: true));
 
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_groupIdKey, groupId);
@@ -200,8 +205,9 @@ static Future<void> addPairedLocatorToRequester({
       .set({
     'pairedLocators': {
       locatorId: {
-        'name': locatorName,
+        'locatorName': locatorName,
         'locatorCode': locatorCode,
+				'pairedAt': FieldValue.serverTimestamp(),
       },
     },
 
@@ -247,6 +253,7 @@ static Future<void> addPairedRequesterToLocator({
       .set({
     'pairedRequesters': {
 			requesterId: {
+				'pairedAt': FieldValue.serverTimestamp(),
 				'requesterName': requesterName,
 				'requesterCode': requesterCode,
 			},

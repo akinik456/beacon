@@ -12,6 +12,8 @@ class PairingApprovalService {
   required Map<String, dynamic> requestData,
 }) async {
   final locatorId = await IdentityService.getLocatorId();
+	final locatorName = await IdentityService.getLocatorName();
+	final locatorCode = await IdentityService.getLocatorCode();
 
   if (locatorId == null || locatorId.isEmpty) {
     print("BEACON APPROVE ERROR => locatorId not found");
@@ -76,9 +78,10 @@ class PairingApprovalService {
       }
 
       tx.set(deviceRef, {
-        'deviceId': locatorId,
-        'role': 'locator',
         'active': true,
+				'role': 'locator',
+				'locatorName': locatorName,
+				'locatorCode': locatorCode,
         'joinedAt': FieldValue.serverTimestamp(),
       }, SetOptions(merge: true));
 
@@ -91,7 +94,6 @@ class PairingApprovalService {
     tx.set(deviceRef, {
       'pairedRequesters': {
         requesterId: {
-          'requesterId': requesterId,
           'requesterName':
               requestData['requesterName'] ?? 'Requester',
           'requesterCode':
@@ -104,7 +106,6 @@ class PairingApprovalService {
 
     tx.set(locatorRef, {
       'groupId': groupId,
-      'pairedRequesterId': requesterId,
       'updatedAt': FieldValue.serverTimestamp(),
     }, SetOptions(merge: true));
 

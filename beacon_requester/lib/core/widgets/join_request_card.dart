@@ -104,7 +104,7 @@ class JoinRequestCard extends StatelessWidget {
 															'requesterId': joinData['requesterId'],
 															'requesterCode': joinData['requesterCode'],
 															'role': 'requester',
-															'name': joinData['requesterName'],
+															'requesterName': joinData['requesterName'],
 															'isMaster': false,
 															'active': true,
 															'pairedLocators': {},

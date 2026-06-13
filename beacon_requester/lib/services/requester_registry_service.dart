@@ -26,15 +26,11 @@ class RequesterRegistryService {
       final topic = "requester_$requesterId";
 
       await _firestore.collection('requesters').doc(requesterId).set({
-			'requesterId': requesterId,
+			'active': true,
+			'createdAt': FieldValue.serverTimestamp(),
+			'platform': Platform.operatingSystem,
 			'requesterCode': requesterCode,
 			'requesterName': requesterName,
-			'role': 'requester',
-			'token': token,
-			'topic': topic,
-			'platform': Platform.operatingSystem,
-			'lastSeen': FieldValue.serverTimestamp(),
-			'createdAt': FieldValue.serverTimestamp(),
 		}, SetOptions(merge: true));
 
       print(
