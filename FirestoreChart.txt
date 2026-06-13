@@ -1,0 +1,38 @@
+FIRESTORE
+	groups
+		groupid - (activeLocatorCount,activeRequesterCount,createdAt,groupCode,groupId,groupName,masterRequesterId,maxLocators,maxRequesters,planStatus,trialStartedAt,updateAt)
+			alerts
+				requesterid
+					items
+						alertid - (alertid,battery,createdAt,groupId,locatorCode,locatorid,locatorName,status,targetRequesterId,type:battery_low)
+							
+			call_me
+				requesterid
+					items
+						callmeid - (callmeid,createdAt,groupId,locatorCode,locatorId,locatorName,status,targetRequesterId)
+						
+			devices
+				locatorid - (active,deviceId,joinedAt,pairedRequesters,role,updateAt)
+																								|_requesterid(pairedAt,requesterCode,requesterId,requesterName)													
+					notifyRequesters	
+						requesterid - (batteryLow,callMe,createdAt,geofence,gpsOff,updateAt)
+					settings
+						config - (batteryLowAlert,batteryLowLevel,createdAt,geofenceAlert,gpsOffAlert,updateAt)
+					
+				requesterid - (active,createdAt,isMaster,joinedAt,name,pairedLocators,requesterCode,requesterId,role,updateAt)
+																																	|_locatorid(locatorCode,name)
+	locators
+		locatorid	-	(active,createdAt,fcmToken,groupId,lastSeen,lastTokenRefreshAt,locatorCode,locatorId,locatorName,pairedRequesterId,platform,role,token,topic,updateAt)
+	
+	requesters
+		requesterid	-	(createdAt,lastSeen,platform,requesterCode,requesterId,requesterName,role,token,topic)
+	
+RTDB
+	presence
+		groups
+			groupid
+			  active_watchers
+					locatorid
+						requesterid - (active,lastSeen,requesterCode,requesterName)
+				locatorid - (accuracy,battery,gpsEnabled,lastSeen,lat,lng,status)
+	

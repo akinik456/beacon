@@ -23,12 +23,10 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp();
-	await NotificationService.initialize();
+  await NotificationService.initialize();
 
-	await SystemChrome.setPreferredOrientations([
-		DeviceOrientation.portraitUp,
-	]);	
-	
+  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
   runApp(const MyApp());
 }
 
@@ -79,8 +77,7 @@ class _MyAppState extends State<MyApp> {
 
       locale: _locale,
 
-      onGenerateTitle: (context) =>
-          AppLocalizations.of(context)!.appName,
+      onGenerateTitle: (context) => AppLocalizations.of(context)!.appName,
 
       localizationsDelegates: const [
         AppLocalizations.delegate,
@@ -89,31 +86,20 @@ class _MyAppState extends State<MyApp> {
         GlobalCupertinoLocalizations.delegate,
       ],
 
-      supportedLocales: const [
-        Locale('en'),
-        Locale('tr'),
-      ],
+      supportedLocales: const [Locale('en'), Locale('tr')],
 
       home: FutureBuilder<Map<String, String?>>(
         future: () async {
-          final requesterId =
-              await IdentityService.getRequesterId();
+          final requesterId = await IdentityService.getRequesterId();
 
-          final groupId =
-              await GroupService.getLocalGroupId();
+          final groupId = await GroupService.getLocalGroupId();
 
-          return {
-            'requesterId': requesterId,
-            'groupId': groupId,
-          };
+          return {'requesterId': requesterId, 'groupId': groupId};
         }(),
         builder: (context, snapshot) {
-          if (snapshot.connectionState !=
-              ConnectionState.done) {
+          if (snapshot.connectionState != ConnectionState.done) {
             return const Scaffold(
-              body: Center(
-                child: CircularProgressIndicator(),
-              ),
+              body: Center(child: CircularProgressIndicator()),
             );
           }
 
@@ -121,8 +107,7 @@ class _MyAppState extends State<MyApp> {
 
           final requesterId = data?['requesterId'];
 
-          if (requesterId == null ||
-              requesterId.isEmpty) {
+          if (requesterId == null || requesterId.isEmpty) {
             return const PermissionIntroPage();
           }
 
@@ -138,82 +123,71 @@ class _MyAppState extends State<MyApp> {
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
 
-
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage>
-    with WidgetsBindingObserver {
-	
-	static const _testGroupId = "test_group";
-	static const _testLocatorId = "locator_1";
-		
-		
+class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
+  static const _testGroupId = "test_group";
+  static const _testLocatorId = "locator_1";
+
   @override
   void initState() {
     super.initState();
 
     FirebaseTestService.runTest();
-		FCMService.initialize();
-		
-		WidgetsBinding.instance.addObserver(this);
+    FCMService.initialize(); // ?*? 2 defa çağrılıyor _MyHomePageState artık yok
+
+    WidgetsBinding.instance.addObserver(this);
   }
-	
-	@override
-	void didChangeAppLifecycleState(AppLifecycleState state) {
-		print("BEACON LIFECYCLE => $state");
 
-			}
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    print("BEACON LIFECYCLE => $state");
+  }
 
-	@override
-	void dispose() {
-		WidgetsBinding.instance.removeObserver(this);
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
 
-		super.dispose();
-	}
-	
-	@override
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-			backgroundColor: AppColors.background,
+      backgroundColor: AppColors.background,
 
-			appBar: AppBar(
-				backgroundColor: AppColors.background,
-				surfaceTintColor: AppColors.background,
-				elevation: 0,
-				centerTitle: true,
-				title: Text(
-					AppLocalizations.of(context)!.title,
-					style: AppFonts.title,
-				),
-			),
+      appBar: AppBar(
+        backgroundColor: AppColors.background,
+        surfaceTintColor: AppColors.background,
+        elevation: 0,
+        centerTitle: true,
+        title: Text(AppLocalizations.of(context)!.title, style: AppFonts.title),
+      ),
 
-			body: Padding(
-				padding: const EdgeInsets.all(16),
-				child: Column(
-					children: [
-						AppCard(
-							child: Column(
-								crossAxisAlignment: CrossAxisAlignment.start,
-								children: [
-									Text(
-										"Beacon System",
-										style: AppFonts.subtitle,
-									),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            AppCard(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("Beacon System", style: AppFonts.subtitle),
 
-									const SizedBox(height: 8),
+                  const SizedBox(height: 8),
 
-									Text(
-										"Requester app initialized successfully.",
-										style: AppFonts.body,
-									),
-								],
-							),
-						),
-					],
-				),
-			),
-		);
+                  Text(
+                    "Requester app initialized successfully.",
+                    style: AppFonts.body,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

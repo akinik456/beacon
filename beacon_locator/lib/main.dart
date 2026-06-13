@@ -38,10 +38,12 @@ import 'services/smart_presence_scheduler.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+	
+	await Firebase.initializeApp();
 
-  await Firebase.initializeApp(
+  /*await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
-  );
+  );*/
 
   final locatorId =
       await IdentityService.getLocatorId();
@@ -51,7 +53,7 @@ Future<void> main() async {
   if (locatorId != null &&
       locatorId.isNotEmpty) {
 
-    await LocatorFcmService.init();
+    await FCMService.initialize();
   }
 	
 	FirebaseMessaging.onBackgroundMessage(

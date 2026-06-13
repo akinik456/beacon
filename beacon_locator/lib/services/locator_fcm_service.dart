@@ -4,38 +4,54 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'identity_service.dart';
 import 'smart_presence_scheduler.dart';
 
-class LocatorFcmService {
-  LocatorFcmService._();
-	
-static Future<void> init() async {
+class FCMService {
+  FCMService._();
+	static final FirebaseMessaging _messaging =
+      FirebaseMessaging.instance;
+			
+	static Future<void> initialize() async {
+		try {
+			print("BEACON FCM => initialize start");
 
-  await subscribeLocatorTopic();
+			// Permission
+			final settings = await _messaging.requestPermission();
 
-  await updateFcmToken();
+			print(
+				"BEACON FCM => permission => ${settings.authorizationStatus}",
+			);
 
-  FirebaseMessaging.instance
-      .onTokenRefresh
-      .listen((token) async {
+			// Token
+			final token = await _messaging.getToken();
+			if (token != null && token.isNotEmpty) {
+				await updateFcmToken(token);
+			}
 
-    print(
-      "BEACON FCM => token refreshed",
-    );
+			print("BEACON FCM => token => $token");
+			
+			FirebaseMessaging.instance.onTokenRefresh.listen((newToken) async {
+				print("BEACON FCM => token refreshed => $newToken");
 
-    final locatorId =
-        await IdentityService.getLocatorId();
+				await updateFcmToken(newToken);
+			});
 
-    if (locatorId == null) return;
+			final locatorId =
+      await IdentityService.getLocatorId();
+			if (locatorId == null) return;
 
-    await FirebaseFirestore.instance
-        .collection('locators')
-        .doc(locatorId)
-        .set({
-      'fcmToken': token,
-      'lastTokenRefreshAt':
-          FieldValue.serverTimestamp(),
-    }, SetOptions(merge: true));
-  });
-	FirebaseMessaging.onMessage.listen((message) async {
+			final safeLocatorId = locatorId.replaceAll('-', '_');
+			final topic = 'locator_$safeLocatorId';
+
+			print("BEACON FCM => subscribe start => $topic");
+
+			await _messaging.subscribeToTopic(topic);
+
+			print("BEACON FCM => subscribe success => $topic");
+		} catch (e) {
+			print("BEACON FCM ERROR => $e");
+		}
+		// ================= FOREGROUND LISTENER =================
+
+		FirebaseMessaging.onMessage.listen((message) async {
 		print("BEACON FCM => foreground message");
 		print("BEACON FCM => data => ${message.data}");
 
@@ -55,109 +71,25 @@ static Future<void> init() async {
 			);
 		}
 	});	
+
+	}	
 	
-}	
-
-  static Future<void> subscribeLocatorTopic() async {
-	print("BEACON FCM => getToken start");
-
-final token = await getFcmTokenSafe();
-
-if (token == null || token.isEmpty) {
-  print("BEACON FCM ERROR => token not available, skip subscribe");
-  return;
-}
-
-print("BEACON FCM => token => $token");
-
-  print(
-    "BEACON FCM => subscribe start",
-  );
-
-  final locatorId =
-      await IdentityService.getLocatorId();
-
-  print(
-    "BEACON FCM => locatorId => $locatorId",
-  );
-
-  if (locatorId == null || locatorId.isEmpty) {
-
-    print(
-      "BEACON FCM ERROR => locatorId not found",
-    );
-
-    return;
-  }
-
-  final safeLocatorId = locatorId.replaceAll('-', '_');
-	final topic = 'locator_$safeLocatorId';
-
-  print(
-    "BEACON FCM => topic => $topic",
-  );
-
-  try {
-
-    await FirebaseMessaging.instance
-        .subscribeToTopic(topic);
-
-    print(
-      "BEACON FCM => SUCCESS => $topic",
-    );
-
-  } catch (e) {
-
-    print(
-      "BEACON FCM ERROR => subscribe failed => $e",
-    );
-  }
-}
-
-static Future<String?> getFcmTokenSafe() async {
-  try {
-    print("BEACON FCM => getToken start");
-
-    final token = await FirebaseMessaging.instance.getToken();
-
-    print("BEACON FCM => token => $token");
-
-    return token;
-  } catch (e) {
-    print("BEACON FCM ERROR => getToken failed => $e");
-    return null;
-  }
-}
-
-
-static Future<void> updateFcmToken() async {
-
+	static Future<void> updateFcmToken(String token) async {
   final locatorId =
       await IdentityService.getLocatorId();
 
   if (locatorId == null || locatorId.isEmpty) {
     return;
   }
-
-  final token =
-      await FirebaseMessaging.instance
-          .getToken();
-
-  print(
-    "BEACON FCM => token => $token",
-  );
 
   await FirebaseFirestore.instance
       .collection('locators')
       .doc(locatorId)
       .set({
     'fcmToken': token,
-    'lastTokenRefreshAt':
-        FieldValue.serverTimestamp(),
+    'lastTokenRefreshAt': FieldValue.serverTimestamp(),
   }, SetOptions(merge: true));
 
-  print(
-    "BEACON FCM => token updated",
-  );
+  print("BEACON FCM => token updated");
 }
 }
