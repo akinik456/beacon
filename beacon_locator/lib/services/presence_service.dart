@@ -12,6 +12,7 @@ class PresenceService {
   static final _db = FirebaseDatabase.instance.ref();
 
  static Future<void> updateOnline() async {
+	print("LynraFamiy Member updateOnline called");
   final groupId = await IdentityService.getGroupId();
   final locatorId = await IdentityService.getLocatorId();
 

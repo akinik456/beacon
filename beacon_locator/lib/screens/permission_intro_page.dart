@@ -73,10 +73,10 @@ class _PermissionIntroPageState
 								),
 							),
 							
-              const Spacer(),
+              const SizedBox(height: 4),
               Container(
-                width: 110,
-                height: 110,
+                width: 80,
+                height: 80,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   gradient: RadialGradient(
@@ -93,7 +93,7 @@ class _PermissionIntroPageState
                   size: 52,
                 ),
               ),
-              const SizedBox(height: 32),
+              const SizedBox(height: 16),
               Text(
                 l10n.locationPermissionTitle,
                 style: AppFonts.title.copyWith(
@@ -107,7 +107,7 @@ class _PermissionIntroPageState
 								style: AppFonts.body.copyWith(
 									color: AppColors.textSecondary,
 									height: 1.6,
-									fontSize: 20,
+									fontSize: 16,
 								),
 								textAlign: TextAlign.center,
 							),

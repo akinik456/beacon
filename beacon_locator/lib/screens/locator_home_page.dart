@@ -93,14 +93,14 @@ class _LocatorHomePageState extends State<LocatorHomePage>
         title: Text(l10n.permissionsRequired, style: AppFonts.title),
         content: Text(
           l10n.somePermissions,
-          style: AppFonts.body.copyWith(color: AppColors.textSecondary),
+          style: AppFonts.body.copyWith(color: AppColors.textSecondary,fontSize: 18,),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
             child: Text(
               l10n.ok,
-              style: AppFonts.button.copyWith(color: AppColors.primary),
+              style: AppFonts.button.copyWith(color: AppColors.primary,fontSize: 18,),
             ),
           ),
         ],

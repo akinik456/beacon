@@ -86,10 +86,13 @@ class LocatorPermissionPage extends StatefulWidget {
               const SizedBox(height: 6),
               Text(
                 l10n.backgroundPermissions,
-                style: AppFonts.caption,
+									style: AppFonts.title.copyWith(
+										fontSize: 16,
+										color: AppColors.textSecondary,
+									),
               ),
 
-              const SizedBox(height: 26),
+              const SizedBox(height: 16),
 
               _SectionTitle(l10n.systemPermissions),
 
@@ -102,10 +105,8 @@ class LocatorPermissionPage extends StatefulWidget {
 								granted: locationGranted,
 								onTap: () async {
 									await LocatorPermissionService.requestLocationAlways();
-
 									final granted =
 											await LocatorPermissionService.isLocationAlwaysGranted();
-
 									setState(() {
 										locationGranted = granted;
 									});
@@ -171,7 +172,7 @@ class LocatorPermissionPage extends StatefulWidget {
 								},
 							),
 
-              const SizedBox(height: 26),
+              const SizedBox(height: 16),
 
               _SectionTitle(l10n.manufacturerSettings),
 
@@ -347,7 +348,7 @@ class _SectionTitle extends StatelessWidget {
       text,
       style: AppFonts.caption.copyWith(
         color: AppColors.primary,
-        fontSize: 11,
+        fontSize: 14,
         fontWeight: FontWeight.w700,
         letterSpacing: 1.2,
       ),
@@ -394,7 +395,7 @@ class _PermissionItem extends StatelessWidget {
               children: [
                 Text(title, style: AppFonts.subtitle.copyWith(fontSize: 14)),
                 const SizedBox(height: 3),
-                Text(subtitle, style: AppFonts.caption.copyWith(fontSize: 11)),
+                Text(subtitle, style: AppFonts.caption.copyWith(fontSize: 14)),
               ],
             ),
           ),
