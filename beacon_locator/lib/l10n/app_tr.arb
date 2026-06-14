@@ -118,6 +118,7 @@
 "thismember":													"Bu üye listenizden kaldırılacaktır.",
 "viewOnly":														"Görüntüleme Modu",
 "title": 															"LynraFamily",
+"titleMember": 												"LynraFamily Member",
 "waitingForApproval":			 						"Onay Bekleniyor",
 "waitingForLocator":									"Üyenin onay vermesi bekleniyor...",
 "wantsYoutoCall":											"Aramanızı istiyor",

@@ -235,7 +235,6 @@ Stream<List<Map<String, String>>> _watchPairedRequesterData() async* {
       borderRadius: BorderRadius.circular(16),
       onTap: () {
         if (locatorId.isEmpty) return;
-
         _showLocatorQrDialog(locatorId: locatorId, locatorCode: locatorCode);
       },
       child: Column(
@@ -244,30 +243,39 @@ Stream<List<Map<String, String>>> _watchPairedRequesterData() async* {
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(
-                Icons.qr_code_2_rounded,
-                color: AppColors.primary,
-                size: 22,
-              ),
-						
+              Stack(
+								alignment: Alignment.bottomRight,
+								children: const [
+									Icon(
+										Icons.qr_code_scanner_rounded,
+										color: AppColors.accent,
+										size: 24,
+									),
+									
+								],
+							),	
+							Icon(
+										Icons.zoom_in,
+										size: 32,
+										color: AppColors.accent,
+									),
               const SizedBox(width: 6),
               Text(
-							    '${l10n.member}\n'
-									'${l10n.code}',
+							    '${l10n.memberCode}',
 								textAlign: TextAlign.center,
-								style: AppFonts.caption,
-							),
-							
+								style: AppFonts.button.copyWith(color: AppColors.accent),
+							),	
+							const SizedBox(width: 6),
+							Text(
+								locatorCode,
+								textAlign: TextAlign.left,
+								style: AppFonts.subtitle.copyWith(
+									color: AppColors.accent,
+									letterSpacing: 2,
+								),
+							),						
             ],
-          ),
-          const SizedBox(height: 6),
-          Text(
-            locatorCode,
-            style: AppFonts.subtitle.copyWith(
-              color: AppColors.primary,
-              letterSpacing: 2,
-            ),
-          ),
+          ),          
         ],
       ),
     );
@@ -332,7 +340,7 @@ Widget _pairedRequesterCard() {
           children: [
             Text(
               l10n.pairedRequesters,
-              style: AppFonts.caption,
+              style: AppFonts.title.copyWith(fontSize: 18,color: AppColors.primary,),
             ),
 
             const SizedBox(height: 12),
@@ -668,52 +676,66 @@ Widget _activeWatchersCard() {
                     children: [
                       Expanded(
                         child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Text(
-                              'LynraFamily\nMember',
-                              style: AppFonts.title.copyWith(fontSize: 28,color: AppColors.primary,),
+                              l10n.titleMember,
+                              style: AppFonts.title.copyWith(fontSize: 24,color: AppColors.primary,),
                             ),
                             const SizedBox(height: 6),
                             Text(locatorName, 
-														style: AppFonts.caption),
+														style: AppFonts.title.copyWith(fontSize: 20,color: AppColors.primary,),
+														),
                           ],
                         ),
                       ),
-											Align(
-												alignment: Alignment.centerRight,
-												child: TextButton.icon(
-													onPressed: () async {
-														await Navigator.push(
-															context,
-															MaterialPageRoute(
-																builder: (_) =>
-																		const LanguageSelectPage(),
-															),
-														);
-														if (!mounted) return;
-														setState(() {});
-													},
-													icon: const Icon(
-														Icons.language_rounded,
-														size: 18,
-														color: AppColors.primary,
-													),
-													label: Text(
-														Localizations.localeOf(context).languageCode == 'tr'
-															? 'Türkçe'
-															: 'English',
-															style: AppFonts.caption.copyWith(
-																color: AppColors.primary,
-															),
-													),
-												),
-											),
-                      const SizedBox(width: 16),
-                      _locatorCodeHeader(locatorId, locatorCode),									
                     ],
                   ),
-                  const SizedBox(height: 24),
+									Row(
+										children: [
+											const SizedBox(width: 16),
+											_locatorCodeHeader(locatorId, locatorCode),
+											const Spacer(),
+											TextButton.icon(
+												onPressed: () async {
+													await Navigator.push(
+														context,
+														MaterialPageRoute(
+															builder: (_) =>
+																	const LanguageSelectPage(),
+														),
+													);
+													if (!mounted) return;
+													setState(() {});
+												},
+												icon: const Icon(
+													Icons.language_rounded,
+													size: 18,
+													color: AppColors.accent,
+												),
+												label: Row(
+													mainAxisSize: MainAxisSize.min,
+													children: [
+														Text(
+															Localizations.localeOf(context).languageCode == 'tr'
+																	? 'TR'
+																	: 'EN',
+															style: AppFonts.caption.copyWith(
+																color: AppColors.accent,
+																fontWeight: FontWeight.w600,
+															),
+														),
+														const Icon(
+															Icons.arrow_drop_down,
+															size: 18,
+															color: AppColors.accent,
+														),
+													],
+												),
+											)
+										],
+									),									
+                  const SizedBox(height: 12),
                   _buildPairingArea(),
 									const SizedBox(height: 12),
 									_activeWatchersCard(),						

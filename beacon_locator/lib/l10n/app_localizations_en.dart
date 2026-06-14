@@ -360,6 +360,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get title => 'LynraFamily';
 
   @override
+  String get titleMember => 'LynraFamily Member';
+
+  @override
   String get viewOnly => 'View Only';
 
   @override

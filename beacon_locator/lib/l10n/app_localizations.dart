@@ -797,6 +797,12 @@ abstract class AppLocalizations {
   /// **'LynraFamily'**
   String get title;
 
+  /// No description provided for @titleMember.
+  ///
+  /// In en, this message translates to:
+  /// **'LynraFamily Member'**
+  String get titleMember;
+
   /// No description provided for @viewOnly.
   ///
   /// In en, this message translates to:

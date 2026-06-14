@@ -12,7 +12,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get actionRequired => 'İşlem Gerekli';
 
   @override
-  String get activeWatchers => 'Aktif İzleyiciler';
+  String get activeWatchers => 'Aktif İzleyenler';
 
   @override
   String get addMember => 'Üye Ekle';
@@ -36,7 +36,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get approve => 'Onay';
 
   @override
-  String get askEverybody => 'Herkese \'Beni Arama\' İsteği Gönder';
+  String get askEverybody => 'Herkese \'Beni Ara\' İsteği Gönder';
 
   @override
   String get autoStart => 'Otomatik Başlatma';
@@ -60,7 +60,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get batteryOptimizationDescription => 'Arka planda çalışabilmesi için \"Kısıtlama Yok\" olarak ayarlayın';
 
   @override
-  String get callme => 'Arama İsteği';
+  String get callme => 'Beni Ara';
 
   @override
   String get callMeSentAll => 'Arama İsteği tüm yöneticilere gönderildi';
@@ -358,6 +358,9 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get title => 'LynraFamily';
+
+  @override
+  String get titleMember => 'LynraFamily Member';
 
   @override
   String get viewOnly => 'Görüntüleme Modu';

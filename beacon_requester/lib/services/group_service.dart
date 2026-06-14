@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
+import 'dart:ui';
+
 import 'identity_service.dart';
 import 'code_service.dart';
 
@@ -36,11 +38,16 @@ class GroupService {
 
     final groupRef = _firestore.collection('groups').doc(groupId);
     final requesterRef = groupRef.collection('devices').doc(requesterId);
+		final locale =
+				PlatformDispatcher.instance.locale;
+		final countryCode =
+				locale.countryCode;
 
     final now = FieldValue.serverTimestamp();
 
     await _firestore.runTransaction((tx) async {
       tx.set(groupRef, {
+				'countryCode': countryCode,
         'groupId': groupId,
         'groupName': groupName.trim(),
         'groupCode': groupCode,
@@ -62,13 +69,13 @@ class GroupService {
         'requesterId': requesterId,
         'requesterName': requesterName.trim(),
         'role': 'requester',
-				'updateAt': FieldValue.serverTimestamp(),
+				'updatedAt': FieldValue.serverTimestamp(),
       });
     });
 		
 		await _firestore.collection('requesters').doc(requesterId).set({
 			'groupId':groupId,
-			'updateAt': FieldValue.serverTimestamp(),
+			'updatedAt': FieldValue.serverTimestamp(),
 		}, SetOptions(merge: true));
 
     final prefs = await SharedPreferences.getInstance();

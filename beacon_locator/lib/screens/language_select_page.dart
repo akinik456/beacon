@@ -126,6 +126,7 @@ class _LanguageSelectPageState
                               color: isSelected
                                   ? AppColors.primary
                                   : AppColors.textPrimary,
+															fontSize: 16,		
                             ),
                           ),
                         );
@@ -151,6 +152,7 @@ class _LanguageSelectPageState
 														l10n.sva,
 														style: AppFonts.caption.copyWith(
 															color: AppColors.background,
+															fontSize: 16,
 														),
 													),
                         ),

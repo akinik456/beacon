@@ -19,8 +19,7 @@ class PermissionIntroPage extends StatefulWidget {
 }
 
 class _PermissionIntroPageState
-    extends State<PermissionIntroPage> {
-
+  extends State<PermissionIntroPage> {
 
   @override
   Widget build(BuildContext context) {
@@ -31,40 +30,50 @@ class _PermissionIntroPageState
         child: Padding(
           padding: const EdgeInsets.all(24),
           child: Column(
-            children: [
+            children: [		
 						
-						Align(
-												alignment: Alignment.centerRight,
-												child: TextButton.icon(
-													onPressed: () async {
-														await Navigator.push(
-															context,
-															MaterialPageRoute(
-																builder: (_) =>
-																		const LanguageSelectPage(),
-															),
-														);
-
-														if (!mounted) return;
-														setState(() {});
-													},
-													icon: const Icon(
-														Icons.language_rounded,
-														size: 18,
-														color: AppColors.primary,
-													),
-													label: Text(
-														Localizations.localeOf(context).languageCode == 'tr'
-															? 'Türkçe'
-															: 'English',
-															style: AppFonts.caption.copyWith(
-																color: AppColors.primary,
-															),
+							Align(
+								alignment: Alignment.centerRight,
+								child: TextButton.icon(
+									onPressed: () async {
+										await Navigator.push(
+											context,
+											MaterialPageRoute(
+												builder: (_) =>
+													const LanguageSelectPage(),
+											),
+										);
+										if (!mounted) return;
+										setState(() {});
+									},
+									icon: const Icon(
+										Icons.language_rounded,
+										size: 18,
+										color: AppColors.accent,
 									),
+									label: Row(
+													mainAxisSize: MainAxisSize.min,
+													children: [
+														Text(
+															Localizations.localeOf(context).languageCode == 'tr'
+																	? 'TR'
+																	: 'EN',
+															style: AppFonts.caption.copyWith(
+																color: AppColors.accent,
+																fontWeight: FontWeight.w600,
+															),
+														),
+														const Icon(
+															Icons.arrow_drop_down,
+															size: 18,
+															color: AppColors.accent,
+														),
+													],
+												),
 								),
 							),
+							
               const Spacer(),
-
               Container(
                 width: 110,
                 height: 110,
@@ -84,9 +93,7 @@ class _PermissionIntroPageState
                   size: 52,
                 ),
               ),
-
               const SizedBox(height: 32),
-
               Text(
                 l10n.locationPermissionTitle,
                 style: AppFonts.title.copyWith(
@@ -94,20 +101,17 @@ class _PermissionIntroPageState
                 ),
                 textAlign: TextAlign.center,
               ),
-
               const SizedBox(height: 18),
-
               Text(
 								l10n.locationPermissionDescription,
 								style: AppFonts.body.copyWith(
 									color: AppColors.textSecondary,
 									height: 1.6,
+									fontSize: 20,
 								),
 								textAlign: TextAlign.center,
 							),
-
               const Spacer(),
-
               SizedBox(
                 width: double.infinity,
                 height: 58,
@@ -127,15 +131,15 @@ class _PermissionIntroPageState
                     ),
                   ),
                   child: Text(
-                      l10n.cntinue,
-                      style: AppFonts.button.copyWith(
-                        color: AppColors.background,
-                      ),
-                    ),
+										l10n.cntinue,
+										style: AppFonts.button.copyWith(
+											color: AppColors.background,
+											fontSize: 18,
+										),
+									),
                 ),
               ),
-
-              const SizedBox(height: 12),
+            const SizedBox(height: 12),
             ],
           ),
         ),

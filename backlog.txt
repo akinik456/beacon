@@ -20,3 +20,8 @@ SMS
 Messaging
 
 isim değiştirme
+
+manuel bildirim hazırlığı 
+lynrafamily_all
+lynrafamily_requesters
+lynrafamily_members

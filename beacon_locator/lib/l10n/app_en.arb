@@ -117,6 +117,7 @@
 "systemPermissions":									"SYSTEM PERMISSIONS",
 "thismember":													"This Member will be removed from your paired list.",
 "title": 															"LynraFamily",
+"titleMember": 												"LynraFamily Member",
 "viewOnly":														"View Only",
 "waitingForApproval":									"Waiting for approval",
 "waitingForLocator":									"Waiting for locator approval...",

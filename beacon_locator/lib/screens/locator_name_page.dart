@@ -54,9 +54,10 @@ class _LocatorNamePageState extends State<LocatorNamePage> {
 				surfaceTintColor: AppColors.primary,
 				elevation: 0,
 				title: Text(
-					l10n.title,
+					l10n.titleMember,
 					style: AppFonts.title.copyWith(
 					color: AppColors.primary,
+					fontSize: 24,
 					),
 				),
 			),
@@ -68,10 +69,17 @@ class _LocatorNamePageState extends State<LocatorNamePage> {
               child: TextField(
                 controller: nameCtrl,
 								maxLength: 14,
-                style: AppFonts.body,
+                style: AppFonts.body.copyWith(
+									color: Colors.white,
+									fontSize: 22,
+									fontWeight: FontWeight.w600,
+								),
                 decoration: InputDecoration(
                   hintText: l10n.enterMemberName,
-                  hintStyle: AppFonts.caption,
+                  hintStyle: AppFonts.subtitle.copyWith(
+										color: Colors.white,
+										fontSize: 18,
+									),
                   border: InputBorder.none,
                 ),
               ),
@@ -112,6 +120,7 @@ class _LocatorNamePageState extends State<LocatorNamePage> {
                     color: canConfirm
                         ? AppColors.background
                         : AppColors.textSecondary,
+									fontSize: 18,	
                   ),
                 ),
               ),
