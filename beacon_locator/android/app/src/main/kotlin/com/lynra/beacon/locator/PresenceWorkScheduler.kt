@@ -34,4 +34,21 @@ object PresenceWorkScheduler {
             "Long presence work scheduled",
         )
     }
+		
+		fun runHealthCheckNow(
+			context: Context,
+	) {
+
+			val request =
+					androidx.work.OneTimeWorkRequestBuilder<PresenceWorker>()
+							.build()
+
+			WorkManager.getInstance(context)
+					.enqueue(request)
+
+			Log.e(
+					"LYNRA_WORK",
+					"One-time health check enqueued",
+			)
+	}
 }

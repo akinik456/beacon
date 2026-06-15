@@ -20,5 +20,9 @@ class BootReceiver : BroadcastReceiver() {
         PresenceWorkScheduler.scheduleLongPresence(
             context.applicationContext,
         )
+				
+				PresenceWorkScheduler.runHealthCheckNow(
+						context.applicationContext,
+				)
     }
 }
