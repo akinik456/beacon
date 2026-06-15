@@ -25,3 +25,7 @@ manuel bildirim hazırlığı
 lynrafamily_all
 lynrafamily_requesters
 lynrafamily_members
+
+locator için FCM 
+
+Scheduled Cloud Function
