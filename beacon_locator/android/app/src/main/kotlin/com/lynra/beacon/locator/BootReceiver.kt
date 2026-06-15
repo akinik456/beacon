@@ -3,6 +3,7 @@ package com.lynra.beacon.locator
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.util.Log
 
 class BootReceiver : BroadcastReceiver() {
@@ -17,12 +18,15 @@ class BootReceiver : BroadcastReceiver() {
             "Receiver fired action=${intent.action}",
         )
 
-        PresenceWorkScheduler.scheduleLongPresence(
-            context.applicationContext,
+        val serviceIntent = Intent(
+            context,
+            LocatorPresenceForegroundService::class.java,
         )
-				
-				PresenceWorkScheduler.runHealthCheckNow(
-						context.applicationContext,
-				)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            context.startForegroundService(serviceIntent)
+        } else {
+            context.startService(serviceIntent)
+        }
     }
 }

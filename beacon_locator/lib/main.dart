@@ -13,6 +13,8 @@ import 'screens/permission_intro_page.dart';
 import 'screens/locator_home_page.dart';
 import 'services/locator_fcm_service.dart';
 import 'services/smart_presence_scheduler.dart';
+import 'services/active_watcher_service.dart';
+
 
 	@pragma('vm:entry-point')
 	Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -33,6 +35,20 @@ import 'services/smart_presence_scheduler.dart';
 
 			print("BEACON FCM BG => REQUEST LOCATION completed");
 		}
+	}
+	
+	@pragma('vm:entry-point')
+	Future<void> locatorPresenceServiceMain() async {
+		WidgetsFlutterBinding.ensureInitialized();
+
+		await Firebase.initializeApp();
+
+		print(
+			"LYNRA_DART => locatorPresenceServiceMain",
+		);
+
+		SmartPresenceScheduler.start();
+		await ActiveWatcherService.start();
 	}
 
 
