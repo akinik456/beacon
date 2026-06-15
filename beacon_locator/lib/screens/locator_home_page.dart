@@ -21,7 +21,7 @@ import '../services/active_watcher_service.dart';
 import '../services/locator_settings_service.dart';
 import '../l10n/app_localizations.dart';
 import 'language_select_page.dart';
-
+import '../services/native_presence_service.dart';
 
 class LocatorHomePage extends StatefulWidget {
   const LocatorHomePage({super.key});
@@ -37,29 +37,28 @@ class _LocatorHomePageState extends State<LocatorHomePage>
 	
 	//MotionService.start();
 
-  @override
-  void initState() {
-    super.initState();
-		LocatorSettingsService.startListeners();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _checkPermissionsAndWarn();
-    });
+ @override
+void initState() {
+  super.initState();
 
-    SmartPresenceScheduler.start();
-		MotionService.start();
-		ActiveWatcherService.start();
-		
-  }
+  NativePresenceService.start();
+
+  LocatorSettingsService.startListeners();
+	
+	ActiveWatcherService.startUiOnly();
+
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    _checkPermissionsAndWarn();
+  });
+  
+}
 
   @override
   void dispose() {
     _presenceTimer?.cancel();
 		LocatorSettingsService.stopListeners();
-		MotionService.stop();
-		SmartPresenceScheduler.stop();
 		ActiveWatcherService.stop();
-    WidgetsBinding.instance.removeObserver(this);
-
+		WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 

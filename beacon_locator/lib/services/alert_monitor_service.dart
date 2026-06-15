@@ -12,7 +12,7 @@ class AlertMonitorService {
 	
 
   static Future<void> checkNow() async {
-	
+
 	final gpsOffAlertEnabled =
 			LocatorSettingsService.gpsOffAlertEnabled &&
 			LocatorSettingsService.hasGpsOffNotifyTarget;
@@ -23,7 +23,12 @@ class AlertMonitorService {
 
 	final batteryLowLevel =
 			LocatorSettingsService.batteryLowLevel;
-		
+	print(
+		"BEACON ALERT MONITOR => "
+		"gpsOffAlertEnabled=$gpsOffAlertEnabled "
+		"batteryLowAlertEnabled=$batteryLowAlertEnabled "
+		"batteryLowLevel=$batteryLowLevel",
+	);		
     try {
 			final gpsEnabled =
 					await Geolocator.isLocationServiceEnabled();

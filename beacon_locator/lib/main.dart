@@ -15,6 +15,7 @@ import 'services/locator_fcm_service.dart';
 import 'services/smart_presence_scheduler.dart';
 import 'services/active_watcher_service.dart';
 import 'services/motion_service.dart';
+import 'services/locator_settings_service.dart';
 
 
 	@pragma('vm:entry-point')
@@ -49,6 +50,7 @@ import 'services/motion_service.dart';
 		);
 
 		SmartPresenceScheduler.start();
+		LocatorSettingsService.startListeners();
 		await ActiveWatcherService.start();
 		MotionService.start();
 	}

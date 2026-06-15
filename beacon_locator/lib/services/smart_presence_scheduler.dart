@@ -9,8 +9,9 @@ class SmartPresenceScheduler {
   static Timer? _timer;
 
   static DateTime? _fastUntil;
-	
-	static bool _hasActiveWatcher = false;
+
+  static bool _hasActiveWatcher = false;
+  static bool _isUpdating = false;
 
   static const _fastPeriod =
       Duration(seconds: 30);
@@ -47,14 +48,35 @@ class SmartPresenceScheduler {
     _fastUntil =
         DateTime.now().add(_fastWindow);
 
-    await PresenceService.updateOnline();
-		
-		await AlertMonitorService.checkNow();
+    await _runUpdate(
+      reason: reason,
+    );
 
     _scheduleNext(
       immediate: false,
       reason: reason,
     );
+  }
+
+  static Future<void> _runUpdate({
+    required String reason,
+  }) async {
+    if (_isUpdating) {
+      print(
+        "SMART PRESENCE => skip update reason=$reason",
+      );
+      return;
+    }
+
+    _isUpdating = true;
+
+    try {
+      await PresenceService.updateOnline();
+
+      await AlertMonitorService.checkNow();
+    } finally {
+      _isUpdating = false;
+    }
   }
 
   static void _scheduleNext({
@@ -66,9 +88,9 @@ class SmartPresenceScheduler {
     final now = DateTime.now();
 
     final isFast =
-    _hasActiveWatcher ||
-    (_fastUntil != null &&
-     now.isBefore(_fastUntil!));
+        _hasActiveWatcher ||
+        (_fastUntil != null &&
+            now.isBefore(_fastUntil!));
 
     final period =
         isFast ? _fastPeriod : _slowPeriod;
@@ -82,9 +104,9 @@ class SmartPresenceScheduler {
     _timer = Timer(
       immediate ? Duration.zero : period,
       () async {
-        await PresenceService.updateOnline();
-				
-				await AlertMonitorService.checkNow();
+        await _runUpdate(
+          reason: 'timer',
+        );
 
         _scheduleNext(
           immediate: false,
@@ -94,23 +116,22 @@ class SmartPresenceScheduler {
     );
   }
 
-	static void setActiveWatcher(bool value) {
-		_hasActiveWatcher = value;
+  static void setActiveWatcher(bool value) {
+    _hasActiveWatcher = value;
 
-		print(
-			"SMART PRESENCE => activeWatcher=$value",
-		);
+    print(
+      "SMART PRESENCE => activeWatcher=$value",
+    );
 
-		if (value) {
-			boostAndUpdateNow(
-				reason: 'active_watcher',
-			);
-		} else {
-			_scheduleNext(
-				immediate: false,
-				reason: 'active_watcher_off',
-			);
-		}
-	}
-	
+    if (value) {
+      boostAndUpdateNow(
+        reason: 'active_watcher',
+      );
+    } else {
+      _scheduleNext(
+        immediate: false,
+        reason: 'active_watcher_off',
+      );
+    }
+  }
 }
