@@ -14,6 +14,7 @@ import 'screens/locator_home_page.dart';
 import 'services/locator_fcm_service.dart';
 import 'services/smart_presence_scheduler.dart';
 import 'services/active_watcher_service.dart';
+import 'services/motion_service.dart';
 
 
 	@pragma('vm:entry-point')
@@ -49,36 +50,29 @@ import 'services/active_watcher_service.dart';
 
 		SmartPresenceScheduler.start();
 		await ActiveWatcherService.start();
+		MotionService.start();
 	}
 
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-	
-	await Firebase.initializeApp();
 
-  /*await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );*/
+  await Firebase.initializeApp();
 
-  final locatorId =
-      await IdentityService.getLocatorId();
+  FirebaseMessaging.onBackgroundMessage(
+    firebaseMessagingBackgroundHandler,
+  );
 
-  print("locatorId => $locatorId");
+  final locatorId = await IdentityService.getLocatorId();
 
-  if (locatorId != null &&
-      locatorId.isNotEmpty) {
-
+  if (locatorId != null && locatorId.isNotEmpty) {
     await FCMService.initialize();
   }
-	
-	FirebaseMessaging.onBackgroundMessage(
-		firebaseMessagingBackgroundHandler,
-	);
-	await SystemChrome.setPreferredOrientations([
-		DeviceOrientation.portraitUp,
-	]);
-	
+
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+  ]);
+
   runApp(
     MyApp(
       hasLocatorId:
@@ -87,7 +81,6 @@ Future<void> main() async {
     ),
   );
 }
-
 class MyApp extends StatefulWidget {
 
   final bool hasLocatorId;
