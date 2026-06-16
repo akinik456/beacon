@@ -779,6 +779,12 @@ abstract class AppLocalizations {
   /// **'Save'**
   String get sva;
 
+  /// No description provided for @saved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved'**
+  String get saved;
+
   /// No description provided for @systemPermissions.
   ///
   /// In en, this message translates to:

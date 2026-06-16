@@ -351,6 +351,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get sva => 'Kaydet';
 
   @override
+  String get saved => 'Kaydedildi';
+
+  @override
   String get systemPermissions => 'SİSTEM İZİNLERİ';
 
   @override

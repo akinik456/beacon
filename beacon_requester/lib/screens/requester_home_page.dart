@@ -55,6 +55,7 @@ class _RequesterHomePageState
 	
 	String? _groupId;
 	String _groupCode = '------';
+	String? _groupName;
 	double? _myLat;
 	double? _myLng;
 	String? _requesterId;
@@ -343,7 +344,69 @@ void _listenAlerts() async {
   });
 }
 
+Future<void> _editGroupName({
+  required String groupId,
+  required String currentGroupName,
+}) async {
+  final l10n = AppLocalizations.of(context)!;
 
+  final controller = TextEditingController(
+    text: currentGroupName,
+  );
+
+  final newName = await showDialog<String>(
+    context: context,
+    builder: (dialogContext) {
+      return AlertDialog(
+        title: Text(l10n.groupName),
+        content: TextField(
+          controller: controller,
+          maxLength: 14,
+          textCapitalization: TextCapitalization.words,
+          decoration: InputDecoration(
+            hintText: l10n.groupName,
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(dialogContext);
+            },
+            child: Text(l10n.cancel),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(
+                dialogContext,
+                controller.text.trim(),
+              );
+            },
+            child: Text(l10n.sva),
+          ),
+        ],
+      );
+    },
+  );
+
+  if (newName == null || newName.isEmpty) return;
+  if (newName == currentGroupName) return;
+
+  await FirebaseFirestore.instance
+      .collection('groups')
+      .doc(groupId)
+      .update({
+    'groupName': newName,
+    'updatedAt': FieldValue.serverTimestamp(),
+  });
+
+  if (!mounted) return;
+
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text(l10n.saved),
+    ),
+  );
+}
   void _showGroupQrDialog({
   required BuildContext context,
   required String groupId,
@@ -788,34 +851,72 @@ void _listenAlerts() async {
 
     const SizedBox(height: 6),
 
-    Padding(
-  padding: const EdgeInsets.symmetric(horizontal: 12),
-  child: Row(
-    children: [
-      Expanded(
-        child: Text(
-          groupName,
-          textAlign: TextAlign.left,
-          style: AppFonts.title.copyWith(
-            fontSize: 20,
-            color: AppColors.primary,
-          ),
-        ),
-      ),
+    StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+      stream: FirebaseFirestore.instance
+          .collection('groups')
+          .doc(groupId)
+          .snapshots(),
+      builder: (context, snapshot) {
+        final liveGroupName =
+            snapshot.data?.data()?['groupName'] ??
+            groupName;
 
-      Expanded(
-        child: Text(
-          requesterName,
-          textAlign: TextAlign.right,
-          style: AppFonts.title.copyWith(
-            fontSize: 20,
-            color: AppColors.primary,
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          child: Row(
+            children: [
+              Expanded(
+                child: Row(
+                  children: [
+                    Flexible(
+                      child: Text(
+                        liveGroupName,
+                        overflow: TextOverflow.ellipsis,
+                        style: AppFonts.title.copyWith(
+                          fontSize: 20,
+                          color: AppColors.primary,
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(width: 6),
+
+                    InkWell(
+                      borderRadius: BorderRadius.circular(12),
+                      onTap: () {
+                        _editGroupName(
+                          groupId: groupId,
+                          currentGroupName: liveGroupName,
+                        );
+                      },
+                      child: const Padding(
+                        padding: EdgeInsets.all(4),
+                        child: Icon(
+                          Icons.edit_rounded,
+                          size: 16,
+                          color: AppColors.primary,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              Expanded(
+                child: Text(
+                  requesterName,
+                  textAlign: TextAlign.right,
+                  style: AppFonts.title.copyWith(
+                    fontSize: 20,
+                    color: AppColors.primary,
+                  ),
+                ),
+              ),
+            ],
           ),
-        ),
-      ),
-    ],
-  ),
-),
+        );
+      },
+    ),
   ],
 ),
 									

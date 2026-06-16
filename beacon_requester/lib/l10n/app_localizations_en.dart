@@ -351,6 +351,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sva => 'Save';
 
   @override
+  String get saved => 'Saved';
+
+  @override
   String get systemPermissions => 'SYSTEM PERMISSIONS';
 
   @override
