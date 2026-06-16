@@ -16,7 +16,7 @@ import 'services/smart_presence_scheduler.dart';
 import 'services/active_watcher_service.dart';
 import 'services/motion_service.dart';
 import 'services/locator_settings_service.dart';
-
+import 'services/presence_service.dart';
 
 	@pragma('vm:entry-point')
 	Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -52,6 +52,7 @@ import 'services/locator_settings_service.dart';
 		SmartPresenceScheduler.start();
 		LocatorSettingsService.startListeners();
 		await ActiveWatcherService.start();
+		await PresenceService.startConnectionWatcher();
 		MotionService.start();
 	}
 
@@ -67,10 +68,6 @@ Future<void> main() async {
 
   final locatorId = await IdentityService.getLocatorId();
 
-  if (locatorId != null && locatorId.isNotEmpty) {
-    await FCMService.initialize();
-  }
-
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]);
@@ -82,6 +79,12 @@ Future<void> main() async {
           locatorId.isNotEmpty,
     ),
   );
+
+  if (locatorId != null && locatorId.isNotEmpty) {
+    Future.delayed(const Duration(seconds: 5), () async {
+      await FCMService.initialize();
+    });
+  }
 }
 class MyApp extends StatefulWidget {
 

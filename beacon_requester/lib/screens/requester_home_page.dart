@@ -54,11 +54,11 @@ class _RequesterHomePageState
 	late Future<Map<String, dynamic>?> _homeDataFuture;
 	
 	String? _groupId;
+	String _groupCode = '------';
 	double? _myLat;
 	double? _myLng;
 	String? _requesterId;
 	bool _isMaster = false;
-	
 	
 		@override
 	void initState() {
@@ -67,6 +67,7 @@ class _RequesterHomePageState
 		FCMService.initialize();
 		_homeDataFuture = HomeDataService.loadHomeData();
 		_loadLocators();
+		_loadGroupCode();
 	}
 	
 	@override
@@ -188,17 +189,17 @@ class _RequesterHomePageState
 
 		if (!mounted) return;
 
-final lat = presence['lat']?.toDouble();
-final lng = presence['lng']?.toDouble();
+		final lat = presence['lat']?.toDouble();
+		final lng = presence['lng']?.toDouble();
 
-String address = 'Address not available';
+		String address = 'Address not available';
 
-if (lat != null && lng != null) {
-  address = await AddressHelper.getAddressFromLatLng(
-    lat: lat,
-    lng: lng,
-  );
-}
+		if (lat != null && lng != null) {
+			address = await AddressHelper.getAddressFromLatLng(
+				lat: lat,
+				lng: lng,
+			);
+		}
 
 		if (!mounted) return;
 
@@ -216,7 +217,6 @@ if (lat != null && lng != null) {
 			};
 		});
 	});
-
 		_subscriptions.add(sub);
 	}
 	
@@ -322,10 +322,16 @@ void _listenAlerts() async {
 }	
 	
 
-  Future<String> _loadGroupCode() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString('group_code') ?? '------';
-  }
+  Future<void> _loadGroupCode() async {
+  final prefs = await SharedPreferences.getInstance();
+
+  if (!mounted) return;
+
+  setState(() {
+    _groupCode =
+        prefs.getString('group_code') ?? '------';
+  });
+}
 
 
   void _showGroupQrDialog({
@@ -511,6 +517,62 @@ void _listenAlerts() async {
 			),
 		);
 	}
+	
+	Widget _requesterCodeHeader(String groupId, String groupCode) {
+	final l10n = AppLocalizations.of(context)!;
+    return InkWell(
+      borderRadius: BorderRadius.circular(16),
+      onTap: () {
+        if (groupId.isEmpty) return;
+					_showGroupQrDialog(
+						context: context,
+						groupId: groupId,
+						groupCode: groupCode,
+					);
+      },
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Stack(
+								alignment: Alignment.bottomRight,
+								children: const [
+									Icon(
+										Icons.qr_code_scanner_rounded,
+										color: AppColors.accent,
+										size: 24,
+									),
+									
+								],
+							),	
+							Icon(
+										Icons.zoom_in,
+										size: 32,
+										color: AppColors.accent,
+									),
+              const SizedBox(width: 6),
+              Text(
+							    '${l10n.groupCode}',
+								textAlign: TextAlign.center,
+								style: AppFonts.button.copyWith(color: AppColors.accent),
+							),	
+							const SizedBox(width: 6),
+							Text(
+								groupCode,
+								textAlign: TextAlign.left,
+								style: AppFonts.subtitle.copyWith(
+									color: AppColors.accent,
+									letterSpacing: 2,
+								),
+							),						
+            ],
+          ),          
+        ],
+      ),
+    );
+  }	
 
 
   @override
@@ -699,112 +761,99 @@ void _listenAlerts() async {
                 Map<String, dynamic>.from(data['pairedLocators'] ?? {});
 
             return Padding(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.all(10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  
-									
-									Row(
-  crossAxisAlignment: CrossAxisAlignment.start,
+                children: [								
+									Column(
   children: [
-    Expanded(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            groupName,
-            style: AppFonts.title.copyWith(
-              fontSize: 26,
-              color: AppColors.primary,
-            ),
-          ),
-          const SizedBox(height: 6),
-          Text(
-            requesterName,
-            style: AppFonts.caption,
-          ),
-        ],
+    Text(
+      l10n.title,
+      textAlign: TextAlign.center,
+      style: AppFonts.title.copyWith(
+        fontSize: 24,
+        color: AppColors.primary,
       ),
     ),
 
-    TextButton.icon(
-      onPressed: () async {
-        await Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => const LanguageSelectPage(),
+    const SizedBox(height: 6),
+
+    Padding(
+  padding: const EdgeInsets.symmetric(horizontal: 12),
+  child: Row(
+    children: [
+      Expanded(
+        child: Text(
+          groupName,
+          textAlign: TextAlign.left,
+          style: AppFonts.title.copyWith(
+            fontSize: 20,
+            color: AppColors.primary,
           ),
-        );
-
-        if (!mounted) return;
-        setState(() {});
-      },
-      icon: const Icon(
-        Icons.language_rounded,
-        size: 18,
+        ),
       ),
-      label: Text(
-        Localizations.localeOf(context).languageCode == 'tr'
-            ? 'Türkçe'
-            : 'English',
-      ),
-    ),
 
-    const SizedBox(width: 10),
-
-    FutureBuilder<String>(
-      future: _loadGroupCode(),
-      builder: (context, snapshot) {
-        final groupCode = snapshot.data ?? '------';
-
-        return InkWell(
-          borderRadius: BorderRadius.circular(16),
-          onTap: () {
-            if (groupId.isEmpty) return;
-
-            _showGroupQrDialog(
-              context: context,
-              groupId: groupId,
-              groupCode: groupCode,
-            );
-          },
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-										'${l10n.group}\n'
-										'${l10n.code}',
-										style: AppFonts.caption,
-									),
-                  const SizedBox(width: 6),
-                  const Icon(
-                    Icons.qr_code_2_rounded,
-                    color: AppColors.primary,
-                    size: 22,
-                  ),
-                ],
-              ),
-              const SizedBox(height: 6),
-              Text(
-                groupCode,
-                style: AppFonts.subtitle.copyWith(
-                  color: AppColors.primary,
-                  letterSpacing: 2,
-                ),
-              ),
-            ],
+      Expanded(
+        child: Text(
+          requesterName,
+          textAlign: TextAlign.right,
+          style: AppFonts.title.copyWith(
+            fontSize: 20,
+            color: AppColors.primary,
           ),
-        );
-      },
-    ),
+        ),
+      ),
+    ],
+  ),
+),
   ],
 ),
-
-		const SizedBox(height: 18),
+									
+									Row(
+										children: [										
+											const SizedBox(width: 16),								
+											_requesterCodeHeader(groupId, _groupCode),
+											const Spacer(),
+											TextButton.icon(
+												onPressed: () async {
+													await Navigator.push(
+														context,
+														MaterialPageRoute(
+															builder: (_) =>
+																	const LanguageSelectPage(),
+														),
+													);
+													if (!mounted) return;
+													setState(() {});
+												},
+												icon: const Icon(
+													Icons.language_rounded,
+													size: 18,
+													color: AppColors.accent,
+												),
+												label: Row(
+													mainAxisSize: MainAxisSize.min,
+													children: [
+														Text(
+															Localizations.localeOf(context).languageCode == 'tr'
+																	? 'TR'
+																	: 'EN',
+															style: AppFonts.caption.copyWith(
+																color: AppColors.accent,
+																fontWeight: FontWeight.w600,
+															),
+														),
+														const Icon(
+															Icons.arrow_drop_down,
+															size: 18,
+															color: AppColors.accent,
+														),
+													],
+												),
+											)
+										],
+									),							
+		const SizedBox(height: 4),
 
 		if (_isMaster && _groupId != null)
 			JoinRequestCard(
@@ -876,7 +925,7 @@ void _listenAlerts() async {
   },
 ),
 
-							const SizedBox(height: 18),
+							const SizedBox(height: 4),
 
                   AppCard(
                     child: Row(
@@ -899,7 +948,7 @@ void _listenAlerts() async {
                     ),
                   ),
 
-                  const SizedBox(height: 18),
+                  const SizedBox(height: 4),
 
                   Expanded(
                     child: _locators.isEmpty

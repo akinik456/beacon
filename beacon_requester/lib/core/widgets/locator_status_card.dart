@@ -93,7 +93,7 @@ class LocatorStatusCard extends StatelessWidget {
 								'$battery%',
 								style: AppFonts.caption,
 							),
-							const SizedBox(width: 16),
+							const SizedBox(width: 32),
 							Icon(
 								gpsEnabled
 										? Icons.gps_fixed_rounded
@@ -106,7 +106,7 @@ class LocatorStatusCard extends StatelessWidget {
 								gpsEnabled ? 'GPS ON' : 'GPS OFF',
 								style: AppFonts.caption,
 							),							
-							const SizedBox(width: 16),
+							const SizedBox(width: 32),
 							const Icon(
 								Icons.access_time_rounded,
 								size: 18,

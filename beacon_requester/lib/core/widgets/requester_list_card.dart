@@ -69,7 +69,7 @@ class RequesterListCard extends StatelessWidget {
                 ...docs.map((doc) {
                   final data = doc.data();
 
-                  final name = data['name'] ?? 'Your Name';
+                  final name = data['requesterName'] ?? 'Your Name';
                   final code = data['requesterCode'] ?? '';
                   final isMasterMember = data['isMaster'] == true;
 

@@ -140,7 +140,7 @@ class _PermissionIntroPageState
                           const SizedBox(height: 6),
 
                           Text(
-                            l10n.locationPermissionDesc,
+                            l10n.locationPermissionDescription,
                             style: AppFonts.caption,
                           ),
                         ],

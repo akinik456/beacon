@@ -9,6 +9,12 @@ class AppLocalizationsTr extends AppLocalizations {
   AppLocalizationsTr([String locale = 'tr']) : super(locale);
 
   @override
+  String get actionRequired => 'İşlem Gerekli';
+
+  @override
+  String get activeWatchers => 'Aktif İzleyenler';
+
+  @override
   String get addMember => 'Üye Ekle';
 
   @override
@@ -21,19 +27,43 @@ class AppLocalizationsTr extends AppLocalizations {
   String get alerts => 'ALARMLAR';
 
   @override
+  String get allPermissionsGranted => 'Tüm İzinler Verildi';
+
+  @override
   String get appName => 'LynraFamily';
 
   @override
-  String get approve => 'Approve';
+  String get approve => 'Onay';
 
   @override
-  String get batteryLowAlert => 'Düşük Pil Alarmı';
+  String get askEverybody => 'Herkese \'Beni Ara\' İsteği Gönder';
+
+  @override
+  String get autoStart => 'Otomatik Başlatma';
+
+  @override
+  String get backgroundPermissions => 'LynraFamily Member\'ın arka planda çalışabilmesi için aşağıdaki izinlere ihtiyaç vardır.';
+
+  @override
+  String get backgroundAccessInstructions => 'Açılan ekranda \"LynraFamily Member\" seçeneğini bulun ve arka planda güvenilir çalışması için anahtarı AÇIK konuma getirin.\n\nBu pencere 10 saniye içinde kapanacaktır...';
 
   @override
   String get batteryAlertlevel => 'Pil Alarm Seviyesi';
 
   @override
-  String get callme => 'Arama İsteği';
+  String get batteryLowAlert => 'Düşük Pil Alarmı';
+
+  @override
+  String get batteryOptimization => 'Pil Kısıtlaması';
+
+  @override
+  String get batteryOptimizationDescription => 'Arka planda çalışabilmesi için \"Kısıtlama Yok\" olarak ayarlayın';
+
+  @override
+  String get callme => 'Beni Ara';
+
+  @override
+  String get callMeSentAll => 'Arama İsteği tüm yöneticilere gönderildi';
 
   @override
   String get cameraPermissionTitle => 'Kamera izni';
@@ -72,10 +102,16 @@ class AppLocalizationsTr extends AppLocalizations {
   String get dismiss => 'Kapat';
 
   @override
+  String get enableAutostart => 'LynraFamily Member Otomatik Başlatma Listesine Eklenmeli';
+
+  @override
   String get enteryourname => 'İsminiz (Diğer üyeler bu ismi görür)';
 
   @override
   String get enterMemberCode => 'Üye Kodunu Girin';
+
+  @override
+  String get enterMemberName => 'Üye İsmi Girin';
 
   @override
   String get familyHome => 'Aile,Ev...';
@@ -99,6 +135,12 @@ class AppLocalizationsTr extends AppLocalizations {
   String get gpsOffAlert => 'GPS Kapalı Alarmı';
 
   @override
+  String get granted => 'Tamam';
+
+  @override
+  String get grantRequiredPermissions => 'Gerekli İzinleri Ver';
+
+  @override
   String get group => 'Grup';
 
   @override
@@ -111,13 +153,28 @@ class AppLocalizationsTr extends AppLocalizations {
   String get groupName => 'Grup İsmi';
 
   @override
+  String get iUnderstand => 'ANLADIM';
+
+  @override
+  String get importantFor => 'Konum isteklerini görebilmek için gereklidir';
+
+  @override
   String get language => 'Dil';
+
+  @override
+  String get locationAccess => 'Konum Erişimi';
+
+  @override
+  String get locationAlwaysDescription => '\"Her zaman izin ver\" olarak ayarlayın';
 
   @override
   String get locationPermissionTitle => 'Konum izni';
 
   @override
-  String get locationPermissionDesc => 'Member\'a olan uzaklığı göstermek için kullanılır.';
+  String get locationPermissionDescription => 'LynraFamily Member, aile konum taleplerine yanıt verebilmek ve konum güncellemelerini paylaşabilmek için konum iznine ihtiyaç duyar.\n\nArka plan konum erişimi, uygulama açık olmasa bile konum güncellemelerinin gönderilebilmesini sağlar.\n\nKonumunuz yalnızca aile grubunuzdaki güvenilir üyelerle paylaşılır.';
+
+  @override
+  String get manufacturerSettings => 'ÜRETİCİ AYARLARI';
 
   @override
   String get master => 'Grup Yöneticisi';
@@ -127,6 +184,9 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get maximum3Places => 'En fazla 3 konum kaydedilebilir';
+
+  @override
+  String get member => 'Üye';
 
   @override
   String get memberCode => 'Üye Kodu';
@@ -144,16 +204,43 @@ class AppLocalizationsTr extends AppLocalizations {
   String get memberpaired => 'Üye ile Bağlantı Kuruldu';
 
   @override
-  String get memberremoved => 'Member Removed';
+  String get memberQRCode => 'Üye QR Kodu';
+
+  @override
+  String get memberremoved => 'Üye Kaldırıldı';
 
   @override
   String get memberSettings => 'Üye Ayarları';
+
+  @override
+  String get memoryLock => 'Bellek Kilidi';
+
+  @override
+  String get memoryProtection => 'Bellek Koruması';
+
+  @override
+  String get memoryProtectionInstructions => 'LynraFamily Member uygulamasının arka planda çalışmaya devam etmesi için lütfen aşağıdaki adımları uygulayın:\n\n• Xiaomi: Güvenlik uygulaması > Hızlandırma > Ayarlar > Uygulama Kilidi > LynraFamily Member uygulamasını etkinleştirin.\n• Diğer cihazlar: Son Uygulamalar ekranını açın, LynraFamily Member uygulamasına uzun basın veya aşağı kaydırın, ardından Kilit simgesine dokunun.\n\nBu işlem, sistemin RAM tasarrufu yapmak için uygulamayı kapatmasını önlemeye yardımcı olur.';
+
+  @override
+  String get memberReady => 'Hazır';
+
+  @override
+  String get missing => 'Eksik';
+
+  @override
+  String get noActiveWatchers => 'Aktif izleyen yok';
 
   @override
   String get noGroupYet => 'Henüz Bir Gruba Girmediniz';
 
   @override
   String get noPairedMemberYet => 'Eşleştirilmiş Üye Yok';
+
+  @override
+  String get noPairedRequester => 'Eşleştirilmiş Yönetici Yok';
+
+  @override
+  String get notifications => 'Bildirimler';
 
   @override
   String get notificationSettingsSaved => 'Bildirim ayarları kaydedildi.';
@@ -177,16 +264,34 @@ class AppLocalizationsTr extends AppLocalizations {
   String get pairedMember => 'Eşleştirilmiş Üye';
 
   @override
+  String get pairedRequesters => 'Eşleştirilmiş Yöneticiler';
+
+  @override
   String get pairingRejected => 'Bağlantı isteği reddedildi';
+
+  @override
+  String get pairingRequest => 'Bağlantı isteği';
 
   @override
   String get permissionIntroTitle => 'Başlamadan önce';
 
   @override
+  String get permissions => 'İzinler';
+
+  @override
   String get permissionIntroSubtitle => 'LynraFamily’nin güvenli ve doğru çalışması için birkaç izne ihtiyacı var.';
 
   @override
+  String get permissionsRequired => 'İzinler Gerekli';
+
+  @override
+  String get physicalActivity => 'Fiziksel Aktivite';
+
+  @override
   String get placeSaved => 'Konum kaydedildi';
+
+  @override
+  String get preventSystemKillDescription => 'Sistemin LynraFamily Member uygulamasını durdurmasını önleyin';
 
   @override
   String get receiveCallMe => 'Bu üyeden gelen arama isteklerini alın.';
@@ -213,6 +318,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get requesters => 'Yöneticiler';
 
   @override
+  String get requiredForMotion => 'Hareket algılama için gereklidir.';
+
+  @override
   String get saveMemberLocation => 'Üye konumunu kaydet';
 
   @override
@@ -237,13 +345,22 @@ class AppLocalizationsTr extends AppLocalizations {
   String get sixdigitcode => '6 haneli kod giriniz';
 
   @override
+  String get somePermissions => 'Bazı izinler eksik. Lütfen izinler sayfasını açın ve gerekli izinleri verin.';
+
+  @override
   String get sva => 'Kaydet';
+
+  @override
+  String get systemPermissions => 'SİSTEM İZİNLERİ';
 
   @override
   String get thismember => 'Bu üye listenizden kaldırılacaktır.';
 
   @override
   String get title => 'LynraFamily';
+
+  @override
+  String get titleMember => 'LynraFamily Member';
 
   @override
   String get viewOnly => 'Görüntüleme Modu';

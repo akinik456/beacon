@@ -95,6 +95,18 @@ abstract class AppLocalizations {
     Locale('tr')
   ];
 
+  /// No description provided for @actionRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Action Required'**
+  String get actionRequired;
+
+  /// No description provided for @activeWatchers.
+  ///
+  /// In en, this message translates to:
+  /// **'Active Watchers'**
+  String get activeWatchers;
+
   /// No description provided for @addMember.
   ///
   /// In en, this message translates to:
@@ -119,6 +131,12 @@ abstract class AppLocalizations {
   /// **'ALERTS'**
   String get alerts;
 
+  /// No description provided for @allPermissionsGranted.
+  ///
+  /// In en, this message translates to:
+  /// **'All Permissions Granted'**
+  String get allPermissionsGranted;
+
   /// No description provided for @appName.
   ///
   /// In en, this message translates to:
@@ -131,11 +149,29 @@ abstract class AppLocalizations {
   /// **'Approve'**
   String get approve;
 
-  /// No description provided for @batteryLowAlert.
+  /// No description provided for @askEverybody.
   ///
   /// In en, this message translates to:
-  /// **'Battery Low Alert'**
-  String get batteryLowAlert;
+  /// **'Ask Everybody To Call Me'**
+  String get askEverybody;
+
+  /// No description provided for @autoStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto-Start'**
+  String get autoStart;
+
+  /// No description provided for @backgroundPermissions.
+  ///
+  /// In en, this message translates to:
+  /// **'LynraFamily Member requires these permissions to work in background.'**
+  String get backgroundPermissions;
+
+  /// No description provided for @backgroundAccessInstructions.
+  ///
+  /// In en, this message translates to:
+  /// **'In the opening screen, please find \"LynraFamily Member\" and turn the switch ON to ensure background reliability.\n\nThis window will close in 10 seconds...'**
+  String get backgroundAccessInstructions;
 
   /// No description provided for @batteryAlertlevel.
   ///
@@ -143,11 +179,35 @@ abstract class AppLocalizations {
   /// **'Battery Alert Level'**
   String get batteryAlertlevel;
 
+  /// No description provided for @batteryLowAlert.
+  ///
+  /// In en, this message translates to:
+  /// **'Battery Low Alert'**
+  String get batteryLowAlert;
+
+  /// No description provided for @batteryOptimization.
+  ///
+  /// In en, this message translates to:
+  /// **'Battery Optimization'**
+  String get batteryOptimization;
+
+  /// No description provided for @batteryOptimizationDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Set to \"No Restrictions\" for background operation'**
+  String get batteryOptimizationDescription;
+
   /// No description provided for @callme.
   ///
   /// In en, this message translates to:
   /// **'Call Me'**
   String get callme;
+
+  /// No description provided for @callMeSentAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Call Me sent to all requesters'**
+  String get callMeSentAll;
 
   /// No description provided for @cameraPermissionTitle.
   ///
@@ -221,6 +281,12 @@ abstract class AppLocalizations {
   /// **'Dismiss'**
   String get dismiss;
 
+  /// No description provided for @enableAutostart.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable LynraFamily Member in Autostart list'**
+  String get enableAutostart;
+
   /// No description provided for @enteryourname.
   ///
   /// In en, this message translates to:
@@ -232,6 +298,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Enter Member Code'**
   String get enterMemberCode;
+
+  /// No description provided for @enterMemberName.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter Member Name'**
+  String get enterMemberName;
 
   /// No description provided for @familyHome.
   ///
@@ -275,6 +347,18 @@ abstract class AppLocalizations {
   /// **'GPS Off Alert'**
   String get gpsOffAlert;
 
+  /// No description provided for @granted.
+  ///
+  /// In en, this message translates to:
+  /// **'Granted'**
+  String get granted;
+
+  /// No description provided for @grantRequiredPermissions.
+  ///
+  /// In en, this message translates to:
+  /// **'Grant Required Permissions'**
+  String get grantRequiredPermissions;
+
   /// No description provided for @group.
   ///
   /// In en, this message translates to:
@@ -299,11 +383,35 @@ abstract class AppLocalizations {
   /// **'Group Name'**
   String get groupName;
 
+  /// No description provided for @iUnderstand.
+  ///
+  /// In en, this message translates to:
+  /// **'I UNDERSTAND'**
+  String get iUnderstand;
+
+  /// No description provided for @importantFor.
+  ///
+  /// In en, this message translates to:
+  /// **'Important for request visibility'**
+  String get importantFor;
+
   /// No description provided for @language.
   ///
   /// In en, this message translates to:
   /// **'Language'**
   String get language;
+
+  /// No description provided for @locationAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Location Access'**
+  String get locationAccess;
+
+  /// No description provided for @locationAlwaysDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Set to \"Allow all the time\" for tracking'**
+  String get locationAlwaysDescription;
 
   /// No description provided for @locationPermissionTitle.
   ///
@@ -311,11 +419,17 @@ abstract class AppLocalizations {
   /// **'Location permission'**
   String get locationPermissionTitle;
 
-  /// No description provided for @locationPermissionDesc.
+  /// No description provided for @locationPermissionDescription.
   ///
   /// In en, this message translates to:
-  /// **'Used to show your distance to members.'**
-  String get locationPermissionDesc;
+  /// **'LynraFamily Member needs location permission to respond to family location requests and share location updates.\n\nBackground location access allows the app to provide location updates even when the app is not open.\n\nYour location is only shared with trusted members of your family group.'**
+  String get locationPermissionDescription;
+
+  /// No description provided for @manufacturerSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'MANUFACTURER SETTINGS'**
+  String get manufacturerSettings;
 
   /// No description provided for @master.
   ///
@@ -334,6 +448,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Maximum 3 places allowed'**
   String get maximum3Places;
+
+  /// No description provided for @member.
+  ///
+  /// In en, this message translates to:
+  /// **'Member'**
+  String get member;
 
   /// No description provided for @memberCode.
   ///
@@ -365,6 +485,12 @@ abstract class AppLocalizations {
   /// **'Member paired successfully'**
   String get memberpaired;
 
+  /// No description provided for @memberQRCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Member QR Code'**
+  String get memberQRCode;
+
   /// No description provided for @memberremoved.
   ///
   /// In en, this message translates to:
@@ -377,6 +503,42 @@ abstract class AppLocalizations {
   /// **'Member Settings'**
   String get memberSettings;
 
+  /// No description provided for @memoryLock.
+  ///
+  /// In en, this message translates to:
+  /// **'Memory Lock'**
+  String get memoryLock;
+
+  /// No description provided for @memoryProtection.
+  ///
+  /// In en, this message translates to:
+  /// **'Memory Protection'**
+  String get memoryProtection;
+
+  /// No description provided for @memoryProtectionInstructions.
+  ///
+  /// In en, this message translates to:
+  /// **'To keep LynraFamily Member running in the background, please follow these steps:\n\n• Xiaomi: Security app > Boost Speed > Settings > App Lock > Enable LynraFamily Member.\n• Others: Open Recent Apps, long press LynraFamily Member or swipe down, then tap the Lock icon.\n\nThis helps prevent the system from closing the app to save RAM.'**
+  String get memoryProtectionInstructions;
+
+  /// No description provided for @memberReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Member Ready'**
+  String get memberReady;
+
+  /// No description provided for @missing.
+  ///
+  /// In en, this message translates to:
+  /// **'Missing'**
+  String get missing;
+
+  /// No description provided for @noActiveWatchers.
+  ///
+  /// In en, this message translates to:
+  /// **'No Active Watchers'**
+  String get noActiveWatchers;
+
   /// No description provided for @noGroupYet.
   ///
   /// In en, this message translates to:
@@ -388,6 +550,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No paired locators yet.'**
   String get noPairedMemberYet;
+
+  /// No description provided for @noPairedRequester.
+  ///
+  /// In en, this message translates to:
+  /// **'No Paired Admin'**
+  String get noPairedRequester;
+
+  /// No description provided for @notifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get notifications;
 
   /// No description provided for @notificationSettingsSaved.
   ///
@@ -431,11 +605,23 @@ abstract class AppLocalizations {
   /// **'Paired Member'**
   String get pairedMember;
 
+  /// No description provided for @pairedRequesters.
+  ///
+  /// In en, this message translates to:
+  /// **'Paired Admins'**
+  String get pairedRequesters;
+
   /// No description provided for @pairingRejected.
   ///
   /// In en, this message translates to:
   /// **'Pairing request rejected'**
   String get pairingRejected;
+
+  /// No description provided for @pairingRequest.
+  ///
+  /// In en, this message translates to:
+  /// **'Pairing request'**
+  String get pairingRequest;
 
   /// No description provided for @permissionIntroTitle.
   ///
@@ -443,17 +629,41 @@ abstract class AppLocalizations {
   /// **'Before we start'**
   String get permissionIntroTitle;
 
+  /// No description provided for @permissions.
+  ///
+  /// In en, this message translates to:
+  /// **'Permissions'**
+  String get permissions;
+
   /// No description provided for @permissionIntroSubtitle.
   ///
   /// In en, this message translates to:
   /// **'LynraFamily needs a few permissions to work safely and correctly.'**
   String get permissionIntroSubtitle;
 
+  /// No description provided for @permissionsRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Permissions Required'**
+  String get permissionsRequired;
+
+  /// No description provided for @physicalActivity.
+  ///
+  /// In en, this message translates to:
+  /// **'Physical Activity'**
+  String get physicalActivity;
+
   /// No description provided for @placeSaved.
   ///
   /// In en, this message translates to:
   /// **'Place Saved'**
   String get placeSaved;
+
+  /// No description provided for @preventSystemKillDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Prevent the system from killing LynraFamily Member'**
+  String get preventSystemKillDescription;
 
   /// No description provided for @receiveCallMe.
   ///
@@ -503,6 +713,12 @@ abstract class AppLocalizations {
   /// **'Admins'**
   String get requesters;
 
+  /// No description provided for @requiredForMotion.
+  ///
+  /// In en, this message translates to:
+  /// **'Required for motion detection'**
+  String get requiredForMotion;
+
   /// No description provided for @saveMemberLocation.
   ///
   /// In en, this message translates to:
@@ -551,11 +767,23 @@ abstract class AppLocalizations {
   /// **'Enter 6-digit code'**
   String get sixdigitcode;
 
+  /// No description provided for @somePermissions.
+  ///
+  /// In en, this message translates to:
+  /// **'Some permissions are missing. Please open the permissions page and allow the required permissions.'**
+  String get somePermissions;
+
   /// No description provided for @sva.
   ///
   /// In en, this message translates to:
   /// **'Save'**
   String get sva;
+
+  /// No description provided for @systemPermissions.
+  ///
+  /// In en, this message translates to:
+  /// **'SYSTEM PERMISSIONS'**
+  String get systemPermissions;
 
   /// No description provided for @thismember.
   ///
@@ -568,6 +796,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'LynraFamily'**
   String get title;
+
+  /// No description provided for @titleMember.
+  ///
+  /// In en, this message translates to:
+  /// **'LynraFamily Member'**
+  String get titleMember;
 
   /// No description provided for @viewOnly.
   ///

@@ -71,7 +71,7 @@ Widget build(BuildContext context) {
     backgroundColor: AppColors.background,
     body: SafeArea(
       child: SingleChildScrollView(
-        padding: const EdgeInsets.all(10),
+        padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -79,27 +79,27 @@ Widget build(BuildContext context) {
               child: Text(
                 l10n.permissions,
                 style: AppFonts.title.copyWith(
-                  fontSize: 20,
+                  fontSize: 28,
                   color: AppColors.primary,
                 ),
               ),
             ),
 
-            const SizedBox(height: 6),
+            const SizedBox(height: 20),
 
             Text(
               l10n.backgroundPermissions,
               style: AppFonts.title.copyWith(
-                fontSize: 12,
+                fontSize: 14,
                 color: AppColors.textSecondary,
               ),
             ),
 
-            const SizedBox(height: 8),
+            const SizedBox(height: 16),
 
             _SectionTitle(l10n.systemPermissions),
 
-            const SizedBox(height: 4),
+            const SizedBox(height: 8),
 
             _PermissionItem(
               icon: Icons.location_on_rounded,
@@ -178,11 +178,11 @@ Widget build(BuildContext context) {
               },
             ),
 
-            const SizedBox(height: 8),
+            const SizedBox(height: 16),
 
             _SectionTitle(l10n.manufacturerSettings),
 
-            const SizedBox(height: 4),
+            const SizedBox(height: 8),
 
             _PermissionItem(
               icon: Icons.power_settings_new_rounded,
@@ -362,7 +362,7 @@ class _SectionTitle extends StatelessWidget {
       text,
       style: AppFonts.caption.copyWith(
         color: AppColors.primary,
-        fontSize: 10,
+        fontSize: 14,
         fontWeight: FontWeight.w500,
         letterSpacing: 1,
       ),
@@ -407,9 +407,9 @@ class _PermissionItem extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title, style: AppFonts.subtitle.copyWith(fontSize: 12)),
+                Text(title, style: AppFonts.subtitle.copyWith(fontSize: 14)),
                 const SizedBox(height: 3),
-                Text(subtitle, style: AppFonts.caption.copyWith(fontSize: 12)),
+                Text(subtitle, style: AppFonts.caption.copyWith(fontSize: 14)),
               ],
             ),
           ),
@@ -434,7 +434,7 @@ class _PermissionItem extends StatelessWidget {
 							Text(
 								granted ? l10n.granted : l10n.missing,
 								style: AppFonts.caption.copyWith(
-									fontSize: 10,
+									fontSize: 12,
 									color: granted
 											? AppColors.accent
 											: AppColors.danger,
