@@ -379,4 +379,33 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get yourrequest => 'Your request has been sent to the group master.';
+
+  @override
+  String get unknown => 'Unknown';
+
+  @override
+  String get justNow => 'Just now';
+
+  @override
+  String secondsAgo(Object count) {
+    return '$count sec ago';
+  }
+
+  @override
+  String minutesAgo(Object count) {
+    return '$count min ago';
+  }
+
+  @override
+  String hoursAgo(Object count) {
+    return '$count hour ago';
+  }
+
+  @override
+  String daysAgo(Object count) {
+    return '$count days ago';
+  }
+
+  @override
+  String get yesterday => 'Yesterday';
 }

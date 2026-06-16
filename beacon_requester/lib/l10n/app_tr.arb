@@ -123,5 +123,34 @@
 "waitingForLocator":									"Üyenin onay vermesi bekleniyor...",
 "wantsYoutoCall":											"Aramanızı istiyor",
 "wellcome":														"Hoşgeldiniz",
-"yourrequest":												"Talebiniz Grup Yöneticisine İletildi."
+"yourrequest":												"Talebiniz Grup Yöneticisine İletildi.",
+
+"unknown": "Bilinmiyor",
+"justNow": "Az önce",
+"secondsAgo": "{count} sn önce",
+"minutesAgo": "{count} dk önce",
+"hoursAgo": "{count} saat önce",
+"daysAgo": "{count} gün önce",
+"yesterday": "Dün",
+"@secondsAgo": {
+  "placeholders": {
+    "count": {}
+  }
+},
+"@minutesAgo": {
+  "placeholders": {
+    "count": {}
+  }
+},
+"@hoursAgo": {
+  "placeholders": {
+    "count": {}
+  }
+},
+"@daysAgo": {
+  "placeholders": {
+    "count": {}
+  }
+}
+
 }

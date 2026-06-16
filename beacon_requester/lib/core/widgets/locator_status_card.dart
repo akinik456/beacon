@@ -83,30 +83,46 @@ class LocatorStatusCard extends StatelessWidget {
 					const SizedBox(height: 8),
 					Row(
 						children: [
-							const Icon(
+							 Icon(
 								Icons.battery_charging_full_rounded,
 								size: 18,
-								color: AppColors.accent,
+								color: battery < 20
+										? AppColors.danger
+										: AppColors.accent,
 							),
+
 							const SizedBox(width: 4),
+
 							Text(
 								'$battery%',
-								style: AppFonts.caption,
+								style: AppFonts.caption.copyWith(
+									color: battery < 20
+											? AppColors.danger
+											: AppColors.accent,
+								),
 							),
-							const SizedBox(width: 32),
+							
+							const SizedBox(width: 64),
 							Icon(
 								gpsEnabled
 										? Icons.gps_fixed_rounded
 										: Icons.gps_off_rounded,
 								size: 18,
-								color: AppColors.accent,
+								color: gpsEnabled
+									? AppColors.accent
+									: AppColors.danger,
 							),
 							const SizedBox(width: 4),
 							Text(
 								gpsEnabled ? 'GPS ON' : 'GPS OFF',
-								style: AppFonts.caption,
-							),							
-							const SizedBox(width: 32),
+								style: AppFonts.caption.copyWith(
+									color: gpsEnabled
+											? AppColors.accent
+											: AppColors.danger,
+								),
+							),
+							
+							const SizedBox(width: 64),
 							const Icon(
 								Icons.access_time_rounded,
 								size: 18,

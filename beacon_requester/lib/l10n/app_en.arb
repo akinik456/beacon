@@ -123,5 +123,32 @@
 "waitingForLocator":									"Waiting for locator approval...",
 "wantsYoutoCall":											"Wants You to Call",
 "wellcome":														"Wellcome",
-"yourrequest":												"Your request has been sent to the group master."
+"yourrequest":												"Your request has been sent to the group master.",
+"unknown": "Unknown",
+"justNow": "Just now",
+"secondsAgo": "{count} sec ago",
+"minutesAgo": "{count} min ago",
+"hoursAgo": "{count} hour ago",
+"daysAgo": "{count} days ago",
+"yesterday": "Yesterday",
+"@secondsAgo": {
+  "placeholders": {
+    "count": {}
+  }
+},
+"@minutesAgo": {
+  "placeholders": {
+    "count": {}
+  }
+},
+"@hoursAgo": {
+  "placeholders": {
+    "count": {}
+  }
+},
+"@daysAgo": {
+  "placeholders": {
+    "count": {}
+  }
+}
 }

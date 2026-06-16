@@ -59,6 +59,7 @@ class _RequesterHomePageState
 	double? _myLng;
 	String? _requesterId;
 	bool _isMaster = false;
+	Timer? _timeRefreshTimer;
 	
 		@override
 	void initState() {
@@ -68,12 +69,21 @@ class _RequesterHomePageState
 		_homeDataFuture = HomeDataService.loadHomeData();
 		_loadLocators();
 		_loadGroupCode();
+		
+		_timeRefreshTimer = Timer.periodic(
+			const Duration(minutes: 1),
+			(_) {
+				if (!mounted) return;
+				setState(() {});
+			},
+		);
 	}
 	
 	@override
 	void dispose() {
 		WidgetsBinding.instance.removeObserver(this);
 		_removeActiveWatchers();
+		_timeRefreshTimer?.cancel();
 		super.dispose();
 	}
 	
@@ -877,54 +887,53 @@ void _listenAlerts() async {
     final activeLocatorCount = data?['activeLocatorCount'] ?? 0;
     final isFull = activeLocatorCount >= maxLocators;
 
-    return SizedBox(
-      width: double.infinity,
-      height: 54,
-      child: OutlinedButton.icon(
-        onPressed: () async {
-          final changed = await Navigator.push<bool>(
+    return AppCard(
+      onTap: () async {
+        final changed = await Navigator.push<bool>(
+          context,
+          MaterialPageRoute(
+            builder: (_) => const AddLocatorPage(),
+          ),
+        );
+
+        if (changed == true && context.mounted) {
+          Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (_) => const AddLocatorPage(),
+              builder: (_) => const RequesterHomePage(),
             ),
           );
+        }
+      },
+      child: SizedBox(
+        height: 32,
+        child: Row(
+          children: [
+            const Icon(
+              Icons.add_rounded,
+              color: AppColors.primary,
+            ),
 
-          if (changed == true && context.mounted) {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (_) => const RequesterHomePage(),
+            const SizedBox(width: 12),
+
+            Expanded(
+              child: Text(
+                isFull
+                    ? '${l10n.addMember} (${l10n.memberlimitreached})'
+                    : l10n.addMember,
+                style: AppFonts.button.copyWith(
+                  color: AppColors.primary,
+                ),
               ),
-            );
-          }
-        },
-        icon: const Icon(
-          Icons.add_rounded,
-          color: AppColors.primary,
-        ),
-        label: Text(
-          isFull
-              ? '${l10n.addMember} (${l10n.memberlimitreached})'
-              : l10n.addMember,
-          style: AppFonts.button.copyWith(
-            color: AppColors.primary,
-          ),
-        ),
-        style: OutlinedButton.styleFrom(
-          side: BorderSide(
-            color: AppColors.primary.withValues(alpha: 0.25),
-          ),
-          backgroundColor:
-              AppColors.primary.withValues(alpha: 0.04),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(18),
-          ),
+            ),
+
+            
+          ],
         ),
       ),
     );
   },
 ),
-
 							const SizedBox(height: 4),
 
                   AppCard(
@@ -971,7 +980,11 @@ void _listenAlerts() async {
 															final status = locator['status'] ?? 'offline';
 															final battery = locator['battery'] ?? 0;
 															final gpsEnabled = locator['gpsEnabled'] == true;																	
-															final lastSeenText = TimeHelper.formatLastSeen(locator['lastSeen'],);															
+															final l10n = AppLocalizations.of(context)!;
+															final lastSeenText = TimeHelper.formatLastSeen(
+																locator['lastSeen'],
+																l10n,
+															);															
 															final distanceMeters = LocationHelper.distanceMeters(fromLat: _myLat,fromLng: _myLng,toLat: locator['lat']?.toDouble(),toLng: locator['lng']?.toDouble(),);
 															final distanceText = distanceMeters == null ? '-' : '${distanceMeters.round()} m';
 															return LocatorStatusCard(

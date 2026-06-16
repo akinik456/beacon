@@ -27,7 +27,7 @@ class CallMeOverlay extends StatelessWidget {
 
 	final timeText =
     TimeHelper.formatLastSeen(
-      createdAt?.millisecondsSinceEpoch,
+      createdAt?.millisecondsSinceEpoch,l10n
     );
 
   return Positioned.fill(

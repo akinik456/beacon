@@ -379,4 +379,33 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get yourrequest => 'Talebiniz Grup Yöneticisine İletildi.';
+
+  @override
+  String get unknown => 'Bilinmiyor';
+
+  @override
+  String get justNow => 'Az önce';
+
+  @override
+  String secondsAgo(Object count) {
+    return '$count sn önce';
+  }
+
+  @override
+  String minutesAgo(Object count) {
+    return '$count dk önce';
+  }
+
+  @override
+  String hoursAgo(Object count) {
+    return '$count saat önce';
+  }
+
+  @override
+  String daysAgo(Object count) {
+    return '$count gün önce';
+  }
+
+  @override
+  String get yesterday => 'Dün';
 }
