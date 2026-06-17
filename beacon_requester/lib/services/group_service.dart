@@ -29,7 +29,6 @@ class GroupService {
 
   static Future<String> createGroup({
     required String groupName,
-    required String requesterName,
   }) async {
     final requesterId = await IdentityService.getRequesterId();
     final requesterCode = await IdentityService.getRequesterCode();
@@ -67,7 +66,6 @@ class GroupService {
         'pairedLocators': {},
         'requesterCode': requesterCode,
         'requesterId': requesterId,
-        'requesterName': requesterName.trim(),
         'role': 'requester',
 				'updatedAt': FieldValue.serverTimestamp(),
       });
@@ -238,9 +236,6 @@ static Future<void> addPairedRequesterToLocator({
   final groupId =
       await getLocalGroupId();
 			
-	final requesterName =
-    await IdentityService.getRequesterName();
-
 	final requesterCode =
     await IdentityService.getRequesterCode();
 
@@ -261,7 +256,6 @@ static Future<void> addPairedRequesterToLocator({
     'pairedRequesters': {
 			requesterId: {
 				'pairedAt': FieldValue.serverTimestamp(),
-				'requesterName': requesterName,
 				'requesterCode': requesterCode,
 			},
 		},

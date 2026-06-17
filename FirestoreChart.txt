@@ -13,14 +13,17 @@ FIRESTORE
 						
 			devices
 				locatorId - (active,joinedAt,locatorName,locatorCode,pairedRequesters,role,updatedAt)
-																								              |_requesterid(pairedAt,requesterCode,requesterName)													
+																								              |_requesterid(pairedAt,requesterCode)													
 					notifyRequesters	
 						requesterId - (batteryLow,callMe,createdAt,geofence,gpsOff,updatedAt)
 					settings
 						config - (batteryLowAlert,batteryLowLevel,createdAt,geofenceAlert,gpsOffAlert,updatedAt)
 					
-				requesterId - (active,isMaster,joinedAt,pairedLocators,requesterCode,requesterId,requesterName,role,updatedAt)
+				requesterId - (active,isMaster,joinedAt,pairedLocators,requesterCode,requesterId,role,updatedAt)
 																								 |_locatorId(locatorCode,locatorName,pairedAt)
+			join_requests 
+				requestId - (createdAt,requesterCode,requesterId,requesterName,status,updatedAt)
+																								 
 	locators
 		locatorId	-	(active,createdAt,groupId,locatorCode,locatorName,platform,updatedAt,platform,appVersion,buildNumber,androidVersion,sdkInt,brand,manufacturer,model,device,countryCode)
 			pairing_requests 
@@ -35,7 +38,7 @@ RTDB
 			groupid
 			  active_watchers
 					locatorId
-						requesterId - (active,lastSeen,requesterCode,requesterName)
+						requesterId - (active,lastSeen,requesterCode)
 				locators
 					locatorId - (accuracy,battery,gpsEnabled,lastSeen,lat,lng,status)
 					

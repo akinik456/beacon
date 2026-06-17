@@ -64,8 +64,8 @@ class _PermissionIntroPageState
 
               // ================= ICON =================
               Container(
-                width: 120,
-                height: 120,
+                width: 80,
+                height: 80,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   gradient: RadialGradient(
@@ -83,18 +83,18 @@ class _PermissionIntroPageState
                 ),
               ),
 
-              const SizedBox(height: 28),
+              const SizedBox(height: 12),
 
               // ================= TITLE =================
               Text(
                 l10n.permissionIntroTitle,
                 style: AppFonts.title.copyWith(
-                  fontSize: 28,
+                  fontSize: 22,
                 ),
                 textAlign: TextAlign.center,
               ),
 
-              const SizedBox(height: 12),
+              const SizedBox(height: 4),
 
               // ================= SUBTITLE =================
               Text(
@@ -105,7 +105,7 @@ class _PermissionIntroPageState
                 textAlign: TextAlign.center,
               ),
 
-              const SizedBox(height: 36),
+              const SizedBox(height: 12),
 
               // ================= LOCATION CARD =================
               AppCard(
@@ -113,8 +113,8 @@ class _PermissionIntroPageState
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                      width: 44,
-                      height: 44,
+                      width: 22,
+                      height: 22,
                       decoration: BoxDecoration(
                         color: AppColors.primary.withValues(alpha: 0.12),
                         borderRadius: BorderRadius.circular(14),

@@ -82,7 +82,6 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
 										
 										final groupId  =await GroupService.createGroup(
 											groupName: groupNameCtrl.text,
-											requesterName: _requesterName!,
 										);
 										
 										await GroupService.setLocalIsMaster(true);

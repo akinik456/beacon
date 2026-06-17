@@ -94,8 +94,6 @@ class PairingApprovalService {
     tx.set(deviceRef, {
       'pairedRequesters': {
         requesterId: {
-          'requesterName':
-              requestData['requesterName'] ?? 'Requester',
           'requesterCode':
               requestData['requesterCode'] ?? '------',
           'pairedAt': FieldValue.serverTimestamp(),

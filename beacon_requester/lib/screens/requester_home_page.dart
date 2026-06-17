@@ -59,6 +59,7 @@ class _RequesterHomePageState
 	double? _myLat;
 	double? _myLng;
 	String? _requesterId;
+	String _requesterName = '';
 	bool _isMaster = false;
 	Timer? _timeRefreshTimer;
 	
@@ -154,7 +155,6 @@ class _RequesterHomePageState
 			if (locatorId == null) continue;
 
 			await ActiveWatcherService.addWatcher(
-				requesterName: _requesterName!,
 				requesterCode: _requesterCode!,
 				groupId: _groupId!,
 				locatorId: locatorId,
@@ -400,6 +400,86 @@ Future<void> _editGroupName({
   });
 
   if (!mounted) return;
+
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text(l10n.saved),
+    ),
+  );
+}
+
+Future<void> _editRequesterName() async {
+	final l10n = AppLocalizations.of(context)!;
+  final currentName =
+    await IdentityService.getRequesterName();
+
+	final controller = TextEditingController(
+		text: currentName ?? '',
+	);
+
+  final newName = await showDialog<String>(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: Text(l10n.enteryourname),
+        content: TextField(
+          controller: controller,
+          autofocus: true,
+          maxLength: 30,
+          decoration: const InputDecoration(
+            hintText: 'Requester name',
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: Text(l10n.cancel),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(
+                context,
+                controller.text.trim(),
+              );
+            },
+            child: Text(l10n.sva),
+          ),
+        ],
+      );
+    },
+  );
+
+  if (newName == null || newName.isEmpty) {
+    return;
+  }
+
+  final requesterId =
+    await IdentityService.getRequesterId();
+
+	if (requesterId == null ||
+			requesterId.isEmpty) {
+		return;
+	}
+
+	await FirebaseFirestore.instance
+			.collection('requesters')
+			.doc(requesterId)
+			.update({
+		'name': newName,
+		'updatedAt': FieldValue.serverTimestamp(),
+	});
+	
+	await IdentityService.setRequesterName(
+		newName,
+	);
+	
+	if (!mounted) return;
+	
+	setState(() {
+		_homeDataFuture = HomeDataService.loadHomeData();
+	});
 
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
@@ -903,15 +983,34 @@ Future<void> _editGroupName({
               ),
 
               Expanded(
-                child: Text(
-                  requesterName,
-                  textAlign: TextAlign.right,
-                  style: AppFonts.title.copyWith(
-                    fontSize: 20,
-                    color: AppColors.primary,
-                  ),
-                ),
-              ),
+  child: Row(
+    mainAxisAlignment: MainAxisAlignment.end,
+    children: [
+      Flexible(
+        child: Text(
+          requesterName,
+          overflow: TextOverflow.ellipsis,
+          textAlign: TextAlign.right,
+          style: AppFonts.title.copyWith(
+            fontSize: 20,
+            color: AppColors.primary,
+          ),
+        ),
+      ),
+
+      const SizedBox(width: 4),
+
+      GestureDetector(
+        onTap: _editRequesterName,
+        child: Icon(
+          Icons.edit_rounded,
+          size: 18,
+          color: AppColors.primary,
+        ),
+      ),
+    ],
+  ),
+),
             ],
           ),
         );
