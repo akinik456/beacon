@@ -652,7 +652,76 @@ Widget _activeWatchersCard() {
     },
   );
 }	
+Future<void> _editLocatorName(
+  String currentName,
+) async {
+	final l10n = AppLocalizations.of(context)!;
+  final controller = TextEditingController(
+    text: currentName,
+  );
 
+  final newName = await showDialog<String>(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: Text(l10n.enterMemberName),
+        content: TextField(
+          controller: controller,
+          autofocus: true,
+          maxLength: 30,
+          decoration: InputDecoration(
+            hintText: l10n.enterMemberName,
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(
+                context,
+                controller.text.trim(),
+              );
+            },
+            child: const Text('Save'),
+          ),
+        ],
+      );
+    },
+  );
+
+  if (newName == null || newName.isEmpty) {
+    return;
+  }
+
+  final locatorId =
+      await IdentityService.getLocatorId();
+
+  if (locatorId == null ||
+      locatorId.isEmpty) {
+    return;
+  }
+
+  await FirebaseFirestore.instance
+      .collection('locators')
+      .doc(locatorId)
+      .update({
+    'name': newName,
+    'updatedAt': FieldValue.serverTimestamp(),
+  });
+
+  await IdentityService.setLocatorName(
+    newName,
+  );
+
+  if (!mounted) return;
+
+  setState(() {});
+}
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -682,8 +751,32 @@ Widget _activeWatchersCard() {
                               style: AppFonts.title.copyWith(fontSize: 24,color: AppColors.primary,),
                             ),
                             const SizedBox(height: 6),
-                            Text(locatorName, 
-														style: AppFonts.title.copyWith(fontSize: 20,color: AppColors.primary,),
+                            Row(
+															mainAxisAlignment: MainAxisAlignment.center,
+															children: [
+																Flexible(
+																	child: Text(
+																		locatorName,
+																		overflow: TextOverflow.ellipsis,
+																		textAlign: TextAlign.center,
+																		style: AppFonts.title.copyWith(
+																			fontSize: 20,
+																			color: AppColors.primary,
+																		),
+																	),
+																),
+
+																const SizedBox(width: 4),
+
+																GestureDetector(
+																	onTap: () => _editLocatorName(locatorName),
+																	child: Icon(
+																		Icons.edit_rounded,
+																		size: 18,
+																		color: AppColors.primary,
+																	),
+																),
+															],
 														),
                           ],
                         ),
