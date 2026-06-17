@@ -96,6 +96,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get createNewGroup => 'Create a new group';
 
   @override
+  String daysAgo(Object count) {
+    return '$count days ago';
+  }
+
+  @override
   String get disabledByMaster => 'Disabled by master';
 
   @override
@@ -129,6 +134,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get joinRequest => 'Join Request';
 
   @override
+  String get justNow => 'Just now';
+
+  @override
   String get geofenceAlert => 'Geofence Alert';
 
   @override
@@ -151,6 +159,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get groupName => 'Group Name';
+
+  @override
+  String hoursAgo(Object count) {
+    return '$count hour ago';
+  }
 
   @override
   String get iUnderstand => 'I UNDERSTAND';
@@ -223,6 +236,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get memberReady => 'Member Ready';
+
+  @override
+  String minutesAgo(Object count) {
+    return '$count min ago';
+  }
 
   @override
   String get missing => 'Missing';
@@ -339,6 +357,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sendPairingRequest => 'Send Pairing Request';
 
   @override
+  String secondsAgo(Object count) {
+    return '$count sec ago';
+  }
+
+  @override
   String get settingsSaved => 'Settings saved';
 
   @override
@@ -363,6 +386,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get title => 'LynraFamily';
 
   @override
+  String get unknown => 'Unknown';
+
+  @override
   String get titleMember => 'LynraFamily Member';
 
   @override
@@ -381,34 +407,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get wellcome => 'Wellcome';
 
   @override
-  String get yourrequest => 'Your request has been sent to the group master.';
-
-  @override
-  String get unknown => 'Unknown';
-
-  @override
-  String get justNow => 'Just now';
-
-  @override
-  String secondsAgo(Object count) {
-    return '$count sec ago';
-  }
-
-  @override
-  String minutesAgo(Object count) {
-    return '$count min ago';
-  }
-
-  @override
-  String hoursAgo(Object count) {
-    return '$count hour ago';
-  }
-
-  @override
-  String daysAgo(Object count) {
-    return '$count days ago';
-  }
-
-  @override
   String get yesterday => 'Yesterday';
+
+  @override
+  String get yourrequest => 'Your request has been sent to the group master.';
 }

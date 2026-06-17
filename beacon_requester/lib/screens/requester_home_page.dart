@@ -4,6 +4,8 @@ import 'package:qr_flutter/qr_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:in_app_update/in_app_update.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 import '../core/theme/app_colors.dart';
 import '../core/theme/app_fonts.dart';
@@ -62,6 +64,7 @@ class _RequesterHomePageState
 	String _requesterName = '';
 	bool _isMaster = false;
 	Timer? _timeRefreshTimer;
+	String _appVersion = '';
 	
 		@override
 	void initState() {
@@ -71,6 +74,8 @@ class _RequesterHomePageState
 		_homeDataFuture = HomeDataService.loadHomeData();
 		_loadLocators();
 		_loadGroupCode();
+		unawaited(_loadVersion());
+		unawaited(_checkForUpdate());
 		
 		_timeRefreshTimer = Timer.periodic(
 			const Duration(minutes: 1),
@@ -104,6 +109,62 @@ class _RequesterHomePageState
 			await _removeActiveWatchers();
 		}
 	}	
+	
+		Future<void> _loadVersion() async {
+		final info = await PackageInfo.fromPlatform();
+
+		if (!mounted) return;
+		setState(() {
+			_appVersion = "${info.version}+${info.buildNumber}";
+		});
+	}	
+	
+		Future<void> _checkForUpdate() async {
+		try {
+			final info = await InAppUpdate.checkForUpdate();
+
+			if (!mounted) return;
+
+			if (info.updateAvailability == UpdateAvailability.updateAvailable &&
+					info.flexibleUpdateAllowed) {
+				_showUpdateDialog();
+			}
+		} catch (_) {
+			// Debug APK, sideload veya Play Store dışı kurulumda hata verebilir.
+			// Sessiz geçiyoruz.
+		}
+	}
+	
+	void _showUpdateDialog() {
+		showDialog(
+			context: context,
+			barrierDismissible: true,
+			builder: (context) {
+				return AlertDialog(
+					title: const Text("Update Available"),
+					content: const Text(
+						"A new version is available. Update now for the best experience.",
+					),
+					actions: [
+						TextButton(
+							onPressed: () => Navigator.pop(context),
+							child: const Text("LATER"),
+						),
+						TextButton(
+							onPressed: () async {
+								Navigator.pop(context);
+								try {
+									await InAppUpdate.startFlexibleUpdate();
+									await InAppUpdate.completeFlexibleUpdate();
+								} catch (_) {}
+							},
+							child: const Text("UPDATE"),
+						),
+					],
+				);
+			},
+		);
+	}
 	
 	Future<void> _loadLocators() async {
 		_groupId = await GroupService.getLocalGroupId();
@@ -361,7 +422,7 @@ Future<void> _editGroupName({
         title: Text(l10n.groupName),
         content: TextField(
           controller: controller,
-          maxLength: 14,
+          maxLength: 20,
           textCapitalization: TextCapitalization.words,
           decoration: InputDecoration(
             hintText: l10n.groupName,
@@ -425,7 +486,7 @@ Future<void> _editRequesterName() async {
         content: TextField(
           controller: controller,
           autofocus: true,
-          maxLength: 30,
+          maxLength: 20,
           decoration: const InputDecoration(
             hintText: 'Requester name',
           ),
@@ -928,7 +989,14 @@ Future<void> _editRequesterName() async {
         color: AppColors.primary,
       ),
     ),
-
+		Text(
+			"Version $_appVersion",
+			style: TextStyle(
+				color: Colors.white.withOpacity(0.4),
+				fontSize: 11,
+				fontWeight: FontWeight.w500,
+			),
+		),
     const SizedBox(height: 6),
 
     StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
@@ -983,34 +1051,34 @@ Future<void> _editRequesterName() async {
               ),
 
               Expanded(
-  child: Row(
-    mainAxisAlignment: MainAxisAlignment.end,
-    children: [
-      Flexible(
-        child: Text(
-          requesterName,
-          overflow: TextOverflow.ellipsis,
-          textAlign: TextAlign.right,
-          style: AppFonts.title.copyWith(
-            fontSize: 20,
-            color: AppColors.primary,
-          ),
-        ),
-      ),
+								child: Row(
+									mainAxisAlignment: MainAxisAlignment.end,
+									children: [
+										Flexible(
+											child: Text(
+												requesterName,
+												overflow: TextOverflow.ellipsis,
+												textAlign: TextAlign.right,
+												style: AppFonts.title.copyWith(
+													fontSize: 20,
+													color: AppColors.primary,
+												),
+											),
+										),
 
-      const SizedBox(width: 4),
+										const SizedBox(width: 4),
 
-      GestureDetector(
-        onTap: _editRequesterName,
-        child: Icon(
-          Icons.edit_rounded,
-          size: 18,
-          color: AppColors.primary,
-        ),
-      ),
-    ],
-  ),
-),
+										GestureDetector(
+											onTap: _editRequesterName,
+											child: Icon(
+												Icons.edit_rounded,
+												size: 18,
+												color: AppColors.primary,
+											),
+										),
+									],
+								),
+							),
             ],
           ),
         );

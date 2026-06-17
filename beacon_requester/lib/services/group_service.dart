@@ -196,8 +196,6 @@ static Future<void> addPairedLocatorToRequester({
   final locatorData =
       locatorSnap.data() ?? {};
 
-  final locatorName =
-      locatorData['locatorName'] ?? 'Member';
 
   final locatorCode =
       locatorData['locatorCode'] ?? '------';
@@ -210,7 +208,6 @@ static Future<void> addPairedLocatorToRequester({
       .set({
     'pairedLocators': {
       locatorId: {
-        'locatorName': locatorName,
         'locatorCode': locatorCode,
 				'pairedAt': FieldValue.serverTimestamp(),
       },

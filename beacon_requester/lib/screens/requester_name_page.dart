@@ -66,7 +66,7 @@ class _RequesterNamePageState extends State<RequesterNamePage> {
             AppCard(
               child: TextField(
                 controller: nameCtrl,
-								maxLength: 14,
+								maxLength: 20,
                 style: AppFonts.body,
                 decoration: InputDecoration(
                   hintText: l10n.enteryourname,

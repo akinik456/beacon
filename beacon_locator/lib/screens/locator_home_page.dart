@@ -1,7 +1,12 @@
+// https://www.youtube.com/shorts/uz_d2RcNNc0
+
+
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:in_app_update/in_app_update.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 import '../core/theme/app_colors.dart';
 import '../core/theme/app_fonts.dart';
@@ -34,6 +39,7 @@ class _LocatorHomePageState extends State<LocatorHomePage>
     with WidgetsBindingObserver {
   bool hasAllPermissions = false;
   Timer? _presenceTimer;
+	String _appVersion = '';
 	
 	//MotionService.start();
 
@@ -46,6 +52,10 @@ void initState() {
   LocatorSettingsService.startListeners();
 	
 	ActiveWatcherService.startUiOnly();
+	
+	unawaited(_loadVersion());
+	
+	unawaited(_checkForUpdate());
 
   WidgetsBinding.instance.addPostFrameCallback((_) {
     _checkPermissionsAndWarn();
@@ -106,6 +116,62 @@ void initState() {
       ),
     );
   }
+	
+	Future<void> _loadVersion() async {
+		final info = await PackageInfo.fromPlatform();
+
+		if (!mounted) return;
+		setState(() {
+			_appVersion = "${info.version}+${info.buildNumber}";
+		});
+	}	
+	
+	Future<void> _checkForUpdate() async {
+		try {
+			final info = await InAppUpdate.checkForUpdate();
+
+			if (!mounted) return;
+
+			if (info.updateAvailability == UpdateAvailability.updateAvailable &&
+					info.flexibleUpdateAllowed) {
+				_showUpdateDialog();
+			}
+		} catch (_) {
+			// Debug APK, sideload veya Play Store dışı kurulumda hata verebilir.
+			// Sessiz geçiyoruz.
+		}
+	}
+	
+	void _showUpdateDialog() {
+		showDialog(
+			context: context,
+			barrierDismissible: true,
+			builder: (context) {
+				return AlertDialog(
+					title: const Text("Update Available"),
+					content: const Text(
+						"A new version is available. Update now for the best experience.",
+					),
+					actions: [
+						TextButton(
+							onPressed: () => Navigator.pop(context),
+							child: const Text("LATER"),
+						),
+						TextButton(
+							onPressed: () async {
+								Navigator.pop(context);
+								try {
+									await InAppUpdate.startFlexibleUpdate();
+									await InAppUpdate.completeFlexibleUpdate();
+								} catch (_) {}
+							},
+							child: const Text("UPDATE"),
+						),
+					],
+				);
+			},
+		);
+	}
 
   Future<Map<String, String>> _loadLocatorCodeData() async {
     final locatorId = await IdentityService.getLocatorId() ?? '';
@@ -668,7 +734,7 @@ Future<void> _editLocatorName(
         content: TextField(
           controller: controller,
           autofocus: true,
-          maxLength: 30,
+          maxLength: 20,
           decoration: InputDecoration(
             hintText: l10n.enterMemberName,
           ),
@@ -746,10 +812,21 @@ Future<void> _editLocatorName(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Text(
-                              l10n.titleMember,
-                              style: AppFonts.title.copyWith(fontSize: 24,color: AppColors.primary,),
-                            ),
+														SizedBox(
+															width: double.infinity,
+															child: Stack(
+																alignment: Alignment.center,
+																children: [
+																	Text(
+																		l10n.titleMember,
+																		style: AppFonts.title.copyWith(
+																			fontSize: 24,
+																			color: AppColors.primary,
+																		),
+																	),
+																],
+															),
+														),
                             const SizedBox(height: 6),
                             Row(
 															mainAxisAlignment: MainAxisAlignment.center,
@@ -761,7 +838,7 @@ Future<void> _editLocatorName(
 																		textAlign: TextAlign.center,
 																		style: AppFonts.title.copyWith(
 																			fontSize: 20,
-																			color: AppColors.primary,
+																			color: AppColors.textSecondary,
 																		),
 																	),
 																),
@@ -773,7 +850,7 @@ Future<void> _editLocatorName(
 																	child: Icon(
 																		Icons.edit_rounded,
 																		size: 18,
-																		color: AppColors.primary,
+																		color: AppColors.textSecondary,
 																	),
 																),
 															],
@@ -835,6 +912,14 @@ Future<void> _editLocatorName(
 									const SizedBox(height: 12),
                   _permissionsButton(),
                   const SizedBox(height: 12),
+									Text(
+										"Version $_appVersion",
+										style: TextStyle(
+											color: Colors.white.withOpacity(0.4),
+											fontSize: 11,
+											fontWeight: FontWeight.w500,
+										),
+									),
                 ],
               ),
             );

@@ -96,6 +96,11 @@ class AppLocalizationsTr extends AppLocalizations {
   String get createNewGroup => 'Yeni grup oluşturun';
 
   @override
+  String daysAgo(Object count) {
+    return '$count gün önce';
+  }
+
+  @override
   String get disabledByMaster => 'Grup yöneticisi tarafından devre dışı bırakıldı';
 
   @override
@@ -129,6 +134,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get joinRequest => 'Gruba Katılma İsteği';
 
   @override
+  String get justNow => 'Az önce';
+
+  @override
   String get geofenceAlert => 'Konum Alarmı';
 
   @override
@@ -151,6 +159,11 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get groupName => 'Grup İsmi';
+
+  @override
+  String hoursAgo(Object count) {
+    return '$count saat önce';
+  }
 
   @override
   String get iUnderstand => 'ANLADIM';
@@ -223,6 +236,11 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get memberReady => 'Hazır';
+
+  @override
+  String minutesAgo(Object count) {
+    return '$count dk önce';
+  }
 
   @override
   String get missing => 'Eksik';
@@ -339,6 +357,11 @@ class AppLocalizationsTr extends AppLocalizations {
   String get sendPairingRequest => 'Bağlantı isteği gönder';
 
   @override
+  String secondsAgo(Object count) {
+    return '$count sn önce';
+  }
+
+  @override
   String get settingsSaved => 'Ayarlar kaydedildi';
 
   @override
@@ -363,6 +386,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get title => 'LynraFamily';
 
   @override
+  String get unknown => 'Bilinmiyor';
+
+  @override
   String get titleMember => 'LynraFamily Member';
 
   @override
@@ -381,34 +407,8 @@ class AppLocalizationsTr extends AppLocalizations {
   String get wellcome => 'Hoşgeldiniz';
 
   @override
-  String get yourrequest => 'Talebiniz Grup Yöneticisine İletildi.';
-
-  @override
-  String get unknown => 'Bilinmiyor';
-
-  @override
-  String get justNow => 'Az önce';
-
-  @override
-  String secondsAgo(Object count) {
-    return '$count sn önce';
-  }
-
-  @override
-  String minutesAgo(Object count) {
-    return '$count dk önce';
-  }
-
-  @override
-  String hoursAgo(Object count) {
-    return '$count saat önce';
-  }
-
-  @override
-  String daysAgo(Object count) {
-    return '$count gün önce';
-  }
-
-  @override
   String get yesterday => 'Dün';
+
+  @override
+  String get yourrequest => 'Talebiniz Grup Yöneticisine İletildi.';
 }

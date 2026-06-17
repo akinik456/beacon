@@ -68,7 +68,7 @@ class _LocatorNamePageState extends State<LocatorNamePage> {
             AppCard(
               child: TextField(
                 controller: nameCtrl,
-								maxLength: 14,
+								maxLength: 20,
                 style: AppFonts.body.copyWith(
 									color: Colors.white,
 									fontSize: 22,

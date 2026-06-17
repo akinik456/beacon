@@ -60,7 +60,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                     controller: groupNameCtrl,
                     label: l10n.groupName,
                     hint: l10n.familyHome,
-										maxLength: 14,
+										maxLength: 20,
                   ),
                   const SizedBox(height: 18),
                 ],

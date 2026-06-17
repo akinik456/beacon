@@ -269,6 +269,12 @@ abstract class AppLocalizations {
   /// **'Create a new group'**
   String get createNewGroup;
 
+  /// No description provided for @daysAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} days ago'**
+  String daysAgo(Object count);
+
   /// No description provided for @disabledByMaster.
   ///
   /// In en, this message translates to:
@@ -335,6 +341,12 @@ abstract class AppLocalizations {
   /// **'Join Request'**
   String get joinRequest;
 
+  /// No description provided for @justNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Just now'**
+  String get justNow;
+
   /// No description provided for @geofenceAlert.
   ///
   /// In en, this message translates to:
@@ -382,6 +394,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Group Name'**
   String get groupName;
+
+  /// No description provided for @hoursAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} hour ago'**
+  String hoursAgo(Object count);
 
   /// No description provided for @iUnderstand.
   ///
@@ -526,6 +544,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Member Ready'**
   String get memberReady;
+
+  /// No description provided for @minutesAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} min ago'**
+  String minutesAgo(Object count);
 
   /// No description provided for @missing.
   ///
@@ -755,6 +779,12 @@ abstract class AppLocalizations {
   /// **'Send Pairing Request'**
   String get sendPairingRequest;
 
+  /// No description provided for @secondsAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} sec ago'**
+  String secondsAgo(Object count);
+
   /// No description provided for @settingsSaved.
   ///
   /// In en, this message translates to:
@@ -803,6 +833,12 @@ abstract class AppLocalizations {
   /// **'LynraFamily'**
   String get title;
 
+  /// No description provided for @unknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown'**
+  String get unknown;
+
   /// No description provided for @titleMember.
   ///
   /// In en, this message translates to:
@@ -839,53 +875,17 @@ abstract class AppLocalizations {
   /// **'Wellcome'**
   String get wellcome;
 
-  /// No description provided for @yourrequest.
-  ///
-  /// In en, this message translates to:
-  /// **'Your request has been sent to the group master.'**
-  String get yourrequest;
-
-  /// No description provided for @unknown.
-  ///
-  /// In en, this message translates to:
-  /// **'Unknown'**
-  String get unknown;
-
-  /// No description provided for @justNow.
-  ///
-  /// In en, this message translates to:
-  /// **'Just now'**
-  String get justNow;
-
-  /// No description provided for @secondsAgo.
-  ///
-  /// In en, this message translates to:
-  /// **'{count} sec ago'**
-  String secondsAgo(Object count);
-
-  /// No description provided for @minutesAgo.
-  ///
-  /// In en, this message translates to:
-  /// **'{count} min ago'**
-  String minutesAgo(Object count);
-
-  /// No description provided for @hoursAgo.
-  ///
-  /// In en, this message translates to:
-  /// **'{count} hour ago'**
-  String hoursAgo(Object count);
-
-  /// No description provided for @daysAgo.
-  ///
-  /// In en, this message translates to:
-  /// **'{count} days ago'**
-  String daysAgo(Object count);
-
   /// No description provided for @yesterday.
   ///
   /// In en, this message translates to:
   /// **'Yesterday'**
   String get yesterday;
+
+  /// No description provided for @yourrequest.
+  ///
+  /// In en, this message translates to:
+  /// **'Your request has been sent to the group master.'**
+  String get yourrequest;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

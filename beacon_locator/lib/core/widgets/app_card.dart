@@ -23,7 +23,8 @@ class AppCard extends StatelessWidget {
         color: AppColors.card,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: Colors.white.withValues(alpha: 0.05),
+          color: AppColors.primary.withValues(alpha: 0.2),
+					width: 1.2,
         ),
       ),
       child: child,
