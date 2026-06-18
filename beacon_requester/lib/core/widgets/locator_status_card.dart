@@ -4,9 +4,15 @@ import '../theme/app_colors.dart';
 import '../theme/app_fonts.dart';
 import 'app_card.dart';
 
+import '../../services/call_me_service.dart';
+import '../../l10n/app_localizations.dart';
+import '../../services/group_service.dart';
+
+
+
 class LocatorStatusCard extends StatelessWidget {
 
-	
+	final String locatorId;
 	final String locatorName;
 	final String locatorCode;
 
@@ -26,6 +32,7 @@ class LocatorStatusCard extends StatelessWidget {
 	
 	const LocatorStatusCard({
 		super.key,
+		required this.locatorId,
 		required this.locatorName,
 		required this.locatorCode,
 		required this.status,
@@ -43,6 +50,7 @@ class LocatorStatusCard extends StatelessWidget {
 
   @override
 	Widget build(BuildContext context) {
+	final l10n = AppLocalizations.of(context)!;
   return GestureDetector(
     child: AppCard(
       child: Column(
@@ -50,14 +58,18 @@ class LocatorStatusCard extends StatelessWidget {
 				children: [
 					Row(
 						children: [
-							Expanded(
+							Flexible(
 								child: Text(
 									'$locatorName - $locatorCode',
+									overflow: TextOverflow.ellipsis,
 									style: AppFonts.subtitle.copyWith(
-									color: AppColors.primary,
+										color: AppColors.primary,
 									),
 								),
 							),
+
+							const SizedBox(width: 8),
+
 							Container(
 								padding: const EdgeInsets.symmetric(
 									horizontal: 10,
@@ -75,6 +87,38 @@ class LocatorStatusCard extends StatelessWidget {
 										color: status == 'online'
 												? Colors.green
 												: Colors.red,
+									),
+								),
+							),
+
+							const SizedBox(width: 64),
+
+							OutlinedButton.icon(
+								onPressed: locatorId.isEmpty
+										? null
+										: () async {
+												final groupId =
+														await GroupService.getLocalGroupId();
+
+												if (groupId == null || groupId.isEmpty) {
+													return;
+												}
+
+												await CallMeService.createCallMe(
+													groupId: groupId,
+													targetLocatorId: locatorId,
+												);
+											},
+								icon: const Icon(
+									Icons.call_rounded,
+									size: 16,
+									color: AppColors.primary,
+								),
+								label: Text(
+									l10n.callme,
+									style: AppFonts.button.copyWith(
+										color: AppColors.primary,
+										fontSize: 12,
 									),
 								),
 							),
@@ -102,7 +146,7 @@ class LocatorStatusCard extends StatelessWidget {
 								),
 							),
 							
-							const SizedBox(width: 64),
+							const SizedBox(width: 32),
 							Icon(
 								gpsEnabled
 										? Icons.gps_fixed_rounded
@@ -122,7 +166,7 @@ class LocatorStatusCard extends StatelessWidget {
 								),
 							),
 							
-							const SizedBox(width: 64),
+							const SizedBox(width: 32),
 							const Icon(
 								Icons.access_time_rounded,
 								size: 18,
@@ -132,7 +176,10 @@ class LocatorStatusCard extends StatelessWidget {
 							Text(
 								lastSeenText,
 								style: AppFonts.caption,
-							),							
+							),		
+							
+
+							
 						],
 					),
 					Row(

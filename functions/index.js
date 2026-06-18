@@ -37,50 +37,88 @@ setGlobalOptions({ maxInstances: 10 });
 //   response.send("Hello from Firebase!");
 // });
 exports.onCallMeCreated = onDocumentCreated(
-  "groups/{groupId}/call_me/{requesterId}/items/{callMeId}",
+  "groups/{groupId}/call_me/{targetId}/items/{callMeId}",
   async (event) => {
     const data = event.data.data();
 
-    const requesterId = event.params.requesterId;
+    const targetId = event.params.targetId;
     const callMeId = event.params.callMeId;
 
-    const locatorName = data.locatorName || "Locator";
-    const locatorCode = data.locatorCode || "";
+    const isRequesterToLocator =
+      data.targetLocatorId === targetId;
 
-    const topic = `requester_${requesterId}`;
+    const isLocatorToRequester =
+      data.targetRequesterId === targetId;
+
+    let topic = "";
+    let title = "Call Me";
+    let body = "";
+    let payload = {
+      type: "call_me",
+      callMeId,
+    };
+
+    if (isRequesterToLocator) {
+      const requesterName =
+        data.requesterName || "Requester";
+      const requesterCode =
+        data.requesterCode || "";
+
+      topic = `locator_${targetId}`;
+      body = `${requesterName} wants you to call.`;
+
+      payload = {
+        ...payload,
+        requesterName,
+        requesterCode,
+      };
+    } else if (isLocatorToRequester) {
+      const locatorName =
+        data.locatorName || "Locator";
+      const locatorCode =
+        data.locatorCode || "";
+
+      topic = `requester_${targetId}`;
+      body = `${locatorName} wants you to call.`;
+
+      payload = {
+        ...payload,
+        locatorName,
+        locatorCode,
+      };
+    } else {
+      console.error("CALL ME ERROR => unknown target", data);
+      return;
+    }
 
     console.log("CALL ME CREATED", data);
     console.log("CALL ME FCM TOPIC", topic);
 
     try {
-			const response = await admin.messaging().send({
-				topic,
-				notification: {
-					title: "Call Me",
-					body: `${locatorName} wants you to call.`,
-				},
-				
-				android: {
-					priority: "high",
-					notification: {
-						channelId: "call_me",
-						priority: "max",
-						defaultSound: true,
-					},
-				},
-	
-				data: {
-					type: "call_me",
-					callMeId,
-					locatorName,
-					locatorCode,
-				},
-			});
+      const response = await admin.messaging().send({
+        topic,
 
-			console.log("CALL ME FCM SENT", topic, response);
-		} catch (error) {
-			console.error("CALL ME FCM ERROR", error);
-		}
+        notification: {
+          title,
+          body,
+        },
+
+        android: {
+          priority: "high",
+          notification: {
+            channelId: "call_me",
+            priority: "max",
+            defaultSound: true,
+          },
+        },
+
+        data: payload,
+      });
+
+      console.log("CALL ME FCM SENT", topic, response);
+    } catch (error) {
+      console.error("CALL ME FCM ERROR", error);
+    }
   }
 );
 exports.onAlertCreated = onDocumentCreated(

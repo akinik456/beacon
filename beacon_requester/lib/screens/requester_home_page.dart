@@ -528,7 +528,7 @@ Future<void> _editRequesterName() async {
 			.collection('requesters')
 			.doc(requesterId)
 			.update({
-		'name': newName,
+		'requesterName': newName,
 		'updatedAt': FieldValue.serverTimestamp(),
 	});
 	
@@ -1256,6 +1256,7 @@ Future<void> _editRequesterName() async {
 															final distanceMeters = LocationHelper.distanceMeters(fromLat: _myLat,fromLng: _myLng,toLat: locator['lat']?.toDouble(),toLng: locator['lng']?.toDouble(),);
 															final distanceText = distanceMeters == null ? '-' : '${distanceMeters.round()} m';
 															return LocatorStatusCard(
+																locatorId: locatorId,
 																locatorName: locatorName,
 																locatorCode: locatorCode,
 																status: status,

@@ -17,25 +17,58 @@ import 'services/active_watcher_service.dart';
 import 'services/motion_service.dart';
 import 'services/locator_settings_service.dart';
 import 'services/presence_service.dart';
+import 'services/notification_service.dart';
 
 	@pragma('vm:entry-point')
-	Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+	Future<void> firebaseMessagingBackgroundHandler(
+		RemoteMessage message,
+	) async {
 		WidgetsFlutterBinding.ensureInitialized();
 
 		await Firebase.initializeApp();
 
-		print("BEACON FCM BG => data => ${message.data}");
+		print(
+			"BEACON FCM BG => data => ${message.data}",
+		);
 
 		final type = message.data['type'];
 
-		if (type == 'request_location') {
-			print("BEACON FCM BG => REQUEST LOCATION received");
+		switch (type) {
+			case 'request_location':
+				print(
+					"BEACON FCM BG => REQUEST LOCATION received",
+				);
 
-			await SmartPresenceScheduler.boostAndUpdateNow(
-				reason: 'fcm_foreground',
-			);
+				await SmartPresenceScheduler
+						.boostAndUpdateNow(
+					reason: 'fcm_foreground',
+				);
 
-			print("BEACON FCM BG => REQUEST LOCATION completed");
+				print(
+					"BEACON FCM BG => REQUEST LOCATION completed",
+				);
+				break;
+
+			case 'call_me':
+				print(
+					"BEACON FCM BG => CALL ME received",
+				);
+
+				await NotificationService.showCallMe(
+					requesterName:
+							message.data['requesterName'] ??
+							'Requester',
+					requesterCode:
+							message.data['requesterCode'] ??
+							'',
+				);
+
+				break;
+
+			default:
+				print(
+					"BEACON FCM BG => unknown type => $type",
+				);
 		}
 	}
 	
@@ -61,6 +94,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp();
+	await NotificationService.initialize();
 
   FirebaseMessaging.onBackgroundMessage(
     firebaseMessagingBackgroundHandler,
@@ -80,11 +114,11 @@ Future<void> main() async {
     ),
   );
 
-  if (locatorId != null && locatorId.isNotEmpty) {
+  /*if (locatorId != null && locatorId.isNotEmpty) {
     Future.delayed(const Duration(seconds: 5), () async {
       await FCMService.initialize();
     });
-  }
+  }*/
 }
 class MyApp extends StatefulWidget {
 

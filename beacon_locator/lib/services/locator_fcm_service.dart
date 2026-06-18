@@ -19,27 +19,21 @@ class FCMService {
 			print(
 				"BEACON FCM => permission => ${settings.authorizationStatus}",
 			);
-
-			// Token
+			
 			final token = await _messaging.getToken();
-			if (token != null && token.isNotEmpty) {
-				await updateFcmToken(token);
-			}
 
 			print("BEACON FCM => token => $token");
 			
 			FirebaseMessaging.instance.onTokenRefresh.listen((newToken) async {
 				print("BEACON FCM => token refreshed => $newToken");
 
-				await updateFcmToken(newToken);
 			});
 
 			final locatorId =
       await IdentityService.getLocatorId();
 			if (locatorId == null) return;
 
-			final safeLocatorId = locatorId.replaceAll('-', '_');
-			final topic = 'locator_$safeLocatorId';
+			final topic = 'locator_$locatorId';
 
 			print("BEACON FCM => subscribe start => $topic");
 
@@ -71,25 +65,29 @@ class FCMService {
 			);
 		}
 	});	
+	
+	// ================= APP OPENED FROM NOTIFICATION =================
+
+	FirebaseMessaging.onMessageOpenedApp.listen((message) {
+		print("BEACON FCM => OPENED FROM NOTIFICATION");
+
+		print("BEACON FCM => data => ${message.data}");
+	});
+	
+	// ================= TERMINATED STATE CHECK =================
+
+		final initialMessage =
+				await FirebaseMessaging.instance.getInitialMessage();
+
+		if (initialMessage != null) {
+			print("BEACON FCM => INITIAL MESSAGE");
+
+			print(
+				"BEACON FCM => initial data => "
+				"${initialMessage.data}",
+			);
+		}		
+	
 
 	}	
-	
-	static Future<void> updateFcmToken(String token) async {
-  final locatorId =
-      await IdentityService.getLocatorId();
-
-  if (locatorId == null || locatorId.isEmpty) {
-    return;
-  }
-
-  await FirebaseFirestore.instance
-      .collection('locators')
-      .doc(locatorId)
-      .set({
-    'fcmToken': token,
-    'lastTokenRefreshAt': FieldValue.serverTimestamp(),
-  }, SetOptions(merge: true));
-
-  print("BEACON FCM => token updated");
-}
 }

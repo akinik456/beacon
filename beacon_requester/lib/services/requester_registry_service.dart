@@ -72,7 +72,7 @@ class RequesterRegistryService {
   }
 	
 	static Future<void> updateToken(String token) async {
-		try {
+		try { // ?*? gereksiz
 			final requesterId =
 					await IdentityService.getRequesterId();
 

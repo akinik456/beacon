@@ -18,6 +18,7 @@ import '../services/smart_presence_scheduler.dart';
 import '../services/pairing_request_service.dart';
 import '../services/pairing_approval_service.dart';
 import '../services/call_me_service.dart';
+import '../core/widgets/call_me_overlay.dart';
 import '../services/alert_service.dart';
 import '../services/alert_monitor_service.dart';
 import '../services/geofence_service.dart';
@@ -27,6 +28,8 @@ import '../services/locator_settings_service.dart';
 import '../l10n/app_localizations.dart';
 import 'language_select_page.dart';
 import '../services/native_presence_service.dart';
+import '../services/locator_fcm_service.dart';
+
 
 class LocatorHomePage extends StatefulWidget {
   const LocatorHomePage({super.key});
@@ -40,13 +43,16 @@ class _LocatorHomePageState extends State<LocatorHomePage>
   bool hasAllPermissions = false;
   Timer? _presenceTimer;
 	String _appVersion = '';
-	
+	Map<String, dynamic>? _callMeData;
+	List<Map<String, dynamic>> _pendingCallMeQueue = [];
+	final List<StreamSubscription> _subscriptions = [];
+
 	//MotionService.start();
 
  @override
 void initState() {
   super.initState();
-
+	FCMService.initialize();
   NativePresenceService.start();
 
   LocatorSettingsService.startListeners();
@@ -56,6 +62,8 @@ void initState() {
 	unawaited(_loadVersion());
 	
 	unawaited(_checkForUpdate());
+	
+	_listenCallMe();
 
   WidgetsBinding.instance.addPostFrameCallback((_) {
     _checkPermissionsAndWarn();
@@ -171,6 +179,60 @@ void initState() {
 				);
 			},
 		);
+	}
+	
+	void _listenCallMe() async {
+		final groupId = await IdentityService.getGroupId();
+
+		final locatorId = await IdentityService.getLocatorId();
+
+		if (groupId == null || locatorId == null) {
+			return;
+		}
+
+		final sub = FirebaseFirestore.instance
+				.collection('groups')
+				.doc(groupId)
+				.collection('call_me')
+				.doc(locatorId)
+				.collection('items')
+				.snapshots()
+				.listen((snapshot) {
+			for (final change in snapshot.docChanges) {
+				if (change.type != DocumentChangeType.added) {
+					continue;
+				}
+
+				final data = change.doc.data();
+
+				if (data == null) continue;
+
+				if (data['status'] != 'pending') {
+					continue;
+				}
+
+				final item = {
+					...data,
+					'callMeId': change.doc.id,
+				};
+
+				if (!mounted) return;
+
+				setState(() {
+					final alreadyExists = _pendingCallMeQueue.any(
+						(x) => x['callMeId'] == item['callMeId'],
+					);
+
+					if (!alreadyExists) {
+						_pendingCallMeQueue.add(item);
+					}
+
+					_callMeData ??= item;
+				});
+			}
+		});
+
+		_subscriptions.add(sub);
 	}
 
   Future<Map<String, String>> _loadLocatorCodeData() async {
@@ -776,7 +838,7 @@ Future<void> _editLocatorName(
       .collection('locators')
       .doc(locatorId)
       .update({
-    'name': newName,
+    'locatorName': newName,
     'updatedAt': FieldValue.serverTimestamp(),
   });
 
@@ -920,6 +982,40 @@ Future<void> _editLocatorName(
 											fontWeight: FontWeight.w500,
 										),
 									),
+									
+									if (_callMeData != null)
+  CallMeOverlay(
+    data: _callMeData!,
+    onDismiss: () async {
+      final callMeId = _callMeData!['callMeId'];
+
+      final groupId = _callMeData!['groupId'];
+
+      final locatorId = _callMeData!['targetLocatorId'];
+
+      await FirebaseFirestore.instance
+          .collection('groups')
+          .doc(groupId)
+          .collection('call_me')
+          .doc(locatorId)
+          .collection('items')
+          .doc(callMeId)
+          .delete();
+
+      if (!mounted) return;
+
+      setState(() {
+        _pendingCallMeQueue.removeWhere(
+          (x) => x['callMeId'] == callMeId,
+        );
+
+        _callMeData = _pendingCallMeQueue.isNotEmpty
+            ? _pendingCallMeQueue.first
+            : null;
+      });
+    },
+  ),
+									
                 ],
               ),
             );
