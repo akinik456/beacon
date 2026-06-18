@@ -262,7 +262,7 @@ Stream<List<Map<String, String>>> _watchPairedRequesterData() async* {
       .collection('devices')
       .doc(locatorId)
       .snapshots()
-      .map((doc) {
+      .asyncMap((doc) async {
     final data = doc.data();
 
     if (data == null) {
@@ -280,24 +280,23 @@ Stream<List<Map<String, String>>> _watchPairedRequesterData() async* {
     final result = <Map<String, String>>[];
 
     for (final requesterId in pairedRequesters.keys) {
-      final requesterData = Map<String, dynamic>.from(
-        pairedRequesters[requesterId] ?? {},
-      );
+      final requesterDoc = await FirebaseFirestore.instance
+          .collection('requesters')
+          .doc(requesterId)
+          .get();
+
+      final requesterData = requesterDoc.data() ?? {};
 
       result.add({
         'requesterId': requesterId,
-        'requesterName':
-            requesterData['requesterName'] ?? 'Requester',
-        'requesterCode':
-            requesterData['requesterCode'] ?? '------',
+        'requesterName': requesterData['requesterName'] ?? 'Requester',
+        'requesterCode': requesterData['requesterCode'] ?? '------',
       });
     }
 
     result.sort((a, b) {
-      final aName =
-          (a['requesterName'] ?? '').toLowerCase();
-      final bName =
-          (b['requesterName'] ?? '').toLowerCase();
+      final aName = (a['requesterName'] ?? '').toLowerCase();
+      final bName = (b['requesterName'] ?? '').toLowerCase();
 
       return aName.compareTo(bName);
     });
@@ -969,8 +968,38 @@ Future<void> _editLocatorName(
                   const SizedBox(height: 12),
                   _buildPairingArea(),
 									const SizedBox(height: 12),
-									_activeWatchersCard(),						
-                  const Spacer(),
+									_activeWatchersCard(),				
+									const SizedBox(height: 36),									
+									if (_callMeData != null)
+									CallMeOverlay(
+										data: _callMeData!,
+										onDismiss: () async {
+											final callMeId = _callMeData!['callMeId'];
+
+											final groupId = _callMeData!['groupId'];
+
+											final locatorId = _callMeData!['targetLocatorId'];
+
+											await FirebaseFirestore.instance
+													.collection('groups')
+													.doc(groupId)
+													.collection('call_me')
+													.doc(locatorId)
+													.collection('items')
+													.doc(callMeId)
+													.delete();
+											if (!mounted) return;
+											setState(() {
+												_pendingCallMeQueue.removeWhere(
+													(x) => x['callMeId'] == callMeId,
+												);
+												_callMeData = _pendingCallMeQueue.isNotEmpty
+														? _pendingCallMeQueue.first
+														: null;
+											});
+										},
+									),	
+									const Spacer(),
 									const SizedBox(height: 12),
                   _permissionsButton(),
                   const SizedBox(height: 12),
@@ -982,40 +1011,6 @@ Future<void> _editLocatorName(
 											fontWeight: FontWeight.w500,
 										),
 									),
-									
-									if (_callMeData != null)
-  CallMeOverlay(
-    data: _callMeData!,
-    onDismiss: () async {
-      final callMeId = _callMeData!['callMeId'];
-
-      final groupId = _callMeData!['groupId'];
-
-      final locatorId = _callMeData!['targetLocatorId'];
-
-      await FirebaseFirestore.instance
-          .collection('groups')
-          .doc(groupId)
-          .collection('call_me')
-          .doc(locatorId)
-          .collection('items')
-          .doc(callMeId)
-          .delete();
-
-      if (!mounted) return;
-
-      setState(() {
-        _pendingCallMeQueue.removeWhere(
-          (x) => x['callMeId'] == callMeId,
-        );
-
-        _callMeData = _pendingCallMeQueue.isNotEmpty
-            ? _pendingCallMeQueue.first
-            : null;
-      });
-    },
-  ),
-									
                 ],
               ),
             );

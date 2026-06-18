@@ -8,6 +8,7 @@ class ActiveWatcherService {
   static final _rtdb = FirebaseDatabase.instance;
 
   static Future<void> addWatcher({
+		required String requesterName,
 		required String requesterCode,
     required String groupId,
     required String locatorId,
@@ -21,6 +22,7 @@ class ActiveWatcherService {
             'presence/groups/$groupId/active_watchers/$locatorId/$requesterId',
           )
           .set({
+				'requesterName':requesterName,	
 				'requesterCode':requesterCode,
         'active': true,
         'lastSeen': ServerValue.timestamp,

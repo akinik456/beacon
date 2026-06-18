@@ -45,9 +45,17 @@ class HomeDataService {
           .get();
 
       if (!groupDoc.exists) {
-        print("BEACON HOME => group not found");
-        return null;
-      }
+				print("BEACON HOME => group not found");
+
+				return {
+					'hasGroup': false,
+					'requesterId': requesterId,
+					'groupId': null,
+					'groupName': null,
+					'requesterName': requesterName,
+					'pairedLocators': <String, dynamic>{},
+				};
+			}
 
       final groupData = groupDoc.data()!;
 
@@ -108,9 +116,17 @@ return {
         'requesterName': requesterName,
         'pairedLocators': pairedLocators,
       };
-    } catch (e) {
-      print("BEACON HOME LOAD ERROR => $e");
-      return null;
-    }
+    }  catch (e) {
+			print("BEACON HOME LOAD ERROR => $e");
+
+			return {
+				'hasGroup': false,
+				'requesterId': await IdentityService.getRequesterId(),
+				'groupId': null,
+				'groupName': null,
+				'requesterName': await IdentityService.getRequesterName(),
+				'pairedLocators': <String, dynamic>{},
+			};
+		}
   }
 }

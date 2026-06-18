@@ -58,17 +58,17 @@ class LocatorStatusCard extends StatelessWidget {
 				children: [
 					Row(
 						children: [
-							Flexible(
-								child: Text(
+							
+								Text(
 									'$locatorName - $locatorCode',
 									overflow: TextOverflow.ellipsis,
 									style: AppFonts.subtitle.copyWith(
 										color: AppColors.primary,
 									),
 								),
-							),
+							
 
-							const SizedBox(width: 8),
+							const SizedBox(width: 32),
 
 							Container(
 								padding: const EdgeInsets.symmetric(
@@ -91,7 +91,7 @@ class LocatorStatusCard extends StatelessWidget {
 								),
 							),
 
-							const SizedBox(width: 64),
+							const Spacer(),
 
 							OutlinedButton.icon(
 								onPressed: locatorId.isEmpty
@@ -164,8 +164,7 @@ class LocatorStatusCard extends StatelessWidget {
 											? AppColors.accent
 											: AppColors.danger,
 								),
-							),
-							
+							),							
 							const SizedBox(width: 32),
 							const Icon(
 								Icons.access_time_rounded,
@@ -176,12 +175,10 @@ class LocatorStatusCard extends StatelessWidget {
 							Text(
 								lastSeenText,
 								style: AppFonts.caption,
-							),		
-							
-
-							
+							),					
 						],
 					),
+					const SizedBox(height: 8),
 					Row(
 						children: [
 							const SizedBox(width: 4),
@@ -204,6 +201,7 @@ class LocatorStatusCard extends StatelessWidget {
 							),
 						],
 					),
+					const SizedBox(height: 8),
 					Row(
 						mainAxisAlignment: MainAxisAlignment.spaceBetween,
 						children: [

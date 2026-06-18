@@ -216,6 +216,7 @@ class _RequesterHomePageState
 			if (locatorId == null) continue;
 
 			await ActiveWatcherService.addWatcher(
+				requesterName: _requesterName!,
 				requesterCode: _requesterCode!,
 				groupId: _groupId!,
 				locatorId: locatorId,
@@ -770,14 +771,14 @@ Future<void> _editRequesterName() async {
               Text(
 							    '${l10n.groupCode}',
 								textAlign: TextAlign.center,
-								style: AppFonts.button.copyWith(color: AppColors.accent),
+								style: AppFonts.button.copyWith(color: AppColors.textSecondary),
 							),	
 							const SizedBox(width: 6),
 							Text(
 								groupCode,
 								textAlign: TextAlign.left,
 								style: AppFonts.subtitle.copyWith(
-									color: AppColors.accent,
+									color: AppColors.textSecondary,
 									letterSpacing: 2,
 								),
 							),						
@@ -807,9 +808,7 @@ Future<void> _editRequesterName() async {
                 ),
               );
             }
-
             final data = snapshot.data;
-
             if (data == null) {
               return Center(
                 child: Padding(
@@ -823,140 +822,126 @@ Future<void> _editRequesterName() async {
                   ),
                 ),
               );
-            }
-						
+            }						
 						if (data['isPending'] == true) {
-				final groupId = data['groupId'];
-				final requesterId = data['requesterId'];
-
-				return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-					stream: FirebaseFirestore.instance
-							.collection('groups')
-							.doc(groupId)
-							.collection('join_requests')
-							.doc(requesterId)
-							.snapshots(),
-					builder: (context, joinSnapshot) {
-						final joinData = joinSnapshot.data?.data();
-						final status = joinData?['status'];
-
-						if (status == 'rejected') {
-							return Center(
-								child: Padding(
-									padding: const EdgeInsets.all(24),
-									child: AppCard(
-										child: Column(
-											mainAxisSize: MainAxisSize.min,
-											children: [
-												const Icon(
-													Icons.block_rounded,
-													color: AppColors.danger,
-													size: 48,
-												),
-
-												const SizedBox(height: 16),
-
-												Text(
-													l10n.rejected,
-													style: AppFonts.title.copyWith(
-														color: AppColors.danger,
-													),
-												),
-
-												const SizedBox(height: 20),
-
-												SizedBox(
-													width: double.infinity,
-													child: ElevatedButton(
-														onPressed: () async {
-
-															await FirebaseFirestore.instance
-																	.collection('groups')
-																	.doc(groupId)
-																	.collection('join_requests')
-																	.doc(requesterId)
-																	.delete();
-
-															await GroupService.clearLocalGroup();
-
-															if (!context.mounted) return;
-
-															Navigator.pushReplacement(
-																context,
-																MaterialPageRoute(
-																	builder: (_) =>
-																			const RequesterHomePage(),
+							final groupId = data['groupId'];
+							final requesterId = data['requesterId'];
+							return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+								stream: FirebaseFirestore.instance
+										.collection('groups')
+										.doc(groupId)
+										.collection('join_requests')
+										.doc(requesterId)
+										.snapshots(),
+								builder: (context, joinSnapshot) {
+									final joinData = joinSnapshot.data?.data();
+									final status = joinData?['status'];
+									if (status == 'rejected') {
+										return Center(
+											child: Padding(
+												padding: const EdgeInsets.all(24),
+												child: AppCard(
+													child: Column(
+														mainAxisSize: MainAxisSize.min,
+														children: [
+															const Icon(
+																Icons.block_rounded,
+																color: AppColors.danger,
+																size: 48,
+															),
+															const SizedBox(height: 16),
+															Text(
+																l10n.rejected,
+																style: AppFonts.title.copyWith(
+																	color: AppColors.danger,
 																),
-															);
-														},
-														child: Text(l10n.ok),
+															),
+															const SizedBox(height: 20),
+															SizedBox(
+																width: double.infinity,
+																child: ElevatedButton(
+																	onPressed: () async {
+																		await FirebaseFirestore.instance
+																				.collection('groups')
+																				.doc(groupId)
+																				.collection('join_requests')
+																				.doc(requesterId)
+																				.delete();
+																		await GroupService.clearLocalGroup();
+																		if (!context.mounted) return;
+																		Navigator.pushReplacement(
+																			context,
+																			MaterialPageRoute(
+																				builder: (_) =>
+																						const RequesterHomePage(),
+																			),
+																		);
+																	},
+																	child: Text(l10n.ok),
+																),
+															),
+														],
 													),
 												),
-											],
-										),
-									),
-								),
-							);
-						}
-
-						return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-							stream: FirebaseFirestore.instance
-									.collection('groups')
-									.doc(groupId)
-									.collection('devices')
-									.doc(requesterId)
-									.snapshots(),
-								builder: (context, deviceSnapshot) {
-								if (deviceSnapshot.hasData &&
-										deviceSnapshot.data!.exists) {
-									Future.microtask(() {
-										if (!context.mounted) return;
-
-										Navigator.pushReplacement(
-											context,
-											MaterialPageRoute(
-												builder: (_) => const RequesterHomePage(),
 											),
 										);
-									});
-								}
+									}
+									return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+										stream: FirebaseFirestore.instance
+												.collection('groups')
+												.doc(groupId)
+												.collection('devices')
+												.doc(requesterId)
+												.snapshots(),
+											builder: (context, deviceSnapshot) {
+											if (deviceSnapshot.hasData &&
+													deviceSnapshot.data!.exists) {
+												Future.microtask(() {
+													if (!context.mounted) return;
 
-								return Center(
-									child: Padding(
-										padding: const EdgeInsets.all(24),
-										child: AppCard(
-											child: Column(
-												mainAxisSize: MainAxisSize.min,
-												children: [
-													const Icon(
-														Icons.hourglass_top_rounded,
-														color: AppColors.primary,
-														size: 48,
-													),
-													const SizedBox(height: 16),
-													Text(
-														l10n.waitingForApproval,
-														style: AppFonts.title,
-													),
-													const SizedBox(height: 8),
-													Text(
-														l10n.yourrequest,
-														textAlign: TextAlign.center,
-														style: AppFonts.body.copyWith(
-															color: AppColors.textSecondary,
+													Navigator.pushReplacement(
+														context,
+														MaterialPageRoute(
+															builder: (_) => const RequesterHomePage(),
+														),
+													);
+												});
+											}
+											return Center(
+												child: Padding(
+													padding: const EdgeInsets.all(24),
+													child: AppCard(
+														child: Column(
+															mainAxisSize: MainAxisSize.min,
+															children: [
+																const Icon(
+																	Icons.hourglass_top_rounded,
+																	color: AppColors.primary,
+																	size: 48,
+																),
+																const SizedBox(height: 16),
+																Text(
+																	l10n.waitingForApproval,
+																	style: AppFonts.title,
+																),
+																const SizedBox(height: 8),
+																Text(
+																	l10n.yourrequest,
+																	textAlign: TextAlign.center,
+																	style: AppFonts.body.copyWith(
+																		color: AppColors.textSecondary,
+																	),
+																),
+															],
 														),
 													),
-												],
-											),
-										),
-									),
-								);
-							},
-						);
-					},
-				);
-			}
-
+												),
+											);
+										},
+									);
+								},
+							);
+						}
             final hasGroup =
                 data['hasGroup'] == true;
 
@@ -968,7 +953,6 @@ Future<void> _editRequesterName() async {
                 requesterName: requesterName,
               );
             }
-
             final groupId = data['groupId'] ?? '';
             final groupName = data['groupName'] ?? '-';
             final pairedLocators =
@@ -980,116 +964,108 @@ Future<void> _editRequesterName() async {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [								
 									Column(
-  children: [
-    Text(
-      l10n.title,
-      textAlign: TextAlign.center,
-      style: AppFonts.title.copyWith(
-        fontSize: 24,
-        color: AppColors.primary,
-      ),
-    ),
-		Text(
-			"Version $_appVersion",
-			style: TextStyle(
-				color: Colors.white.withOpacity(0.4),
-				fontSize: 11,
-				fontWeight: FontWeight.w500,
-			),
-		),
-    const SizedBox(height: 6),
-
-    StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-      stream: FirebaseFirestore.instance
-          .collection('groups')
-          .doc(groupId)
-          .snapshots(),
-      builder: (context, snapshot) {
-        final liveGroupName =
-            snapshot.data?.data()?['groupName'] ??
-            groupName;
-
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          child: Row(
-            children: [
-              Expanded(
-                child: Row(
-                  children: [
-                    Flexible(
-                      child: Text(
-                        liveGroupName,
-                        overflow: TextOverflow.ellipsis,
-                        style: AppFonts.title.copyWith(
-                          fontSize: 20,
-                          color: AppColors.primary,
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(width: 6),
-
-                    InkWell(
-                      borderRadius: BorderRadius.circular(12),
-                      onTap: () {
-                        _editGroupName(
-                          groupId: groupId,
-                          currentGroupName: liveGroupName,
-                        );
-                      },
-                      child: const Padding(
-                        padding: EdgeInsets.all(4),
-                        child: Icon(
-                          Icons.edit_rounded,
-                          size: 16,
-                          color: AppColors.primary,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              Expanded(
-								child: Row(
-									mainAxisAlignment: MainAxisAlignment.end,
-									children: [
-										Flexible(
-											child: Text(
-												requesterName,
-												overflow: TextOverflow.ellipsis,
-												textAlign: TextAlign.right,
+										children: [
+											Text(
+												l10n.title,
+												textAlign: TextAlign.center,
 												style: AppFonts.title.copyWith(
-													fontSize: 20,
+													fontSize: 24,
 													color: AppColors.primary,
 												),
 											),
-										),
-
-										const SizedBox(width: 4),
-
-										GestureDetector(
-											onTap: _editRequesterName,
-											child: Icon(
-												Icons.edit_rounded,
-												size: 18,
-												color: AppColors.primary,
+											Text(
+												"Version $_appVersion",
+												style: TextStyle(
+													color: Colors.white.withOpacity(0.4),
+													fontSize: 11,
+													fontWeight: FontWeight.w500,
+												),
 											),
-										),
-									],
-								),
-							),
-            ],
-          ),
-        );
-      },
-    ),
-  ],
-),
-									
+											const SizedBox(height: 6),
+											StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+												stream: FirebaseFirestore.instance
+														.collection('groups')
+														.doc(groupId)
+														.snapshots(),
+												builder: (context, snapshot) {
+													final liveGroupName =
+															snapshot.data?.data()?['groupName'] ??
+															groupName;
+													return Padding(
+														padding: const EdgeInsets.symmetric(horizontal: 12),
+														child: Row(
+															children: [
+																Expanded(
+																	child: Row(
+																		children: [
+																			Flexible(
+																				child: Text(
+																					liveGroupName,
+																					overflow: TextOverflow.ellipsis,
+																					style: AppFonts.title.copyWith(
+																						fontSize: 20,
+																						color: AppColors.textSecondary,
+																					),
+																				),
+																			),
+																			const SizedBox(width: 6),
+																			InkWell(
+																				borderRadius: BorderRadius.circular(12),
+																				onTap: () {
+																					_editGroupName(
+																						groupId: groupId,
+																						currentGroupName: liveGroupName,
+																					);
+																				},
+																				child: const Padding(
+																					padding: EdgeInsets.all(4),
+																					child: Icon(
+																						Icons.edit_rounded,
+																						size: 16,
+																						color: AppColors.textSecondary,
+																					),
+																				),
+																			),
+																		],
+																	),
+																),
+																Expanded(
+																	child: Row(
+																		mainAxisAlignment: MainAxisAlignment.end,
+																		children: [
+																			Flexible(
+																				child: Text(
+																					requesterName,
+																					overflow: TextOverflow.ellipsis,
+																					textAlign: TextAlign.right,
+																					style: AppFonts.title.copyWith(
+																						fontSize: 20,
+																						color: AppColors.textSecondary,
+																					),
+																				),
+																			),
+																			const SizedBox(width: 4),
+																			GestureDetector(
+																				onTap: _editRequesterName,
+																				child: Icon(
+																					Icons.edit_rounded,
+																					size: 18,
+																					color: AppColors.textSecondary,
+																				),
+																			),
+																		],
+																	),
+																),
+															],
+														),
+													);
+												},
+											),
+										],
+									),									
 									Row(
 										children: [										
-											const SizedBox(width: 16),								
+											const SizedBox(width: 8),								
 											_requesterCodeHeader(groupId, _groupCode),
 											const Spacer(),
 											TextButton.icon(
@@ -1131,100 +1107,106 @@ Future<void> _editRequesterName() async {
 											)
 										],
 									),							
-		const SizedBox(height: 4),
+									const SizedBox(height: 4),
 
-		if (_isMaster && _groupId != null)
-			JoinRequestCard(
-				groupId: _groupId!,
-			),
-			
-			if (_isMaster && _groupId != null)
-			RequesterListCard(
-				groupId: _groupId!,
-			),
+									if (_isMaster && _groupId != null)
+										JoinRequestCard(
+											groupId: _groupId!,
+										),
+										
+										if (_isMaster && _groupId != null)
+										RequesterListCard(
+											groupId: _groupId!,
+										),
 
-		StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-  stream: FirebaseFirestore.instance
-      .collection('groups')
-      .doc(groupId)
-      .snapshots(),
-  builder: (context, snapshot) {
-    final data = snapshot.data?.data();
+									StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+										stream: FirebaseFirestore.instance
+												.collection('groups')
+												.doc(groupId)
+												.snapshots(),
+										builder: (context, snapshot) {
+											final data = snapshot.data?.data();
+											final maxLocators = data?['maxLocators'] ?? 1;
+											final activeLocatorCount = data?['activeLocatorCount'] ?? 0;
+											final isFull = activeLocatorCount >= maxLocators;
+											return AppCard(
+												onTap: () async {
+													final changed = await Navigator.push<bool>(
+														context,
+														MaterialPageRoute(
+															builder: (_) => const AddLocatorPage(),
+														),
+													);
+													if (changed == true && context.mounted) {
+														Navigator.pushReplacement(
+															context,
+															MaterialPageRoute(
+																builder: (_) => const RequesterHomePage(),
+															),
+														);
+													}
+												},
+												child: SizedBox(
+													height: 64,
+													child: Row(
+														children: [
+															const Icon(
+																Icons.location_searching_rounded,
+																color: AppColors.primary,
+																size: 26,
+															),
+															const SizedBox(width: 8),
+															Text(
+																'${pairedLocators.length} ${l10n.pairedMember}',
+																style: AppFonts.subtitle.copyWith(
+																	color: AppColors.primary,
+																),
+															),
+															const Spacer(),
+																			Container(
+																padding: const EdgeInsets.symmetric(
+																	horizontal: 12,
+																	vertical: 2,
+																),
+																decoration: BoxDecoration(
+																	border: Border.all(
+																		color: AppColors.textSecondary,
+																		width: 1,
+																	),
+																	borderRadius: BorderRadius.circular(8),
+																),
+																child: Row(
+																	mainAxisSize: MainAxisSize.min,
+																	children: [																
+																		RichText(
+																			text: TextSpan(
+																				children: [
+																					TextSpan(
+																						text: l10n.addMember,
+																						style: AppFonts.button.copyWith(
+																							color: AppColors.primary,
+																						),
+																					),
 
-    final maxLocators = data?['maxLocators'] ?? 1;
-    final activeLocatorCount = data?['activeLocatorCount'] ?? 0;
-    final isFull = activeLocatorCount >= maxLocators;
-
-    return AppCard(
-      onTap: () async {
-        final changed = await Navigator.push<bool>(
-          context,
-          MaterialPageRoute(
-            builder: (_) => const AddLocatorPage(),
-          ),
-        );
-
-        if (changed == true && context.mounted) {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (_) => const RequesterHomePage(),
-            ),
-          );
-        }
-      },
-      child: SizedBox(
-        height: 32,
-        child: Row(
-          children: [
-            const Icon(
-              Icons.add_rounded,
-              color: AppColors.primary,
-            ),
-
-            const SizedBox(width: 12),
-
-            Expanded(
-              child: Text(
-                isFull
-                    ? '${l10n.addMember} (${l10n.memberlimitreached})'
-                    : l10n.addMember,
-                style: AppFonts.button.copyWith(
-                  color: AppColors.primary,
-                ),
-              ),
-            ),
-
-            
-          ],
-        ),
-      ),
-    );
-  },
-),
-							const SizedBox(height: 4),
-
-                  AppCard(
-                    child: Row(
-                      children: [
-                        const Icon(
-                          Icons.location_searching_rounded,
-                          color: AppColors.primary,
-                          size: 28,
-                        ),
-
-                        const SizedBox(width: 14),
-
-                        Expanded(
-                          child: Text(
-                            '${pairedLocators.length}  ${l10n.pairedMember}',
-                            style: AppFonts.subtitle,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
+																					if (isFull)
+																						TextSpan(
+																							text: '\n(${l10n.memberlimitreached})',
+																							style: AppFonts.button.copyWith(
+																								color: AppColors.textSecondary,
+																							),
+																						),
+																				],
+																			),
+																		),
+																	],
+																),
+															),
+														],
+													),
+												),
+											);
+										},
+									),
                   const SizedBox(height: 4),
 
                   Expanded(
@@ -1239,11 +1221,11 @@ Future<void> _editRequesterName() async {
                         : ListView.separated(
                             itemCount: _locators.length,//itemCount: _locators.isEmpty ? 0 : 4,//itemCount: _locators.length,
                             separatorBuilder: (_, __) =>
-                                const SizedBox(height: 12),
+                                const SizedBox(height: 4),
                             itemBuilder: (context, index) {
                               final locator = _locators[index];//final locator = _locators[0];//final locator = _locators[index];
 															final locatorId = locator['locatorId'] ?? '-';															
-															final locatorName = locator['name'] ?? 'Member';
+															final locatorName = locator['locatorName'] ?? 'Member';
 															final locatorCode = locator['locatorCode'] ?? '------';
 															final status = locator['status'] ?? 'offline';
 															final battery = locator['battery'] ?? 0;

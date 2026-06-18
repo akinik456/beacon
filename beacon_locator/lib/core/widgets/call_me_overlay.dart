@@ -36,58 +36,49 @@ class CallMeOverlay extends StatelessWidget {
     );
 
     return Positioned.fill(
-      child: Material(
-        color: Colors.black.withValues(alpha: 0.65),
-        child: Center(
-          child: AppCard(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Icon(
-                  Icons.phone_in_talk_rounded,
-                  color: AppColors.primary,
-                  size: 54,
-                ),
+child: Column(
+  mainAxisSize: MainAxisSize.min,
+  children: [
+    Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const Icon(
+          Icons.phone_in_talk_rounded,
+          color: AppColors.primary,
+          size: 24,
+        ),
 
-                const SizedBox(height: 18),
+        const SizedBox(width: 8),
 
-                Text(
-                  '$requesterName - $requesterCode',
-                  style: AppFonts.title,
-                  textAlign: TextAlign.center,
-                ),
-
-                const SizedBox(height: 6),
-
-                Text(
-                  timeText,
-                  style: AppFonts.caption.copyWith(
-                    color: AppColors.textSecondary,
-                  ),
-                ),
-
-                const SizedBox(height: 8),
-
-                Text(
-                  l10n.wantsYoutoCall,
-                  style: AppFonts.body,
-                  textAlign: TextAlign.center,
-                ),
-
-                const SizedBox(height: 24),
-
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: onDismiss,
-                    child: Text(l10n.dismiss),
-                  ),
-                ),
-              ],
-            ),
+        Flexible(
+          child: Text(
+            '$requesterName - $requesterCode',
+            style: AppFonts.title,
+            overflow: TextOverflow.ellipsis,
           ),
         ),
+      ],
+    ),
+
+    const SizedBox(height: 8),
+
+    Text(
+      '${l10n.wantsYoutoCall} • $timeText',
+      style: AppFonts.body,
+      textAlign: TextAlign.center,
+    ),
+
+    const SizedBox(height: 12),
+
+    SizedBox(
+      width: double.infinity,
+      child: ElevatedButton(
+        onPressed: onDismiss,
+        child: Text(l10n.dismiss),
       ),
+    ),
+  ],
+),
     );
   }
 }

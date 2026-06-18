@@ -38,7 +38,7 @@ RTDB
 			groupid
 			  active_watchers
 					locatorId
-						requesterId - (active,lastSeen,requesterCode)
+						requesterId - (active,lastSeen,requesterName,requesterCode)
 				locators
 					locatorId - (accuracy,battery,gpsEnabled,lastSeen,lat,lng,status)
 					

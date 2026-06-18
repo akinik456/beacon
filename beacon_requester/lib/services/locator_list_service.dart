@@ -40,8 +40,8 @@ class LocatorListService {
       final List<Map<String, dynamic>> result = [];
 
       for (final locatorId in pairedLocators.keys) {
-final pairData =
-    pairedLocators[locatorId] is Map
+			final pairData =
+			pairedLocators[locatorId] is Map
         ? Map<String, dynamic>.from(
             pairedLocators[locatorId],
           )
@@ -54,6 +54,19 @@ final pairData =
             .get();
 
         if (!locatorDoc.exists) continue;
+				
+				final rootLocatorDoc = await _firestore
+						.collection('locators')
+						.doc(locatorId)
+						.get();
+
+				final rootLocatorData = rootLocatorDoc.data() ?? {};
+
+				final locatorName =
+						rootLocatorData['locatorName'] ??
+						locatorDoc.data()?['locatorName'] ??
+						pairData['locatorName'] ??
+						'-';
 
         final presenceSnapshot = await _rtdb
 						.ref('presence/groups/$groupId/locators/$locatorId')
@@ -65,10 +78,12 @@ final pairData =
 
 				result.add({
 					'locatorId': locatorId,
+					'locatorName': locatorName,
 					'address': 'Resolving address...',
 					...locatorDoc.data()!,
 					...pairData,
 					...presenceData,
+					'locatorName': locatorName,
 				});
       }
 

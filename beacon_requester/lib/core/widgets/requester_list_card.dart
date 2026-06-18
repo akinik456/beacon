@@ -5,6 +5,7 @@ import '../theme/app_colors.dart';
 import '../theme/app_fonts.dart';
 import 'app_card.dart';
 import '../../l10n/app_localizations.dart';
+import '../../services/identity_service.dart';
 
 
 class RequesterListCard extends StatelessWidget {
@@ -18,6 +19,19 @@ class RequesterListCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 	final l10n = AppLocalizations.of(context)!;
+	
+	
+    return FutureBuilder<Map<String, String?>>(
+  future: () async {
+    return {
+      'id': await IdentityService.getRequesterId(),
+      'name': await IdentityService.getRequesterName(),
+    };
+  }(),
+  builder: (context, mySnapshot) {
+    final myRequesterId = mySnapshot.data?['id'];
+    final myRequesterName = mySnapshot.data?['name'];
+
     return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
       stream: FirebaseFirestore.instance
           .collection('groups')
@@ -68,8 +82,11 @@ class RequesterListCard extends StatelessWidget {
 
                 ...docs.map((doc) {
                   final data = doc.data();
+									 final requesterId = doc.id;
 
-                  final name = data['requesterName'] ?? 'Your Name';
+                  final name = requesterId == myRequesterId
+    ? (myRequesterName ?? data['requesterName'] ?? 'Your Name')
+    : (data['requesterName'] ?? 'Requester');
                   final code = data['requesterCode'] ?? '';
                   final isMasterMember = data['isMaster'] == true;
 
@@ -158,5 +175,8 @@ class RequesterListCard extends StatelessWidget {
         );
       },
     );
+		},
+);
+		
   }
 }
