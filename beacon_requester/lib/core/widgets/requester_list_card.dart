@@ -81,94 +81,107 @@ class RequesterListCard extends StatelessWidget {
                 const SizedBox(height: 2),
 
                 ...docs.map((doc) {
-                  final data = doc.data();
-									 final requesterId = doc.id;
+  final data = doc.data();
+  final requesterId = doc.id;
 
-                  final name = requesterId == myRequesterId
-    ? (myRequesterName ?? data['requesterName'] ?? 'Your Name')
-    : (data['requesterName'] ?? 'Requester');
-                  final code = data['requesterCode'] ?? '';
-                  final isMasterMember = data['isMaster'] == true;
+  final isMasterMember = data['isMaster'] == true;
 
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 0),
-                    child: SizedBox(
-                      height: 30,
-                      child: Row(
-                        children: [
-                          Icon(
-                            isMasterMember
-                                ? Icons.workspace_premium_rounded
-                                : Icons.person_rounded,
-                            color: AppColors.primary,
-                            size: 18,
-                          ),
+  return FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+    future: FirebaseFirestore.instance
+        .collection('requesters')
+        .doc(requesterId)
+        .get(),
+    builder: (context, rootSnapshot) {
+      final rootData = rootSnapshot.data?.data() ?? {};
 
-                          const SizedBox(width: 6),
+      final name = rootData['name'] ??
+          rootData['requesterName'] ??
+          data['requesterName'] ??
+          'Requester';
 
-                          Expanded(
-                            child: Text(
-                              '$name - $code',
-                              style: AppFonts.body.copyWith(
-                                height: 1.0,
-                              ),
-                            ),
-                          ),
+      final code = rootData['requesterCode'] ??
+          data['requesterCode'] ??
+          '';
 
-                          if (isMasterMember)
-                            Text(
-                              l10n.master,
-                              style: AppFonts.caption.copyWith(
-                                color: AppColors.primary,
-                                height: 1.0,
-                              ),
-                            )
-                          else
-                            IconButton(
-                              constraints: const BoxConstraints(
-                                minWidth: 30,
-                                minHeight: 30,
-                              ),
-                              padding: EdgeInsets.zero,
-                              visualDensity: VisualDensity.compact,
-                              onPressed: () async {
-                                final requesterId = doc.id;
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 0),
+        child: SizedBox(
+          height: 30,
+          child: Row(
+            children: [
+              Icon(
+                isMasterMember
+                    ? Icons.workspace_premium_rounded
+                    : Icons.person_rounded,
+                color: AppColors.primary,
+                size: 18,
+              ),
 
-                                final groupRef = FirebaseFirestore.instance
-                                    .collection('groups')
-                                    .doc(groupId);
+              const SizedBox(width: 6),
 
-                                final requesterRef = groupRef
-                                    .collection('devices')
-                                    .doc(requesterId);
+              Expanded(
+                child: Text(
+                  '$name - $code',
+                  style: AppFonts.body.copyWith(
+                    height: 1.0,
+                  ),
+                ),
+              ),
 
-                                await FirebaseFirestore.instance
-                                    .runTransaction((tx) async {
-                                  tx.delete(requesterRef);
+              if (isMasterMember)
+                Text(
+                  l10n.master,
+                  style: AppFonts.caption.copyWith(
+                    color: AppColors.primary,
+                    height: 1.0,
+                  ),
+                )
+              else
+                IconButton(
+                  constraints: const BoxConstraints(
+                    minWidth: 30,
+                    minHeight: 30,
+                  ),
+                  padding: EdgeInsets.zero,
+                  visualDensity: VisualDensity.compact,
+                  onPressed: () async {
+                    final groupRef = FirebaseFirestore.instance
+                        .collection('groups')
+                        .doc(groupId);
 
-                                  tx.update(groupRef, {
-                                    'activeRequesterCount':
-                                        FieldValue.increment(-1),
-                                    'updatedAt':
-                                        FieldValue.serverTimestamp(),
-                                  });
-                                });
+                    final requesterRef = groupRef
+                        .collection('devices')
+                        .doc(requesterId);
 
-                                print(
-                                  "BEACON REQUESTER REMOVED => $requesterId",
-                                );
-                              },
-                              icon: const Icon(
-                                Icons.person_remove_rounded,
-                                color: AppColors.danger,
-                                size: 18,
-                              ),
-                            ),
-                        ],
-                      ),
-                    ),
-                  );
-                }),
+                    await FirebaseFirestore.instance
+                        .runTransaction((tx) async {
+                      tx.delete(requesterRef);
+
+                      tx.update(groupRef, {
+                        'activeRequesterCount':
+                            FieldValue.increment(-1),
+                        'updatedAt':
+                            FieldValue.serverTimestamp(),
+                      });
+                    });
+
+                    print(
+                      "BEACON REQUESTER REMOVED => $requesterId",
+                    );
+                  },
+                  icon: const Icon(
+                    Icons.person_remove_rounded,
+                    color: AppColors.danger,
+                    size: 18,
+                  ),
+                ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
+}),
               ],
             ),
           ),

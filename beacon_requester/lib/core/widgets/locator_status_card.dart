@@ -59,11 +59,24 @@ class LocatorStatusCard extends StatelessWidget {
 					Row(
 						children: [
 							
-								Text(
-									'$locatorName - $locatorCode',
+								RichText(
 									overflow: TextOverflow.ellipsis,
-									style: AppFonts.subtitle.copyWith(
-										color: AppColors.primary,
+									text: TextSpan(
+										children: [
+											TextSpan(
+												text: locatorName,
+												style: AppFonts.subtitle.copyWith(
+													color: AppColors.primary,
+												),
+											),
+
+											TextSpan(
+												text: ' - $locatorCode',
+												style: AppFonts.subtitle.copyWith(
+													color: AppColors.textSecondary,
+												),
+											),
+										],
 									),
 								),
 							

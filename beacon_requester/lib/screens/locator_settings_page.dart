@@ -269,36 +269,37 @@ class _LocatorSettingsPageState extends State<LocatorSettingsPage> {
                       final selected = batteryLowLevel == level;
                       final enabled = widget.isMaster && batteryLowAlert;
 
-                      return Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.only(right: 8),
-                          child: ChoiceChip(
-                            selected: selected,
-                            label: Text('$level%'),
-                            onSelected: enabled
-                                ? (_) {
-                                    setState(() {
-                                      batteryLowLevel = level;
-                                    });
-                                  }
-                                : null,
-                            selectedColor: AppColors.primary.withValues(
-                              alpha: 0.20,
-                            ),
-                            backgroundColor: AppColors.surface,
-                            labelStyle: AppFonts.button.copyWith(
-                              color: selected
-                                  ? AppColors.primary
-                                  : AppColors.textSecondary,
-                            ),
-                            side: BorderSide(
-                              color: selected
-                                  ? AppColors.primary.withValues(alpha: 0.45)
-                                  : Colors.white.withValues(alpha: 0.05),
-                            ),
-                          ),
-                        ),
-                      );
+											return Expanded(
+												child: Padding(
+													padding: const EdgeInsets.only(right: 8),
+													child: IgnorePointer(
+														ignoring: !enabled,
+														child: ChoiceChip(
+															selected: selected,
+															label: Text('$level%'),
+															onSelected: (_) {
+																setState(() {
+																	batteryLowLevel = level;
+																});
+															},
+															selectedColor: AppColors.primary.withValues(
+																alpha: 0.20,
+															),
+															backgroundColor: AppColors.surface,
+															labelStyle: AppFonts.button.copyWith(
+																color: selected
+																		? AppColors.primary
+																		: AppColors.textSecondary,
+															),
+															side: BorderSide(
+																color: selected
+																		? AppColors.primary.withValues(alpha: 0.45)
+																		: Colors.white.withValues(alpha: 0.05),
+															),
+														),
+													),
+												),
+											);
                     }).toList(),
                   ),
                 ],
@@ -439,11 +440,14 @@ class _SwitchCard extends StatelessWidget {
               ],
             ),
           ),
-          Switch(
-            value: value,
-            onChanged: enabled ? onChanged : null,
-            activeThumbColor: AppColors.primary,
-          ),
+          IgnorePointer(
+						ignoring: !enabled,
+						child: Switch(
+							value: value,
+							onChanged: onChanged,
+							activeThumbColor: AppColors.primary,
+						),
+					),
         ],
       ),
     );
