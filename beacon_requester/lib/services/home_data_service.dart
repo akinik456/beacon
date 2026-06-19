@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'identity_service.dart';
-import 'group_service.dart';
 
 class HomeDataService {
   HomeDataService._();
@@ -11,55 +10,72 @@ class HomeDataService {
 
   static const _groupIdKey = 'group_id';
 
-  static Future<Map<String, dynamic>?> loadHomeData() async {
+  static Future<Map<String, dynamic>> loadHomeData() async {
+    String? requesterId;
+    String? requesterName;
+
     try {
-      // requesterId
-      final requesterId =
-          await IdentityService.getRequesterId();
-					
-			final requesterName =
-          await IdentityService.getRequesterName();		
+      requesterId = await IdentityService.getRequesterId();
+      requesterName = await IdentityService.getRequesterName();
 
-      // local groupId
+      if (requesterId == null ||
+          requesterId.isEmpty ||
+          requesterName == null ||
+          requesterName.isEmpty) {
+        print("BEACON HOME => requester identity missing");
+
+        return {
+          'hasIdentity': false,
+          'hasGroup': false,
+          'isPending': false,
+          'requesterId': requesterId,
+          'requesterName': requesterName,
+          'groupId': null,
+          'groupName': null,
+          'pairedLocators': <String, dynamic>{},
+        };
+      }
+
       final prefs = await SharedPreferences.getInstance();
-
       final groupId = prefs.getString(_groupIdKey);
 
       if (groupId == null || groupId.isEmpty) {
-				print("BEACON HOME => groupId not found");
+        print("BEACON HOME => groupId not found");
 
-				return {
-					'hasGroup': false,
-					'requesterId': requesterId,
-					'groupId': null,
-					'groupName': null,
-					'requesterName': requesterName,
-					'pairedLocators': <String, dynamic>{},
-				};
-			}
+        return {
+          'hasIdentity': true,
+          'hasGroup': false,
+          'isPending': false,
+          'requesterId': requesterId,
+          'requesterName': requesterName,
+          'groupId': null,
+          'groupName': null,
+          'pairedLocators': <String, dynamic>{},
+        };
+      }
 
-      // group doc
       final groupDoc = await _firestore
           .collection('groups')
           .doc(groupId)
           .get();
 
       if (!groupDoc.exists) {
-				print("BEACON HOME => group not found");
+        print("BEACON HOME => group not found");
 
-				return {
-					'hasGroup': false,
-					'requesterId': requesterId,
-					'groupId': null,
-					'groupName': null,
-					'requesterName': requesterName,
-					'pairedLocators': <String, dynamic>{},
-				};
-			}
+        return {
+          'hasIdentity': true,
+          'hasGroup': false,
+          'isPending': false,
+          'requesterId': requesterId,
+          'requesterName': requesterName,
+          'groupId': null,
+          'groupName': null,
+          'pairedLocators': <String, dynamic>{},
+        };
+      }
 
       final groupData = groupDoc.data()!;
 
-      // requester device doc
       final requesterDoc = await _firestore
           .collection('groups')
           .doc(groupId)
@@ -68,65 +84,74 @@ class HomeDataService {
           .get();
 
       if (!requesterDoc.exists) {
-  final joinRequestDoc = await _firestore
-      .collection('groups')
-      .doc(groupId)
-      .collection('join_requests')
-      .doc(requesterId)
-      .get();
+        final joinRequestDoc = await _firestore
+            .collection('groups')
+            .doc(groupId)
+            .collection('join_requests')
+            .doc(requesterId)
+            .get();
 
-  if (joinRequestDoc.exists) {
-    return {
-      'hasGroup': true,
-      'isPending': true,
-      'groupId': groupId,
-      'groupName': groupData['groupName'],
-      'requesterId': requesterId,
-      'requesterName': requesterName,
-      'pairedLocators': <String, dynamic>{},
-    };
-  }
+        if (joinRequestDoc.exists) {
+          print("BEACON HOME => requester join pending");
 
- print("BEACON HOME => requester doc not ready yet");
+          return {
+            'hasIdentity': true,
+            'hasGroup': true,
+            'isPending': true,
+            'groupId': groupId,
+            'groupName': groupData['groupName'],
+            'requesterId': requesterId,
+            'requesterName': requesterName,
+            'pairedLocators': <String, dynamic>{},
+          };
+        }
 
-return {
-  'hasGroup': true,
-  'isPending': true,
-  'groupId': groupId,
-  'groupName': groupData['groupName'],
-  'requesterId': requesterId,
-  'requesterName': requesterName,
-  'pairedLocators': <String, dynamic>{},
-};
-}
+        print("BEACON HOME => requester removed from group");
+
+        return {
+          'hasIdentity': true,
+          'hasGroup': false,
+          'isPending': false,
+          'requesterId': requesterId,
+          'requesterName': requesterName,
+          'groupId': null,
+          'groupName': null,
+          'pairedLocators': <String, dynamic>{},
+        };
+      }
 
       final requesterData = requesterDoc.data()!;
 
-      // paired locators
-      final pairedLocators =
-          Map<String, dynamic>.from(
+      final pairedLocators = Map<String, dynamic>.from(
         requesterData['pairedLocators'] ?? {},
       );
 
       return {
-				'hasGroup': true,
+        'hasIdentity': true,
+        'hasGroup': true,
+        'isPending': false,
         'groupId': groupId,
         'groupName': groupData['groupName'],
         'requesterId': requesterId,
         'requesterName': requesterName,
         'pairedLocators': pairedLocators,
       };
-    }  catch (e) {
-			print("BEACON HOME LOAD ERROR => $e");
+    } catch (e) {
+      print("BEACON HOME LOAD ERROR => $e");
 
-			return {
-				'hasGroup': false,
-				'requesterId': await IdentityService.getRequesterId(),
-				'groupId': null,
-				'groupName': null,
-				'requesterName': await IdentityService.getRequesterName(),
-				'pairedLocators': <String, dynamic>{},
-			};
-		}
+      return {
+        'hasIdentity': requesterId != null &&
+            requesterId.isNotEmpty &&
+            requesterName != null &&
+            requesterName.isNotEmpty,
+        'hasGroup': false,
+        'isPending': false,
+        'requesterId': requesterId,
+        'requesterName': requesterName,
+        'groupId': null,
+        'groupName': null,
+        'pairedLocators': <String, dynamic>{},
+      };
+    }
   }
 }

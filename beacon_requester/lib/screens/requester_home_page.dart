@@ -824,124 +824,179 @@ Future<void> _editRequesterName() async {
               );
             }						
 						if (data['isPending'] == true) {
-							final groupId = data['groupId'];
-							final requesterId = data['requesterId'];
-							return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-								stream: FirebaseFirestore.instance
-										.collection('groups')
-										.doc(groupId)
-										.collection('join_requests')
-										.doc(requesterId)
-										.snapshots(),
-								builder: (context, joinSnapshot) {
-									final joinData = joinSnapshot.data?.data();
-									final status = joinData?['status'];
-									if (status == 'rejected') {
-										return Center(
-											child: Padding(
-												padding: const EdgeInsets.all(24),
-												child: AppCard(
-													child: Column(
-														mainAxisSize: MainAxisSize.min,
-														children: [
-															const Icon(
-																Icons.block_rounded,
-																color: AppColors.danger,
-																size: 48,
-															),
-															const SizedBox(height: 16),
-															Text(
-																l10n.rejected,
-																style: AppFonts.title.copyWith(
-																	color: AppColors.danger,
-																),
-															),
-															const SizedBox(height: 20),
-															SizedBox(
-																width: double.infinity,
-																child: ElevatedButton(
-																	onPressed: () async {
-																		await FirebaseFirestore.instance
-																				.collection('groups')
-																				.doc(groupId)
-																				.collection('join_requests')
-																				.doc(requesterId)
-																				.delete();
-																		await GroupService.clearLocalGroup();
-																		if (!context.mounted) return;
-																		Navigator.pushReplacement(
-																			context,
-																			MaterialPageRoute(
-																				builder: (_) =>
-																						const RequesterHomePage(),
-																			),
-																		);
-																	},
-																	child: Text(l10n.ok),
-																),
-															),
-														],
-													),
-												),
-											),
-										);
-									}
-									return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-										stream: FirebaseFirestore.instance
-												.collection('groups')
-												.doc(groupId)
-												.collection('devices')
-												.doc(requesterId)
-												.snapshots(),
-											builder: (context, deviceSnapshot) {
-											if (deviceSnapshot.hasData &&
-													deviceSnapshot.data!.exists) {
-												Future.microtask(() {
-													if (!context.mounted) return;
+  final groupId = data['groupId'];
+  final requesterId = data['requesterId'];
 
-													Navigator.pushReplacement(
-														context,
-														MaterialPageRoute(
-															builder: (_) => const RequesterHomePage(),
-														),
-													);
-												});
-											}
-											return Center(
-												child: Padding(
-													padding: const EdgeInsets.all(24),
-													child: AppCard(
-														child: Column(
-															mainAxisSize: MainAxisSize.min,
-															children: [
-																const Icon(
-																	Icons.hourglass_top_rounded,
-																	color: AppColors.primary,
-																	size: 48,
-																),
-																const SizedBox(height: 16),
-																Text(
-																	l10n.waitingForApproval,
-																	style: AppFonts.title,
-																),
-																const SizedBox(height: 8),
-																Text(
-																	l10n.yourrequest,
-																	textAlign: TextAlign.center,
-																	style: AppFonts.body.copyWith(
-																		color: AppColors.textSecondary,
-																	),
-																),
-															],
-														),
-													),
-												),
-											);
-										},
-									);
-								},
-							);
-						}
+  return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+    stream: FirebaseFirestore.instance
+        .collection('groups')
+        .doc(groupId)
+        .collection('join_requests')
+        .doc(requesterId)
+        .snapshots(),
+    builder: (context, joinSnapshot) {
+      if (joinSnapshot.hasData &&
+    !joinSnapshot.data!.exists) {
+  Future.microtask(() async {
+    final deviceDoc = await FirebaseFirestore.instance
+        .collection('groups')
+        .doc(groupId)
+        .collection('devices')
+        .doc(requesterId)
+        .get();
+
+    if (deviceDoc.exists) {
+      if (!context.mounted) return;
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (_) => const RequesterHomePage(),
+        ),
+      );
+
+      return;
+    }
+
+    await GroupService.clearLocalGroup();
+
+    if (!context.mounted) return;
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (_) => const RequesterHomePage(),
+      ),
+    );
+  });
+
+  return const SizedBox.shrink();
+}
+
+      final joinData = joinSnapshot.data?.data();
+      final status = joinData?['status'];
+
+      if (status == 'rejected') {
+        return Center(
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: AppCard(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(
+                    Icons.block_rounded,
+                    color: AppColors.danger,
+                    size: 48,
+                  ),
+
+                  const SizedBox(height: 16),
+
+                  Text(
+                    l10n.rejected,
+                    style: AppFonts.title.copyWith(
+                      color: AppColors.danger,
+                    ),
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        await FirebaseFirestore.instance
+                            .collection('groups')
+                            .doc(groupId)
+                            .collection('join_requests')
+                            .doc(requesterId)
+                            .delete();
+
+                        await GroupService.clearLocalGroup();
+
+                        if (!context.mounted) return;
+
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) =>
+                                const RequesterHomePage(),
+                          ),
+                        );
+                      },
+                      child: Text(l10n.ok),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      }
+
+      return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+        stream: FirebaseFirestore.instance
+            .collection('groups')
+            .doc(groupId)
+            .collection('devices')
+            .doc(requesterId)
+            .snapshots(),
+        builder: (context, deviceSnapshot) {
+          if (deviceSnapshot.hasData &&
+              deviceSnapshot.data!.exists) {
+            Future.microtask(() {
+              if (!context.mounted) return;
+
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const RequesterHomePage(),
+                ),
+              );
+            });
+
+            return const SizedBox.shrink();
+          }
+
+          return Center(
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: AppCard(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(
+                      Icons.hourglass_top_rounded,
+                      color: AppColors.primary,
+                      size: 48,
+                    ),
+
+                    const SizedBox(height: 16),
+
+                    Text(
+                      l10n.waitingForApproval,
+                      style: AppFonts.title,
+                    ),
+
+                    const SizedBox(height: 8),
+
+                    Text(
+                      l10n.yourrequest,
+                      textAlign: TextAlign.center,
+                      style: AppFonts.body.copyWith(
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
+      );
+    },
+  );
+}
             final hasGroup =
                 data['hasGroup'] == true;
 
@@ -954,15 +1009,42 @@ Future<void> _editRequesterName() async {
               );
             }
             final groupId = data['groupId'] ?? '';
-            final groupName = data['groupName'] ?? '-';
-            final pairedLocators =
-                Map<String, dynamic>.from(data['pairedLocators'] ?? {});
+final requesterId = data['requesterId'] ?? '';
+final groupName = data['groupName'] ?? '-';
+final pairedLocators =
+    Map<String, dynamic>.from(data['pairedLocators'] ?? {});
 
-            return Padding(
-              padding: const EdgeInsets.all(10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [								
+return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+  stream: FirebaseFirestore.instance
+      .collection('groups')
+      .doc(groupId)
+      .collection('devices')
+      .doc(requesterId)
+      .snapshots(),
+  builder: (context, requesterSnapshot) {
+    if (requesterSnapshot.hasData &&
+        !requesterSnapshot.data!.exists) {
+      Future.microtask(() async {
+        await GroupService.clearLocalGroup();
+
+        if (!context.mounted) return;
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (_) => const RequesterHomePage(),
+          ),
+        );
+      });
+
+      return const SizedBox.shrink();
+    }
+
+    return Padding(
+      padding: const EdgeInsets.all(10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [						
 									Column(
 										children: [
 											Text(
@@ -1366,7 +1448,8 @@ Future<void> _editRequesterName() async {
                 ],
               ),
             );
-						
+						},
+);
           },
         ),
       ),

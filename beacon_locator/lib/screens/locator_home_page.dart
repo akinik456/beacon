@@ -1,5 +1,6 @@
 // https://www.youtube.com/shorts/uz_d2RcNNc0
-
+//FGS(location) başlatan her yeni kod yolu
+//önce locationAlways kontrol edecek.
 
 import 'dart:async';
 import 'package:flutter/material.dart';

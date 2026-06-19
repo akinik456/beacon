@@ -19,162 +19,175 @@ class JoinRequestCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 		final l10n = AppLocalizations.of(context)!;
-    return StreamBuilder(
-      stream: JoinRequestService.watchPendingJoinRequests(
-        groupId: groupId,
-      ),
-      builder: (context, snapshot) {
+			return StreamBuilder(
+				stream: JoinRequestService.watchPendingJoinRequests(
+					groupId: groupId,
+				),
+				builder: (context, snapshot) {
 
-      if (!snapshot.hasData ||
-          snapshot.data!.docs.isEmpty) {
-        return const SizedBox.shrink();
-      }
+				if (!snapshot.hasData ||
+						snapshot.data!.docs.isEmpty) {
+					return const SizedBox.shrink();
+				}
 
-      final doc = snapshot.data!.docs.first;
-      final data = doc.data();
+				final doc = snapshot.data!.docs.first;
+				final data = doc.data();
 
-      return Padding(
-        padding: const EdgeInsets.only(bottom: 16),
-        child: AppCard(
-          child: Column(
-            crossAxisAlignment:
-                CrossAxisAlignment.start,
-            children: [
-              Text(
-                l10n.joinRequest,
-                style: AppFonts.subtitle,
-              ),
+				return Padding(
+					padding: const EdgeInsets.only(bottom: 16),
+					child: AppCard(
+						child: Column(
+							crossAxisAlignment:
+									CrossAxisAlignment.start,
+							children: [
+								Text(
+									l10n.joinRequest,
+									style: AppFonts.subtitle,
+								),
 
-              const SizedBox(height: 8),
+								const SizedBox(height: 8),
 
-              Text(
-                data['requesterName'] ?? '-',
-                style: AppFonts.body,
-              ),
+								Text(
+									data['requesterName'] ?? '-',
+									style: AppFonts.body,
+								),
 
-              Text(
-                data['requesterCode'] ?? '-',
-                style: AppFonts.caption,
-              ),
+								Text(
+									data['requesterCode'] ?? '-',
+									style: AppFonts.caption,
+								),
 
-              const SizedBox(height: 12),
+								const SizedBox(height: 12),
 
-              Row(
-                children: [
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () async {
-												final joinData = doc.data();
+								Row(
+									children: [
+										Expanded(
+											child: ElevatedButton(
+												onPressed: () async {
+													final joinData = doc.data();
 
-												final requesterId = joinData['requesterId'];
+													final requesterId = joinData['requesterId'];
 
-												if (requesterId == null || groupId == null) {
-													return;
-												}
+													if (requesterId == null || groupId == null) {
+														return;
+													}
 
-												final firestore = FirebaseFirestore.instance;
+													final firestore = FirebaseFirestore.instance;
 
-												final groupRef = firestore
-														.collection('groups')
-														.doc(groupId);
+													final groupRef = firestore
+															.collection('groups')
+															.doc(groupId);
 
-												final requesterRef = groupRef
-														.collection('devices')
-														.doc(requesterId);
+													final requesterRef = groupRef
+															.collection('devices')
+															.doc(requesterId);
+															
+													final requesterRefroot = firestore
+															.collection('requesters')
+															.doc(requesterId);		
 
-												final joinRequestRef = doc.reference;
+													final joinRequestRef = doc.reference;
 
-												try {
-													await firestore.runTransaction((tx) async {
-														final freshGroup = await tx.get(groupRef);
+													try {
+														await firestore.runTransaction((tx) async {
+															final freshGroup = await tx.get(groupRef);
 
-														final groupData = freshGroup.data() ?? {};
+															final groupData = freshGroup.data() ?? {};
 
-														final maxRequesters =
-																groupData['maxRequesters'] ?? 1;
+															final maxRequesters =
+																	groupData['maxRequesters'] ?? 1;
 
-														final activeRequesterCount =
-																groupData['activeRequesterCount'] ?? 0;
+															final activeRequesterCount =
+																	groupData['activeRequesterCount'] ?? 0;
 
-														if (activeRequesterCount >= maxRequesters) {
-															throw Exception('requester_capacity_reached');
-														}
+															if (activeRequesterCount >= maxRequesters) {
+																throw Exception('requester_capacity_reached');
+															}
 
-														tx.set(requesterRef, {
-															'requesterId': joinData['requesterId'],
-															'requesterCode': joinData['requesterCode'],
-															'role': 'requester',
-															'requesterName': joinData['requesterName'],
-															'isMaster': false,
-															'active': true,
-															'pairedLocators': {},
-															'joinedAt': FieldValue.serverTimestamp(),
-															'createdAt': FieldValue.serverTimestamp(),
+															tx.set(requesterRef, {
+																'requesterId': joinData['requesterId'],
+																'requesterCode': joinData['requesterCode'],
+																'role': 'requester',
+																'isMaster': false,
+																'active': true,
+																'pairedLocators': {},
+																'joinedAt': FieldValue.serverTimestamp(),
+																'createdAt': FieldValue.serverTimestamp(),
+															});
+															print(" set requesterRef");
+
+															tx.update(groupRef, {
+																'activeRequesterCount':
+																		FieldValue.increment(1),
+																'updatedAt':
+																		FieldValue.serverTimestamp(),
+															});
+															
+															tx.set(requesterRefroot, {
+																'groupId': groupId,
+																'updatedAt': FieldValue.serverTimestamp(),
+															}, SetOptions(merge: true));
+
+															print(" set requesterRefroot");
+															
+															tx.delete(joinRequestRef);
 														});
 
-														tx.update(groupRef, {
-															'activeRequesterCount':
-																	FieldValue.increment(1),
-															'updatedAt':
-																	FieldValue.serverTimestamp(),
+														print(
+															"BEACON JOIN APPROVED => $requesterId",
+														);
+													} catch (e) {
+														await doc.reference.delete();
+
+														if (!context.mounted) return;
+
+														ScaffoldMessenger.of(context).showSnackBar(
+															SnackBar(
+																content: Text(
+																	l10n.maxFamilyMembersReached,
+																),
+															),
+														);
+													}
+												},
+												child: Text(
+												l10n.approve,
+												),
+											),
+										),
+
+										const SizedBox(width: 12),
+
+										Expanded(
+											child: OutlinedButton(
+												onPressed: () async {
+														await doc.reference.update({
+															'status': 'rejected',
+															'rejectedAt': FieldValue.serverTimestamp(),
 														});
 
-														tx.delete(joinRequestRef);
-													});
+														await Future.delayed(
+															const Duration(seconds: 2),
+														);
 
-													print(
-														"BEACON JOIN APPROVED => $requesterId",
-													);
-												} catch (e) {
-  await doc.reference.update({
-    'status': 'rejected',
-    'rejectedAt': FieldValue.serverTimestamp(),
-  });
+														await doc.reference.delete();
 
-  if (!context.mounted) return;
-
-  ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(
-      content: Text(
-				l10n.maxFamilyMembersReached,
-      ),
-    ),
-  );
-}
-											},
-                      child: Text(
-											l10n.approve,
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(width: 12),
-
-                  Expanded(
-                    child: OutlinedButton(
-                      onPressed: () async {
-												await doc.reference.update({
-													'status': 'rejected',
-													'rejectedAt': FieldValue.serverTimestamp(),
-												});
-
-												print(
-													"BEACON JOIN REJECTED => ${doc.id}",
-												);
-											},
-                      child: Text(
-                        l10n.reject,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      );
-    },
-  );
-	
+														print(
+															"BEACON JOIN REJECTED => ${doc.id}",
+														);
+													},
+												child: Text(
+													l10n.reject,
+												),
+											),
+										),
+									],
+								),
+							],
+						),
+					),
+				);
+			},
+		);	
 	 }
   }
