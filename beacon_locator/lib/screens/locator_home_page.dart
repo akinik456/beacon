@@ -7,6 +7,7 @@ import 'package:qr_flutter/qr_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:in_app_update/in_app_update.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../core/theme/app_colors.dart';
 import '../core/theme/app_fonts.dart';
@@ -53,7 +54,7 @@ class _LocatorHomePageState extends State<LocatorHomePage>
 void initState() {
   super.initState();
 	FCMService.initialize();
-  NativePresenceService.start();
+  _startNativePresenceIfAllowed();
 
   LocatorSettingsService.startListeners();
 	
@@ -79,6 +80,20 @@ void initState() {
 		WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
+	
+Future<void> _startNativePresenceIfAllowed() async {
+  final locationAlways =
+      await Permission.locationAlways.status;
+
+  if (!locationAlways.isGranted) {
+    print(
+      "BEACON NATIVE SERVICE => locationAlways missing, skip start",
+    );
+    return;
+  }
+
+  await NativePresenceService.start();
+}	
 
   Future<void> _checkPermissionsAndWarn() async {
     final result = await LocatorPermissionService.hasAllRequiredPermissions();
