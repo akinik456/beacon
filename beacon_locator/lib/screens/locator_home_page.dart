@@ -503,9 +503,8 @@ Widget _pairedRequesterCard() {
                       child: Text(
                         '$requesterName - $requesterCode',
                         style: AppFonts.subtitle,
-                      ),
+                      ),									
                     ),
-
                     OutlinedButton.icon(
                       onPressed: requesterId.isEmpty
                           ? null

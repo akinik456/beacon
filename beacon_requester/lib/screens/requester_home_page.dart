@@ -1196,7 +1196,7 @@ return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
 											groupId: _groupId!,
 										),
 										
-										if (_isMaster && _groupId != null)
+										if (_groupId != null)//if (_isMaster && _groupId != null)
 										RequesterListCard(
 											groupId: _groupId!,
 										),

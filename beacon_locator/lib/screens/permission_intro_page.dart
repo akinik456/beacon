@@ -6,7 +6,9 @@ import '../core/theme/app_colors.dart';
 import '../core/theme/app_fonts.dart';
 import '../l10n/app_localizations.dart';
 
-import 'locator_name_page.dart';
+import '../services/identity_service.dart';
+import '../services/locator_registry_service.dart';
+import 'locator_home_page.dart';
 import 'language_select_page.dart';
 
 
@@ -116,11 +118,19 @@ class _PermissionIntroPageState
                 width: double.infinity,
                 height: 58,
                 child: ElevatedButton(
-                  onPressed: () {
-										Navigator.push(
+                  onPressed: () async {
+										await IdentityService.setLocatorName(l10n.member);
+
+										await IdentityService.createLocatorId();
+
+										await LocatorRegistryService.registerLocator();
+
+										if (!context.mounted) return;
+
+										Navigator.pushReplacement(
 											context,
 											MaterialPageRoute(
-												builder: (_) => const LocatorNamePage(),
+												builder: (_) => const LocatorHomePage(),
 											),
 										);
 									},
