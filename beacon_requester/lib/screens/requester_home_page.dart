@@ -616,122 +616,213 @@ Future<void> _editRequesterName() async {
 
 
 	Widget _buildNoGroupHome({
-		required String requesterName,
-	}) {
-	final l10n = AppLocalizations.of(context)!;
-		return Padding(
-			padding: const EdgeInsets.all(20),
-			child: Column(
-				crossAxisAlignment: CrossAxisAlignment.start,
-				children: [
-					Text(
-						l10n.wellcome,
-						style: AppFonts.title.copyWith(
-							fontSize: 26,
-							color: AppColors.primary,
-						),
-					),
+  required String requesterName,
+}) {
+  final l10n = AppLocalizations.of(context)!;
 
-					const SizedBox(height: 6),
+  return Padding(
+    padding: const EdgeInsets.all(10),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Column(
+          children: [
+            Text(
+              l10n.title,
+              textAlign: TextAlign.center,
+              style: AppFonts.title.copyWith(
+                fontSize: 24,
+                color: AppColors.primary,
+              ),
+            ),
 
-					Text(
-						l10n.adminName,
-						style: AppFonts.caption,
-					),
+            Text(
+              "Version $_appVersion",
+              style: TextStyle(
+                color: Colors.white.withOpacity(0.4),
+                fontSize: 11,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
 
-					const SizedBox(height: 24),
+            const SizedBox(height: 6),
 
-					AppCard(
-						child: Column(
-							crossAxisAlignment: CrossAxisAlignment.start,
-							children: [
-								Text(
-									l10n.noGroupYet,
-									style: AppFonts.subtitle,
-								),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      l10n.noGroupYet,
+                      overflow: TextOverflow.ellipsis,
+                      style: AppFonts.title.copyWith(
+                        fontSize: 20,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                  ),
 
-								const SizedBox(height: 8),
+                  Expanded(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Flexible(
+                          child: Text(
+                            requesterName,
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.right,
+                            style: AppFonts.title.copyWith(
+                              fontSize: 20,
+                              color: AppColors.textSecondary,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 4),
+                        GestureDetector(
+                          onTap: _editRequesterName,
+                          child: const Icon(
+                            Icons.edit_rounded,
+                            size: 18,
+                            color: AppColors.textSecondary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
 
-								Text(
-									l10n.createOrJoin,
-									style: AppFonts.body.copyWith(
-										color: AppColors.textSecondary,
-									),
-								),
+        Row(
+          children: [
+            const SizedBox(width: 8),
+            Text(
+              l10n.adminName,
+              style: AppFonts.caption,
+            ),
+            const Spacer(),
+            TextButton.icon(
+              onPressed: () async {
+                await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const LanguageSelectPage(),
+                  ),
+                );
 
-								const SizedBox(height: 20),
+                if (!mounted) return;
+                setState(() {});
+              },
+              icon: const Icon(
+                Icons.language_rounded,
+                size: 18,
+                color: AppColors.accent,
+              ),
+              label: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    Localizations.localeOf(context).languageCode == 'tr'
+                        ? 'TR'
+                        : 'EN',
+                    style: AppFonts.caption.copyWith(
+                      color: AppColors.accent,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const Icon(
+                    Icons.arrow_drop_down,
+                    size: 18,
+                    color: AppColors.accent,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
 
-								SizedBox(
-									width: double.infinity,
-									height: 52,
-									child: ElevatedButton(
-										onPressed: () async {
-											final changed =
-													await Navigator.push<bool>(
-												context,
-												MaterialPageRoute(
-													builder: (_) =>
-															CreateGroupPage(),
-												),
-											);
+        const SizedBox(height: 8),
 
-											if (changed == true &&
-													context.mounted) {
-												Navigator.pushReplacement(
-													context,
-													MaterialPageRoute(
-														builder: (_) =>
-																const RequesterHomePage(),
-													),
-												);
-											}
-										},
-										child: Text(
-											l10n.createNewGroup,
-										),
-									),
-								),
+        AppCard(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                l10n.noGroupYet,
+                style: AppFonts.subtitle,
+              ),
 
-								const SizedBox(height: 12),
+              const SizedBox(height: 8),
 
-								SizedBox(
-									width: double.infinity,
-									height: 52,
-									child: ElevatedButton(
-										onPressed: () async {
-											final changed =
-													await Navigator.push<bool>(
-												context,
-												MaterialPageRoute(
-													builder: (_) =>
-															JoinGroupPage(),
-												),
-											);
+              Text(
+                l10n.createOrJoin,
+                style: AppFonts.body.copyWith(
+                  color: AppColors.textSecondary,
+                ),
+              ),
 
-											if (changed == true &&
-													context.mounted) {
-												Navigator.pushReplacement(
-													context,
-													MaterialPageRoute(
-														builder: (_) =>
-																const RequesterHomePage(),
-													),
-												);
-											}
-										},
-										child: Text(
-											l10n.joinGroup,
-										),
-									),
-								),
+              const SizedBox(height: 20),
 
-							],
-						),
-					),
-				],
-			),
-		);
-	}
+              SizedBox(
+                width: double.infinity,
+                height: 52,
+                child: ElevatedButton(
+                  onPressed: () async {
+                    final changed = await Navigator.push<bool>(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => CreateGroupPage(),
+                      ),
+                    );
+
+                    if (changed == true && context.mounted) {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const RequesterHomePage(),
+                        ),
+                      );
+                    }
+                  },
+                  child: Text(l10n.createNewGroup),
+                ),
+              ),
+
+              const SizedBox(height: 12),
+
+              SizedBox(
+                width: double.infinity,
+                height: 52,
+                child: ElevatedButton(
+                  onPressed: () async {
+                    final changed = await Navigator.push<bool>(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => JoinGroupPage(),
+                      ),
+                    );
+
+                    if (changed == true && context.mounted) {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const RequesterHomePage(),
+                        ),
+                      );
+                    }
+                  },
+                  child: Text(l10n.joinGroup),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    ),
+  );
+}
 	
 	Widget _requesterCodeHeader(String groupId, String groupCode) {
 	final l10n = AppLocalizations.of(context)!;
@@ -1002,17 +1093,20 @@ Future<void> _editRequesterName() async {
 
             final requesterName =
                 data['requesterName'] ?? '-';
+								
 
             if (!hasGroup) {
               return _buildNoGroupHome(
                 requesterName: requesterName,
               );
             }
+						
+						
             final groupId = data['groupId'] ?? '';
-final requesterId = data['requesterId'] ?? '';
-final groupName = data['groupName'] ?? '-';
-final pairedLocators =
-    Map<String, dynamic>.from(data['pairedLocators'] ?? {});
+						final requesterId = data['requesterId'] ?? '';
+						final groupName = data['groupName'] ?? '-';
+						final pairedLocators =
+								Map<String, dynamic>.from(data['pairedLocators'] ?? {});
 
 return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
   stream: FirebaseFirestore.instance

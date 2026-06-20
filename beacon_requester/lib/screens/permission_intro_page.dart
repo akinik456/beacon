@@ -5,7 +5,9 @@ import '../core/theme/app_fonts.dart';
 import '../core/widgets/app_card.dart';
 import '../l10n/app_localizations.dart';
 import 'join_group_page.dart';
-import 'requester_name_page.dart';
+import '../services/identity_service.dart';
+import '../services/requester_registry_service.dart';
+import 'requester_home_page.dart';
 import 'language_select_page.dart';
 
 class PermissionIntroPage extends StatefulWidget {
@@ -219,11 +221,19 @@ class _PermissionIntroPageState
                     ],
                   ),
                   child: ElevatedButton(
-                    onPressed: () {
-											Navigator.push(
+                    onPressed: () async {
+											await IdentityService.setRequesterName(l10n.requester);
+
+											await IdentityService.createRequesterId();
+
+											await RequesterRegistryService.registerRequester();
+
+											if (!context.mounted) return;
+
+											Navigator.pushReplacement(
 												context,
 												MaterialPageRoute(
-													builder: (_) => const RequesterNamePage(),
+													builder: (_) => const RequesterHomePage(),
 												),
 											);
 										},
@@ -246,87 +256,6 @@ class _PermissionIntroPageState
 
               const SizedBox(height: 34),
 
-             /* const Spacer(),
-
-              // ================= CREATE BUTTON =================
-              SizedBox(
-                width: double.infinity,
-                height: 58,
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(18),
-                    gradient: LinearGradient(
-                      colors: [
-                        AppColors.primary,
-                        AppColors.accent,
-                      ],
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.primary.withValues(alpha: 0.25),
-                        blurRadius: 24,
-                        spreadRadius: 1,
-                      ),
-                    ],
-                  ),
-                  child: ElevatedButton(
-                    onPressed: () {
-											Navigator.push(
-												context,
-												MaterialPageRoute(
-													builder: (_) => const RequesterNamePage(),
-												),
-											);
-										},
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.transparent,
-                      shadowColor: Colors.transparent,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(18),
-                      ),
-                    ),
-                    child: Text(
-                      l10n.createNewGroup,
-                      style: AppFonts.button.copyWith(
-                        color: AppColors.background,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 34),*/
-
-              /*// ================= JOIN BUTTON =================
-              SizedBox(
-                width: double.infinity,
-                height: 58,
-                child: OutlinedButton(
-                  onPressed: () {
-										Navigator.push(
-											context,
-											MaterialPageRoute(
-												builder: (_) => JoinGroupPage(),
-											),
-										);
-									},
-                  style: OutlinedButton.styleFrom(
-                    side: BorderSide(
-                      color: Colors.white.withValues(alpha: 0.08),
-                    ),
-                    backgroundColor: AppColors.surface,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(18),
-                    ),
-                  ),
-                  child: Text(
-                    l10n.joinExistingGroup,
-                    style: AppFonts.button,
-                  ),
-                ),
-              ),*/
-
-              const SizedBox(height: 28),
             ],
           ),
         ),

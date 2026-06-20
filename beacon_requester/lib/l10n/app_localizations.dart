@@ -731,6 +731,12 @@ abstract class AppLocalizations {
   /// **'Remove Member'**
   String get removeMember;
 
+  /// No description provided for @requester.
+  ///
+  /// In en, this message translates to:
+  /// **'Admin'**
+  String get requester;
+
   /// No description provided for @requesters.
   ///
   /// In en, this message translates to:
