@@ -333,6 +333,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get removeMember => 'Remove Member';
 
   @override
+  String get requester => 'Admin';
+
+  @override
   String get requesters => 'Admins';
 
   @override

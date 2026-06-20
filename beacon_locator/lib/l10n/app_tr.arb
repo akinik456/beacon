@@ -106,6 +106,7 @@
 "rejected":														"REDDEDİLDİ",
 "remove":															"Sil",
 "removeMember":												"Üyeyi Kaldır",
+"requester":													"Yönetici",
 "requesters":													"Yöneticiler",
 "requiredForMotion":									"Hareket algılama için gereklidir.",
 "saveMemberLocation":									"Üye konumunu kaydet",

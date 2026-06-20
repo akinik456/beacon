@@ -333,6 +333,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get removeMember => 'Üyeyi Kaldır';
 
   @override
+  String get requester => 'Yönetici';
+
+  @override
   String get requesters => 'Yöneticiler';
 
   @override

@@ -93,7 +93,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get createOrJoin => 'Yeni bir grup oluşturun veya mevcut bir gruba katılın.';
 
   @override
-  String get createNewGroup => 'Yeni grup oluşturun';
+  String get createNewGroup => 'Yeni grup oluştur';
 
   @override
   String daysAgo(Object count) {

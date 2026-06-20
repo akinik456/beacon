@@ -619,7 +619,8 @@ Future<void> _editRequesterName() async {
   required String requesterName,
 }) {
   final l10n = AppLocalizations.of(context)!;
-
+						final langCode =
+						Localizations.localeOf(context).languageCode.toUpperCase();
   return Padding(
     padding: const EdgeInsets.all(10),
     child: Column(
@@ -724,14 +725,12 @@ Future<void> _editRequesterName() async {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    Localizations.localeOf(context).languageCode == 'tr'
-                        ? 'TR'
-                        : 'EN',
-                    style: AppFonts.caption.copyWith(
-                      color: AppColors.accent,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
+      langCode,
+      style: AppFonts.caption.copyWith(
+        color: AppColors.accent,
+        fontWeight: FontWeight.w600,
+      ),
+    ),
                   const Icon(
                     Icons.arrow_drop_down,
                     size: 18,

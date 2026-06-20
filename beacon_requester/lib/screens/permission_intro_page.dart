@@ -53,13 +53,13 @@ final langCode =
 														size: 18,
 														color: AppColors.primary,
 													),
-													Text(
-      langCode,
-      style: AppFonts.caption.copyWith(
-        color: AppColors.accent,
-        fontWeight: FontWeight.w600,
-      ),
-    ),
+													label: Text(
+										langCode,
+										style: AppFonts.caption.copyWith(
+											color: AppColors.accent,
+											fontWeight: FontWeight.w600,
+										),
+									),
 								),
 							),
               const Spacer(),

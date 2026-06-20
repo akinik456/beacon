@@ -86,8 +86,28 @@ class _MyAppState extends State<MyApp> {
         GlobalCupertinoLocalizations.delegate,
       ],
 
-      supportedLocales: const [Locale('en'), Locale('tr')],
-
+      supportedLocales: const [
+        Locale('en'),
+        Locale('tr'),
+        Locale('es'),
+        Locale('de'),
+        Locale('fr'),
+        Locale('it'),
+        Locale('hi'),
+        Locale('ko'),
+        Locale('ja'),
+        Locale('zh'),
+        Locale('ar'),
+        Locale('ru'),
+        Locale('id'),
+        Locale('vi'),
+        Locale('th'),
+        Locale('nl'),
+        Locale('pl'),
+        Locale('sv'),
+        Locale.fromSubtags(languageCode: 'pt', countryCode: 'BR'),
+      ],
+			
       home: FutureBuilder<Map<String, String?>>(
         future: () async {
           final requesterId = await IdentityService.getRequesterId();

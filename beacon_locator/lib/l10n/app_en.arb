@@ -106,6 +106,7 @@
 "rejected":														"REJECTED",
 "remove":															"Remove",
 "removeMember":												"Remove Member",
+"requester":													"Admin",
 "requesters":													"Admins",
 "requiredForMotion":									"Required for motion detection",
 "saveMemberLocation":									"Save member location as place",
