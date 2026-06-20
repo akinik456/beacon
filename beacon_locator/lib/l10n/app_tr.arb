@@ -28,7 +28,7 @@
 "confirm": 														"Onay",
 "connectAMember": 										"Bir üyeye bağlan",
 "createOrJoin": 											"Yeni bir grup oluşturun veya mevcut bir gruba katılın.",
-"createNewGroup": 										"Yeni grup oluşturun",
+"createNewGroup": 										"Yeni grup oluştur",
 "daysAgo": 														"{count} gün önce",
 "disabledByMaster":										"Grup yöneticisi tarafından devre dışı bırakıldı",
 "dismiss":														"Kapat",
@@ -152,5 +152,4 @@
     "count": {}
   }
 }
-
 }

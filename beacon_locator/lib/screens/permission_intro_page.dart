@@ -26,6 +26,8 @@ class _PermissionIntroPageState
   @override
   Widget build(BuildContext context) {
 	final l10n = AppLocalizations.of(context)!;
+	final langCode =
+    Localizations.localeOf(context).languageCode.toUpperCase();	
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
@@ -57,14 +59,12 @@ class _PermissionIntroPageState
 													mainAxisSize: MainAxisSize.min,
 													children: [
 														Text(
-															Localizations.localeOf(context).languageCode == 'tr'
-																	? 'TR'
-																	: 'EN',
-															style: AppFonts.caption.copyWith(
-																color: AppColors.accent,
-																fontWeight: FontWeight.w600,
-															),
-														),
+      langCode,
+      style: AppFonts.caption.copyWith(
+        color: AppColors.accent,
+        fontWeight: FontWeight.w600,
+      ),
+    ),
 														const Icon(
 															Icons.arrow_drop_down,
 															size: 18,

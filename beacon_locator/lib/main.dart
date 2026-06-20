@@ -173,6 +173,29 @@ class _MyAppState extends State<MyApp> {
 			debugShowCheckedModeBanner: false,
 
 			locale: _locale,
+			
+			/* ?*?builder: (context, child) {
+        final lang = Localizations.localeOf(context).languageCode;
+
+        double textScale = 1.0;
+
+        if (lang == 'hi'|| lang == 'th') {
+          textScale = 1.16;
+        } else if (lang == 'ar') {
+          textScale = 1.14;
+        } else if (lang == 'ja' || lang == 'ko' || lang == 'zh' ) {
+          textScale = 1.10;
+        }
+
+        final scaledChild = MediaQuery(
+          data: MediaQuery.of(context).copyWith(
+            textScaler: TextScaler.linear(textScale),
+          ),
+          child: child!,
+        );
+
+        
+      },*/
 
 			onGenerateTitle: (context) =>
 					AppLocalizations.of(context)!.appName,
@@ -184,10 +207,27 @@ class _MyAppState extends State<MyApp> {
 				GlobalCupertinoLocalizations.delegate,
 			],
 
-			supportedLocales: const [
-				Locale('en'),
-				Locale('tr'),
-			],
+      supportedLocales: const [
+        Locale('en'),
+        Locale('tr'),
+        Locale('es'),
+        Locale('de'),
+        Locale('fr'),
+        Locale('it'),
+        Locale('hi'),
+        Locale('ko'),
+        Locale('ja'),
+        Locale('zh'),
+        Locale('ar'),
+        Locale('ru'),
+        Locale('id'),
+        Locale('vi'),
+        Locale('th'),
+        Locale('nl'),
+        Locale('pl'),
+        Locale('sv'),
+        Locale.fromSubtags(languageCode: 'pt', countryCode: 'BR'),
+      ],
 
 			home: widget.hasLocatorId
 					? const LocatorHomePage()

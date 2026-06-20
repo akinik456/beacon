@@ -401,13 +401,13 @@ Stream<List<Map<String, String>>> _watchPairedRequesterData() async* {
 										size: 32,
 										color: AppColors.accent,
 									),
-              const SizedBox(width: 6),
+              const SizedBox(width: 4),
               Text(
 							    '${l10n.memberCode}',
 								textAlign: TextAlign.center,
 								style: AppFonts.button.copyWith(color: AppColors.accent),
 							),	
-							const SizedBox(width: 6),
+							const SizedBox(width: 2),
 							Text(
 								locatorCode,
 								textAlign: TextAlign.left,
@@ -872,10 +872,12 @@ Future<void> _editLocatorName(
         child: FutureBuilder<Map<String, String>>(
           future: _loadLocatorCodeData(),
           builder: (context, snapshot) {
-            final locatorId = snapshot.data?['locatorId'] ?? '';
+ 					final l10n = AppLocalizations.of(context)!;
+           final locatorId = snapshot.data?['locatorId'] ?? '';
             final locatorCode = snapshot.data?['locatorCode'] ?? '------';
-            final locatorName = snapshot.data?['locatorName'] ?? 'Member';
-						final l10n = AppLocalizations.of(context)!;
+            final locatorName = snapshot.data?['locatorName'] ?? l10n.member;
+						final langCode =
+						Localizations.localeOf(context).languageCode.toUpperCase();
             return Padding(
               padding: const EdgeInsets.all(20),
               child: Column(
@@ -909,7 +911,7 @@ Future<void> _editLocatorName(
 															children: [
 																Flexible(
 																	child: Text(
-																		locatorName,
+																		'$locatorName',
 																		overflow: TextOverflow.ellipsis,
 																		textAlign: TextAlign.center,
 																		style: AppFonts.title.copyWith(
@@ -962,9 +964,7 @@ Future<void> _editLocatorName(
 													mainAxisSize: MainAxisSize.min,
 													children: [
 														Text(
-															Localizations.localeOf(context).languageCode == 'tr'
-																	? 'TR'
-																	: 'EN',
+															langCode,
 															style: AppFonts.caption.copyWith(
 																color: AppColors.accent,
 																fontWeight: FontWeight.w600,
