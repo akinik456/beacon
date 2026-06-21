@@ -6,6 +6,8 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:in_app_update/in_app_update.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:device_info_plus/device_info_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../core/theme/app_colors.dart';
 import '../core/theme/app_fonts.dart';
@@ -1150,14 +1152,7 @@ class _RequesterHomePageState
 																					color: AppColors.primary,
 																				),
 																			),
-																			Text(
-																				"Version $_appVersion",
-																				style: TextStyle(
-																					color: Colors.white.withOpacity(0.4),
-																					fontSize: 11,
-																					fontWeight: FontWeight.w500,
-																				),
-																			),
+																			
 																			const SizedBox(height: 6),
 																			StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
 																				stream: FirebaseFirestore.instance
@@ -1547,6 +1542,111 @@ class _RequesterHomePageState
         ),
       ),
     ),
+		
+								Positioned(
+  left: 2,
+  right: 2,
+  bottom: 2,
+  child: Material(
+    color: Colors.transparent,
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Align(
+          alignment: Alignment.center,
+          child: Text(
+            "Version $_appVersion",
+            style: TextStyle(
+              color: Colors.white.withOpacity(0.4),
+              fontSize: 18,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ),
+
+        const SizedBox(height: 2),
+		
+		Row(
+										children: [
+											InkWell(
+												onTap: () {
+													openFeedbackMenu();
+												},
+												borderRadius: BorderRadius.circular(20),
+												child: Padding(
+													padding: const EdgeInsets.symmetric(
+														horizontal: 4,
+														vertical: 2,
+													),
+													child: Row(
+														children: [
+															Icon(
+																Icons.chat_bubble_outline_rounded,
+																size: 18,
+																color: const Color(0xFF8FD8FF).withOpacity(0.50),
+															),
+															const SizedBox(width: 4),
+															Text(
+																"Feedback",
+																style: TextStyle(
+																	color: const Color(0xFF8FD8FF).withOpacity(0.50),
+																	fontSize: 18,
+																	fontWeight: FontWeight.w500,
+																),
+															),
+														],
+													),
+												),
+											),
+											
+											
+
+											const Spacer(),
+											
+											InkWell(
+												onTap: () async {
+												final Uri url = Uri.parse(
+													'https://play.google.com/store/apps/developer?id=Lynra',
+												);
+
+												await launchUrl(
+													url,
+													mode: LaunchMode.externalApplication,
+												);
+											},
+											borderRadius: BorderRadius.circular(20),
+											child: Padding(
+												padding: const EdgeInsets.symmetric(
+													horizontal: 4,
+													vertical: 2,
+												),
+												child: Row(
+													children: [
+														Icon(
+															Icons.apps_rounded,
+															size: 18,
+															color: const Color(0xFF8FD8FF).withOpacity(0.50),
+														),
+														const SizedBox(width: 4),
+														Text(
+															"Other Apps",
+															style: TextStyle(
+																color: const Color(0xFF8FD8FF).withOpacity(0.50),
+																fontSize: 18,
+																fontWeight: FontWeight.w500,
+															),
+														),
+													],
+												),
+											),
+										),
+									],
+								),
+],								
+							),	
+						),
+						),
+		
 		if (_callMeData != null)
 			CallMeOverlay(
 				data: _callMeData!,
@@ -1610,6 +1710,131 @@ class _RequesterHomePageState
 				),	
 			],
 		);
+  }
+void openFeedbackMenu() {
+  showModalBottomSheet(
+    context: context,
+    backgroundColor: const Color(0xFF111827),
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(
+        top: Radius.circular(24),
+      ),
+    ),
+    builder: (context) {
+      return SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _FeedbackItem(
+                icon: Icons.star_rounded,
+                title: "Rate on Play Store",
+                onTap: () async {
+									Navigator.pop(context);
+									final Uri url = Uri.parse(// ?*?
+										"https://play.google.com/store/apps/details?id=com.akinik.findlostgadget.app&pli=1",
+									);
+									await launchUrl(
+										url,
+										mode: LaunchMode.externalApplication,
+									);
+								},
+              ),
+
+              const SizedBox(height: 12),
+
+              _FeedbackItem(
+                icon: Icons.mail_outline_rounded,
+                title: "Send Feedback",
+                onTap: () async {
+                  Navigator.pop(context);
+                  openFeedback();
+                },
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
+}	
+Future<void> openFeedback() async {
+	String _appVersion = '';
+	final infoapp = await PackageInfo.fromPlatform();
+	_appVersion = "${infoapp.version}+${infoapp.buildNumber}";
+	
+	
+  final info = await DeviceInfoPlugin().androidInfo;
+
+
+  final body = '''
+Message:
+
+---
+
+App version: $_appVersion
+Android: ${info.version.release}
+Device: ${info.manufacturer} ${info.model}
+''';
+
+  final uri = Uri(
+    scheme: 'mailto',
+    path: 'lynra.dev@gmail.com',
+    queryParameters: {
+      'subject': 'LynraFamily Feedback',
+      'body': body,
+    },
+  );
+
+  await launchUrl(uri);
+}		
+}
+class _FeedbackItem extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final VoidCallback onTap;
+
+  const _FeedbackItem({
+    required this.icon,
+    required this.title,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(18),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.06),
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(
+            color: Colors.white.withOpacity(0.08),
+          ),
+        ),
+        child: Row(
+          children: [
+            Icon(
+              icon,
+              color: const Color(0xFF8FD8FF).withOpacity(0.85),
+              size: 22,
+            ),
+            const SizedBox(width: 14),
+            Text(
+              title,
+              style: const TextStyle(
+                color: Colors.white70,
+                fontSize: 15,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
 
