@@ -132,6 +132,7 @@
 "wantsYoutoCall":											"Wants You to Call",
 "wellcome":														"Wellcome",
 "yesterday": 													"Yesterday",
+"yourname": 													"Your name",
 "yourrequest":												"Your request has been sent to the group master.",
 "@secondsAgo": {
   "placeholders": {

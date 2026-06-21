@@ -413,5 +413,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get yesterday => 'Gestern';
 
   @override
+  String get yourname => 'Ihr name';
+
+  @override
   String get yourrequest => 'Ihre Anfrage wurde an den Gruppenadministrator gesendet.';
 }

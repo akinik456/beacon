@@ -211,7 +211,7 @@ class _MyAppState extends State<MyApp> {
         Locale('en'),
         Locale('tr'),
         Locale('es'),
-        Locale('de'),
+        /*Locale('de'),
         Locale('fr'),
         Locale('it'),
         Locale('hi'),
@@ -226,7 +226,7 @@ class _MyAppState extends State<MyApp> {
         Locale('nl'),
         Locale('pl'),
         Locale('sv'),
-        Locale.fromSubtags(languageCode: 'pt', countryCode: 'BR'),
+        Locale.fromSubtags(languageCode: 'pt', countryCode: 'BR'),*/
       ],
 
 			home: widget.hasLocatorId

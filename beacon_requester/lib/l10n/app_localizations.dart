@@ -891,6 +891,12 @@ abstract class AppLocalizations {
   /// **'Yesterday'**
   String get yesterday;
 
+  /// No description provided for @yourname.
+  ///
+  /// In en, this message translates to:
+  /// **'Your name'**
+  String get yourname;
+
   /// No description provided for @yourrequest.
   ///
   /// In en, this message translates to:

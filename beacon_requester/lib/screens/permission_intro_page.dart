@@ -222,7 +222,7 @@ final langCode =
                   ),
                   child: ElevatedButton(
                     onPressed: () async {
-											await IdentityService.setRequesterName(l10n.requester);
+											await IdentityService.setRequesterName(l10n.yourname);
 
 											await IdentityService.createRequesterId();
 

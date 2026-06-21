@@ -413,5 +413,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get yesterday => 'Ayer';
 
   @override
+  String get yourname => 'Su nombre';
+
+  @override
   String get yourrequest => 'Su solicitud ha sido enviada al administrador principal del grupo.';
 }

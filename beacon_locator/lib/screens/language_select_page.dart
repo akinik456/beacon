@@ -24,11 +24,12 @@ class _LanguageSelectPageState
   final List<Map<String, String>> _languages = const [
     {'code': 'en', 'name': 'English'},
     {'code': 'tr', 'name': 'Türkçe'},
-    {'code': 'de', 'name': 'Deutsch'},
-    {'code': 'es', 'name': 'Español'},
+		{'code': 'es', 'name': 'Español'},
+		
+    /*{'code': 'de', 'name': 'Deutsch'},    
     {'code': 'fr', 'name': 'Français'},
     {'code': 'it', 'name': 'Italiano'},
-    {'code': 'pt', 'name': 'Português'},
+    {'code': 'pt', 'name': 'Português'},*/
   ];
 
   @override

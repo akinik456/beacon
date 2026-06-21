@@ -132,6 +132,8 @@
   "wantsYoutoCall": "Möchte, dass Sie anrufen",
   "wellcome": "Willkommen",
   "yesterday": "Gestern",
+	"yourname": 													"Ihr name",
+
   "yourrequest": "Ihre Anfrage wurde an den Gruppenadministrator gesendet.",
 	"@secondsAgo": {
   "placeholders": {
