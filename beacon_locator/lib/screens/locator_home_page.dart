@@ -506,10 +506,27 @@ Widget _pairedRequesterCard() {
                 child: Row(
                   children: [
                     Expanded(
-                      child: Text(
-                        '$requesterName - $requesterCode',
-                        style: AppFonts.subtitle,
-                      ),									
+                      child: RichText(
+												overflow: TextOverflow.ellipsis,
+												text: TextSpan(
+													children: [
+														TextSpan(
+															text: '$requesterName',
+															style: AppFonts.subtitle.copyWith(
+																color: AppColors.textPrimary,
+																fontWeight: FontWeight.w700
+															),
+														),
+
+														TextSpan(
+															text: ' - $requesterCode',
+															style: AppFonts.subtitle.copyWith(
+																color: AppColors.textSecondary,
+															),
+														),
+													],
+												),
+											),											
                     ),
                     OutlinedButton.icon(
                       onPressed: requesterId.isEmpty

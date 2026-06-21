@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:io';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -8,6 +10,7 @@ import 'package:in_app_update/in_app_update.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
 
 import '../core/theme/app_colors.dart';
 import '../core/theme/app_fonts.dart';
@@ -68,6 +71,12 @@ class _RequesterHomePageState
 	Timer? _timeRefreshTimer;
 	String _appVersion = '';
 	
+	StreamSubscription<List<PurchaseDetails>>? _purchaseSub;
+	bool _isPremium = false;
+	bool _trialActive = false;
+	bool get _hasFullAccess => _isPremium || _trialActive;
+	int _trialDaysLeft = 0;
+	
 		@override
 	void initState() {
 		WidgetsBinding.instance.addObserver(this);
@@ -76,8 +85,32 @@ class _RequesterHomePageState
 		_homeDataFuture = HomeDataService.loadHomeData();
 		_loadLocators();
 		_loadGroupCode();
+		unawaited(_initTrial());
 		unawaited(_loadVersion());
 		unawaited(_checkForUpdate());
+		
+		_purchaseSub = InAppPurchase.instance.purchaseStream.listen((purchases) async {
+	for (final purchase in purchases) {
+    //print("PURCHASE STATUS: ${purchase.status}");
+
+    if (purchase.status == PurchaseStatus.purchased ||
+        purchase.status == PurchaseStatus.restored) {
+				await PremiumStore.setPremium(true);
+      //print("PURCHASE OK: ${purchase.productID}");
+			
+			if (mounted) {
+				setState(() {
+					_isPremium = true;
+				});
+			}
+			
+    }
+
+    if (purchase.pendingCompletePurchase) {
+      await InAppPurchase.instance.completePurchase(purchase);
+    }
+  }
+});
 		
 		_timeRefreshTimer = Timer.periodic(
 			const Duration(minutes: 1),
@@ -618,7 +651,50 @@ class _RequesterHomePageState
 		);
 	}
 
+Future<void> _buy() async {
+		const ids = <String>{'premium_unlock'};
+		final response = await InAppPurchase.instance.queryProductDetails(ids);
 
+		if (response.productDetails.isEmpty) {
+			print("Product not found");
+			return;
+		}
+
+		final product = response.productDetails.first;
+
+		final purchaseParam = PurchaseParam(productDetails: product);
+
+		await InAppPurchase.instance.buyNonConsumable(
+			purchaseParam: purchaseParam,
+		);
+	}
+	
+Future<void> _initTrial() async {
+  final prefs = await SharedPreferences.getInstance();
+
+  const key = 'trialStartMs';
+  final now = DateTime.now().millisecondsSinceEpoch;
+
+  int start = prefs.getInt(key) ?? 0;
+
+  if (start == 0) {
+    start = now;
+    await prefs.setInt(key, start);
+  }
+
+  const trialDurationMs = 7 * 24 * 60 * 60 * 1000;//15 * 24 * 60 * 60 * 1000; // 7 gün
+
+  final active = (now - start) < trialDurationMs;
+	final remainingMs = trialDurationMs - (now - start);
+  final daysLeft = (remainingMs / (24 * 60 * 60 * 1000)).ceil();
+	
+  if (!mounted) return;
+  setState(() {
+    _trialActive = active;
+		_trialDaysLeft = active ? daysLeft : 0;
+  });
+}		
+	
 	Widget _buildNoGroupHome({
   required String requesterName,
 	}) {
@@ -1382,7 +1458,7 @@ class _RequesterHomePageState
 																				: ListView.separated(
 																						itemCount: _locators.length,//itemCount: _locators.isEmpty ? 0 : 4,//itemCount: _locators.length,
 																						separatorBuilder: (_, __) =>
-																								const SizedBox(height: 4),
+																								const SizedBox(height: 2),
 																						itemBuilder: (context, index) {
 																							final locator = _locators[index];//final locator = _locators[0];//final locator = _locators[index];
 																							final locatorId = locator['locatorId'] ?? '-';															
@@ -1533,103 +1609,152 @@ class _RequesterHomePageState
         ),
       ),
     ),
-		
-								Positioned(
+		Positioned(
   left: 2,
   right: 2,
   bottom: 2,
   child: Material(
     color: Colors.transparent,
     child: Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12),
-      child: Row(
-        children: [
-          InkWell(
-            onTap: () {
-              openFeedbackMenu();
-            },
-            borderRadius: BorderRadius.circular(20),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 4,
-                vertical: 2,
-              ),
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.chat_bubble_outline_rounded,
-                    size: 18,
-                    color: const Color(0xFF8FD8FF).withOpacity(0.50),
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    "Feedback",
-                    style: TextStyle(
-                      color: const Color(0xFF8FD8FF).withOpacity(0.50),
-                      fontSize: 18,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
+									padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+									child: Container(
+										padding: const EdgeInsets.all(14),
+										decoration: BoxDecoration(
+											color: Colors.white.withValues(alpha: 0.08),
+											borderRadius: BorderRadius.circular(18),
+											border: Border.all(
+												color: Colors.white.withValues(alpha: 0.12),
+											),											
+										),
+										child: Row(
+											children: [
+												Expanded(
+													child: Column(
+	crossAxisAlignment: CrossAxisAlignment.start,
+	children: [
 
-          const Spacer(),
+		Text(
+			_isPremium
+					? "Premium active • unlimited scan and devices"
+					: (_trialActive
+							? "Free trial $_trialDaysLeft days left"
+							: "Free mode "),
+			style: const TextStyle(
+				color: Colors.white70,
+				fontSize: 13,
+				fontWeight: FontWeight.w600,
+			),
+		),
 
-          Text(
-            "Version $_appVersion",
-            style: TextStyle(
-              color: Colors.white.withOpacity(0.4),
-              fontSize: 15,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
+		const SizedBox(height: 2),
 
-          const Spacer(),
+		if (_appVersion.isNotEmpty)
+			Text(
+				"Version $_appVersion",
+				style: TextStyle(
+					color: Colors.white.withOpacity(0.4),
+					fontSize: 11,
+					fontWeight: FontWeight.w500,
+				),
+			),
 
-          InkWell(
-            onTap: () async {
-              final Uri url = Uri.parse(
+		const SizedBox(height: 4),
+
+		Row(
+			children: [
+
+				InkWell(
+					onTap: () {
+						openFeedbackMenu();
+					},
+					borderRadius: BorderRadius.circular(20),
+					child: Padding(
+						padding: const EdgeInsets.symmetric(
+							horizontal: 4,
+							vertical: 2,
+						),
+						child: Row(
+							children: [
+								Icon(
+									Icons.chat_bubble_outline_rounded,
+									size: 13,
+									color: const Color(0xFF8FD8FF).withOpacity(0.50),
+								),
+								const SizedBox(width: 4),
+								Text(
+									"Feedback",
+									style: TextStyle(
+										color: const Color(0xFF8FD8FF).withOpacity(0.50),
+										fontSize: 11,
+										fontWeight: FontWeight.w500,
+									),
+								),
+							],
+						),
+					),
+				),
+
+				const SizedBox(width: 10),
+
+				InkWell(
+					onTap: () async {
+	final Uri url = Uri.parse(
                 'https://play.google.com/store/apps/developer?id=Lynra',
-              );
+	);
 
-              await launchUrl(
-                url,
-                mode: LaunchMode.externalApplication,
-              );
-            },
-            borderRadius: BorderRadius.circular(20),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 4,
-                vertical: 2,
-              ),
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.apps_rounded,
-                    size: 18,
-                    color: const Color(0xFF8FD8FF).withOpacity(0.50),
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    "Other Apps",
-                    style: TextStyle(
-                      color: const Color(0xFF8FD8FF).withOpacity(0.50),
-                      fontSize: 18,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    ),
-  ),
+	await launchUrl(
+		url,
+		mode: LaunchMode.externalApplication,
+	);
+},
+					borderRadius: BorderRadius.circular(20),
+					child: Padding(
+						padding: const EdgeInsets.symmetric(
+							horizontal: 4,
+							vertical: 2,
+						),
+						child: Row(
+							children: [
+								Icon(
+									Icons.apps_rounded,
+									size: 13,
+									color: const Color(0xFF8FD8FF).withOpacity(0.50),
+								),
+								const SizedBox(width: 4),
+								Text(
+									"Other Apps",
+									style: TextStyle(
+										color: const Color(0xFF8FD8FF).withOpacity(0.50),
+										fontSize: 11,
+										fontWeight: FontWeight.w500,
+									),
+								),
+							],
+						),
+					),
+				),
+
+			],
+		),
+	],
 ),
+													
+												),
+												const SizedBox(width: 12),
+												if (!_isPremium)
+													ElevatedButton(
+														onPressed: _buy,
+														child: const Text("Go Premium"),
+													),
+											],
+										),
+										
+									),
+								),
+								),
+								),
+		
+								
 		
 		if (_callMeData != null)
 			CallMeOverlay(
