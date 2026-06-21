@@ -53,7 +53,11 @@ class LocatorStatusCard extends StatelessWidget {
 	final l10n = AppLocalizations.of(context)!;
   return GestureDetector(
     child: AppCard(
-      child: Column(
+			borderColor: status == 'online'
+      ? Colors.green.withValues(alpha: 0.70)
+      : Colors.red.withValues(alpha: 0.70),
+  borderWidth: 3.0,
+			child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
 				children: [
 					Row(
@@ -67,6 +71,7 @@ class LocatorStatusCard extends StatelessWidget {
 												text: locatorName,
 												style: AppFonts.subtitle.copyWith(
 													color: AppColors.primary,
+													fontWeight: FontWeight.w700
 												),
 											),
 

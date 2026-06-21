@@ -28,7 +28,6 @@ class FCMService {
 			FirebaseMessaging.instance.onTokenRefresh.listen((newToken) async {
 				print("BEACON FCM => token refreshed => $newToken");
 
-				await RequesterRegistryService.updateToken(newToken);
 			});
 
 			final requesterId =

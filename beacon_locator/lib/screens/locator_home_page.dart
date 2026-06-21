@@ -1023,92 +1023,106 @@ Future<void> _editLocatorName(
 									const Spacer(),
 									const SizedBox(height: 12),
                   _permissionsButton(),
-                  const SizedBox(height: 12),
-									Align(
-												alignment: Alignment.center,
-												child: Text(
-										"Version $_appVersion",
-										style: TextStyle(
-											color: Colors.white.withOpacity(0.4),
-											fontSize: 18,
-											fontWeight: FontWeight.w500,
-										),
-									),
-									),
-									Row(
-										children: [
-											InkWell(
-												onTap: () {
-													openFeedbackMenu();
-												},
-												borderRadius: BorderRadius.circular(20),
-												child: Padding(
-													padding: const EdgeInsets.symmetric(
-														horizontal: 4,
-														vertical: 2,
-													),
-													child: Row(
-														children: [
-															Icon(
-																Icons.chat_bubble_outline_rounded,
-																size: 18,
-																color: const Color(0xFF8FD8FF).withOpacity(0.50),
-															),
-															const SizedBox(width: 4),
-															Text(
-																"Feedback",
-																style: TextStyle(
-																	color: const Color(0xFF8FD8FF).withOpacity(0.50),
-																	fontSize: 18,
-																	fontWeight: FontWeight.w500,
-																),
-															),
-														],
-													),
-												),
-											),
+									
+									Positioned(
+  left: 2,
+  right: 2,
+  bottom: 2,
+  child: Material(
+    color: Colors.transparent,
+    child: Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      child: Row(
+        children: [
+          InkWell(
+            onTap: () {
+              openFeedbackMenu();
+            },
+            borderRadius: BorderRadius.circular(20),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 4,
+                vertical: 2,
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.chat_bubble_outline_rounded,
+                    size: 18,
+                    color: const Color(0xFF8FD8FF).withOpacity(0.50),
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    "Feedback",
+                    style: TextStyle(
+                      color: const Color(0xFF8FD8FF).withOpacity(0.50),
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
 
-											const Spacer(),
-											
-											InkWell(
-												onTap: () async {
-												final Uri url = Uri.parse(
-													'https://play.google.com/store/apps/developer?id=Lynra',
-												);
+          const Spacer(),
 
-												await launchUrl(
-													url,
-													mode: LaunchMode.externalApplication,
-												);
-											},
-											borderRadius: BorderRadius.circular(20),
-											child: Padding(
-												padding: const EdgeInsets.symmetric(
-													horizontal: 4,
-													vertical: 2,
-												),
-												child: Row(
-													children: [
-														Icon(
-															Icons.apps_rounded,
-															size: 18,
-															color: const Color(0xFF8FD8FF).withOpacity(0.50),
-														),
-														const SizedBox(width: 4),
-														Text(
-															"Other Apps",
-															style: TextStyle(
-																color: const Color(0xFF8FD8FF).withOpacity(0.50),
-																fontSize: 18,
-																fontWeight: FontWeight.w500,
-															),
-														),
-													],
-												),
-											),
-										),
-									],
-								),							
+          Text(
+            "Version $_appVersion",
+            style: TextStyle(
+              color: Colors.white.withOpacity(0.4),
+              fontSize: 15,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+
+          const Spacer(),
+
+          InkWell(
+            onTap: () async {
+              final Uri url = Uri.parse(
+                'https://play.google.com/store/apps/developer?id=Lynra',
+              );
+
+              await launchUrl(
+                url,
+                mode: LaunchMode.externalApplication,
+              );
+            },
+            borderRadius: BorderRadius.circular(20),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 4,
+                vertical: 2,
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.apps_rounded,
+                    size: 18,
+                    color: const Color(0xFF8FD8FF).withOpacity(0.50),
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    "Other Apps",
+                    style: TextStyle(
+                      color: const Color(0xFF8FD8FF).withOpacity(0.50),
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    ),
+  ),
+),
+									
+
+								
                 ],
               ),
             );

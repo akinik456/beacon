@@ -62,6 +62,30 @@ class JoinRequestCard extends StatelessWidget {
 								Row(
 									children: [
 										Expanded(
+												child: OutlinedButton(
+													onPressed: () async {
+															await doc.reference.update({
+																'status': 'rejected',
+																'rejectedAt': FieldValue.serverTimestamp(),
+															});
+
+															await Future.delayed(
+																const Duration(seconds: 2),
+															);
+
+															await doc.reference.delete();
+
+															print(
+																"BEACON JOIN REJECTED => ${doc.id}",
+															);
+														},
+													child: Text(
+														l10n.reject,
+													),
+												),
+											),
+										const SizedBox(width: 12),	
+										Expanded(
 											child: ElevatedButton(
 												onPressed: () async {
 													final joinData = doc.data();
@@ -152,32 +176,6 @@ class JoinRequestCard extends StatelessWidget {
 												},
 												child: Text(
 												l10n.approve,
-												),
-											),
-										),
-
-										const SizedBox(width: 12),
-
-										Expanded(
-											child: OutlinedButton(
-												onPressed: () async {
-														await doc.reference.update({
-															'status': 'rejected',
-															'rejectedAt': FieldValue.serverTimestamp(),
-														});
-
-														await Future.delayed(
-															const Duration(seconds: 2),
-														);
-
-														await doc.reference.delete();
-
-														print(
-															"BEACON JOIN REJECTED => ${doc.id}",
-														);
-													},
-												child: Text(
-													l10n.reject,
 												),
 											),
 										),

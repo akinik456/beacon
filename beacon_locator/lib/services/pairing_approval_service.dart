@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'identity_service.dart';
+import '../services/active_watcher_service.dart';
 
 class PairingApprovalService {
   PairingApprovalService._();
@@ -110,7 +111,7 @@ class PairingApprovalService {
       'status': 'approved',
       'respondedAt': FieldValue.serverTimestamp(),
     });
-
+		ActiveWatcherService.startUiOnly();
     return 'approved';
   });
 

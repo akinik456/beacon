@@ -641,15 +641,6 @@ class _RequesterHomePageState
               ),
             ),
 
-            Text(
-              "Version $_appVersion",
-              style: TextStyle(
-                color: Colors.white.withOpacity(0.4),
-                fontSize: 11,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-
             const SizedBox(height: 6),
 
             Padding(
@@ -1549,103 +1540,96 @@ class _RequesterHomePageState
   bottom: 2,
   child: Material(
     color: Colors.transparent,
-    child: Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Align(
-          alignment: Alignment.center,
-          child: Text(
+    child: Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      child: Row(
+        children: [
+          InkWell(
+            onTap: () {
+              openFeedbackMenu();
+            },
+            borderRadius: BorderRadius.circular(20),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 4,
+                vertical: 2,
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.chat_bubble_outline_rounded,
+                    size: 18,
+                    color: const Color(0xFF8FD8FF).withOpacity(0.50),
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    "Feedback",
+                    style: TextStyle(
+                      color: const Color(0xFF8FD8FF).withOpacity(0.50),
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          const Spacer(),
+
+          Text(
             "Version $_appVersion",
             style: TextStyle(
               color: Colors.white.withOpacity(0.4),
-              fontSize: 18,
+              fontSize: 15,
               fontWeight: FontWeight.w500,
             ),
           ),
-        ),
 
-        const SizedBox(height: 2),
-		
-		Row(
-										children: [
-											InkWell(
-												onTap: () {
-													openFeedbackMenu();
-												},
-												borderRadius: BorderRadius.circular(20),
-												child: Padding(
-													padding: const EdgeInsets.symmetric(
-														horizontal: 4,
-														vertical: 2,
-													),
-													child: Row(
-														children: [
-															Icon(
-																Icons.chat_bubble_outline_rounded,
-																size: 18,
-																color: const Color(0xFF8FD8FF).withOpacity(0.50),
-															),
-															const SizedBox(width: 4),
-															Text(
-																"Feedback",
-																style: TextStyle(
-																	color: const Color(0xFF8FD8FF).withOpacity(0.50),
-																	fontSize: 18,
-																	fontWeight: FontWeight.w500,
-																),
-															),
-														],
-													),
-												),
-											),
-											
-											
+          const Spacer(),
 
-											const Spacer(),
-											
-											InkWell(
-												onTap: () async {
-												final Uri url = Uri.parse(
-													'https://play.google.com/store/apps/developer?id=Lynra',
-												);
+          InkWell(
+            onTap: () async {
+              final Uri url = Uri.parse(
+                'https://play.google.com/store/apps/developer?id=Lynra',
+              );
 
-												await launchUrl(
-													url,
-													mode: LaunchMode.externalApplication,
-												);
-											},
-											borderRadius: BorderRadius.circular(20),
-											child: Padding(
-												padding: const EdgeInsets.symmetric(
-													horizontal: 4,
-													vertical: 2,
-												),
-												child: Row(
-													children: [
-														Icon(
-															Icons.apps_rounded,
-															size: 18,
-															color: const Color(0xFF8FD8FF).withOpacity(0.50),
-														),
-														const SizedBox(width: 4),
-														Text(
-															"Other Apps",
-															style: TextStyle(
-																color: const Color(0xFF8FD8FF).withOpacity(0.50),
-																fontSize: 18,
-																fontWeight: FontWeight.w500,
-															),
-														),
-													],
-												),
-											),
-										),
-									],
-								),
-],								
-							),	
-						),
-						),
+              await launchUrl(
+                url,
+                mode: LaunchMode.externalApplication,
+              );
+            },
+            borderRadius: BorderRadius.circular(20),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 4,
+                vertical: 2,
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.apps_rounded,
+                    size: 18,
+                    color: const Color(0xFF8FD8FF).withOpacity(0.50),
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    "Other Apps",
+                    style: TextStyle(
+                      color: const Color(0xFF8FD8FF).withOpacity(0.50),
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    ),
+  ),
+),
 		
 		if (_callMeData != null)
 			CallMeOverlay(
@@ -1813,6 +1797,7 @@ class _FeedbackItem extends StatelessWidget {
           borderRadius: BorderRadius.circular(18),
           border: Border.all(
             color: Colors.white.withOpacity(0.08),
+						width: 1,
           ),
         ),
         child: Row(
