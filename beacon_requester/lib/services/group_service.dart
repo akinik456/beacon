@@ -46,17 +46,26 @@ class GroupService {
 
     await _firestore.runTransaction((tx) async {
       tx.set(groupRef, {
+				'activeRequesterCount': 1,
 				'countryCode': countryCode,
+        'createdAt': now,
+				'entitlementUpdatedAt': now,				
         'groupId': groupId,
-        'groupName': groupName.trim(),
         'groupCode': groupCode,
+        'groupName': groupName.trim(),
         'masterRequesterId': requesterId,
-        'planStatus': 'trial',
         'maxRequesters': 1,
         'maxLocators': 1,
-				'activeRequesterCount': 1,
-        'createdAt': now,
+        'planStatus': 'trial',
+ 				'purchaseStatus': 'none',
+				'purchaseOwnerRequesterId': null,
+				'purchasedAt': null,
         'trialStartedAt': now,
+				'trialEndsAt': Timestamp.fromDate(
+					DateTime.now().add(
+						const Duration(days: 7),
+					),
+				),
       });
 
       tx.set(requesterRef, {

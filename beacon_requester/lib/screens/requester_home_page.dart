@@ -39,7 +39,8 @@ import '../core/widgets/requester_list_card.dart';
 import '../core/widgets/join_request_card.dart';
 import 'language_select_page.dart';
 import '../l10n/app_localizations.dart';
-
+import '../services/subscription_service.dart';
+import '../core/widgets/subscription_expired_overlay.dart';
 
 class RequesterHomePage extends StatefulWidget {
   const RequesterHomePage({super.key});
@@ -73,7 +74,7 @@ class _RequesterHomePageState
 	
 	StreamSubscription<List<PurchaseDetails>>? _purchaseSub;
 	bool _isPremium = false;
-	bool _trialActive = false;
+	bool _trialActive = true;//false;
 	bool get _hasFullAccess => _isPremium || _trialActive;
 	int _trialDaysLeft = 0;
 	
@@ -81,15 +82,22 @@ class _RequesterHomePageState
 	void initState() {
 		WidgetsBinding.instance.addObserver(this);
 		super.initState();
-		FCMService.initialize();
 		_homeDataFuture = HomeDataService.loadHomeData();
-		_loadLocators();
-		_loadGroupCode();
-		unawaited(_initTrial());
+		
+		unawaited(_startHome());
 		unawaited(_loadVersion());
 		unawaited(_checkForUpdate());
 		
-		_purchaseSub = InAppPurchase.instance.purchaseStream.listen((purchases) async {
+		_timeRefreshTimer = Timer.periodic(
+			const Duration(minutes: 1),
+			(_) {
+				if (!mounted) return;
+				setState(() {});
+			},
+		);
+		
+	
+		/*_purchaseSub = InAppPurchase.instance.purchaseStream.listen((purchases) async {
 	for (final purchase in purchases) {
     //print("PURCHASE STATUS: ${purchase.status}");
 
@@ -102,23 +110,14 @@ class _RequesterHomePageState
 				setState(() {
 					_isPremium = true;
 				});
-			}
-			
+			}			
     }
-
     if (purchase.pendingCompletePurchase) {
       await InAppPurchase.instance.completePurchase(purchase);
     }
   }
-});
+});*/
 		
-		_timeRefreshTimer = Timer.periodic(
-			const Duration(minutes: 1),
-			(_) {
-				if (!mounted) return;
-				setState(() {});
-			},
-		);
 	}
 	
 	@override
@@ -143,6 +142,20 @@ class _RequesterHomePageState
 				state == AppLifecycleState.detached) {
 			await _removeActiveWatchers();
 		}
+	}	
+	
+	Future<void> _startHome() async {
+		await _initTrial();
+
+		await _loadGroupCode();
+
+		if (!_hasFullAccess) {
+			print("BEACON SUBSCRIPTION => inactive, skip server listeners");
+			return;
+		}
+
+		await FCMService.initialize();
+		await _loadLocators();
 	}	
 	
 		Future<void> _loadVersion() async {
@@ -670,30 +683,19 @@ Future<void> _buy() async {
 	}
 	
 Future<void> _initTrial() async {
-  final prefs = await SharedPreferences.getInstance();
+	await SubscriptionService.markExpiredIfNeeded();
+  final info = await SubscriptionService.load();
 
-  const key = 'trialStartMs';
-  final now = DateTime.now().millisecondsSinceEpoch;
-
-  int start = prefs.getInt(key) ?? 0;
-
-  if (start == 0) {
-    start = now;
-    await prefs.setInt(key, start);
-  }
-
-  const trialDurationMs = 7 * 24 * 60 * 60 * 1000;//15 * 24 * 60 * 60 * 1000; // 7 gün
-
-  final active = (now - start) < trialDurationMs;
-	final remainingMs = trialDurationMs - (now - start);
-  final daysLeft = (remainingMs / (24 * 60 * 60 * 1000)).ceil();
-	
   if (!mounted) return;
+
   setState(() {
-    _trialActive = active;
-		_trialDaysLeft = active ? daysLeft : 0;
+    _isPremium = info.isPremium;
+    _trialActive = true;//?*?info.trialActive;
+    _trialDaysLeft = info.trialDaysLeft;
   });
-}		
+}
+
+
 	
 	Widget _buildNoGroupHome({
   required String requesterName,
@@ -1368,6 +1370,11 @@ Future<void> _initTrial() async {
 																			final isFull = activeLocatorCount >= maxLocators;
 																			return AppCard(
 																				onTap: () async {
+																					if (!_hasFullAccess) {
+																						//_showUpgradeDialog();
+																						return;
+																					}
+
 																					final changed = await Navigator.push<bool>(
 																						context,
 																						MaterialPageRoute(
@@ -1632,10 +1639,11 @@ Future<void> _initTrial() async {
 													child: Column(
 	crossAxisAlignment: CrossAxisAlignment.start,
 	children: [
-
+Row(
+        children: [
 		Text(
 			_isPremium
-					? "Premium active • unlimited scan and devices"
+					? "Premium active • "
 					: (_trialActive
 							? "Free trial $_trialDaysLeft days left"
 							: "Free mode "),
@@ -1646,18 +1654,19 @@ Future<void> _initTrial() async {
 			),
 		),
 
-		const SizedBox(height: 2),
+		const SizedBox(width: 24),
 
 		if (_appVersion.isNotEmpty)
 			Text(
 				"Version $_appVersion",
 				style: TextStyle(
 					color: Colors.white.withOpacity(0.4),
-					fontSize: 11,
+					fontSize: 13,
 					fontWeight: FontWeight.w500,
 				),
 			),
-
+],
+),
 		const SizedBox(height: 4),
 
 		Row(
@@ -1685,7 +1694,7 @@ Future<void> _initTrial() async {
 									"Feedback",
 									style: TextStyle(
 										color: const Color(0xFF8FD8FF).withOpacity(0.50),
-										fontSize: 11,
+										fontSize: 13,
 										fontWeight: FontWeight.w500,
 									),
 								),
@@ -1725,7 +1734,7 @@ Future<void> _initTrial() async {
 									"Other Apps",
 									style: TextStyle(
 										color: const Color(0xFF8FD8FF).withOpacity(0.50),
-										fontSize: 11,
+										fontSize: 13,
 										fontWeight: FontWeight.w500,
 									),
 								),
@@ -1740,12 +1749,12 @@ Future<void> _initTrial() async {
 ),
 													
 												),
-												const SizedBox(width: 12),
+												/*const SizedBox(width: 12),
 												if (!_isPremium)
 													ElevatedButton(
 														onPressed: _buy,
 														child: const Text("Go Premium"),
-													),
+													),*/
 											],
 										),
 										
@@ -1817,6 +1826,10 @@ Future<void> _initTrial() async {
 						});
 					},		
 				),	
+				if (!_hasFullAccess)
+					SubscriptionExpiredOverlay(
+						onUpgrade: _buy,
+					),
 			],
 		);
   }
