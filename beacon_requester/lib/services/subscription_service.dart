@@ -109,11 +109,8 @@ static Future<void> activateLifetime() async {
   });
 }	
 static Future<void> markExpiredIfNeeded() async {
+print("markExpiredIfNeeded called");
   final groupId = await GroupService.getLocalGroupId();
-
-  if (groupId == null || groupId.isEmpty) {
-    return;
-  }
 
   final doc = await _firestore
       .collection('groups')
@@ -123,17 +120,20 @@ static Future<void> markExpiredIfNeeded() async {
   final data = doc.data();
 
   if (data == null) return;
+print("markExpiredIfNeeded data is not null");
 
   final purchaseStatus = data['purchaseStatus'];
   final planStatus = data['planStatus'];
   final trialEndsAt = data['trialEndsAt'];
 
-  if (purchaseStatus == 'lifetime') return;
-  if (planStatus != 'trial') return;
-  if (trialEndsAt is! Timestamp) return;
+  if (purchaseStatus == 'lifetime') {print("markExpiredIfNeeded purchaseStatus $purchaseStatus"); return;}
+  if (planStatus != 'trial') {print("markExpiredIfNeeded planStatus $planStatus"); return;}
+  if (trialEndsAt is! Timestamp) {print("markExpiredIfNeeded trialEndsAt $trialEndsAt"); return;}
 
   final expired =
       DateTime.now().isAfter(trialEndsAt.toDate());
+			
+	print("markExpiredIfNeeded expired $expired");
 
   if (!expired) return;
 
@@ -144,5 +144,6 @@ static Future<void> markExpiredIfNeeded() async {
     'planStatus': 'expired',
     'entitlementUpdatedAt': FieldValue.serverTimestamp(),
   });
+print("markExpiredIfNeeded expired signed");
 }
 }

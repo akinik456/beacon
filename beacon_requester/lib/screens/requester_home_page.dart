@@ -71,10 +71,11 @@ class _RequesterHomePageState
 	bool _isMaster = false;
 	Timer? _timeRefreshTimer;
 	String _appVersion = '';
+	bool _hasGroup = false;
 	
 	StreamSubscription<List<PurchaseDetails>>? _purchaseSub;
 	bool _isPremium = false;
-	bool _trialActive = true;//false;
+	bool _trialActive = false;
 	bool get _hasFullAccess => _isPremium || _trialActive;
 	int _trialDaysLeft = 0;
 	
@@ -82,11 +83,12 @@ class _RequesterHomePageState
 	void initState() {
 		WidgetsBinding.instance.addObserver(this);
 		super.initState();
+	print("state _hasFullAccess $_hasFullAccess ,_isPremium $_isPremium ,_trialActive $_trialActive"); 
 		_homeDataFuture = HomeDataService.loadHomeData();
 		
 		unawaited(_startHome());
 		unawaited(_loadVersion());
-		unawaited(_checkForUpdate());
+		//unawaited(_checkForUpdate());
 		
 		_timeRefreshTimer = Timer.periodic(
 			const Duration(minutes: 1),
@@ -145,18 +147,36 @@ class _RequesterHomePageState
 	}	
 	
 	Future<void> _startHome() async {
-		await _initTrial();
-
+	print("_startHome called");
 		await _loadGroupCode();
+
+		final groupId = await GroupService.getLocalGroupId();
+
+		if (groupId == null || groupId.isEmpty) {
+			print("BEACON SUBSCRIPTION => no group, skip subscription check");
+			return;
+		}
+		final isMaster = await GroupService.getLocalIsMaster();
+		
+		
+		
+
+		await _initTrial();
+	print("_startHome _initTrial ended");
 
 		if (!_hasFullAccess) {
 			print("BEACON SUBSCRIPTION => inactive, skip server listeners");
+			print(DateTime.now());
+			if (!mounted) return;
+			setState(() {});
+_hasGroup = true;
+  _isMaster = isMaster;
 			return;
 		}
 
 		await FCMService.initialize();
 		await _loadLocators();
-	}	
+	}
 	
 		Future<void> _loadVersion() async {
 		final info = await PackageInfo.fromPlatform();
@@ -216,7 +236,6 @@ class _RequesterHomePageState
 	
 	Future<void> _loadLocators() async {
 		_groupId = await GroupService.getLocalGroupId();
-		_isMaster = await GroupService.getLocalIsMaster();
 		_requesterId = await IdentityService.getRequesterId();
 
 		if (_groupId == null || _groupId!.isEmpty) {
@@ -689,9 +708,9 @@ Future<void> _initTrial() async {
   if (!mounted) return;
 
   setState(() {
-    _isPremium = info.isPremium;
-    _trialActive = true;//?*?info.trialActive;
-    _trialDaysLeft = info.trialDaysLeft;
+    _isPremium = info.isPremium; print("_initTrial _isPremium $_isPremium");
+    _trialActive = info.trialActive;print("_initTrial _trialActive $_trialActive");
+    _trialDaysLeft = info.trialDaysLeft;print("_initTrial _trialDaysLeft $_trialDaysLeft");
   });
 }
 
@@ -1161,14 +1180,14 @@ Future<void> _initTrial() async {
 										},
 									);
 								}
-								final hasGroup =
+								_hasGroup =
 										data['hasGroup'] == true;
 
 								final requesterName =
 										data['requesterName'] ?? '-';
 										
 
-								if (!hasGroup) {
+								if (!_hasGroup) {
 									return _buildNoGroupHome(
 										requesterName: requesterName,
 									);
@@ -1637,36 +1656,35 @@ Future<void> _initTrial() async {
 											children: [
 												Expanded(
 													child: Column(
-	crossAxisAlignment: CrossAxisAlignment.start,
-	children: [
-Row(
+					crossAxisAlignment: CrossAxisAlignment.start,
+					children: [
+				Row(
         children: [
-		Text(
-			_isPremium
-					? "Premium active • "
-					: (_trialActive
-							? "Free trial $_trialDaysLeft days left"
-							: "Free mode "),
-			style: const TextStyle(
-				color: Colors.white70,
-				fontSize: 13,
-				fontWeight: FontWeight.w600,
+					if (_hasGroup)
+						Text(
+						_isPremium
+							? "Premium active"
+							: (_trialActive
+									? "Free trial $_trialDaysLeft days left"
+									: "Trial expired"),
+							style: const TextStyle(
+								color: Colors.white70,
+								fontSize: 13,
+								fontWeight: FontWeight.w600,
+							),
+						),
+				const SizedBox(width: 24),
+				if (_appVersion.isNotEmpty)
+					Text(
+						"Version $_appVersion ",
+						style: TextStyle(
+							color: Colors.white.withOpacity(0.4),
+							fontSize: 13,
+							fontWeight: FontWeight.w500,
+						),
+					),
+				],
 			),
-		),
-
-		const SizedBox(width: 24),
-
-		if (_appVersion.isNotEmpty)
-			Text(
-				"Version $_appVersion",
-				style: TextStyle(
-					color: Colors.white.withOpacity(0.4),
-					fontSize: 13,
-					fontWeight: FontWeight.w500,
-				),
-			),
-],
-),
 		const SizedBox(height: 4),
 
 		Row(
@@ -1826,9 +1844,11 @@ Row(
 						});
 					},		
 				),	
-				if (!_hasFullAccess)
+				if (!_hasFullAccess && _hasGroup)
 					SubscriptionExpiredOverlay(
+						isMaster: _isMaster,
 						onUpgrade: _buy,
+						
 					),
 			],
 		);

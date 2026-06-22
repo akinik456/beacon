@@ -5,15 +5,18 @@ import '../theme/app_fonts.dart';
 import 'app_card.dart';
 
 class SubscriptionExpiredOverlay extends StatelessWidget {
+  final bool isMaster;
   final VoidCallback onUpgrade;
 
   const SubscriptionExpiredOverlay({
     super.key,
+    required this.isMaster,
     required this.onUpgrade,
   });
 
   @override
   Widget build(BuildContext context) {
+	print(DateTime.now());
     return Positioned.fill(
       child: Container(
         color: Colors.black.withValues(alpha: 0.65),
@@ -40,24 +43,27 @@ class SubscriptionExpiredOverlay extends StatelessWidget {
 
                   const SizedBox(height: 8),
 
-                  Text(//?*?
-                    'Upgrade to continue monitoring your family members.',
+                  Text(
+                    isMaster
+                        ? 'Upgrade to continue monitoring your family members.'
+                        : 'Ask the group owner to upgrade LynraFamily.',
                     style: AppFonts.body.copyWith(
                       color: AppColors.textSecondary,
                     ),
                     textAlign: TextAlign.center,
                   ),
 
-                  const SizedBox(height: 22),
-
-                  SizedBox(
-                    width: double.infinity,
-                    height: 52,
-                    child: ElevatedButton(
-                      onPressed: onUpgrade,
-                      child: const Text('Go Premium'),
+                  if (isMaster) ...[
+                    const SizedBox(height: 22),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 52,
+                      child: ElevatedButton(
+                        onPressed: onUpgrade,
+                        child: const Text('Go Premium'),
+                      ),
                     ),
-                  ),
+                  ],
                 ],
               ),
             ),
