@@ -37,7 +37,8 @@ import '../l10n/app_localizations.dart';
 import 'language_select_page.dart';
 import '../services/native_presence_service.dart';
 import '../services/locator_fcm_service.dart';
-
+import '../services/subscription_service.dart';
+import '../core/widgets/locator_subscription_expired_overlay.dart';
 
 class LocatorHomePage extends StatefulWidget {
   const LocatorHomePage({super.key});
@@ -54,31 +55,58 @@ class _LocatorHomePageState extends State<LocatorHomePage>
 	Map<String, dynamic>? _callMeData;
 	List<Map<String, dynamic>> _pendingCallMeQueue = [];
 	final List<StreamSubscription> _subscriptions = [];
-
+	bool _hasGroup = false;
+	bool _hasFullAccess = true;
 	//MotionService.start();
 
  @override
 void initState() {
   super.initState();
-	FCMService.initialize();
-  _startNativePresenceIfAllowed();
 
-  LocatorSettingsService.startListeners();
-	
-	ActiveWatcherService.startUiOnly();
-	
-	unawaited(_loadVersion());
-	
-	unawaited(_checkForUpdate());
-	
-	_listenCallMe();
+  unawaited(_startLocatorHome());
+
+  unawaited(_loadVersion());
+  unawaited(_checkForUpdate());
 
   WidgetsBinding.instance.addPostFrameCallback((_) {
     _checkPermissionsAndWarn();
   });
-  
 }
+Future<void> _startLocatorHome() async {
+  final groupId =
+      await IdentityService.getGroupId();
 
+  final hasGroup =
+      groupId != null && groupId.isNotEmpty;
+
+  final hasFullAccess = hasGroup
+      ? await SubscriptionService.hasFullAccess()
+      : true;
+
+  if (!mounted) return;
+
+  setState(() {
+    _hasGroup = hasGroup;
+    _hasFullAccess = hasFullAccess;
+  });
+
+  if (!hasFullAccess) {
+    print(
+      "BEACON SUBSCRIPTION => inactive, skip locator services",
+    );
+    return;
+  }
+
+  await FCMService.initialize();
+
+  _startNativePresenceIfAllowed();
+
+  LocatorSettingsService.startListeners();
+
+  ActiveWatcherService.startUiOnly();
+
+  _listenCallMe();
+}
   @override
   void dispose() {
     _presenceTimer?.cancel();
@@ -888,8 +916,10 @@ Future<void> _editLocatorName(
   setState(() {});
 }
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+Widget build(BuildContext context) {
+  return Stack(
+    children: [
+      Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
         child: FutureBuilder<Map<String, String>>(
@@ -1146,8 +1176,15 @@ Future<void> _editLocatorName(
           },
         ),
       ),
-    );
-  }
+			
+			
+    ),
+
+      if (!_hasFullAccess && _hasGroup)
+        const LocatorSubscriptionExpiredOverlay(),
+    ],
+  );
+}
 void openFeedbackMenu() {
   showModalBottomSheet(
     context: context,
