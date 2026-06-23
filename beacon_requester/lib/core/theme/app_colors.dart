@@ -8,9 +8,6 @@ class AppColors {
   static const card = Color(0xFF111827);
 
   static const primary = Color(0xFF22D3EE);
-  static const primary1 = Color(0xFF0bd4f2);
-  static const primary2 = Color(0xFF6ce0f2);
-  static const primary3 = Color(0xFFbfeaf0);
 	
 	
   static const accent = Color(0xFF14B8A6);

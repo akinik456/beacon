@@ -99,26 +99,51 @@ class _RequesterHomePageState
 		);
 		
 	
-		/*_purchaseSub = InAppPurchase.instance.purchaseStream.listen((purchases) async {
-	for (final purchase in purchases) {
-    //print("PURCHASE STATUS: ${purchase.status}");
+		_purchaseSub =
+    InAppPurchase.instance.purchaseStream.listen((purchases) async {
+  for (final purchase in purchases) {
+    print(
+      "BEACON IAP => product=${purchase.productID} "
+      "status=${purchase.status}",
+    );
 
     if (purchase.status == PurchaseStatus.purchased ||
         purchase.status == PurchaseStatus.restored) {
-				await PremiumStore.setPremium(true);
-      //print("PURCHASE OK: ${purchase.productID}");
-			
-			if (mounted) {
-				setState(() {
-					_isPremium = true;
-				});
-			}			
+      final purchaseId = purchase.purchaseID;
+
+      if (purchaseId == null || purchaseId.isEmpty) {
+        print(
+          "BEACON IAP => missing purchaseId "
+          "${purchase.productID}",
+        );
+      } else {
+        await SubscriptionService.processPurchase(
+          productId: purchase.productID,
+          purchaseId: purchaseId,
+        );
+
+        if (purchase.productID == 'lynrafamily_lifetime' &&
+            mounted) {
+          setState(() {
+            _isPremium = true;
+            _trialActive = false;
+          });
+        }
+
+        print(
+          "BEACON IAP => purchase processed "
+          "${purchase.productID}",
+        );
+      }
     }
+
     if (purchase.pendingCompletePurchase) {
-      await InAppPurchase.instance.completePurchase(purchase);
+      await InAppPurchase.instance.completePurchase(
+        purchase,
+      );
     }
   }
-});*/
+});
 		
 	}
 	
@@ -127,6 +152,7 @@ class _RequesterHomePageState
 		WidgetsBinding.instance.removeObserver(this);
 		_removeActiveWatchers();
 		_timeRefreshTimer?.cancel();
+		_purchaseSub?.cancel();
 		super.dispose();
 	}
 	
@@ -157,6 +183,7 @@ class _RequesterHomePageState
 			return;
 		}
 		final isMaster = await GroupService.getLocalIsMaster();
+		_isMaster = isMaster;
 		
 		
 		
@@ -169,8 +196,7 @@ class _RequesterHomePageState
 			print(DateTime.now());
 			if (!mounted) return;
 			setState(() {});
-_hasGroup = true;
-  _isMaster = isMaster;
+			_hasGroup = true;
 			return;
 		}
 
@@ -683,23 +709,51 @@ _hasGroup = true;
 		);
 	}
 
-Future<void> _buy() async {
-		const ids = <String>{'premium_unlock'};
-		final response = await InAppPurchase.instance.queryProductDetails(ids);
+Future<void> _buy(String productId) async {
+  print("BEACON IAP => query start productId=$productId");
 
-		if (response.productDetails.isEmpty) {
-			print("Product not found");
-			return;
-		}
+  final response =
+      await InAppPurchase.instance.queryProductDetails({
+    productId,
+  });
 
-		final product = response.productDetails.first;
+  if (response.productDetails.isEmpty) {
+    print(
+      "BEACON IAP => Product not found "
+      "notFound=${response.notFoundIDs}",
+    );
+    return;
+  }
 
-		final purchaseParam = PurchaseParam(productDetails: product);
+  final product = response.productDetails.first;
 
-		await InAppPurchase.instance.buyNonConsumable(
-			purchaseParam: purchaseParam,
-		);
-	}
+  print(
+    "BEACON IAP => found product "
+    "${product.id} ${product.price}",
+  );
+
+  final purchaseParam = PurchaseParam(
+    productDetails: product,
+  );
+
+  if (productId == 'lynrafamily_lifetime') {
+    await InAppPurchase.instance.buyNonConsumable(
+      purchaseParam: purchaseParam,
+    );
+    return;
+  }
+
+  if (productId == 'extra_requester_1' ||
+      productId == 'extra_member_1') {
+    await InAppPurchase.instance.buyConsumable(
+      purchaseParam: purchaseParam,
+      autoConsume: true,
+    );
+    return;
+  }
+
+  print("BEACON IAP => unknown productId=$productId");
+}
 	
 Future<void> _initTrial() async {
 	await SubscriptionService.markExpiredIfNeeded();
@@ -714,7 +768,122 @@ Future<void> _initTrial() async {
   });
 }
 
+Future<void> _showPurchaseMenu() async {
+  await showDialog(
+    context: context,
+    builder: (dialogContext) {
+      Widget purchaseItem({
+        required IconData icon,
+        required String title,
+        required String subtitle,
+        required String productId,
+      }) {
+        return AppCard(
+          padding: const EdgeInsets.all(14),
+          onTap: () {
+            Navigator.pop(dialogContext);
+            _buy(productId);
+          },
+          child: Row(
+            children: [
+              Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(
+                  color: AppColors.primary.withValues(alpha: 0.14),
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                child: Icon(
+                  icon,
+                  color: AppColors.primary,
+                  size: 24,
+                ),
+              ),
 
+              const SizedBox(width: 12),
+
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: AppFonts.subtitle.copyWith(
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+
+                    const SizedBox(height: 4),
+
+                    Text(
+                      subtitle,
+                      style: AppFonts.caption.copyWith(
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(width: 8),
+
+              const Icon(
+                Icons.chevron_right_rounded,
+                color: AppColors.textSecondary,
+              ),
+            ],
+          ),
+        );
+      }
+
+      return AlertDialog(
+        backgroundColor: AppColors.surface,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(22),
+        ),
+        title: Text(
+          'Purchase',
+          style: AppFonts.title.copyWith(
+            color: AppColors.primary,
+          ),
+        ),
+        content: SizedBox(
+          width: double.maxFinite,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (!_isPremium)
+                purchaseItem(
+                  icon: Icons.lock_open_rounded,
+                  title: 'Lifetime access',
+                  subtitle: 'Unlock LynraFamily for this group.',
+                  productId: 'lynrafamily_lifetime',
+                ),
+
+              if (_isPremium) ...[
+                purchaseItem(
+                  icon: Icons.person_add_alt_1_rounded,
+                  title: 'Add requester',
+                  subtitle: 'Allow one more requester.',
+                  productId: 'extra_requester_1',
+                ),
+
+                const SizedBox(height: 12),
+
+                purchaseItem(
+                  icon: Icons.group_add_rounded,
+                  title: 'Add member',
+                  subtitle: 'Allow one more member.',
+                  productId: 'extra_member_1',
+                ),
+              ],
+            ],
+          ),
+        ),
+      );
+    },
+  );
+}
 	
 	Widget _buildNoGroupHome({
   required String requesterName,
@@ -1635,151 +1804,144 @@ Future<void> _initTrial() async {
         ),
       ),
     ),
-		Positioned(
+								Positioned(
   left: 2,
   right: 2,
   bottom: 2,
-  child: Material(
+	child: Material(
     color: Colors.transparent,
-    child: Padding(
-									padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-									child: Container(
-										padding: const EdgeInsets.all(14),
-										decoration: BoxDecoration(
-											color: Colors.white.withValues(alpha: 0.08),
-											borderRadius: BorderRadius.circular(18),
-											border: Border.all(
-												color: Colors.white.withValues(alpha: 0.12),
-											),											
-										),
-										child: Row(
-											children: [
-												Expanded(
-													child: Column(
-					crossAxisAlignment: CrossAxisAlignment.start,
-					children: [
-				Row(
+  child: Padding(
+    padding: const EdgeInsets.fromLTRB(4, 0, 4, 4),
+    child: AppCard(
+      padding: const EdgeInsets.all(6),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-					if (_hasGroup)
-						Text(
-						_isPremium
-							? "Premium active"
-							: (_trialActive
-									? "Free trial $_trialDaysLeft days left"
-									: "Trial expired"),
-							style: const TextStyle(
-								color: Colors.white70,
-								fontSize: 13,
-								fontWeight: FontWeight.w600,
-							),
-						),
-				const SizedBox(width: 24),
-				if (_appVersion.isNotEmpty)
-					Text(
-						"Version $_appVersion ",
-						style: TextStyle(
-							color: Colors.white.withOpacity(0.4),
-							fontSize: 13,
-							fontWeight: FontWeight.w500,
-						),
-					),
-				],
-			),
-		const SizedBox(height: 4),
+          Row(
+            children: [
+              if (_hasGroup) ...[
+                Text(
+                  _isPremium
+                      ? "Premium active"
+                      : (_trialActive
+                          ? "Free trial $_trialDaysLeft days left"
+                          : "Trial expired"),
+                  style: AppFonts.caption.copyWith(
+                    color: Colors.white70,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+								],
 
-		Row(
-			children: [
+              const SizedBox(width: 32),
+						
+              if (_appVersion.isNotEmpty)
+                Text(
+                  "Version $_appVersion",
+                  style: AppFonts.caption.copyWith(
+                    color: Colors.white.withValues(alpha: 0.4),
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
 
-				InkWell(
-					onTap: () {
-						openFeedbackMenu();
-					},
-					borderRadius: BorderRadius.circular(20),
-					child: Padding(
-						padding: const EdgeInsets.symmetric(
-							horizontal: 4,
-							vertical: 2,
-						),
-						child: Row(
-							children: [
-								Icon(
-									Icons.chat_bubble_outline_rounded,
-									size: 13,
-									color: const Color(0xFF8FD8FF).withOpacity(0.50),
-								),
-								const SizedBox(width: 4),
-								Text(
-									"Feedback",
-									style: TextStyle(
-										color: const Color(0xFF8FD8FF).withOpacity(0.50),
-										fontSize: 13,
-										fontWeight: FontWeight.w500,
-									),
-								),
-							],
-						),
-					),
-				),
+              const Spacer(),
 
-				const SizedBox(width: 10),
+              if (_isMaster)
+                TextButton(
+                  onPressed: _showPurchaseMenu,
+                  child: Text(
+                    'Purchase',
+                    style: AppFonts.button.copyWith(
+                      color: AppColors.primary,
+                      fontSize: 16,
+                    ),
+                  ),
+                ),
+            ],
+          ),
 
-				InkWell(
-					onTap: () async {
-	final Uri url = Uri.parse(
-                'https://play.google.com/store/apps/developer?id=Lynra',
-	);
+          const SizedBox(height: 2),
 
-	await launchUrl(
-		url,
-		mode: LaunchMode.externalApplication,
-	);
-},
-					borderRadius: BorderRadius.circular(20),
-					child: Padding(
-						padding: const EdgeInsets.symmetric(
-							horizontal: 4,
-							vertical: 2,
-						),
-						child: Row(
-							children: [
-								Icon(
-									Icons.apps_rounded,
-									size: 13,
-									color: const Color(0xFF8FD8FF).withOpacity(0.50),
-								),
-								const SizedBox(width: 4),
-								Text(
-									"Other Apps",
-									style: TextStyle(
-										color: const Color(0xFF8FD8FF).withOpacity(0.50),
-										fontSize: 13,
-										fontWeight: FontWeight.w500,
-									),
-								),
-							],
-						),
-					),
-				),
+          Row(
+            children: [
+              InkWell(
+                onTap: openFeedbackMenu,
+                borderRadius: BorderRadius.circular(20),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 2,
+                    vertical: 2,
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.chat_bubble_outline_rounded,
+                        size: 13,
+                        color: const Color(0xFF8FD8FF)
+                            .withValues(alpha: 0.50),
+                      ),
+                      const SizedBox(width: 16),
+                      Text(
+                        "Feedback",
+                        style: AppFonts.caption.copyWith(
+                          color: const Color(0xFF8FD8FF)
+                              .withValues(alpha: 0.50),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
 
-			],
-		),
-	],
+              const SizedBox(width: 48),
+
+              InkWell(
+                onTap: () async {
+                  final Uri url = Uri.parse(
+                    'https://play.google.com/store/apps/developer?id=Lynra',
+                  );
+
+                  await launchUrl(
+                    url,
+                    mode: LaunchMode.externalApplication,
+                  );
+                },
+                borderRadius: BorderRadius.circular(20),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 4,
+                    vertical: 2,
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.apps_rounded,
+                        size: 13,
+                        color: const Color(0xFF8FD8FF)
+                            .withValues(alpha: 0.50),
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        "Other Apps",
+                        style: AppFonts.caption.copyWith(
+                          color: const Color(0xFF8FD8FF)
+                              .withValues(alpha: 0.50),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    ),
+  ),
+	),
 ),
-													
-												),
-												/*const SizedBox(width: 12),
-												if (!_isPremium)
-													ElevatedButton(
-														onPressed: _buy,
-														child: const Text("Go Premium"),
-													),*/
-											],
-										),
-										
-									),
-								),
-								),
-								),
+								
+
 		
 								
 		
@@ -1847,8 +2009,9 @@ Future<void> _initTrial() async {
 				if (!_hasFullAccess && _hasGroup)
 					SubscriptionExpiredOverlay(
 						isMaster: _isMaster,
-						onUpgrade: _buy,
-						
+						onUpgrade: () {
+							_showPurchaseMenu();
+						},
 					),
 			],
 		);

@@ -18,3 +18,11 @@ lynrafamily_members
 joinngrup snackbar
 
 Trial abuse prevention
+
+isminiz -> isim
+
+loc. isminiz varken requester ---- gösteriyor
+
+requester snackbar butonların altında kalıyor
+
+requester üye ekle font çok kalın

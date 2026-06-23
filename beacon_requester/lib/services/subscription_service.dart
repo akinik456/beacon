@@ -109,7 +109,13 @@ static Future<void> activateLifetime() async {
   });
 }	
 static Future<void> markExpiredIfNeeded() async {
-print("markExpiredIfNeeded called");
+  final isMaster =
+      await GroupService.getLocalIsMaster();
+
+  if (!isMaster) {
+	print("markExpiredIfNeeded isMaster $isMaster");
+    return;
+  }
   final groupId = await GroupService.getLocalGroupId();
 
   final doc = await _firestore
@@ -120,7 +126,6 @@ print("markExpiredIfNeeded called");
   final data = doc.data();
 
   if (data == null) return;
-print("markExpiredIfNeeded data is not null");
 
   final purchaseStatus = data['purchaseStatus'];
   final planStatus = data['planStatus'];
@@ -145,5 +150,96 @@ print("markExpiredIfNeeded data is not null");
     'entitlementUpdatedAt': FieldValue.serverTimestamp(),
   });
 print("markExpiredIfNeeded expired signed");
+}
+
+static Future<void> addRequesterSlot() async {
+  final groupId = await GroupService.getLocalGroupId();
+
+  if (groupId == null || groupId.isEmpty) {
+    return;
+  }
+
+  await _firestore.collection('groups').doc(groupId).update({
+    'maxRequesters': FieldValue.increment(1),
+    'entitlementUpdatedAt': FieldValue.serverTimestamp(),
+  });
+}
+
+static Future<void> addMemberSlot() async {
+  final groupId = await GroupService.getLocalGroupId();
+
+  if (groupId == null || groupId.isEmpty) {
+    return;
+  }
+
+  await _firestore.collection('groups').doc(groupId).update({
+    'maxLocators': FieldValue.increment(1),
+    'entitlementUpdatedAt': FieldValue.serverTimestamp(),
+  });
+}
+static Future<void> processPurchase({
+  required String productId,
+  required String purchaseId,
+}) async {
+  final groupId = await GroupService.getLocalGroupId();
+
+  if (groupId == null || groupId.isEmpty) {
+    print("BEACON IAP => groupId missing");
+    return;
+  }
+
+  final requesterId = await IdentityService.getRequesterId();
+
+  final groupRef =
+      _firestore.collection('groups').doc(groupId);
+
+  final purchaseRef = groupRef
+      .collection('purchases')
+      .doc(purchaseId);
+
+  await _firestore.runTransaction((tx) async {
+    final purchaseDoc = await tx.get(purchaseRef);
+
+    if (purchaseDoc.exists) {
+      print(
+        "BEACON IAP => purchase already processed $purchaseId",
+      );
+      return;
+    }
+
+    tx.set(purchaseRef, {
+      'purchaseId': purchaseId,
+      'productId': productId,
+      'requesterId': requesterId,
+      'processedAt': FieldValue.serverTimestamp(),
+    });
+
+    if (productId == 'lynrafamily_lifetime') {
+      tx.update(groupRef, {
+        'planStatus': 'active',
+        'purchaseStatus': 'lifetime',
+        'purchaseOwnerRequesterId': requesterId,
+        'purchasedAt': FieldValue.serverTimestamp(),
+        'entitlementUpdatedAt': FieldValue.serverTimestamp(),
+      });
+      return;
+    }
+
+    if (productId == 'extra_requester_1') {
+      tx.update(groupRef, {
+        'maxRequesters': FieldValue.increment(1),
+        'entitlementUpdatedAt': FieldValue.serverTimestamp(),
+      });
+      return;
+    }
+
+    if (productId == 'extra_member_1') {
+      tx.update(groupRef, {
+        'maxLocators': FieldValue.increment(1),
+        'entitlementUpdatedAt': FieldValue.serverTimestamp(),
+      });
+      return;
+    }
+  });
 }
 }
