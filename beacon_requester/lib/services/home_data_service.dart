@@ -17,6 +17,7 @@ class HomeDataService {
     try {
       requesterId = await IdentityService.getRequesterId();
       requesterName = await IdentityService.getRequesterName();
+			print("loadHomeData IdentityService.getRequesterName");
 
       if (requesterId == null ||
           requesterId.isEmpty ||

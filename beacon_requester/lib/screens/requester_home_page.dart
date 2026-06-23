@@ -302,6 +302,7 @@ class _RequesterHomePageState
 		
 		final _requesterName = await IdentityService.getRequesterName();
 		final _requesterCode = await IdentityService.getRequesterCode();
+print("_addActiveWatchers IdentityService.getRequesterName");
 
 		for (final locator in _locators) {
 			final locatorId = locator['locatorId'];
@@ -558,6 +559,7 @@ class _RequesterHomePageState
 
 		ScaffoldMessenger.of(context).showSnackBar(
 			SnackBar(
+				behavior: SnackBarBehavior.floating,
 				content: Text(l10n.saved),
 			),
 		);
@@ -567,7 +569,7 @@ class _RequesterHomePageState
 		final l10n = AppLocalizations.of(context)!;
 		final currentName =
 			await IdentityService.getRequesterName();
-
+print("_editRequesterName IdentityService.getRequesterName");
 		final controller = TextEditingController(
 			text: currentName ?? '',
 		);
@@ -638,6 +640,7 @@ class _RequesterHomePageState
 
 		ScaffoldMessenger.of(context).showSnackBar(
 			SnackBar(
+				behavior: SnackBarBehavior.floating,
 				content: Text(l10n.saved),
 			),
 		);
@@ -1142,53 +1145,53 @@ Future<void> _showPurchaseMenu() async {
 
 
   @override
-  Widget build(BuildContext context) {
-	final l10n = AppLocalizations.of(context)!;
-	final langCode =
-    Localizations.localeOf(context).languageCode.toUpperCase();
-    return Stack(
-			children: [
-				Scaffold(
-					backgroundColor: AppColors.background,
-					body: SafeArea(
-						child: FutureBuilder<Map<String, dynamic>?>(
-							future: _homeDataFuture,
-							builder: (context, snapshot) {
-								if (snapshot.connectionState == ConnectionState.waiting) {
-									return const Center(
-										child: CircularProgressIndicator(
-											color: AppColors.primary,
-										),
-									);
-								}
-								final data = snapshot.data;
-									if (data == null) {// ?*?
-										return Center(
-											child: Padding(
-												padding: const EdgeInsets.all(24),
-												child: Text(
-													'Home data could not be loaded.',
-													style: AppFonts.body.copyWith(
-														color: AppColors.textSecondary,
+	Widget build(BuildContext context) {
+  final l10n = AppLocalizations.of(context)!;
+  final langCode = Localizations.localeOf(context).languageCode.toUpperCase();
+		return Scaffold(
+			backgroundColor: AppColors.background,
+				body: Stack(
+					children: [
+						SafeArea(
+							child: Padding(
+								padding: const EdgeInsets.only(bottom: 80),
+									child: FutureBuilder<Map<String, dynamic>?>(				
+									future: _homeDataFuture,
+										builder: (context, snapshot) {
+											if (snapshot.connectionState == ConnectionState.waiting) {
+												return const Center(
+													child: CircularProgressIndicator(
+													color: AppColors.primary,
 													),
-													textAlign: TextAlign.center,
-												),
-											),
-										);
-									}						
-									if (data['isPending'] == true) {//?*? nogrup kontrol
+												);
+											}
+										final data = snapshot.data;
+											if (data == null) {// ?*?
+												return Center(
+													child: Padding(
+														padding: const EdgeInsets.all(24),
+														child: Text(
+															'Home data could not be loaded.',
+															style: AppFonts.body.copyWith(
+																color: AppColors.textSecondary,
+															),
+															textAlign: TextAlign.center,
+														),
+													),
+												);
+											}						
+										if (data['isPending'] == true) {//?*? nogrup kontrol
 										final groupId = data['groupId'];
 										final requesterId = data['requesterId'];
-
-										return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-											stream: FirebaseFirestore.instance
+											return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+												stream: FirebaseFirestore.instance
 													.collection('groups')
 													.doc(groupId)
 													.collection('join_requests')
 													.doc(requesterId)
 													.snapshots(),
-											builder: (context, joinSnapshot) {
-												if (joinSnapshot.hasData && !joinSnapshot.data!.exists) {
+												builder: (context, joinSnapshot) {
+													if (joinSnapshot.hasData && !joinSnapshot.data!.exists) {
 															Future.microtask(() async {
 																final deviceDoc = await FirebaseFirestore.instance
 																		.collection('groups')
@@ -1196,32 +1199,25 @@ Future<void> _showPurchaseMenu() async {
 																		.collection('devices')
 																		.doc(requesterId)
 																		.get();
-
-																if (deviceDoc.exists) {
+																	if (deviceDoc.exists) {
+																		if (!context.mounted) return;
+																			Navigator.pushReplacement(
+																				context,
+																				MaterialPageRoute(
+																					builder: (_) => const RequesterHomePage(),
+																				),
+																			);
+																		return;
+																	}
+																await GroupService.clearLocalGroup();
 																	if (!context.mounted) return;
-
 																	Navigator.pushReplacement(
 																		context,
 																		MaterialPageRoute(
 																			builder: (_) => const RequesterHomePage(),
 																		),
 																	);
-
-																	return;
-																}
-
-																await GroupService.clearLocalGroup();
-
-																if (!context.mounted) return;
-
-																Navigator.pushReplacement(
-																	context,
-																	MaterialPageRoute(
-																		builder: (_) => const RequesterHomePage(),
-																	),
-																);
 															});
-
 														return const SizedBox.shrink();
 													}
 
@@ -1579,7 +1575,7 @@ Future<void> _showPurchaseMenu() async {
 																					}
 																				},
 																				child: SizedBox(
-																					height: 64,
+																					height: 44,
 																					child: Row(
 																						children: [
 																							const Icon(
@@ -1592,10 +1588,12 @@ Future<void> _showPurchaseMenu() async {
 																								'${pairedLocators.length} ${l10n.pairedMember}',
 																								style: AppFonts.subtitle.copyWith(
 																									color: AppColors.primary,
+																									fontWeight: FontWeight.w600,
+																									fontSize: 16,
 																								),
 																							),
 																							const Spacer(),
-																											Container(
+																								Container(
 																								padding: const EdgeInsets.symmetric(
 																									horizontal: 12,
 																									vertical: 2,
@@ -1615,16 +1613,20 @@ Future<void> _showPurchaseMenu() async {
 																												children: [
 																													TextSpan(
 																														text: l10n.addMember,
-																														style: AppFonts.button.copyWith(
+																														style: AppFonts.subtitle.copyWith(
 																															color: AppColors.primary,
+																															fontWeight: FontWeight.w600,
+																															fontSize: 14,
 																														),
 																													),
 
 																													if (isFull)
 																														TextSpan(
 																															text: '\n(${l10n.memberlimitreached})',
-																															style: AppFonts.button.copyWith(
+																															style: AppFonts.subtitle.copyWith(
 																																color: AppColors.textSecondary,
+																																fontWeight: FontWeight.w600,
+																																fontSize: 14,
 																															),
 																														),
 																												],
@@ -1785,6 +1787,7 @@ Future<void> _showPurchaseMenu() async {
 
 																									ScaffoldMessenger.of(context).showSnackBar(
 																										SnackBar(
+																											behavior: SnackBarBehavior.floating,
 																											content: Text(l10n.memberremoved),
 																										),
 																									);
@@ -1794,228 +1797,214 @@ Future<void> _showPurchaseMenu() async {
 																							);
 																						},
 																					),
+																				),
+																			],
+																		),
+																	);
+																},
+															);
+														},
+													),
+												),
+											),
+											Positioned(
+												left: 2,
+												right: 2,
+												bottom: 2,
+												child: Material(
+													color: Colors.transparent,
+														child: Padding(
+															padding: const EdgeInsets.fromLTRB(4, 0, 4, 4),
+																child: AppCard(
+																	padding: const EdgeInsets.all(6),
+																		child: Column(
+																			crossAxisAlignment: CrossAxisAlignment.start,
+																				children: [
+																					Row(
+																						children: [
+																							if (_hasGroup) ...[
+																								Text(
+																									_isPremium
+																											? "Premium active"
+																											: (_trialActive
+																													? "Free trial $_trialDaysLeft days left"
+																													: "Trial expired"),
+																									style: AppFonts.caption.copyWith(
+																										color: Colors.white70,
+																										fontWeight: FontWeight.w600,
+																									),
+																								),
+																							],
+																							const SizedBox(width: 32),						
+																							if (_appVersion.isNotEmpty)
+																								Text(
+																									"Version $_appVersion",
+																									style: AppFonts.caption.copyWith(
+																										color: Colors.white.withValues(alpha: 0.4),
+																										fontWeight: FontWeight.w500,
+																									),
+																								),
+																								const Spacer(),
+																								if (_isMaster)
+																									TextButton(
+																										onPressed: _showPurchaseMenu,
+																										child: Text(
+																											'Purchase',
+																											style: AppFonts.button.copyWith(
+																												color: AppColors.primary,
+																												fontSize: 16,
+																											),
+																										),
+																									),
+																								],
+																							),
+																						const SizedBox(height: 2),
+																						Row(
+																							children: [
+																								InkWell(
+																									onTap: openFeedbackMenu,
+																									borderRadius: BorderRadius.circular(20),
+																									child: Padding(
+																										padding: const EdgeInsets.symmetric(
+																											horizontal: 2,
+																											vertical: 2,
+																										),
+																										child: Row(
+																											children: [
+																												Icon(
+																													Icons.chat_bubble_outline_rounded,
+																													size: 13,
+																													color: const Color(0xFF8FD8FF)
+																															.withValues(alpha: 0.50),
+																												),
+																												const SizedBox(width: 16),
+																												Text(
+																													"Feedback",
+																													style: AppFonts.caption.copyWith(
+																														color: const Color(0xFF8FD8FF)
+																																.withValues(alpha: 0.50),
+																													),
+																												),
+																											],
+																										),
+																									),
+																								),
+																								const SizedBox(width: 48),
+																								InkWell(
+																									onTap: () async {
+																										final Uri url = Uri.parse(
+																											'https://play.google.com/store/apps/developer?id=Lynra',
+																										);
+																										await launchUrl(
+																											url,
+																											mode: LaunchMode.externalApplication,
+																										);
+																									},
+																									borderRadius: BorderRadius.circular(20),
+																									child: Padding(
+																										padding: const EdgeInsets.symmetric(
+																											horizontal: 4,
+																											vertical: 2,
+																										),
+																										child: Row(
+																											children: [
+																												Icon(
+																													Icons.apps_rounded,
+																													size: 13,
+																													color: const Color(0xFF8FD8FF)
+																															.withValues(alpha: 0.50),
+																												),
+																												const SizedBox(width: 4),
+																												Text(
+																													"Other Apps",
+																													style: AppFonts.caption.copyWith(
+																														color: const Color(0xFF8FD8FF)
+																																.withValues(alpha: 0.50),
+																													),
+																												),
+																											],
+																										),
+																									),
+																								),
+																							],
+																						),
+																					],
+																				),
+																			),
+																		),
+																		),
+																	),
+																	if (_callMeData != null)
+																	CallMeOverlay(
+																		data: _callMeData!,
+																		onDismiss: () async {
+
+																			final callMeId =
+																					_callMeData!['callMeId'];
+
+																			final groupId =
+																					_callMeData!['groupId'];
+
+																			final requesterId =
+																					_callMeData!['targetRequesterId'];
+
+																			await FirebaseFirestore.instance
+																		.collection('groups')
+																		.doc(groupId)
+																		.collection('call_me')
+																		.doc(requesterId)
+																		.collection('items')
+																		.doc(callMeId)
+																		.delete();
+
+																			if (!mounted) return;
+
+																			setState(() {
+																				_pendingCallMeQueue.removeWhere(
+																	(x) => x['callMeId'] == callMeId,
+																);
+
+																_callMeData = _pendingCallMeQueue.isNotEmpty
+																		? _pendingCallMeQueue.first
+																		: null;
+																			});
+																		},
+																	),	
+																	if (_alertData != null)
+																	AlertOverlay(
+																		data: _alertData!,
+																		onDismiss: () async {
+																			final alertDocId = _alertData!['alertDocId'];
+																			final groupId = _alertData!['groupId'];
+																			final requesterId = _alertData!['targetRequesterId'];
+
+																			await FirebaseFirestore.instance
+																				.collection('groups')
+																				.doc(groupId)
+																				.collection('alerts')
+																				.doc(requesterId)
+																				.collection('items')
+																				.doc(alertDocId)
+																				.delete();
+
+																			if (!mounted) return;
+
+																			setState(() {
+																				_alertData = null;
+																			});
+																		},		
+																	),	
+																	if (!_hasFullAccess && _hasGroup)
+																	SubscriptionExpiredOverlay(
+																		isMaster: _isMaster,
+																		onUpgrade: () {
+																			_showPurchaseMenu();
+																		},
 																	),
 																],
 															),
 														);
-														},
-								);
-          },
-        ),
-      ),
-    ),
-								Positioned(
-  left: 2,
-  right: 2,
-  bottom: 2,
-	child: Material(
-    color: Colors.transparent,
-  child: Padding(
-    padding: const EdgeInsets.fromLTRB(4, 0, 4, 4),
-    child: AppCard(
-      padding: const EdgeInsets.all(6),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              if (_hasGroup) ...[
-                Text(
-                  _isPremium
-                      ? "Premium active"
-                      : (_trialActive
-                          ? "Free trial $_trialDaysLeft days left"
-                          : "Trial expired"),
-                  style: AppFonts.caption.copyWith(
-                    color: Colors.white70,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-								],
-
-              const SizedBox(width: 32),
-						
-              if (_appVersion.isNotEmpty)
-                Text(
-                  "Version $_appVersion",
-                  style: AppFonts.caption.copyWith(
-                    color: Colors.white.withValues(alpha: 0.4),
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-
-              const Spacer(),
-
-              if (_isMaster)
-                TextButton(
-                  onPressed: _showPurchaseMenu,
-                  child: Text(
-                    'Purchase',
-                    style: AppFonts.button.copyWith(
-                      color: AppColors.primary,
-                      fontSize: 16,
-                    ),
-                  ),
-                ),
-            ],
-          ),
-
-          const SizedBox(height: 2),
-
-          Row(
-            children: [
-              InkWell(
-                onTap: openFeedbackMenu,
-                borderRadius: BorderRadius.circular(20),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 2,
-                    vertical: 2,
-                  ),
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.chat_bubble_outline_rounded,
-                        size: 13,
-                        color: const Color(0xFF8FD8FF)
-                            .withValues(alpha: 0.50),
-                      ),
-                      const SizedBox(width: 16),
-                      Text(
-                        "Feedback",
-                        style: AppFonts.caption.copyWith(
-                          color: const Color(0xFF8FD8FF)
-                              .withValues(alpha: 0.50),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-
-              const SizedBox(width: 48),
-
-              InkWell(
-                onTap: () async {
-                  final Uri url = Uri.parse(
-                    'https://play.google.com/store/apps/developer?id=Lynra',
-                  );
-
-                  await launchUrl(
-                    url,
-                    mode: LaunchMode.externalApplication,
-                  );
-                },
-                borderRadius: BorderRadius.circular(20),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 4,
-                    vertical: 2,
-                  ),
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.apps_rounded,
-                        size: 13,
-                        color: const Color(0xFF8FD8FF)
-                            .withValues(alpha: 0.50),
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        "Other Apps",
-                        style: AppFonts.caption.copyWith(
-                          color: const Color(0xFF8FD8FF)
-                              .withValues(alpha: 0.50),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    ),
-  ),
-	),
-),
-								
-
-		
-								
-		
-		if (_callMeData != null)
-			CallMeOverlay(
-				data: _callMeData!,
-				onDismiss: () async {
-
-					final callMeId =
-							_callMeData!['callMeId'];
-
-					final groupId =
-							_callMeData!['groupId'];
-
-					final requesterId =
-							_callMeData!['targetRequesterId'];
-
-					await FirebaseFirestore.instance
-				.collection('groups')
-				.doc(groupId)
-				.collection('call_me')
-				.doc(requesterId)
-				.collection('items')
-				.doc(callMeId)
-				.delete();
-
-					if (!mounted) return;
-
-					setState(() {
-						_pendingCallMeQueue.removeWhere(
-			(x) => x['callMeId'] == callMeId,
-		);
-
-		_callMeData = _pendingCallMeQueue.isNotEmpty
-				? _pendingCallMeQueue.first
-				: null;
-					});
-				},
-			),
-	
-		if (_alertData != null)
-				AlertOverlay(
-					data: _alertData!,
-					onDismiss: () async {
-						final alertDocId = _alertData!['alertDocId'];
-						final groupId = _alertData!['groupId'];
-						final requesterId = _alertData!['targetRequesterId'];
-
-						await FirebaseFirestore.instance
-							.collection('groups')
-							.doc(groupId)
-							.collection('alerts')
-							.doc(requesterId)
-							.collection('items')
-							.doc(alertDocId)
-							.delete();
-
-						if (!mounted) return;
-
-						setState(() {
-							_alertData = null;
-						});
-					},		
-				),	
-				if (!_hasFullAccess && _hasGroup)
-					SubscriptionExpiredOverlay(
-						isMaster: _isMaster,
-						onUpgrade: () {
-							_showPurchaseMenu();
-						},
-					),
-			],
-		);
-  }
+													}
 void openFeedbackMenu() {
   showModalBottomSheet(
     context: context,

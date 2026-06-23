@@ -57,6 +57,7 @@ class _JoinGroupPageState extends State<JoinGroupPage> {
 
 	Future<void> _confirmJoin() async {
 	final _requesterName = await IdentityService.getRequesterName();
+print("_confirmJoin IdentityService.getRequesterName");
 
 		final groupId = await GroupService.joinGroup(
 			groupCode: codeCtrl.text,

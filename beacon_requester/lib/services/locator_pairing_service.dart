@@ -15,6 +15,7 @@ class LocatorPairingService {
       final requesterId = await IdentityService.getRequesterId();
 
       final requesterName = await IdentityService.getRequesterName();
+			print("sendPairingRequest IdentityService.getRequesterName");
 
       final requesterCode = await IdentityService.getRequesterCode();
 

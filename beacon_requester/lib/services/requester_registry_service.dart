@@ -34,6 +34,7 @@ class RequesterRegistryService {
 			final requesterCode = await IdentityService.getRequesterCode();
 
 			final requesterName = await IdentityService.getRequesterName();
+			print("registerRequester IdentityService.getRequesterName");
       
 			final token =
           await FirebaseMessaging.instance.getToken();

@@ -413,7 +413,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get yesterday => 'Yesterday';
 
   @override
-  String get yourname => 'Your name';
+  String get yourname => 'Name';
 
   @override
   String get yourrequest => 'Your request has been sent to the group master.';

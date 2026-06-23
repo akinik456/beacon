@@ -413,7 +413,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get yesterday => 'Dün';
 
   @override
-  String get yourname => 'İsminiz';
+  String get yourname => 'İsim';
 
   @override
   String get yourrequest => 'Talebiniz Grup Yöneticisine İletildi.';

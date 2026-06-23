@@ -894,7 +894,7 @@ abstract class AppLocalizations {
   /// No description provided for @yourname.
   ///
   /// In en, this message translates to:
-  /// **'Your name'**
+  /// **'Name'**
   String get yourname;
 
   /// No description provided for @yourrequest.

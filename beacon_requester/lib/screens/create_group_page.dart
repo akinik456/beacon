@@ -78,7 +78,8 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
 										
 										final _requesterName = await IdentityService.getRequesterName();
 										final _requesterCode = await IdentityService.getRequesterCode();
-										
+										print("_CreateGroupPageState IdentityService.getRequesterName");
+
 										
 										final groupId  =await GroupService.createGroup(
 											groupName: groupNameCtrl.text,
