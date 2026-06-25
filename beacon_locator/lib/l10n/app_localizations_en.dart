@@ -27,6 +27,21 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String watchingLocationSingle(Object name) {
+    return '$name is watching your location.';
+  }
+
+  @override
+  String watchingLocationDouble(Object name1, Object name2) {
+    return '$name1 and $name2 are watching your location.';
+  }
+
+  @override
+  String watchingLocationMultiple(Object count, Object name) {
+    return '$name and $count others are watching your location.';
+  }
+
+  @override
   String get aNewVer => 'A new version is available. Update now for the best experience.';
 
   @override

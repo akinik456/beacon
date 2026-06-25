@@ -123,6 +123,24 @@ abstract class AppLocalizations {
   /// **'{name} and {count} others are watching your location.'**
   String multipleWatchersWatchingYourLocation(Object count, Object name);
 
+  /// No description provided for @watchingLocationSingle.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} is watching your location.'**
+  String watchingLocationSingle(Object name);
+
+  /// No description provided for @watchingLocationDouble.
+  ///
+  /// In en, this message translates to:
+  /// **'{name1} and {name2} are watching your location.'**
+  String watchingLocationDouble(Object name1, Object name2);
+
+  /// No description provided for @watchingLocationMultiple.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} and {count} others are watching your location.'**
+  String watchingLocationMultiple(Object count, Object name);
+
   /// No description provided for @aNewVer.
   ///
   /// In en, this message translates to:

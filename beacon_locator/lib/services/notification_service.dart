@@ -1,4 +1,6 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'notification_text_service.dart';
+
 
 class NotificationService {
   NotificationService._();
@@ -73,18 +75,13 @@ class NotificationService {
     return;
   }
 
-  final title = 'Being watched';
+  final title =
+      await NotificationTextService.beingWatched();
 
-  late final String body;
-
-  if (names.length == 1) {
-    body = '${names[0]} is watching your location.';
-  } else if (names.length == 2) {
-    body = '${names[0]} and ${names[1]} are watching your location.';
-  } else {
-    body =
-        '${names[0]} and ${names.length - 1} others are watching your location.';
-  }
+  final body =
+      await NotificationTextService.watchingLocation(
+    names: names,
+  );
 
   await _plugin.show(
     _activeWatchersNotificationId,
@@ -94,7 +91,8 @@ class NotificationService {
       android: AndroidNotificationDetails(
         _activeWatchersChannelId,
         'Being watched',
-        channelDescription: 'Active watcher notifications',
+        channelDescription:
+            'Active watcher notifications',
         importance: Importance.low,
         priority: Priority.low,
         ongoing: true,

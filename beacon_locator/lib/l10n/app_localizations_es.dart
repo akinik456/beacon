@@ -27,6 +27,21 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String watchingLocationSingle(Object name) {
+    return '$name está viendo tu ubicación.';
+  }
+
+  @override
+  String watchingLocationDouble(Object name1, Object name2) {
+    return '$name1 y $name2 están viendo tu ubicación.';
+  }
+
+  @override
+  String watchingLocationMultiple(Object count, Object name) {
+    return '$name y $count personas más están viendo tu ubicación.';
+  }
+
+  @override
   String get aNewVer => 'Hay una nueva versión disponible. Actualiza ahora para disfrutar de la mejor experiencia.';
 
   @override

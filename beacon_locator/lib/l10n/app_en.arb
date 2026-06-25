@@ -6,6 +6,11 @@
 "isWatchingYourLocation": "{name} is watching your location.",
 "twoWatchersWatchingYourLocation": "{name1} and {name2} are watching your location.",
 "multipleWatchersWatchingYourLocation": "{name} and {count} others are watching your location.",
+"beingWatched": "Being watched",
+"watchingLocationSingle": "{name} is watching your location.",
+"watchingLocationDouble": "{name1} and {name2} are watching your location.",
+"watchingLocationMultiple": "{name} and {count} others are watching your location.",
+
 
 
 "aNewVer":														"A new version is available. Update now for the best experience.",

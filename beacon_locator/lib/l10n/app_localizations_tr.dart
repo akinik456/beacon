@@ -27,6 +27,21 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
+  String watchingLocationSingle(Object name) {
+    return '$name konumunu izliyor.';
+  }
+
+  @override
+  String watchingLocationDouble(Object name1, Object name2) {
+    return '$name1 ve $name2 konumunu izliyor.';
+  }
+
+  @override
+  String watchingLocationMultiple(Object count, Object name) {
+    return '$name ve $count kişi daha konumunu izliyor.';
+  }
+
+  @override
   String get aNewVer => 'Yeni bir sürüm mevcut. En iyi deneyim için şimdi güncelleyin.';
 
   @override
