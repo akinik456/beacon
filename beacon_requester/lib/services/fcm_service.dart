@@ -11,9 +11,7 @@ class FCMService {
 
   static Future<void> initialize() async {
 		try {
-			print("BEACON FCM => initialize start");
-
-			// Permission
+		// Permission
 			final settings = await _messaging.requestPermission();
 
 			print(
@@ -27,22 +25,18 @@ class FCMService {
 			
 			FirebaseMessaging.instance.onTokenRefresh.listen((newToken) async {
 				print("BEACON FCM => token refreshed => $newToken");
-
 			});
-
-			final requesterId =
-					await IdentityService.getRequesterId();
-
-			final topic = "requester_$requesterId";
-
-			print("BEACON FCM => subscribe start => $topic");
-
-			await _messaging.subscribeToTopic(topic);
-
-			print("BEACON FCM => subscribe success => $topic");
+		
 		} catch (e) {
 			print("BEACON FCM ERROR => $e");
 		}
+		
+		try {
+			await _setupTopicSubscription();
+		} catch (e) {
+			print("BEACON FCM => setup topic error => $e");
+		}
+		
 		// ================= FOREGROUND LISTENER =================
 
 		FirebaseMessaging.onMessage.listen((message) {
@@ -76,7 +70,48 @@ class FCMService {
 				"BEACON FCM => initial data => "
 				"${initialMessage.data}",
 			);
-		}		
-		
+		}				
 	}
+	
+	static Future<void> _setupTopicSubscription() async {
+		final requesterId = await IdentityService.getRequesterId();
+
+		if (requesterId == null || requesterId.isEmpty) {
+			print("BEACON FCM => requesterId missing");
+			return;
+		}
+
+		final topic = "requester_$requesterId";
+
+		await subscribeToTopicWithRetry(topic);
+	}
+	
+	static Future<void> subscribeToTopicWithRetry(
+		String topic, {
+		int maxAttempts = 5,
+	}) async {
+		for (int attempt = 1; attempt <= maxAttempts; attempt++) {
+			try {
+				print("BEACON FCM => subscribe attempt $attempt => $topic");
+
+				await _messaging.subscribeToTopic(topic);
+
+				print("BEACON FCM => subscribe success => $topic");
+				return;
+			} catch (e) {
+				print(
+					"BEACON FCM => subscribe failed "
+					"attempt=$attempt topic=$topic error=$e",
+				);
+
+				if (attempt == maxAttempts) {
+					print("BEACON FCM => subscribe give up => $topic");
+					return;
+				}
+
+				await Future.delayed(Duration(seconds: attempt * 3));
+			}
+		}
+	}
+
 }

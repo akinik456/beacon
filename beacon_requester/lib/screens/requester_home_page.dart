@@ -1,3 +1,4 @@
+//?*?Free trial $_trialDaysLeft days left
 import 'dart:async';
 import 'dart:io';
 import 'dart:ui';
@@ -88,7 +89,7 @@ class _RequesterHomePageState
 		
 		unawaited(_startHome());
 		unawaited(_loadVersion());
-		//unawaited(_checkForUpdate());
+		unawaited(_checkForUpdate());
 		
 		_timeRefreshTimer = Timer.periodic(
 			const Duration(minutes: 1),
@@ -230,19 +231,20 @@ class _RequesterHomePageState
 	}
 	
 	void _showUpdateDialog() {
+	final l10n = AppLocalizations.of(context)!;
 		showDialog(
 			context: context,
 			barrierDismissible: true,
 			builder: (context) {
 				return AlertDialog(
-					title: const Text("Update Available"),
-					content: const Text(
-						"A new version is available. Update now for the best experience.",
+					title: Text(l10n.updateAvailable),
+					content: Text(
+						l10n.aNewVer,
 					),
 					actions: [
 						TextButton(
 							onPressed: () => Navigator.pop(context),
-							child: const Text("LATER"),
+							child: Text(l10n.later),
 						),
 						TextButton(
 							onPressed: () async {
@@ -252,7 +254,7 @@ class _RequesterHomePageState
 									await InAppUpdate.completeFlexibleUpdate();
 								} catch (_) {}
 							},
-							child: const Text("UPDATE"),
+							child: Text(l10n.update),
 						),
 					],
 				);
@@ -334,6 +336,7 @@ print("_addActiveWatchers IdentityService.getRequesterName");
 	}	
 	
 	void _listenLocatorPresence(String locatorId) {
+	final l10n = AppLocalizations.of(context)!;
 		if (_groupId == null) return;
 
 		final sub = FirebaseDatabase.instance
@@ -359,30 +362,32 @@ print("_addActiveWatchers IdentityService.getRequesterName");
 				final lat = presence['lat']?.toDouble();
 				final lng = presence['lng']?.toDouble();
 
-				String address = 'Address not available';
+				String address = '';
 
-				if (lat != null && lng != null) {
-					address = await AddressHelper.getAddressFromLatLng(
-						lat: lat,
-						lng: lng,
-					);
-				}
+if (lat != null && lng != null) {
+  address = await AddressHelper.getAddressFromLatLng(
+    lat: lat,
+    lng: lng,
+  );
+}
 
-				if (!mounted) return;
+if (!mounted) return;
 
-				setState(() {
-					final index = _locators.indexWhere(
-						(x) => x['locatorId'] == locatorId,
-					);
+setState(() {
+  final index = _locators.indexWhere(
+    (x) => x['locatorId'] == locatorId,
+  );
 
-					if (index == -1) return;
+  if (index == -1) return;
 
-					_locators[index] = {
-						..._locators[index],
-						...presence,
-						if (address != null) 'address': address,
-					};
-				});
+  _locators[index] = {
+    ..._locators[index],
+    ...presence,
+    'address': address.isEmpty
+        ? l10n.addressNotAvailable
+        : address,
+  };
+});
 			});
 		_subscriptions.add(sub);
 	}
@@ -772,6 +777,7 @@ Future<void> _initTrial() async {
 }
 
 Future<void> _showPurchaseMenu() async {
+final l10n = AppLocalizations.of(context)!;
   await showDialog(
     context: context,
     builder: (dialogContext) {
@@ -845,7 +851,7 @@ Future<void> _showPurchaseMenu() async {
           borderRadius: BorderRadius.circular(22),
         ),
         title: Text(
-          'Purchase',
+          l10n.purchase,
           style: AppFonts.title.copyWith(
             color: AppColors.primary,
           ),
@@ -858,7 +864,7 @@ Future<void> _showPurchaseMenu() async {
               if (!_isPremium)
                 purchaseItem(
                   icon: Icons.lock_open_rounded,
-                  title: 'Lifetime access',
+                  title: l10n.lifeTimeAccess,
                   subtitle: 'Unlock LynraFamily for this group.',
                   productId: 'lynrafamily_lifetime',
                 ),
@@ -866,8 +872,8 @@ Future<void> _showPurchaseMenu() async {
               if (_isPremium) ...[
                 purchaseItem(
                   icon: Icons.person_add_alt_1_rounded,
-                  title: 'Add requester',
-                  subtitle: 'Allow one more requester.',
+                  title: l10n.addAdmin,
+                  subtitle: l10n.allowOneMoreAdmin,
                   productId: 'extra_requester_1',
                 ),
 
@@ -876,7 +882,7 @@ Future<void> _showPurchaseMenu() async {
                 purchaseItem(
                   icon: Icons.group_add_rounded,
                   title: 'Add member',
-                  subtitle: 'Allow one more member.',
+                  subtitle: l10n.allowOneMoreMember,
                   productId: 'extra_member_1',
                 ),
               ],
@@ -1697,7 +1703,7 @@ Future<void> _showPurchaseMenu() async {
 																										locatorId: locatorId,
 																									);
 																								},
-																								addressText: locator['address'] ?? 'Address not available',
+																								addressText: locator['address'] ?? l10n.addressNotAvailable,
 																								onNotificationSettings: () {
 																									 Navigator.push(
 																										context,
@@ -1825,10 +1831,10 @@ Future<void> _showPurchaseMenu() async {
 																							if (_hasGroup) ...[
 																								Text(
 																									_isPremium
-																											? "Premium active"
+																											? l10n.premiumActive
 																											: (_trialActive
 																													? "Free trial $_trialDaysLeft days left"
-																													: "Trial expired"),
+																													: l10n.trialExpired),
 																									style: AppFonts.caption.copyWith(
 																										color: Colors.white70,
 																										fontWeight: FontWeight.w600,
@@ -1838,7 +1844,7 @@ Future<void> _showPurchaseMenu() async {
 																							const SizedBox(width: 32),						
 																							if (_appVersion.isNotEmpty)
 																								Text(
-																									"Version $_appVersion",
+																									"${l10n.version} $_appVersion",
 																									style: AppFonts.caption.copyWith(
 																										color: Colors.white.withValues(alpha: 0.4),
 																										fontWeight: FontWeight.w500,
@@ -1849,7 +1855,7 @@ Future<void> _showPurchaseMenu() async {
 																									TextButton(
 																										onPressed: _showPurchaseMenu,
 																										child: Text(
-																											'Purchase',
+																											l10n.purchase,
 																											style: AppFonts.button.copyWith(
 																												color: AppColors.primary,
 																												fontSize: 16,
@@ -1879,7 +1885,7 @@ Future<void> _showPurchaseMenu() async {
 																												),
 																												const SizedBox(width: 16),
 																												Text(
-																													"Feedback",
+																													l10n.feedback,
 																													style: AppFonts.caption.copyWith(
 																														color: const Color(0xFF8FD8FF)
 																																.withValues(alpha: 0.50),
@@ -1916,7 +1922,7 @@ Future<void> _showPurchaseMenu() async {
 																												),
 																												const SizedBox(width: 4),
 																												Text(
-																													"Other Apps",
+																													l10n.otherApps,
 																													style: AppFonts.caption.copyWith(
 																														color: const Color(0xFF8FD8FF)
 																																.withValues(alpha: 0.50),
@@ -2006,6 +2012,7 @@ Future<void> _showPurchaseMenu() async {
 														);
 													}
 void openFeedbackMenu() {
+final l10n = AppLocalizations.of(context)!;
   showModalBottomSheet(
     context: context,
     backgroundColor: const Color(0xFF111827),
@@ -2023,7 +2030,7 @@ void openFeedbackMenu() {
             children: [
               _FeedbackItem(
                 icon: Icons.star_rounded,
-                title: "Rate on Play Store",
+                title: l10n.rateOnPlayStore,
                 onTap: () async {
 									Navigator.pop(context);
 									final Uri url = Uri.parse(// ?*?
@@ -2040,7 +2047,7 @@ void openFeedbackMenu() {
 
               _FeedbackItem(
                 icon: Icons.mail_outline_rounded,
-                title: "Send Feedback",
+                title: l10n.sendFeedback,
                 onTap: () async {
                   Navigator.pop(context);
                   openFeedback();

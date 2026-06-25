@@ -212,6 +212,7 @@ class _QrScanPageState extends State<_QrScanPage> {
 
   @override
   Widget build(BuildContext context) {
+	final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
@@ -219,7 +220,7 @@ class _QrScanPageState extends State<_QrScanPage> {
         surfaceTintColor: AppColors.background,
         elevation: 0,
         title: Text(
-          'Scan QR code',
+          l10n.scanQRCode,
           style: AppFonts.title,
         ),
       ),

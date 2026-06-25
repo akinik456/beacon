@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_fonts.dart';
 import 'app_card.dart';
+import '../../l10n/app_localizations.dart';
+
 
 class SubscriptionExpiredOverlay extends StatelessWidget {
   final bool isMaster;
@@ -16,6 +18,7 @@ class SubscriptionExpiredOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+	final l10n = AppLocalizations.of(context)!;
 	print(DateTime.now());
     return Positioned.fill(
       child: Container(
@@ -36,7 +39,7 @@ class SubscriptionExpiredOverlay extends StatelessWidget {
                   const SizedBox(height: 16),
 
                   Text(
-                    'Trial ended',
+                    'Trial expired',
                     style: AppFonts.title,
                     textAlign: TextAlign.center,
                   ),
@@ -46,7 +49,7 @@ class SubscriptionExpiredOverlay extends StatelessWidget {
                   Text(
                     isMaster
                         ? 'Upgrade to continue monitoring your family members.'
-                        : 'Ask the group owner to upgrade LynraFamily.',
+                        : 'l10n.askTheGroup',
                     style: AppFonts.body.copyWith(
                       color: AppColors.textSecondary,
                     ),
@@ -60,7 +63,7 @@ class SubscriptionExpiredOverlay extends StatelessWidget {
                       height: 52,
                       child: ElevatedButton(
                         onPressed: onUpgrade,
-                        child: const Text('Go Premium'),
+                        child: Text(l10n.goPremium),
                       ),
                     ),
                   ],

@@ -64,7 +64,6 @@
             android:value="2" />
 				<service
 				android:name=".LocatorPresenceForegroundService"
-				android:enabled="true"
 				android:exported="false"
 				android:foregroundServiceType="location" />		
 						

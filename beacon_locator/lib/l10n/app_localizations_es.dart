@@ -9,6 +9,81 @@ class AppLocalizationsEs extends AppLocalizations {
   AppLocalizationsEs([String locale = 'es']) : super(locale);
 
   @override
+  String get aNewVer => 'Hay una nueva versión disponible. Actualiza ahora para disfrutar de la mejor experiencia.';
+
+  @override
+  String get addAdmin => 'Agregar administrador';
+
+  @override
+  String get addressNotAvailable => 'Dirección no disponible';
+
+  @override
+  String get addressResolving => 'Resolviendo dirección...';
+
+  @override
+  String get allowOneMoreAdmin => 'Permitir un administrador más';
+
+  @override
+  String get allowOneMoreMember => 'Permitir un miembro más';
+
+  @override
+  String get askTheGroup => 'Pide al propietario del grupo que actualice LynraFamily.';
+
+  @override
+  String get goPremium => 'Hazte Premium';
+
+  @override
+  String get feedback => 'Comentarios';
+
+  @override
+  String get later => 'MÁS TARDE';
+
+  @override
+  String get lifeTimeAccess => 'Acceso de por vida';
+
+  @override
+  String get name => 'nombre';
+
+  @override
+  String get otherApps => 'Otras aplicaciones';
+
+  @override
+  String get places => 'Lugares';
+
+  @override
+  String get premiumActive => 'Premium activo';
+
+  @override
+  String get purchase => 'Comprar';
+
+  @override
+  String get rateOnPlayStore => 'Valorar en Play Store';
+
+  @override
+  String get requesterName => 'nombre de administrador';
+
+  @override
+  String get save => 'Guardar';
+
+  @override
+  String get scanQRCode => 'Escanear código QR';
+
+  @override
+  String get sendFeedback => 'Enviar comentarios';
+
+  @override
+  String get trialExpired => 'Período de prueba finalizado';
+
+  @override
+  String get update => 'ACTUALIZAR';
+
+  @override
+  String get updateAvailable => 'Actualización disponible';
+
+  @override
+  String get version => 'Versión';
+
+  @override
   String get actionRequired => 'Acción requerida';
 
   @override
@@ -16,9 +91,6 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get addMember => 'Agregar miembro';
-
-  @override
-  String get addressNotAvailable => 'Dirección no disponible';
 
   @override
   String get adminName => 'Nombre del administrador';
@@ -413,7 +485,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get yesterday => 'Ayer';
 
   @override
-  String get yourname => 'Su nombre';
+  String get yourname => 'Nombre';
 
   @override
   String get yourrequest => 'Su solicitud ha sido enviada al administrador principal del grupo.';

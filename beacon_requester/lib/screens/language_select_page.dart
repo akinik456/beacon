@@ -122,7 +122,7 @@ class _LanguageSelectPageState
                                 : AppColors.textSecondary,
                           ),
                           title: Text(
-                            name,
+                            '$name',
                             style: AppFonts.body.copyWith(
                               color: isSelected
                                   ? AppColors.primary

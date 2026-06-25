@@ -9,6 +9,81 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
+  String get aNewVer => 'A new version is available. Update now for the best experience.';
+
+  @override
+  String get addAdmin => 'Add admin';
+
+  @override
+  String get addressNotAvailable => 'Address not available';
+
+  @override
+  String get addressResolving => 'Resolving address...';
+
+  @override
+  String get allowOneMoreAdmin => 'Allow one more admin';
+
+  @override
+  String get allowOneMoreMember => 'Allow one more member';
+
+  @override
+  String get askTheGroup => 'Ask the group owner to upgrade LynraFamily.';
+
+  @override
+  String get goPremium => 'Go Premium';
+
+  @override
+  String get feedback => 'Feedback';
+
+  @override
+  String get later => 'LATER';
+
+  @override
+  String get lifeTimeAccess => 'Lifetime access';
+
+  @override
+  String get name => 'name';
+
+  @override
+  String get otherApps => 'Other Apps';
+
+  @override
+  String get places => 'Places';
+
+  @override
+  String get premiumActive => 'Premium active';
+
+  @override
+  String get purchase => 'Purchase';
+
+  @override
+  String get rateOnPlayStore => 'Rate on Play Store';
+
+  @override
+  String get requesterName => 'Admin name';
+
+  @override
+  String get save => 'Save';
+
+  @override
+  String get scanQRCode => 'Scan QR code';
+
+  @override
+  String get sendFeedback => 'Send Feedback';
+
+  @override
+  String get trialExpired => 'Trial expired';
+
+  @override
+  String get update => 'UPDATE';
+
+  @override
+  String get updateAvailable => 'Update Available';
+
+  @override
+  String get version => 'Version';
+
+  @override
   String get actionRequired => 'Action Required';
 
   @override
@@ -16,9 +91,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get addMember => 'Add Member';
-
-  @override
-  String get addressNotAvailable => 'Address not available';
 
   @override
   String get adminName => 'Admin Name';
@@ -413,7 +485,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get yesterday => 'Yesterday';
 
   @override
-  String get yourname => 'Your name';
+  String get yourname => 'Name';
 
   @override
   String get yourrequest => 'Your request has been sent to the group master.';

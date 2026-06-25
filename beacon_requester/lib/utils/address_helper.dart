@@ -10,7 +10,7 @@ class AddressHelper {
     try {
       final places = await placemarkFromCoordinates(lat, lng);
 
-      if (places.isEmpty) return 'Address not available';
+      if (places.isEmpty) return '';
 
       final p = places.first;
 
@@ -20,12 +20,12 @@ class AddressHelper {
         p.locality,
       ].where((x) => x != null && x.trim().isNotEmpty).toList();
 
-      if (parts.isEmpty) return 'Address not available';
+      if (parts.isEmpty) return '';
 
       return parts.join(', ');
     } catch (e) {
       print("BEACON ADDRESS ERROR => $e");
-      return 'Address not available';
+      return '';
     }
   }
 }

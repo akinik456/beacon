@@ -9,6 +9,81 @@ class AppLocalizationsTr extends AppLocalizations {
   AppLocalizationsTr([String locale = 'tr']) : super(locale);
 
   @override
+  String get aNewVer => 'Yeni bir sürüm mevcut. En iyi deneyim için şimdi güncelleyin.';
+
+  @override
+  String get addAdmin => 'Yönetici ekle';
+
+  @override
+  String get addressNotAvailable => 'Adres bilgisi mevcut değil.';
+
+  @override
+  String get addressResolving => 'Adres çözümleniyor...';
+
+  @override
+  String get allowOneMoreAdmin => 'Bir yönetici daha ekle';
+
+  @override
+  String get allowOneMoreMember => 'Bir üye daha ekle';
+
+  @override
+  String get askTheGroup => 'Grup sahibinden LynraFamily\'i yükseltmesini isteyin.';
+
+  @override
+  String get goPremium => 'Premium\'a geç';
+
+  @override
+  String get feedback => 'Geri Bildirim';
+
+  @override
+  String get later => 'DAHA SONRA';
+
+  @override
+  String get lifeTimeAccess => 'Ömür boyu erişim';
+
+  @override
+  String get name => 'isim';
+
+  @override
+  String get otherApps => 'Diğer Uygulamalar';
+
+  @override
+  String get places => 'Yerler';
+
+  @override
+  String get premiumActive => 'Premium aktif';
+
+  @override
+  String get purchase => 'Satın al';
+
+  @override
+  String get rateOnPlayStore => 'Play Store\'da değerlendir';
+
+  @override
+  String get requesterName => 'Yönetici ismi';
+
+  @override
+  String get save => 'Kaydet';
+
+  @override
+  String get scanQRCode => 'QR kodunu tara';
+
+  @override
+  String get sendFeedback => 'Geri Bildirim Gönder';
+
+  @override
+  String get trialExpired => 'Deneme süresi sona erdi';
+
+  @override
+  String get update => 'GÜNCELLE';
+
+  @override
+  String get updateAvailable => 'Güncelleme Mevcut';
+
+  @override
+  String get version => 'Sürüm';
+
+  @override
   String get actionRequired => 'İşlem Gerekli';
 
   @override
@@ -16,9 +91,6 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get addMember => 'Üye Ekle';
-
-  @override
-  String get addressNotAvailable => 'Adres bilgisi mevcut değil.';
 
   @override
   String get adminName => 'Yönetici İsmi';
@@ -413,7 +485,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get yesterday => 'Dün';
 
   @override
-  String get yourname => 'İsminiz';
+  String get yourname => 'İsim';
 
   @override
   String get yourrequest => 'Talebiniz Grup Yöneticisine İletildi.';

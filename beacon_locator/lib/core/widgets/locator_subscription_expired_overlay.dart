@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_fonts.dart';
 import 'app_card.dart';
+import '../../l10n/app_localizations.dart';
+
 
 class LocatorSubscriptionExpiredOverlay extends StatelessWidget {
   const LocatorSubscriptionExpiredOverlay({
@@ -11,6 +13,7 @@ class LocatorSubscriptionExpiredOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+	final l10n = AppLocalizations.of(context)!;
     return Positioned.fill(
       child: Container(
         color: Colors.black.withValues(alpha: 0.65),
@@ -28,13 +31,13 @@ class LocatorSubscriptionExpiredOverlay extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'Trial ended',
+                    l10n.trialExpired,
                     style: AppFonts.title,
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Ask the group owner to upgrade LynraFamily.',
+                    l10n.askTheGroup,
                     style: AppFonts.body.copyWith(
                       color: AppColors.textSecondary,
                     ),

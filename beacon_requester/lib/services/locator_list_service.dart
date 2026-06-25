@@ -4,6 +4,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'group_service.dart';
 import 'identity_service.dart';
 
+
 class LocatorListService {
   LocatorListService._();
 
@@ -79,7 +80,7 @@ class LocatorListService {
 				result.add({
 					'locatorId': locatorId,
 					'locatorName': locatorName,
-					'address': 'Resolving address...',
+					'address': '',
 					...locatorDoc.data()!,
 					...pairData,
 					...presenceData,

@@ -11,38 +11,33 @@ class FCMService {
 			
 	static Future<void> initialize() async {
 		try {
-			print("BEACON FCM => initialize start");
-
-			// Permission
+		// Permission
 			final settings = await _messaging.requestPermission();
 
 			print(
 				"BEACON FCM => permission => ${settings.authorizationStatus}",
 			);
-			
+
+			// Token
 			final token = await _messaging.getToken();
 
 			print("BEACON FCM => token => $token");
 			
 			FirebaseMessaging.instance.onTokenRefresh.listen((newToken) async {
 				print("BEACON FCM => token refreshed => $newToken");
-
 			});
-
-			final locatorId =
-      await IdentityService.getLocatorId();
-			if (locatorId == null) return;
-
-			final topic = 'locator_$locatorId';
-
-			print("BEACON FCM => subscribe start => $topic");
-
-			await _messaging.subscribeToTopic(topic);
-
-			print("BEACON FCM => subscribe success => $topic");
+		
 		} catch (e) {
 			print("BEACON FCM ERROR => $e");
 		}
+		
+		try {
+			await _setupTopicSubscription();
+		} catch (e) {
+			print("BEACON FCM => setup topic error => $e");
+		}
+		
+		
 		// ================= FOREGROUND LISTENER =================
 
 		FirebaseMessaging.onMessage.listen((message) async {
@@ -89,5 +84,47 @@ class FCMService {
 		}		
 	
 
+	}
+
+	static Future<void> _setupTopicSubscription() async {
+				
+		final locatorId = await IdentityService.getLocatorId();
+
+		if (locatorId == null || locatorId.isEmpty) {
+			print("BEACON FCM => locatorId missing");
+			return;
+		}
+
+		final topic = 'locator_$locatorId';
+
+		await subscribeToTopicWithRetry(topic);
+	}
+	
+	static Future<void> subscribeToTopicWithRetry(
+		String topic, {
+		int maxAttempts = 5,
+	}) async {
+		for (int attempt = 1; attempt <= maxAttempts; attempt++) {
+			try {
+				print("BEACON FCM => subscribe attempt $attempt => $topic");
+
+				await _messaging.subscribeToTopic(topic);
+
+				print("BEACON FCM => subscribe success => $topic");
+				return;
+			} catch (e) {
+				print(
+					"BEACON FCM => subscribe failed "
+					"attempt=$attempt topic=$topic error=$e",
+				);
+
+				if (attempt == maxAttempts) {
+					print("BEACON FCM => subscribe give up => $topic");
+					return;
+				}
+
+				await Future.delayed(Duration(seconds: attempt * 3));
+			}
+		}
 	}	
 }

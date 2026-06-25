@@ -59,12 +59,12 @@ class _PermissionIntroPageState
 													mainAxisSize: MainAxisSize.min,
 													children: [
 														Text(
-      langCode,
-      style: AppFonts.caption.copyWith(
-        color: AppColors.accent,
-        fontWeight: FontWeight.w600,
-      ),
-    ),
+															langCode,
+															style: AppFonts.caption.copyWith(
+																color: AppColors.accent,
+																fontWeight: FontWeight.w600,
+															),
+														),
 														const Icon(
 															Icons.arrow_drop_down,
 															size: 18,

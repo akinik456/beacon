@@ -79,6 +79,7 @@ class LocatorStatusCard extends StatelessWidget {
 												text: ' - $locatorCode',
 												style: AppFonts.subtitle.copyWith(
 													color: AppColors.textSecondary,
+													fontSize:12,
 												),
 											),
 										],

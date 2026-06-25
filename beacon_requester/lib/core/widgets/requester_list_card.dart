@@ -120,12 +120,36 @@ class RequesterListCard extends StatelessWidget {
               const SizedBox(width: 6),
 
               Expanded(
-                child: Text(
+                /*child: Text(
                   '$name - $code',
                   style: AppFonts.body.copyWith(
                     height: 1.0,
                   ),
-                ),
+                ),*/
+								
+								child: RichText(
+									overflow: TextOverflow.ellipsis,
+									text: TextSpan(
+										children: [
+											TextSpan(
+												text: '$name',
+												style: AppFonts.subtitle.copyWith(
+													color: AppColors.textPrimary,
+													fontWeight: FontWeight.w700
+												),
+											),
+
+											TextSpan(
+												text: ' - $code',
+												style: AppFonts.subtitle.copyWith(
+													color: AppColors.textSecondary,
+													fontSize:12,
+												),
+											),
+										],
+									),
+								),
+								
               ),
 
               if (isMasterMember)

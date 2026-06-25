@@ -37,6 +37,7 @@ import '../l10n/app_localizations.dart';
 import 'language_select_page.dart';
 import '../services/native_presence_service.dart';
 import '../services/locator_fcm_service.dart';
+import '../services/motion_service.dart';
 import '../services/subscription_service.dart';
 import '../core/widgets/locator_subscription_expired_overlay.dart';
 
@@ -57,12 +58,12 @@ class _LocatorHomePageState extends State<LocatorHomePage>
 	final List<StreamSubscription> _subscriptions = [];
 	bool _hasGroup = false;
 	bool _hasFullAccess = true;
-	//MotionService.start();
 
  @override
 void initState() {
   super.initState();
 
+	//MotionService.start();
   unawaited(_startLocatorHome());
 
   unawaited(_loadVersion());
@@ -201,19 +202,20 @@ Future<void> _startNativePresenceIfAllowed() async {
 	}
 	
 	void _showUpdateDialog() {
+	final l10n = AppLocalizations.of(context)!;
 		showDialog(
 			context: context,
 			barrierDismissible: true,
 			builder: (context) {
 				return AlertDialog(
-					title: const Text("Update Available"),
-					content: const Text(
-						"A new version is available. Update now for the best experience.",
+					title: Text(l10n.updateAvailable),
+					content: Text(
+						l10n.aNewVer,
 					),
 					actions: [
 						TextButton(
 							onPressed: () => Navigator.pop(context),
-							child: const Text("LATER"),
+							child: Text(l10n.later),
 						),
 						TextButton(
 							onPressed: () async {
@@ -223,7 +225,7 @@ Future<void> _startNativePresenceIfAllowed() async {
 									await InAppUpdate.completeFlexibleUpdate();
 								} catch (_) {}
 							},
-							child: const Text("UPDATE"),
+							child: Text(l10n.update),
 						),
 					],
 				);
@@ -550,6 +552,7 @@ Widget _pairedRequesterCard() {
 															text: ' - $requesterCode',
 															style: AppFonts.subtitle.copyWith(
 																color: AppColors.textSecondary,
+																fontSize: 12,
 															),
 														),
 													],
@@ -816,7 +819,10 @@ Widget _activeWatchersCard() {
 																const SizedBox(height: 2),
 																Text(
 																	requesterCode,
-																	style: AppFonts.caption,
+																	style: AppFonts.caption.copyWith(
+																		color: AppColors.textSecondary,
+																		fontSize: 12,
+																	),
 																),
 															],
 														),
@@ -880,7 +886,7 @@ Future<void> _editLocatorName(
                 controller.text.trim(),
               );
             },
-            child: const Text('Save'),
+            child: Text(l10n.save),
           ),
         ],
       );
@@ -917,11 +923,12 @@ Future<void> _editLocatorName(
 }
   @override
 Widget build(BuildContext context) {
-  return Stack(
-    children: [
-      Scaffold(
-      backgroundColor: AppColors.background,
-      body: SafeArea(
+final l10n = AppLocalizations.of(context)!;
+  return Scaffold(
+    backgroundColor: AppColors.background,
+    body: Stack(
+      children: [
+        SafeArea(
         child: FutureBuilder<Map<String, String>>(
           future: _loadLocatorCodeData(),
           builder: (context, snapshot) {
@@ -1070,8 +1077,14 @@ Widget build(BuildContext context) {
 									const Spacer(),
 									const SizedBox(height: 12),
                   _permissionsButton(),
-									
-									Positioned(
+									const SizedBox(height: 70),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
+Positioned(
   left: 2,
   right: 2,
   bottom: 2,
@@ -1100,10 +1113,10 @@ Widget build(BuildContext context) {
                   ),
                   const SizedBox(width: 4),
                   Text(
-                    "Feedback",
+                    l10n.feedback,
                     style: TextStyle(
                       color: const Color(0xFF8FD8FF).withOpacity(0.50),
-                      fontSize: 18,
+                      fontSize: 14,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -1115,7 +1128,7 @@ Widget build(BuildContext context) {
           const Spacer(),
 
           Text(
-            "Version $_appVersion",
+            "${l10n.version} $_appVersion",
             style: TextStyle(
               color: Colors.white.withOpacity(0.4),
               fontSize: 15,
@@ -1151,10 +1164,10 @@ Widget build(BuildContext context) {
                   ),
                   const SizedBox(width: 4),
                   Text(
-                    "Other Apps",
+                    l10n.otherApps,
                     style: TextStyle(
                       color: const Color(0xFF8FD8FF).withOpacity(0.50),
-                      fontSize: 18,
+                      fontSize: 		14,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -1167,25 +1180,14 @@ Widget build(BuildContext context) {
     ),
   ),
 ),
-									
-
-								
-                ],
-              ),
-            );
-          },
-        ),
-      ),
-			
-			
-    ),
-
       if (!_hasFullAccess && _hasGroup)
         const LocatorSubscriptionExpiredOverlay(),
     ],
+		),
   );
 }
 void openFeedbackMenu() {
+final l10n = AppLocalizations.of(context)!;
   showModalBottomSheet(
     context: context,
     backgroundColor: const Color(0xFF111827),
@@ -1203,7 +1205,7 @@ void openFeedbackMenu() {
             children: [
               _FeedbackItem(
                 icon: Icons.star_rounded,
-                title: "Rate on Play Store",
+                title: l10n.rateOnPlayStore,
                 onTap: () async {
 									Navigator.pop(context);
 									final Uri url = Uri.parse(// ?*?
@@ -1220,7 +1222,7 @@ void openFeedbackMenu() {
 
               _FeedbackItem(
                 icon: Icons.mail_outline_rounded,
-                title: "Send Feedback",
+                title: l10n.sendFeedback,
                 onTap: () async {
                   Navigator.pop(context);
                   openFeedback();

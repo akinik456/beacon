@@ -99,6 +99,156 @@ abstract class AppLocalizations {
     Locale('tr')
   ];
 
+  /// No description provided for @aNewVer.
+  ///
+  /// In en, this message translates to:
+  /// **'A new version is available. Update now for the best experience.'**
+  String get aNewVer;
+
+  /// No description provided for @addAdmin.
+  ///
+  /// In en, this message translates to:
+  /// **'Add admin'**
+  String get addAdmin;
+
+  /// No description provided for @addressNotAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Address not available'**
+  String get addressNotAvailable;
+
+  /// No description provided for @addressResolving.
+  ///
+  /// In en, this message translates to:
+  /// **'Resolving address...'**
+  String get addressResolving;
+
+  /// No description provided for @allowOneMoreAdmin.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow one more admin'**
+  String get allowOneMoreAdmin;
+
+  /// No description provided for @allowOneMoreMember.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow one more member'**
+  String get allowOneMoreMember;
+
+  /// No description provided for @askTheGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask the group owner to upgrade LynraFamily.'**
+  String get askTheGroup;
+
+  /// No description provided for @feedback.
+  ///
+  /// In en, this message translates to:
+  /// **'Feedback'**
+  String get feedback;
+
+  /// No description provided for @goPremium.
+  ///
+  /// In en, this message translates to:
+  /// **'Go Premium'**
+  String get goPremium;
+
+  /// No description provided for @later.
+  ///
+  /// In en, this message translates to:
+  /// **'LATER'**
+  String get later;
+
+  /// No description provided for @lifeTimeAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Lifetime access'**
+  String get lifeTimeAccess;
+
+  /// No description provided for @name.
+  ///
+  /// In en, this message translates to:
+  /// **'name'**
+  String get name;
+
+  /// No description provided for @otherApps.
+  ///
+  /// In en, this message translates to:
+  /// **'Other Apps'**
+  String get otherApps;
+
+  /// No description provided for @places.
+  ///
+  /// In en, this message translates to:
+  /// **'Places'**
+  String get places;
+
+  /// No description provided for @premiumActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Premium active'**
+  String get premiumActive;
+
+  /// No description provided for @purchase.
+  ///
+  /// In en, this message translates to:
+  /// **'Purchase'**
+  String get purchase;
+
+  /// No description provided for @rateOnPlayStore.
+  ///
+  /// In en, this message translates to:
+  /// **'Rate on Play Store'**
+  String get rateOnPlayStore;
+
+  /// No description provided for @requesterName.
+  ///
+  /// In en, this message translates to:
+  /// **'Admin name'**
+  String get requesterName;
+
+  /// No description provided for @save.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get save;
+
+  /// No description provided for @scanQRCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan QR code'**
+  String get scanQRCode;
+
+  /// No description provided for @sendFeedback.
+  ///
+  /// In en, this message translates to:
+  /// **'Send Feedback'**
+  String get sendFeedback;
+
+  /// No description provided for @trialExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'Trial expired'**
+  String get trialExpired;
+
+  /// No description provided for @update.
+  ///
+  /// In en, this message translates to:
+  /// **'UPDATE'**
+  String get update;
+
+  /// No description provided for @updateAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Available'**
+  String get updateAvailable;
+
+  /// No description provided for @version.
+  ///
+  /// In en, this message translates to:
+  /// **'Version'**
+  String get version;
+
   /// No description provided for @actionRequired.
   ///
   /// In en, this message translates to:
@@ -116,12 +266,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Add Member'**
   String get addMember;
-
-  /// No description provided for @addressNotAvailable.
-  ///
-  /// In en, this message translates to:
-  /// **'Address not available'**
-  String get addressNotAvailable;
 
   /// No description provided for @adminName.
   ///

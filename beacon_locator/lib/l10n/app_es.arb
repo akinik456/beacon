@@ -1,5 +1,33 @@
 {
 "@@locale": 													"es",
+
+
+"aNewVer": 														"Hay una nueva versión disponible. Actualiza ahora para disfrutar de la mejor experiencia.",
+"addAdmin": 													"Agregar administrador",
+"addressNotAvailable":								"Dirección no disponible",
+"addressResolving":		  							"Resolviendo dirección...",
+"allowOneMoreAdmin": 									"Permitir un administrador más",
+"allowOneMoreMember": 								"Permitir un miembro más",
+"askTheGroup": 												"Pide al propietario del grupo que actualice LynraFamily.",
+"goPremium": 													"Hazte Premium",
+"feedback": 													"Comentarios",
+"later": 															"MÁS TARDE",
+"lifeTimeAccess": 										"Acceso de por vida",
+"name": 															"nombre",
+"otherApps": 													"Otras aplicaciones",
+"places": 														"Lugares",
+"premiumActive": 											"Premium activo",
+"purchase": 													"Comprar",
+"rateOnPlayStore": 										"Valorar en Play Store",
+"requesterName":										  "nombre de administrador",
+"save": 															"Guardar",
+"scanQRCode": 												"Escanear código QR",
+"sendFeedback": 											"Enviar comentarios",
+"trialExpired": 											"Período de prueba finalizado",
+"update": 														"ACTUALIZAR",
+"updateAvailable": 										"Actualización disponible",
+"version": 														"Versión",
+
 "actionRequired": 										"Acción requerida",
 "activeWatchers": 										"Observadores activos",
 "addMember": 													"Agregar miembro",
@@ -132,7 +160,7 @@
 "wantsYoutoCall": 										"Quiere que lo llame",
 "wellcome": 													"Bienvenido",
 "yesterday": 													"Ayer",
-"yourname": 													"Su nombre",
+"yourname": 													"Nombre",
 "yourrequest": 												"Su solicitud ha sido enviada al administrador principal del grupo.",
 "@secondsAgo": {
   "placeholders": {

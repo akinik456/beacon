@@ -12,6 +12,8 @@ class MotionService {
 
   static DateTime _lastMotion =
       DateTime.fromMillisecondsSinceEpoch(0);
+			
+	static double? _lastMagnitude;
 
   static void start() {
 
@@ -20,16 +22,26 @@ class MotionService {
     _sub = userAccelerometerEventStream().listen(
       (event) {
 
-        final magnitude =
-            sqrt(
-              event.x * event.x +
-              event.y * event.y +
-              event.z * event.z,
-            );
+        final magnitude = sqrt(
+					event.x * event.x +
+					event.y * event.y +
+					event.z * event.z,
+				);
 
-        if (magnitude < 1.5) {
-          return;
-        }
+				final last = _lastMagnitude;
+				_lastMagnitude = magnitude;
+
+				if (last == null) {
+					return;
+				}
+
+				final delta = (magnitude - last).abs();
+				
+				//print("MOTION => magnitude=$magnitude delta=$delta");
+
+				if (delta < 2.0) {
+					return;
+				}
 
         final now = DateTime.now();
 

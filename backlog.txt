@@ -23,5 +23,8 @@ isminiz -> isim
 
 loc. isminiz varken requester ---- gösteriyor
 
+FS kurallar
+
+
 
 

@@ -1,5 +1,34 @@
 {
+
 "@@locale": 													"en",
+
+"aNewVer":														"A new version is available. Update now for the best experience.",
+"addAdmin":														"Add admin",
+"addressNotAvailable":								"Address not available",
+"addressResolving":					  				"Resolving address...",
+"allowOneMoreAdmin":									"Allow one more admin",
+"allowOneMoreMember":									"Allow one more member",
+"askTheGroup":												"Ask the group owner to upgrade LynraFamily.",
+"goPremium":													"Go Premium",
+"feedback":														"Feedback",
+"later":															"LATER",
+"lifeTimeAccess":											"Lifetime access",
+"name":																"name",
+"otherApps":													"Other Apps",
+"places":															"Places",
+"premiumActive":											"Premium active",
+"purchase":														"Purchase",
+"rateOnPlayStore":										"Rate on Play Store",
+"requesterName":										  "Admin name",
+"save":																"Save",
+"scanQRCode":													"Scan QR code",
+"sendFeedback":												"Send Feedback",
+"trialExpired":												"Trial expired",
+"update":															"UPDATE",
+"updateAvailable":										"Update Available",
+"version":														"Version",
+
+
 "actionRequired":											"Action Required",
 "activeWatchers":											"Active Watchers",
 "addMember":													"Add Member",
@@ -132,7 +161,7 @@
 "wantsYoutoCall":											"Wants You to Call",
 "wellcome":														"Wellcome",
 "yesterday": 													"Yesterday",
-"yourname": 													"Your name",
+"yourname": 													"Name",
 "yourrequest":												"Your request has been sent to the group master.",
 "@secondsAgo": {
   "placeholders": {
