@@ -2,6 +2,9 @@
 
 "@@locale": 													"en",
 
+
+
+
 "aNewVer":														"A new version is available. Update now for the best experience.",
 "addAdmin":														"Add admin",
 "addressNotAvailable":								"Address not available",
@@ -9,12 +12,16 @@
 "allowOneMoreAdmin":									"Allow one more admin",
 "allowOneMoreMember":									"Allow one more member",
 "askTheGroup":												"Ask the group owner to upgrade LynraFamily.",
-"callMeSent":													"Call Me Sent",
-"feedback":														"Feedback",
+"beingWatched": 											"Being watched",
 "goPremium":													"Go Premium",
+"feedback":														"Feedback",
+"isWatchingYourLocation":							"{name} is watching your location.",
 "later":															"LATER",
 "lifeTimeAccess":											"Lifetime access",
+"mapbutton":													"Map",
+"multipleWatchersWatchingYourLoc": 		"{name} and {count} others are watching your location.",
 "name":																"name",
+"notify":															"Notify",
 "otherApps":													"Other Apps",
 "places":															"Places",
 "premiumActive":											"Premium active",
@@ -24,10 +31,15 @@
 "save":																"Save",
 "scanQRCode":													"Scan QR code",
 "sendFeedback":												"Send Feedback",
+"settings":														"Settings",
 "trialExpired":												"Trial expired",
+"twoWatchersWatchingYourLocation": 		"{name1} and {name2} are watching your location.",
 "update":															"UPDATE",
 "updateAvailable":										"Update Available",
 "version":														"Version",
+"watchingLocationSingle": 						"{name} is watching your location.",
+"watchingLocationDouble": 						"{name1} and {name2} are watching your location.",
+"watchingLocationMultiple": 					"{name} and {count} others are watching your location.",
 
 
 "actionRequired":											"Action Required",
@@ -41,6 +53,7 @@
 "approve":														"Approve",
 "askEverybody":												"Ask Everybody To Call Me",
 "autoStart":													"Auto-Start",
+"callMeSent":													"Call Me Sent",
 "backgroundPermissions":							"LynraFamily Member requires these permissions to work in background.",
 "backgroundAccessInstructions": 			"In the opening screen, please find \"LynraFamily Member\" and turn the switch ON to ensure background reliability.\n\nThis window will close in 10 seconds...",
 "batteryAlertlevel":									"Battery Alert Level",

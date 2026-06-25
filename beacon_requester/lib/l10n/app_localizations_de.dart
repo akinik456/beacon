@@ -30,13 +30,18 @@ class AppLocalizationsDe extends AppLocalizations {
   String get askTheGroup => 'Ask the group owner to upgrade LynraFamily.';
 
   @override
-  String get callMeSent => 'Call Me Sent';
+  String get beingWatched => 'Being watched';
+
+  @override
+  String get goPremium => 'Go Premium';
 
   @override
   String get feedback => 'Feedback';
 
   @override
-  String get goPremium => 'Go Premium';
+  String isWatchingYourLocation(Object name) {
+    return '$name is watching your location.';
+  }
 
   @override
   String get later => 'LATER';
@@ -45,7 +50,18 @@ class AppLocalizationsDe extends AppLocalizations {
   String get lifeTimeAccess => 'Lifetime access';
 
   @override
+  String get mapbutton => 'Map';
+
+  @override
+  String multipleWatchersWatchingYourLoc(Object count, Object name) {
+    return '$name and $count others are watching your location.';
+  }
+
+  @override
   String get name => 'name';
+
+  @override
+  String get notify => 'Notify';
 
   @override
   String get otherApps => 'Other Apps';
@@ -75,7 +91,15 @@ class AppLocalizationsDe extends AppLocalizations {
   String get sendFeedback => 'Send Feedback';
 
   @override
+  String get settings => 'Settings';
+
+  @override
   String get trialExpired => 'Trial expired';
+
+  @override
+  String twoWatchersWatchingYourLocation(Object name1, Object name2) {
+    return '$name1 and $name2 are watching your location.';
+  }
 
   @override
   String get update => 'UPDATE';
@@ -85,6 +109,21 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get version => 'Version';
+
+  @override
+  String watchingLocationSingle(Object name) {
+    return '$name is watching your location.';
+  }
+
+  @override
+  String watchingLocationDouble(Object name1, Object name2) {
+    return '$name1 and $name2 are watching your location.';
+  }
+
+  @override
+  String watchingLocationMultiple(Object count, Object name) {
+    return '$name and $count others are watching your location.';
+  }
 
   @override
   String get actionRequired => 'Aktion erforderlich';
@@ -115,6 +154,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get autoStart => 'Autostart';
+
+  @override
+  String get callMeSent => 'Call Me Sent';
 
   @override
   String get backgroundPermissions => 'LynraFamily Member benötigt diese Berechtigungen für den Hintergrundbetrieb.';

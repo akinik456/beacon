@@ -30,13 +30,18 @@ class AppLocalizationsTr extends AppLocalizations {
   String get askTheGroup => 'Grup sahibinden LynraFamily\'i yükseltmesini isteyin.';
 
   @override
-  String get callMeSent => 'Beni Ara Gönderildi';
+  String get beingWatched => 'İzleniyorsun';
+
+  @override
+  String get goPremium => 'Premium\'a geç';
 
   @override
   String get feedback => 'Geri Bildirim';
 
   @override
-  String get goPremium => 'Premium\'a geç';
+  String isWatchingYourLocation(Object name) {
+    return '$name konumunu izliyor.';
+  }
 
   @override
   String get later => 'DAHA SONRA';
@@ -45,7 +50,18 @@ class AppLocalizationsTr extends AppLocalizations {
   String get lifeTimeAccess => 'Ömür boyu erişim';
 
   @override
+  String get mapbutton => 'Harita';
+
+  @override
+  String multipleWatchersWatchingYourLoc(Object count, Object name) {
+    return '$name ve $count kişi daha konumunu izliyor.';
+  }
+
+  @override
   String get name => 'isim';
+
+  @override
+  String get notify => 'Bildirim';
 
   @override
   String get otherApps => 'Diğer Uygulamalar';
@@ -75,7 +91,15 @@ class AppLocalizationsTr extends AppLocalizations {
   String get sendFeedback => 'Geri Bildirim Gönder';
 
   @override
+  String get settings => 'Ayarlar';
+
+  @override
   String get trialExpired => 'Deneme süresi sona erdi';
+
+  @override
+  String twoWatchersWatchingYourLocation(Object name1, Object name2) {
+    return '$name1 ve $name2 konumunu izliyor.';
+  }
 
   @override
   String get update => 'GÜNCELLE';
@@ -85,6 +109,21 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get version => 'Sürüm';
+
+  @override
+  String watchingLocationSingle(Object name) {
+    return '$name konumunu izliyor.';
+  }
+
+  @override
+  String watchingLocationDouble(Object name1, Object name2) {
+    return '$name1 ve $name2 konumunu izliyor.';
+  }
+
+  @override
+  String watchingLocationMultiple(Object count, Object name) {
+    return '$name ve $count kişi daha konumunu izliyor.';
+  }
 
   @override
   String get actionRequired => 'İşlem Gerekli';
@@ -115,6 +154,9 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get autoStart => 'Otomatik Başlatma';
+
+  @override
+  String get callMeSent => 'Beni Ara Gönderildi';
 
   @override
   String get backgroundPermissions => 'LynraFamily Member\'ın arka planda çalışabilmesi için aşağıdaki izinlere ihtiyaç vardır.';

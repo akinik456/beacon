@@ -240,25 +240,25 @@ class LocatorStatusCard extends StatelessWidget {
 							),*/
 							_MiniAction(
 								icon: Icons.map_rounded,
-								label: 'Map',
+								label: l10n.mapbutton,
 								color: AppColors.primary,
 								onTap: onOpenMaps,
 							),
 							_MiniAction(
 								icon: Icons.notifications_active_rounded,
-								label: 'Notify',
+								label: l10n.notify,
 								color: AppColors.primary,
 								onTap: onNotificationSettings,
 							),
 							_MiniAction(
 								icon: Icons.settings_rounded,
-								label: 'Settings',
+								label: l10n.settings,
 								color: AppColors.primary,
 								onTap: onSettings,
 							),
 							_MiniAction(
 								icon: Icons.person_remove_alt_1_rounded,
-								label: 'Remove',
+								label: l10n.remove,
 								color: AppColors.danger,
 								onTap: onRemove,
 							),

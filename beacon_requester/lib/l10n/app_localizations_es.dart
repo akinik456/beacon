@@ -30,13 +30,18 @@ class AppLocalizationsEs extends AppLocalizations {
   String get askTheGroup => 'Pide al propietario del grupo que actualice LynraFamily.';
 
   @override
-  String get callMeSent => 'Llamada solicitada.';
+  String get beingWatched => 'Te están observando';
+
+  @override
+  String get goPremium => 'Hazte Premium';
 
   @override
   String get feedback => 'Comentarios';
 
   @override
-  String get goPremium => 'Hazte Premium';
+  String isWatchingYourLocation(Object name) {
+    return '$name está viendo tu ubicación.';
+  }
 
   @override
   String get later => 'MÁS TARDE';
@@ -45,7 +50,18 @@ class AppLocalizationsEs extends AppLocalizations {
   String get lifeTimeAccess => 'Acceso de por vida';
 
   @override
+  String get mapbutton => 'Mapa';
+
+  @override
+  String multipleWatchersWatchingYourLoc(Object count, Object name) {
+    return '$name y $count personas más están viendo tu ubicación.';
+  }
+
+  @override
   String get name => 'nombre';
+
+  @override
+  String get notify => 'Notificar';
 
   @override
   String get otherApps => 'Otras aplicaciones';
@@ -75,7 +91,15 @@ class AppLocalizationsEs extends AppLocalizations {
   String get sendFeedback => 'Enviar comentarios';
 
   @override
+  String get settings => 'ajustes';
+
+  @override
   String get trialExpired => 'Período de prueba finalizado';
+
+  @override
+  String twoWatchersWatchingYourLocation(Object name1, Object name2) {
+    return '$name1 y $name2 están viendo tu ubicación.';
+  }
 
   @override
   String get update => 'ACTUALIZAR';
@@ -85,6 +109,21 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get version => 'Versión';
+
+  @override
+  String watchingLocationSingle(Object name) {
+    return '$name está viendo tu ubicación.';
+  }
+
+  @override
+  String watchingLocationDouble(Object name1, Object name2) {
+    return '$name1 y $name2 están viendo tu ubicación.';
+  }
+
+  @override
+  String watchingLocationMultiple(Object count, Object name) {
+    return '$name y $count personas más están viendo tu ubicación.';
+  }
 
   @override
   String get actionRequired => 'Acción requerida';
@@ -115,6 +154,9 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get autoStart => 'Inicio automático';
+
+  @override
+  String get callMeSent => 'Llamada solicitada.';
 
   @override
   String get backgroundPermissions => 'LynraFamily Member requiere estos permisos para funcionar en segundo plano.';

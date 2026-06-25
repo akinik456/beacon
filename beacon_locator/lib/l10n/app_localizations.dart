@@ -99,48 +99,6 @@ abstract class AppLocalizations {
     Locale('tr')
   ];
 
-  /// No description provided for @beingWatched.
-  ///
-  /// In en, this message translates to:
-  /// **'Being watched'**
-  String get beingWatched;
-
-  /// No description provided for @isWatchingYourLocation.
-  ///
-  /// In en, this message translates to:
-  /// **'{name} is watching your location.'**
-  String isWatchingYourLocation(Object name);
-
-  /// No description provided for @twoWatchersWatchingYourLocation.
-  ///
-  /// In en, this message translates to:
-  /// **'{name1} and {name2} are watching your location.'**
-  String twoWatchersWatchingYourLocation(Object name1, Object name2);
-
-  /// No description provided for @multipleWatchersWatchingYourLocation.
-  ///
-  /// In en, this message translates to:
-  /// **'{name} and {count} others are watching your location.'**
-  String multipleWatchersWatchingYourLocation(Object count, Object name);
-
-  /// No description provided for @watchingLocationSingle.
-  ///
-  /// In en, this message translates to:
-  /// **'{name} is watching your location.'**
-  String watchingLocationSingle(Object name);
-
-  /// No description provided for @watchingLocationDouble.
-  ///
-  /// In en, this message translates to:
-  /// **'{name1} and {name2} are watching your location.'**
-  String watchingLocationDouble(Object name1, Object name2);
-
-  /// No description provided for @watchingLocationMultiple.
-  ///
-  /// In en, this message translates to:
-  /// **'{name} and {count} others are watching your location.'**
-  String watchingLocationMultiple(Object count, Object name);
-
   /// No description provided for @aNewVer.
   ///
   /// In en, this message translates to:
@@ -183,6 +141,12 @@ abstract class AppLocalizations {
   /// **'Ask the group owner to upgrade LynraFamily.'**
   String get askTheGroup;
 
+  /// No description provided for @beingWatched.
+  ///
+  /// In en, this message translates to:
+  /// **'Being watched'**
+  String get beingWatched;
+
   /// No description provided for @goPremium.
   ///
   /// In en, this message translates to:
@@ -194,6 +158,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Feedback'**
   String get feedback;
+
+  /// No description provided for @isWatchingYourLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} is watching your location.'**
+  String isWatchingYourLocation(Object name);
 
   /// No description provided for @later.
   ///
@@ -207,11 +177,29 @@ abstract class AppLocalizations {
   /// **'Lifetime access'**
   String get lifeTimeAccess;
 
+  /// No description provided for @mapbutton.
+  ///
+  /// In en, this message translates to:
+  /// **'Map'**
+  String get mapbutton;
+
+  /// No description provided for @multipleWatchersWatchingYourLoc.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} and {count} others are watching your location.'**
+  String multipleWatchersWatchingYourLoc(Object count, Object name);
+
   /// No description provided for @name.
   ///
   /// In en, this message translates to:
   /// **'name'**
   String get name;
+
+  /// No description provided for @notify.
+  ///
+  /// In en, this message translates to:
+  /// **'Notify'**
+  String get notify;
 
   /// No description provided for @otherApps.
   ///
@@ -267,11 +255,23 @@ abstract class AppLocalizations {
   /// **'Send Feedback'**
   String get sendFeedback;
 
+  /// No description provided for @settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settings;
+
   /// No description provided for @trialExpired.
   ///
   /// In en, this message translates to:
   /// **'Trial expired'**
   String get trialExpired;
+
+  /// No description provided for @twoWatchersWatchingYourLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'{name1} and {name2} are watching your location.'**
+  String twoWatchersWatchingYourLocation(Object name1, Object name2);
 
   /// No description provided for @update.
   ///
@@ -290,6 +290,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Version'**
   String get version;
+
+  /// No description provided for @watchingLocationSingle.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} is watching your location.'**
+  String watchingLocationSingle(Object name);
+
+  /// No description provided for @watchingLocationDouble.
+  ///
+  /// In en, this message translates to:
+  /// **'{name1} and {name2} are watching your location.'**
+  String watchingLocationDouble(Object name1, Object name2);
+
+  /// No description provided for @watchingLocationMultiple.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} and {count} others are watching your location.'**
+  String watchingLocationMultiple(Object count, Object name);
 
   /// No description provided for @actionRequired.
   ///
