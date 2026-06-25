@@ -30,6 +30,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get askTheGroup => 'Ask the group owner to upgrade LynraFamily.';
 
   @override
+  String get callMeSent => 'Call Me Sent';
+
+  @override
   String get feedback => 'Feedback';
 
   @override

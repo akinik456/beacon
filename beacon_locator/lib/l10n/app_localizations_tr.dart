@@ -114,6 +114,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get autoStart => 'Otomatik Başlatma';
 
   @override
+  String get callMeSent => 'Beni Ara Gönderildi';
+
+  @override
   String get backgroundPermissions => 'LynraFamily Member\'ın arka planda çalışabilmesi için aşağıdaki izinlere ihtiyaç vardır.';
 
   @override

@@ -30,6 +30,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get askTheGroup => 'Grup sahibinden LynraFamily\'i yükseltmesini isteyin.';
 
   @override
+  String get callMeSent => 'Beni Ara Gönderildi';
+
+  @override
   String get feedback => 'Geri Bildirim';
 
   @override

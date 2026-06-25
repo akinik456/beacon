@@ -563,16 +563,25 @@ Widget _pairedRequesterCard() {
                       onPressed: requesterId.isEmpty
                           ? null
                           : () async {
-                              final groupId =
-                                  await IdentityService.getGroupId();
+													final groupId =
+															await IdentityService.getGroupId();
 
-                              if (groupId == null) return;
+													if (groupId == null) return;
 
-                              await CallMeService.createCallMe(
-                                groupId: groupId,
-                                targetRequesterId: requesterId,
-                              );
-                            },
+													await CallMeService.createCallMe(
+														groupId: groupId,
+														targetRequesterId: requesterId,
+													);
+
+													if (!context.mounted) return;
+
+													ScaffoldMessenger.of(context).showSnackBar(
+														SnackBar(
+															content: Text(l10n.callMeSent),
+															duration: const Duration(seconds: 2),
+														),
+													);
+												},
                       icon: const Icon(
                         Icons.call_rounded,
                         color: AppColors.primary,

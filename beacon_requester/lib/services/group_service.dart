@@ -6,6 +6,7 @@ import 'dart:ui';
 
 import 'identity_service.dart';
 import 'code_service.dart';
+import 'requester_registry_service.dart';
 
 class GroupService {
   GroupService._();
@@ -80,6 +81,7 @@ class GroupService {
       });
     });
 		
+		await RequesterRegistryService.registerRequester();
 		await _firestore.collection('requesters').doc(requesterId).set({
 			'groupId':groupId,
 			'updatedAt': FieldValue.serverTimestamp(),
@@ -140,6 +142,12 @@ class GroupService {
 			'requesterName': requesterName.trim(),
 			'status': 'pending',
 			'createdAt': FieldValue.serverTimestamp(),
+			'updatedAt': FieldValue.serverTimestamp(),
+		}, SetOptions(merge: true));
+		
+		await RequesterRegistryService.registerRequester();
+		await _firestore.collection('requesters').doc(requesterId).set({
+			'groupId':groupId,
 			'updatedAt': FieldValue.serverTimestamp(),
 		}, SetOptions(merge: true));
 

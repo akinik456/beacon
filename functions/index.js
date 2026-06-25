@@ -51,8 +51,6 @@ exports.onCallMeCreated = onDocumentCreated(
       data.targetRequesterId === targetId;
 
     let topic = "";
-    let title = "Call Me";
-    let body = "";
     let payload = {
       type: "call_me",
       callMeId,
@@ -65,7 +63,6 @@ exports.onCallMeCreated = onDocumentCreated(
         data.requesterCode || "";
 
       topic = `locator_${targetId}`;
-      body = `${requesterName} wants you to call.`;
 
       payload = {
         ...payload,
@@ -74,12 +71,11 @@ exports.onCallMeCreated = onDocumentCreated(
       };
     } else if (isLocatorToRequester) {
       const locatorName =
-        data.locatorName || "Locator";
+        data.locatorName || "Member";
       const locatorCode =
         data.locatorCode || "";
 
       topic = `requester_${targetId}`;
-      body = `${locatorName} wants you to call.`;
 
       payload = {
         ...payload,
@@ -98,18 +94,8 @@ exports.onCallMeCreated = onDocumentCreated(
       const response = await admin.messaging().send({
         topic,
 
-        notification: {
-          title,
-          body,
-        },
-
         android: {
           priority: "high",
-          notification: {
-            channelId: "call_me",
-            priority: "max",
-            defaultSound: true,
-          },
         },
 
         data: payload,

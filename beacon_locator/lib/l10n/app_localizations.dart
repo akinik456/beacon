@@ -309,6 +309,12 @@ abstract class AppLocalizations {
   /// **'Auto-Start'**
   String get autoStart;
 
+  /// No description provided for @callMeSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Call Me Sent'**
+  String get callMeSent;
+
   /// No description provided for @backgroundPermissions.
   ///
   /// In en, this message translates to:

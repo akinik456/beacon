@@ -127,20 +127,28 @@ class LocatorStatusCard extends StatelessWidget {
 													groupId: groupId,
 													targetLocatorId: locatorId,
 												);
+												if (!context.mounted) return;
+
+												ScaffoldMessenger.of(context).showSnackBar(
+													SnackBar(
+														content: Text(l10n.callMeSent),
+														duration: const Duration(seconds: 2),
+													),
+												);
 											},
-								icon: const Icon(
-									Icons.call_rounded,
-									size: 16,
-									color: AppColors.primary,
-								),
-								label: Text(
-									l10n.callme,
-									style: AppFonts.button.copyWith(
-										color: AppColors.primary,
-										fontSize: 12,
-									),
-								),
-							),
+											icon: const Icon(
+												Icons.call_rounded,
+												size: 16,
+												color: AppColors.primary,
+											),
+											label: Text(
+												l10n.callme,
+												style: AppFonts.button.copyWith(
+													color: AppColors.primary,
+													fontSize: 12,
+												),
+											),
+										),
 						],
 					),
 					const SizedBox(height: 8),

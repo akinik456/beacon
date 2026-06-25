@@ -141,6 +141,12 @@ abstract class AppLocalizations {
   /// **'Ask the group owner to upgrade LynraFamily.'**
   String get askTheGroup;
 
+  /// No description provided for @callMeSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Call Me Sent'**
+  String get callMeSent;
+
   /// No description provided for @feedback.
   ///
   /// In en, this message translates to:

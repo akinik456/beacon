@@ -25,6 +25,8 @@ loc. isminiz varken requester ---- gösteriyor
 
 FS kurallar
 
+callme yapıldığında snackbar
+
 
 
 

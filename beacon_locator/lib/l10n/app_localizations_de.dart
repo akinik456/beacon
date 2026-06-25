@@ -114,6 +114,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get autoStart => 'Autostart';
 
   @override
+  String get callMeSent => 'Call Me Sent';
+
+  @override
   String get backgroundPermissions => 'LynraFamily Member benötigt diese Berechtigungen für den Hintergrundbetrieb.';
 
   @override

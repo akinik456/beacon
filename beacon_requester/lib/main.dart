@@ -24,8 +24,6 @@ Future<void> main() async {
 	
   await Firebase.initializeApp();
 
-  await NotificationService.initialize();
-
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
   runApp(const MyApp());
@@ -49,6 +47,9 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     _loadLocale();
+		WidgetsBinding.instance.addPostFrameCallback((_) async {
+			await NotificationService.initialize();
+		});
   }
 
   Future<void> _loadLocale() async {
