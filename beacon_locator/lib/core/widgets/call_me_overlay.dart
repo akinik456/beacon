@@ -18,67 +18,72 @@ class CallMeOverlay extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+Widget build(BuildContext context) {
+  final l10n = AppLocalizations.of(context)!;
 
-    final requesterName =
-        data['requesterName'] ?? 'Requester';
-    final requesterCode =
-        data['requesterCode'] ?? '';
+  final requesterName =
+      data['requesterName'] ?? 'Requester';
+  final requesterCode =
+      data['requesterCode'] ?? '';
 
-    final createdAt =
-        data['createdAt'] as Timestamp?;
+  final createdAt =
+      data['createdAt'] as Timestamp?;
 
-    final timeText =
-        TimeHelper.formatLastSeen(
-      createdAt?.millisecondsSinceEpoch,
-      l10n,
-    );
+  final timeText = TimeHelper.formatLastSeen(
+    createdAt?.millisecondsSinceEpoch,
+    l10n,
+  );
 
-    return Positioned.fill(
-child: Column(
-  mainAxisSize: MainAxisSize.min,
-  children: [
-    Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const Icon(
-          Icons.phone_in_talk_rounded,
-          color: AppColors.primary,
-          size: 24,
-        ),
+  return Material(
+    color: Colors.black.withOpacity(0.45),
+    child: Center(
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: AppCard(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(
+                    Icons.phone_in_talk_rounded,
+                    color: AppColors.primary,
+                    size: 24,
+                  ),
+                  const SizedBox(width: 8),
+                  Flexible(
+                    child: Text(
+                      '$requesterName - $requesterCode',
+                      style: AppFonts.title,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
 
-        const SizedBox(width: 8),
+              const SizedBox(height: 8),
 
-        Flexible(
-          child: Text(
-            '$requesterName - $requesterCode',
-            style: AppFonts.title,
-            overflow: TextOverflow.ellipsis,
+              Text(
+                '${l10n.wantsYoutoCall} • $timeText',
+                style: AppFonts.body,
+                textAlign: TextAlign.center,
+              ),
+
+              const SizedBox(height: 12),
+
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: onDismiss,
+                  child: Text(l10n.dismiss),
+                ),
+              ),
+            ],
           ),
         ),
-      ],
-    ),
-
-    const SizedBox(height: 8),
-
-    Text(
-      '${l10n.wantsYoutoCall} • $timeText',
-      style: AppFonts.body,
-      textAlign: TextAlign.center,
-    ),
-
-    const SizedBox(height: 12),
-
-    SizedBox(
-      width: double.infinity,
-      child: ElevatedButton(
-        onPressed: onDismiss,
-        child: Text(l10n.dismiss),
       ),
     ),
-  ],
-),
-    );
-  }
+  );
+}
 }

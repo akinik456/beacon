@@ -27,6 +27,20 @@ FS kurallar
 
 callme yapıldığında snackbar
 
+joingrup buton onay değil gruba girme isteği filan
+
+loc status card butonlar en
+
+watcher yenilendiğinde anında presence
+
+rl bildirimde isim yok
+
+rl bildirim var ,AW bildirim yok
+
+samsung izinler
+
+free trial en
+
 
 
 

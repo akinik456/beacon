@@ -1053,38 +1053,7 @@ final l10n = AppLocalizations.of(context)!;
                   _buildPairingArea(),
 									const SizedBox(height: 12),
 									_activeWatchersCard(),				
-									const SizedBox(height: 36),									
-									if (_callMeData != null)
-									CallMeOverlay(
-										data: _callMeData!,
-										onDismiss: () async {
-											final callMeId = _callMeData!['callMeId'];
-
-											final groupId = _callMeData!['groupId'];
-
-											final locatorId = _callMeData!['targetLocatorId'];
-
-											await FirebaseFirestore.instance
-													.collection('groups')
-													.doc(groupId)
-													.collection('call_me')
-													.doc(locatorId)
-													.collection('items')
-													.doc(callMeId)
-													.delete();
-											if (!mounted) return;
-											setState(() {
-												_pendingCallMeQueue.removeWhere(
-													(x) => x['callMeId'] == callMeId,
-												);
-												_callMeData = _pendingCallMeQueue.isNotEmpty
-														? _pendingCallMeQueue.first
-														: null;
-											});
-										},
-									),	
 									const Spacer(),
-									const SizedBox(height: 12),
                   _permissionsButton(),
 									const SizedBox(height: 70),
                   ],
@@ -1188,6 +1157,37 @@ Positioned(
       ),
     ),
   ),
+),
+if (_callMeData != null)
+  Positioned.fill(
+    child: CallMeOverlay(
+      data: _callMeData!,
+      onDismiss: () async {
+											final callMeId = _callMeData!['callMeId'];
+
+											final groupId = _callMeData!['groupId'];
+
+											final locatorId = _callMeData!['targetLocatorId'];
+
+											await FirebaseFirestore.instance
+													.collection('groups')
+													.doc(groupId)
+													.collection('call_me')
+													.doc(locatorId)
+													.collection('items')
+													.doc(callMeId)
+													.delete();
+											if (!mounted) return;
+											setState(() {
+												_pendingCallMeQueue.removeWhere(
+													(x) => x['callMeId'] == callMeId,
+												);
+												_callMeData = _pendingCallMeQueue.isNotEmpty
+														? _pendingCallMeQueue.first
+														: null;
+											});
+										},
+									),	
 ),
       if (!_hasFullAccess && _hasGroup)
         const LocatorSubscriptionExpiredOverlay(),

@@ -1,0 +1,25 @@
+req
+@override
+	Widget build(BuildContext context) {
+  final l10n = AppLocalizations.of(context)!;
+  final langCode = Localizations.localeOf(context).languageCode.toUpperCase();
+		return Scaffold(
+			backgroundColor: AppColors.background,
+				body: Stack(
+					children: [
+						SafeArea(
+						),
+						Positioned(),
+						CallMeOverlay(),
+						AlertOverlay(),
+						if (!_hasFullAccess && _hasGroup)
+							SubscriptionExpiredOverlay(
+								isMaster: _isMaster,
+								onUpgrade: () {
+									_showPurchaseMenu();
+								},
+							),
+						],
+					),
+				);
+			}
