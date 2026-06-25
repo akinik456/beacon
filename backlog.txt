@@ -1,9 +1,7 @@
  app cihazdan kaldırılırsa FS den nasıl sileceğiz ?
- Tablet auto-start ayarı
  
 ********
 
-loc gruba girmeden presence yazmayı deniyor
 
 SMS
 Messaging
@@ -15,7 +13,7 @@ lynrafamily_requesters
 lynrafamily_members
 
 
-joinngrup snackbar
+joingrup snackbar
 
 Trial abuse prevention
 
@@ -32,6 +30,10 @@ watcher yenilendiğinde anında presence
 samsung izinler
 
 free trial en
+
+isim girmek neden bu kadar zor
+
+klavye açıkken taşma
 
 
 

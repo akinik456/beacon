@@ -470,19 +470,25 @@ Stream<List<Map<String, String>>> _watchPairedRequesterData() async* {
       height: 54,
       child: OutlinedButton.icon(
         onPressed: () async {
-          final color = hasAllPermissions
-              ? AppColors.primary
-              : AppColors.danger;
-          final result = await Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => const LocatorPermissionPage()),
-          );
-          if (result != null) {
-            setState(() {
-              hasAllPermissions = result;
-            });
-          }
-        },
+					final result = await Navigator.push(
+						context,
+						MaterialPageRoute(
+							builder: (_) => const LocatorPermissionPage(),
+						),
+					);
+
+					if (!mounted) return;
+
+					if (result != null) {
+						setState(() {
+							hasAllPermissions = result;
+						});
+					}
+
+					if (hasAllPermissions) {
+						await _startLocatorHome();
+					}
+				},
 
         icon: Icon(Icons.privacy_tip_outlined, color: color),
         label: Text(
@@ -729,8 +735,15 @@ Widget _pairedRequesterCard() {
                                   requestId: doc.id,
                                   requestData: data,
                                 );
+														if (!context.mounted) return;
 
-                            if (!context.mounted) return;
+														if (result == 'approved') {
+															await Future.delayed(
+																const Duration(milliseconds: 300),
+															);
+
+															await _startLocatorHome();
+														}
 
                             ScaffoldMessenger.of(
                               context,

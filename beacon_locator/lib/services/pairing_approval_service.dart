@@ -111,8 +111,9 @@ class PairingApprovalService {
       'status': 'approved',
       'respondedAt': FieldValue.serverTimestamp(),
     });
-		ActiveWatcherService.startUiOnly();
     return 'approved';
+		
+		
   });
 
   if (result == 'approved') {
