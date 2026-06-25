@@ -99,6 +99,30 @@ abstract class AppLocalizations {
     Locale('tr')
   ];
 
+  /// No description provided for @beingWatched.
+  ///
+  /// In en, this message translates to:
+  /// **'Being watched'**
+  String get beingWatched;
+
+  /// No description provided for @isWatchingYourLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} is watching your location.'**
+  String isWatchingYourLocation(Object name);
+
+  /// No description provided for @twoWatchersWatchingYourLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'{name1} and {name2} are watching your location.'**
+  String twoWatchersWatchingYourLocation(Object name1, Object name2);
+
+  /// No description provided for @multipleWatchersWatchingYourLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} and {count} others are watching your location.'**
+  String multipleWatchersWatchingYourLocation(Object count, Object name);
+
   /// No description provided for @aNewVer.
   ///
   /// In en, this message translates to:

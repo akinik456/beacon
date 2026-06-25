@@ -9,6 +9,24 @@ class AppLocalizationsDe extends AppLocalizations {
   AppLocalizationsDe([String locale = 'de']) : super(locale);
 
   @override
+  String get beingWatched => 'Being watched';
+
+  @override
+  String isWatchingYourLocation(Object name) {
+    return '$name is watching your location.';
+  }
+
+  @override
+  String twoWatchersWatchingYourLocation(Object name1, Object name2) {
+    return '$name1 and $name2 are watching your location.';
+  }
+
+  @override
+  String multipleWatchersWatchingYourLocation(Object count, Object name) {
+    return '$name and $count others are watching your location.';
+  }
+
+  @override
   String get aNewVer => 'A new version is available. Update now for the best experience.';
 
   @override

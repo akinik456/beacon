@@ -25,7 +25,7 @@ class LocatorStatusCard extends StatelessWidget {
 	final String distanceText;
 	final VoidCallback onOpenMaps;
 	final String addressText;
-	final VoidCallback? onRequestLocation;
+	//final VoidCallback? onRequestLocation;
 	final VoidCallback? onNotificationSettings;
 	final VoidCallback? onSettings;
 	final VoidCallback? onRemove;
@@ -42,7 +42,7 @@ class LocatorStatusCard extends StatelessWidget {
 		required this.distanceText,
 		required this.onOpenMaps,
 		required this.addressText,
-		required this.onRequestLocation,
+		//required this.onRequestLocation,
 		required this.onNotificationSettings,
 		required this.onSettings,
 		required this.onRemove,
@@ -232,12 +232,12 @@ class LocatorStatusCard extends StatelessWidget {
 					Row(
 						mainAxisAlignment: MainAxisAlignment.spaceBetween,
 						children: [
-							_MiniAction(
+							/*_MiniAction(
 								icon: Icons.my_location_rounded,
 								label: 'Request',
 								color: AppColors.primary,
 								onTap: onRequestLocation,
-							),
+							),*/
 							_MiniAction(
 								icon: Icons.map_rounded,
 								label: 'Map',

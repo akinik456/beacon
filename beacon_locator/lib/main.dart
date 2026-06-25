@@ -49,6 +49,13 @@ import 'services/notification_service.dart';
 				);
 				break;
 
+			case 'active_watchers_changed':
+				print("BEACON FCM BG => ACTIVE WATCHERS changed");
+
+				await ActiveWatcherService.updateNotificationFromServer();
+
+				break;
+				
 			case 'call_me':
 				print(
 					"BEACON FCM BG => CALL ME received",
@@ -64,6 +71,7 @@ import 'services/notification_service.dart';
 				);
 
 				break;
+			
 
 			default:
 				print(

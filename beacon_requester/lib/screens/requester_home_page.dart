@@ -1695,14 +1695,16 @@ final l10n = AppLocalizations.of(context)!;
 																										lng: lng,
 																									);
 																								},
-																								onRequestLocation: () async {
+																								
+																								/*onRequestLocation: () async {
 																									if (_groupId == null || _requesterId == null) return;
 																									await RequestLocationService.createRequestLocation(
 																										groupId: groupId,
 																										requesterId: _requesterId!,
 																										locatorId: locatorId,
 																									);
-																								},
+																								},*/
+																								
 																								addressText: locator['address'] ?? l10n.addressNotAvailable,
 																								onNotificationSettings: () {
 																									 Navigator.push(

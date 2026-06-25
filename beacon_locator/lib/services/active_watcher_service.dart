@@ -1,8 +1,10 @@
 import 'dart:async';
+
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/foundation.dart';
 
 import 'identity_service.dart';
+import 'notification_service.dart';
 import 'smart_presence_scheduler.dart';
 
 class ActiveWatcherService {
@@ -47,11 +49,10 @@ class ActiveWatcherService {
       "updateScheduler=$updateScheduler",
     );
 
-    _sub = ref.onValue.listen((event) {
-      final value = event.snapshot.value;
+    _sub = ref.onValue.listen((event) async {
+      final watchers = _parseWatchers(event.snapshot.value);
 
-      final hasWatcher =
-          value is Map && value.isNotEmpty;
+      final hasWatcher = watchers.isNotEmpty;
 
       print(
         "BEACON WATCHER => hasWatcher=$hasWatcher "
@@ -64,27 +65,91 @@ class ActiveWatcherService {
         );
       }
 
-      final watchers = <Map<String, dynamic>>[];
+      activeWatchers.value = watchers;
 
-      if (value is Map) {
-        for (final entry in value.entries) {
-          final data = entry.value;
+      await _updateNotificationFromWatchers(watchers);
+    });
+  }
 
-          if (data is Map) {
-            watchers.add(
-              Map<String, dynamic>.from(data),
-            );
-          }
+  static Future<void> updateNotificationFromServer() async {
+    final groupId = await IdentityService.getGroupId();
+    final locatorId = await IdentityService.getLocatorId();
+
+    if (groupId == null || locatorId == null) {
+      print(
+        "BEACON WATCHER => notification skip missing group/locator",
+      );
+
+      await NotificationService.cancelActiveWatchers();
+      return;
+    }
+
+    final ref = FirebaseDatabase.instance.ref(
+      "presence/groups/$groupId/active_watchers/$locatorId",
+    );
+
+    final snapshot = await ref.get();
+
+    final watchers = _parseWatchers(snapshot.value);
+
+    activeWatchers.value = watchers;
+
+    await _updateNotificationFromWatchers(watchers);
+  }
+
+  static List<Map<String, dynamic>> _parseWatchers(
+    Object? value,
+  ) {
+    final watchers = <Map<String, dynamic>>[];
+
+    if (value is Map) {
+      for (final entry in value.entries) {
+        final data = entry.value;
+
+        if (data is Map) {
+          watchers.add(
+            Map<String, dynamic>.from(data),
+          );
         }
       }
+    }
 
-      activeWatchers.value = watchers;
-    });
+    return watchers;
+  }
+
+  static Future<void> _updateNotificationFromWatchers(
+    List<Map<String, dynamic>> watchers,
+  ) async {
+    if (watchers.isEmpty) {
+      await NotificationService.cancelActiveWatchers();
+      return;
+    }
+
+    final names = watchers
+        .map(
+          (watcher) =>
+              (watcher['requesterName'] ?? 'Requester')
+                  .toString()
+                  .trim(),
+        )
+        .where((name) => name.isNotEmpty)
+        .toList();
+
+    if (names.isEmpty) {
+      await NotificationService.cancelActiveWatchers();
+      return;
+    }
+
+    await NotificationService.showActiveWatchers(
+      names: names,
+    );
   }
 
   static Future<void> stop() async {
     await _sub?.cancel();
     _sub = null;
     activeWatchers.value = [];
+
+    await NotificationService.cancelActiveWatchers();
   }
 }

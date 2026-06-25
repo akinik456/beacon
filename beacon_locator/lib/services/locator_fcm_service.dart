@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'identity_service.dart';
 import 'smart_presence_scheduler.dart';
+import 'active_watcher_service.dart';
 
 class FCMService {
   FCMService._();
@@ -40,26 +41,40 @@ class FCMService {
 		
 		// ================= FOREGROUND LISTENER =================
 
-		FirebaseMessaging.onMessage.listen((message) async {
+	FirebaseMessaging.onMessage.listen((message) async {
 		print("BEACON FCM => foreground message");
 		print("BEACON FCM => data => ${message.data}");
 
 		final type = message.data['type'];
 
-		if (type == 'request_location') {
-			print(
-				"BEACON FCM => REQUEST LOCATION received",
-			);
+		switch (type) {
+			case 'request_location':
+				print(
+					"BEACON FCM => REQUEST LOCATION received",
+				);
 
-			await SmartPresenceScheduler.boostAndUpdateNow(
-				reason: 'fcm_foreground',
-			);
+				await SmartPresenceScheduler.boostAndUpdateNow(
+					reason: 'fcm_foreground',
+				);
 
-			print(
-				"BEACON FCM => REQUEST LOCATION completed",
-			);
+				print(
+					"BEACON FCM => REQUEST LOCATION completed",
+				);
+				break;
+
+			case 'active_watchers_changed':
+				print(
+					"BEACON FCM => ACTIVE WATCHERS changed",
+				);
+
+				await ActiveWatcherService.updateNotificationFromServer();
+
+				print(
+					"BEACON FCM => ACTIVE WATCHERS updated",
+				);
+				break;
 		}
-	});	
+	});
 	
 	// ================= APP OPENED FROM NOTIFICATION =================
 

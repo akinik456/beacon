@@ -1,6 +1,10 @@
 {
 "@@locale": 													"es",
 
+"beingWatched": "Te están observando",
+"isWatchingYourLocation": "{name} está viendo tu ubicación.",
+"twoWatchersWatchingYourLocation": "{name1} y {name2} están viendo tu ubicación.",
+"multipleWatchersWatchingYourLocation": "{name} y {count} personas más están viendo tu ubicación.",
 
 "aNewVer": 														"Hay una nueva versión disponible. Actualiza ahora para disfrutar de la mejor experiencia.",
 "addAdmin": 													"Agregar administrador",

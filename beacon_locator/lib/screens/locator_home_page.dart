@@ -40,6 +40,8 @@ import '../services/locator_fcm_service.dart';
 import '../services/motion_service.dart';
 import '../services/subscription_service.dart';
 import '../core/widgets/locator_subscription_expired_overlay.dart';
+import '../services/notification_service.dart';
+
 
 class LocatorHomePage extends StatefulWidget {
   const LocatorHomePage({super.key});
@@ -68,6 +70,7 @@ void initState() {
 
   unawaited(_loadVersion());
   unawaited(_checkForUpdate());
+	
 
   WidgetsBinding.instance.addPostFrameCallback((_) {
     _checkPermissionsAndWarn();

@@ -9,6 +9,24 @@ class AppLocalizationsTr extends AppLocalizations {
   AppLocalizationsTr([String locale = 'tr']) : super(locale);
 
   @override
+  String get beingWatched => 'İzleniyorsun';
+
+  @override
+  String isWatchingYourLocation(Object name) {
+    return '$name konumunu izliyor.';
+  }
+
+  @override
+  String twoWatchersWatchingYourLocation(Object name1, Object name2) {
+    return '$name1 ve $name2 konumunu izliyor.';
+  }
+
+  @override
+  String multipleWatchersWatchingYourLocation(Object count, Object name) {
+    return '$name ve $count kişi daha konumunu izliyor.';
+  }
+
+  @override
   String get aNewVer => 'Yeni bir sürüm mevcut. En iyi deneyim için şimdi güncelleyin.';
 
   @override

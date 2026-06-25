@@ -1,6 +1,11 @@
 {
 "@@locale": 													"tr",
 
+"beingWatched": "İzleniyorsun",
+"isWatchingYourLocation": "{name} konumunu izliyor.",
+"twoWatchersWatchingYourLocation": "{name1} ve {name2} konumunu izliyor.",
+"multipleWatchersWatchingYourLocation": "{name} ve {count} kişi daha konumunu izliyor.",
+
 "aNewVer": 														"Yeni bir sürüm mevcut. En iyi deneyim için şimdi güncelleyin.",
 "addAdmin": 													"Yönetici ekle",
 "addressNotAvailable":								"Adres mevcut değil",

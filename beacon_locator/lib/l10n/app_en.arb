@@ -2,6 +2,12 @@
 
 "@@locale": 													"en",
 
+"beingWatched": "Being watched",
+"isWatchingYourLocation": "{name} is watching your location.",
+"twoWatchersWatchingYourLocation": "{name1} and {name2} are watching your location.",
+"multipleWatchersWatchingYourLocation": "{name} and {count} others are watching your location.",
+
+
 "aNewVer":														"A new version is available. Update now for the best experience.",
 "addAdmin":														"Add admin",
 "addressNotAvailable":								"Address not available",

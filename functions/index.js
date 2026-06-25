@@ -11,6 +11,7 @@ const {setGlobalOptions} = require("firebase-functions");
 const {onRequest} = require("firebase-functions/https");
 const {onDocumentCreated} =
     require("firebase-functions/v2/firestore");
+const {onValueWritten} = require("firebase-functions/v2/database");
 
 const admin = require("firebase-admin");
 
@@ -176,31 +177,65 @@ exports.onRequestLocationCreated = onDocumentCreated(
 
     try {
       const response = await admin.messaging().send({
-        topic,
+				topic,
 
-        notification: {
-          title: "Request Location",
-          body: "Location requested",
-        },
+				android: {
+					priority: "high",
+				},
+
+				data: {
+					type: "request_location",
+					locatorId,
+				},
+			});
+
+						console.log("RL FCM SENT", topic, response);
+					} catch (error) {
+						console.error("RL FCM ERROR", error);
+					}
+				}
+			);
+exports.onActiveWatchersChanged = onValueWritten(
+  "/presence/groups/{groupId}/active_watchers/{locatorId}",
+  async (event) => {
+    const locatorId = event.params.locatorId;
+
+    const before = event.data.before.val() || {};
+    const after = event.data.after.val() || {};
+
+    const beforeCount = Object.keys(before).length;
+    const afterCount = Object.keys(after).length;
+
+    console.log(
+      "ACTIVE WATCHERS CHANGED",
+      "locatorId=", locatorId,
+      "beforeCount=", beforeCount,
+      "afterCount=", afterCount,
+    );
+
+    if (beforeCount === afterCount) {
+      console.log("ACTIVE WATCHERS => count unchanged, skip FCM");
+      return;
+    }
+
+    const topic = `locator_${locatorId}`;
+
+    try {
+      const response = await admin.messaging().send({
+        topic,
 
         android: {
           priority: "high",
-          notification: {
-            channelId: "call_me",
-            priority: "max",
-            defaultSound: true,
-          },
         },
 
         data: {
-          type: "request_location",
-          locatorId,
+          type: "active_watchers_changed",
         },
       });
 
-      console.log("RL FCM SENT", topic, response);
+      console.log("ACTIVE WATCHERS FCM SENT", topic, response);
     } catch (error) {
-      console.error("RL FCM ERROR", error);
+      console.error("ACTIVE WATCHERS FCM ERROR", error);
     }
   }
 );
