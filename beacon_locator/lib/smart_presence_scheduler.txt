@@ -1,0 +1,497 @@
+main.dart 
+firebaseMessagingBackgroundHandler(
+case 'request_location':// artık loc request_location göndermiyor eskiden kalma kod
+				print(
+					"BEACON FCM BG => REQUEST LOCATION received",
+				);
+
+				await SmartPresenceScheduler
+						.boostAndUpdateNow(
+					reason: 'fcm_foreground',
+				);
+
+				print(
+					"BEACON FCM BG => REQUEST LOCATION completed",
+				);
+				break;
+				
+locator_fcm_service.dart				
+FirebaseMessaging.onMessage.listen((message) async {
+switch (type) {
+			case 'request_location':
+				print(
+					"BEACON FCM => REQUEST LOCATION received",
+				);
+
+				await SmartPresenceScheduler.boostAndUpdateNow(
+					reason: 'fcm_foreground',
+				);
+				
+motion_service.dart	
+_sub = userAccelerometerEventStream().listen(
+SmartPresenceScheduler.boostAndUpdateNow(
+					reason: 'motion',
+				);
+				
+smart_presence_scheduler.dart
+import 'dart:async';
+
+import 'presence_service.dart';
+import 'alert_monitor_service.dart';
+
+class SmartPresenceScheduler {
+  SmartPresenceScheduler._();
+
+  static Timer? _timer;
+
+  static DateTime? _fastUntil;
+
+  static bool _hasActiveWatcher = false;
+  static bool _isUpdating = false;
+
+  static const _fastPeriod =
+      Duration(seconds: 30);
+
+  static const _slowPeriod =
+      Duration(hours: 1);
+
+  static const _fastWindow =
+      Duration(minutes: 2);
+
+  static void start() {
+    print("SMART PRESENCE => start");
+
+    _scheduleNext(
+      immediate: true,
+      reason: 'start',
+    );
+  }
+
+  static void stop() {
+    print("SMART PRESENCE => stop");
+
+    _timer?.cancel();
+    _timer = null;
+  }
+
+  static Future<void> boostAndUpdateNow({
+    required String reason,
+  }) async {
+    print(
+      "SMART PRESENCE => boost => $reason",
+    );
+
+    _fastUntil =
+        DateTime.now().add(_fastWindow);
+
+    await _runUpdate(
+      reason: reason,
+    );
+
+    _scheduleNext(
+      immediate: false,
+      reason: reason,
+    );
+  }
+
+  static Future<void> _runUpdate({
+    required String reason,
+  }) async {
+    if (_isUpdating) {
+      print(
+        "SMART PRESENCE => skip update reason=$reason",
+      );
+      return;
+    }
+
+    _isUpdating = true;
+
+    try {
+      await PresenceService.updateOnline();
+
+      await AlertMonitorService.checkNow();
+    } finally {
+      _isUpdating = false;
+    }
+  }
+
+  static void _scheduleNext({
+    required bool immediate,
+    required String reason,
+  }) {
+    _timer?.cancel();
+
+    final now = DateTime.now();
+
+    final isFast =
+        _hasActiveWatcher ||
+        (_fastUntil != null &&
+            now.isBefore(_fastUntil!));
+
+    final period =
+        isFast ? _fastPeriod : _slowPeriod;
+
+    print(
+      "SMART PRESENCE => schedule "
+      "period=${period.inSeconds}s "
+      "reason=$reason",
+    );
+
+    _timer = Timer(
+      immediate ? Duration.zero : period,
+      () async {
+        await _runUpdate(
+          reason: 'timer',
+        );
+
+        _scheduleNext(
+          immediate: false,
+          reason: 'timer',
+        );
+      },
+    );
+  }
+
+  static void setActiveWatcher(bool value) {
+    _hasActiveWatcher = value;
+
+    print(
+      "SMART PRESENCE => activeWatcher=$value",
+    );
+
+    if (value) {
+      boostAndUpdateNow(
+        reason: 'active_watcher',
+      );
+    } else {
+      _scheduleNext(
+        immediate: false,
+        reason: 'active_watcher_off',
+      );
+    }
+  }
+}
+
+alert_monitor_service.dart
+static Future<void> checkNow() async {
+
+	final gpsOffAlertEnabled =
+			LocatorSettingsService.gpsOffAlertEnabled &&
+			LocatorSettingsService.hasGpsOffNotifyTarget;
+
+	final batteryLowAlertEnabled =
+			LocatorSettingsService.batteryLowAlertEnabled &&
+			LocatorSettingsService.hasBatteryLowNotifyTarget;
+
+	final batteryLowLevel =
+			LocatorSettingsService.batteryLowLevel;
+	print(
+		"BEACON ALERT MONITOR => "
+		"gpsOffAlertEnabled=$gpsOffAlertEnabled "
+		"batteryLowAlertEnabled=$batteryLowAlertEnabled "
+		"batteryLowLevel=$batteryLowLevel",
+	);		
+    try {
+			final gpsEnabled =
+					await Geolocator.isLocationServiceEnabled();
+
+			print(
+				"BEACON ALERT MONITOR => gpsEnabled=$gpsEnabled",
+			);
+
+			if (gpsOffAlertEnabled &&
+					!gpsEnabled &&
+					_lastGpsEnabled) {
+				await AlertService.sendGpsOffAlert();
+			}
+
+			_lastGpsEnabled = gpsEnabled;
+		} catch (e) {
+			print(
+				"BEACON ALERT MONITOR ERROR => $e",
+			);
+		}
+	
+		final batteryLevel =
+    await Battery().batteryLevel;
+
+		print(
+			"BEACON ALERT MONITOR => battery=$batteryLevel",
+		);
+
+		final isBatteryLow =
+				batteryLevel <= batteryLowLevel;
+
+		if (batteryLowAlertEnabled &&
+				isBatteryLow &&
+				!_lastBatteryLow) {
+			await AlertService.sendBatteryLowAlert(
+				batteryLevel: batteryLevel,
+			);
+		}
+
+		_lastBatteryLow = isBatteryLow;
+		
+  }
+
+alert_service.dart
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:uuid/uuid.dart';
+import 'package:battery_plus/battery_plus.dart';
+
+import 'identity_service.dart';
+
+class AlertService {
+  AlertService._();
+
+  static final _firestore = FirebaseFirestore.instance;
+
+	static Future<void> sendGpsOffAlert() async {
+		await _sendAlertToPairedRequesters(
+			type: 'gps_off',
+		);
+
+		print("BEACON ALERT => gps_off sent");
+	}
+	
+	static Future<void> sendBatteryLowAlert({
+		required int batteryLevel,
+	}) async {
+		await _sendAlertToPairedRequesters(
+			type: 'battery_low',
+			extraData: {
+				'battery': batteryLevel,
+			},
+		);
+
+		print("BEACON ALERT => battery_low sent");
+	}
+	
+	static Future<void> sendPlaceAlert({
+		required String type, // place_enter / place_exit
+		required String placeName,
+	}) async {
+		await _sendAlertToPairedRequesters(
+			type: type,
+			extraData: {
+				'placeName': placeName,
+			},
+		);
+
+		print("BEACON ALERT => $type sent => $placeName");
+	}	
+
+  static Future<void> _sendAlertToPairedRequesters({
+  required String type,
+  Map<String, dynamic> extraData = const {},
+}) async {
+  final groupId = await IdentityService.getGroupId();
+  final locatorId = await IdentityService.getLocatorId();
+  final locatorName = await IdentityService.getLocatorName();
+  final locatorCode = await IdentityService.getLocatorCode();
+
+  if (groupId == null || locatorId == null) {
+    print("BEACON ALERT => missing group/locator");
+    return;
+  }
+
+  final notifyField = _notifyFieldForType(type);
+
+  if (notifyField.isEmpty) {
+    print("BEACON ALERT => unknown notify field for type=$type");
+    return;
+  }
+
+  final locatorDeviceDoc = await _firestore
+      .collection('groups')
+      .doc(groupId)
+      .collection('devices')
+      .doc(locatorId)
+      .get();
+
+  final data = locatorDeviceDoc.data();
+
+  if (data == null) {
+    print("BEACON ALERT => locator device doc not found");
+    return;
+  }
+
+  final pairedRequesters = Map<String, dynamic>.from(
+    data['pairedRequesters'] ?? {},
+  );
+
+  if (pairedRequesters.isEmpty) {
+    print("BEACON ALERT => no paired requesters");
+    return;
+  }
+
+  int sentCount = 0;
+
+  for (final requesterId in pairedRequesters.keys) {
+    final notifyDoc = await _firestore
+        .collection('groups')
+        .doc(groupId)
+        .collection('devices')
+        .doc(locatorId)
+        .collection('notifyRequesters')
+        .doc(requesterId)
+        .get();
+
+    final notifyData = notifyDoc.data() ?? {};
+
+    if (notifyData[notifyField] != true) {
+      print(
+        "BEACON ALERT => skipped $requesterId "
+        "type=$type notifyField=$notifyField",
+      );
+      continue;
+    }
+
+    final alertId = const Uuid().v4();
+
+    await _firestore
+        .collection('groups')
+        .doc(groupId)
+        .collection('alerts')
+        .doc(requesterId)
+        .collection('items')
+        .doc(alertId)
+        .set({
+      'alertId': alertId,
+      'groupId': groupId,
+      'type': type,
+      'locatorId': locatorId,
+      'locatorName': locatorName ?? 'Locator',
+      'locatorCode': locatorCode ?? '------',
+      'targetRequesterId': requesterId,
+      'status': 'pending',
+      'createdAt': FieldValue.serverTimestamp(),
+      ...extraData,
+    });
+
+    sentCount++;
+  }
+
+  print(
+    "BEACON ALERT => $type sentCount=$sentCount",
+  );
+}
+	
+
+	
+	static String _notifyFieldForType(String type) {
+		switch (type) {
+			
+			case 'call_me':
+      return 'callMe';
+			
+			case 'gps_off':
+				return 'gpsOff';
+
+			case 'battery_low':
+				return 'batteryLow';
+
+			case 'place_enter':
+			case 'place_exit':
+				return 'geofence';
+
+			default:
+				return '';
+		}
+	}	
+
+
+}	
+
+geofence_service.dart
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:geolocator/geolocator.dart';
+
+import 'alert_service.dart';
+
+class GeofenceService {
+  GeofenceService._();
+
+  static const double _radiusMeters = 100;
+	static final Map<String, bool> _lastInsideState = {};
+	
+  static Future<void> checkPlaces({// hiç biryerden çağrılmıyor
+    required String groupId,
+    required String locatorId,
+    required double lat,
+    required double lng,
+  }) async {
+    try {
+      final placesSnapshot = await FirebaseFirestore.instance
+          .collection('groups')
+          .doc(groupId)
+          .collection('devices')
+          .doc(locatorId)
+          .collection('places')
+          .where('isActive', isEqualTo: true)
+          .get();
+
+      for (final doc in placesSnapshot.docs) {
+        final data = doc.data();
+
+        final placeLat = data['lat']?.toDouble();
+        final placeLng = data['lng']?.toDouble();
+
+        if (placeLat == null || placeLng == null) {
+          continue;
+        }
+
+        final distance = Geolocator.distanceBetween(
+          lat,
+          lng,
+          placeLat,
+          placeLng,
+        );
+
+        final isInside = distance <= _radiusMeters;
+
+        print(
+          "BEACON GEO => ${data['name']} "
+          "distance=${distance.round()}m "
+          "inside=$isInside",
+        );
+				
+				
+				final placeId = doc.id;
+
+				final previousInside =
+						_lastInsideState[placeId];
+
+				_lastInsideState[placeId] = isInside;
+
+				if (previousInside == null) {
+					continue;
+				}
+
+				if (!previousInside && isInside) {
+					await AlertService.sendPlaceAlert(
+						type: 'place_enter',
+						placeName: data['name'] ?? 'Place',
+					);
+					print(
+						"BEACON GEO => ENTER => ${data['name']}",
+					);
+				}
+
+				if (previousInside && !isInside) {
+					await AlertService.sendPlaceAlert(
+						type: 'place_exit',
+						placeName: data['name'] ?? 'Place',
+					);
+					print(
+						"BEACON GEO => EXIT => ${data['name']}",
+					);
+				}
+				
+      }	
+    } catch (e) {
+      print("BEACON GEO ERROR => $e");
+    }
+  }
+}	

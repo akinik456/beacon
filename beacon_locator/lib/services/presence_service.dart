@@ -14,7 +14,6 @@ class PresenceService {
 	static StreamSubscription<DatabaseEvent>? _connectedSub;
 
  static Future<void> updateOnline() async {
-	print("LynraFamiy Member updateOnline called");
   final groupId = await IdentityService.getGroupId();
   final locatorId = await IdentityService.getLocatorId();
 
@@ -59,7 +58,14 @@ class PresenceService {
     'lng': position?.longitude,
     'accuracy': position?.accuracy,
   });
-
+	if (position != null) {
+		await GeofenceService.checkPlaces(
+			groupId: groupId,
+			locatorId: locatorId,
+			lat: position.latitude,
+			lng: position.longitude,
+		);
+	}
   print(
     "BEACON PRESENCE => "
     "online updated",

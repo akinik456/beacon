@@ -39,9 +39,9 @@ motion
 
 add same member
 
-paired member count not dynamic?
-
 loc home page grup bilgisi yok
+
+REQUEST LOCATION  artık yok ancak kodlarda var
 
 
 
