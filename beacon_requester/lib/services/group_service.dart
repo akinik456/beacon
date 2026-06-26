@@ -343,37 +343,64 @@ static Future<void> removePairedLocator({
   final groupId = await getLocalGroupId();
   final requesterId = await IdentityService.getRequesterId();
 
-  if (groupId == null ||
-      requesterId == null) {
-    print(
-      "GROUP SERVICE => remove locator missing ids",
-    );
+  if (groupId == null || requesterId == null) {
+    print("GROUP SERVICE => remove locator missing ids");
     return;
   }
 
-  await FirebaseFirestore.instance
-      .collection('groups')
-      .doc(groupId)
-      .collection('devices')
-      .doc(requesterId)
-      .set({
-    'pairedLocators': {
-      locatorId: FieldValue.delete(),
-    },
-  }, SetOptions(merge: true));
+  final groupRef = _firestore.collection('groups').doc(groupId);
 
-  await FirebaseFirestore.instance
-      .collection('groups')
-      .doc(groupId)
-      .collection('devices')
-      .doc(locatorId)
-      .set({
-    'pairedRequesters': {
-      requesterId: FieldValue.delete(),
-    },
-  }, SetOptions(merge: true));
+  final requesterDeviceRef =
+      groupRef.collection('devices').doc(requesterId);
 
-  await FirebaseFirestore.instance
+  final locatorDeviceRef =
+      groupRef.collection('devices').doc(locatorId);
+
+  final locatorRef =
+      _firestore.collection('locators').doc(locatorId);
+
+  await _firestore.runTransaction((tx) async {
+    final locatorDeviceSnap = await tx.get(locatorDeviceRef);
+
+    final locatorData = locatorDeviceSnap.data() ?? {};
+
+    final pairedRequesters =
+        Map<String, dynamic>.from(
+          locatorData['pairedRequesters'] ?? {},
+        );
+
+    pairedRequesters.remove(requesterId);
+
+    tx.set(requesterDeviceRef, {
+      'pairedLocators': {
+        locatorId: FieldValue.delete(),
+      },
+      'updatedAt': FieldValue.serverTimestamp(),
+    }, SetOptions(merge: true));
+
+    if (pairedRequesters.isEmpty) {
+      tx.delete(locatorDeviceRef);
+
+      tx.set(locatorRef, {
+        'groupId': FieldValue.delete(),
+        'updatedAt': FieldValue.serverTimestamp(),
+      }, SetOptions(merge: true));
+
+      tx.update(groupRef, {
+        'activeLocatorCount': FieldValue.increment(-1),
+        'updatedAt': FieldValue.serverTimestamp(),
+      });
+    } else {
+      tx.set(locatorDeviceRef, {
+        'pairedRequesters': {
+          requesterId: FieldValue.delete(),
+        },
+        'updatedAt': FieldValue.serverTimestamp(),
+      }, SetOptions(merge: true));
+    }
+  });
+
+  await _firestore
       .collection('groups')
       .doc(groupId)
       .collection('devices')
@@ -381,18 +408,8 @@ static Future<void> removePairedLocator({
       .collection('notifyRequesters')
       .doc(requesterId)
       .delete();
-			
-	await FirebaseFirestore.instance
-			.collection('groups')
-			.doc(groupId)
-			.update({
-		'activeLocatorCount':
-				FieldValue.increment(-1),
-	});
 
-  print(
-    "GROUP SERVICE => locator removed => $locatorId",
-  );
+  print("GROUP SERVICE => locator removed => $locatorId");
 }
 
 static Future<void> clearLocalGroup() async {

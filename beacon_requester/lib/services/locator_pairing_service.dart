@@ -8,9 +8,10 @@ class LocatorPairingService {
 
   static final _firestore = FirebaseFirestore.instance;
 
-  static Future<Map<String, String>?> sendPairingRequest({
-    required String locatorInput,
-  }) async {
+		static Future<Map<String, String>?> sendPairingRequest({
+			required String locatorInput,
+			required bool groupIsFull,
+		}) async {
     try {
       final requesterId = await IdentityService.getRequesterId();
 
@@ -49,6 +50,26 @@ class LocatorPairingService {
       } else {
         locatorId = locatorInput.trim();
       }
+			
+			if (groupId == null || groupId.isEmpty) {
+				print("BEACON PAIRING => GROUP ID MISSING");
+				return null;
+			}
+
+			final existingDeviceDoc = await _firestore
+					.collection('groups')
+					.doc(groupId)
+					.collection('devices')
+					.doc(locatorId)
+					.get();
+
+			final locatorAlreadyInGroup = existingDeviceDoc.exists;
+
+			if (groupIsFull && !locatorAlreadyInGroup) {
+				return {
+					'error': 'member_limit_reached',
+				};
+			}
 
       final requestRef = _firestore
           .collection('locators')

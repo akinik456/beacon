@@ -1,0 +1,569 @@
+req.
+requester_home_page
+StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+	stream: FirebaseFirestore.instance
+			.collection('groups')
+			.doc(groupId)
+			.snapshots(),
+	builder: (context, snapshot) {
+		final data = snapshot.data?.data();
+		final maxLocators = data?['maxLocators'] ?? 1;
+		final activeLocatorCount = data?['activeLocatorCount'] ?? 0;
+		final isFull = activeLocatorCount >= maxLocators;
+		return AppCard(
+			onTap: () async {// add member butonu
+				final changed = await Navigator.push<bool>(
+					context,
+					MaterialPageRoute(
+						builder: (_) => AddLocatorPage(
+							groupIsFull: isFull,
+						),
+					),
+				);
+
+				if (changed == true && context.mounted) {
+					Navigator.pushReplacement(
+						context,
+						MaterialPageRoute(
+							builder: (_) => const RequesterHomePage(),
+						),
+					);
+				}
+			},
+****
+add_locator_page
+			
+            SizedBox(
+              width: double.infinity,
+              height: 58,
+								child: ElevatedButton(
+									onPressed: canSend// send pairing request butonu
+									? () async {
+											final result =
+											await LocatorPairingService
+													.sendPairingRequest(
+										locatorInput: codeCtrl.text,
+										 groupIsFull: widget.groupIsFull,
+									);
+									if (result == null) {
+										if (!context.mounted) return;
+										ScaffoldMessenger.of(context)
+												.showSnackBar(
+											SnackBar(
+												content: Text(
+													l10n.memberNotFound,
+												),
+											),
+										);
+										return;
+									}
+									if (result?['error'] == 'member_limit_reached') {
+										// dialog göster
+										return;
+									}
+									final locatorId = result['locatorId']!;
+									final requestId = result['requestId']!;
+									if (!context.mounted) return;
+										ScaffoldMessenger.of(context)
+												.showSnackBar(
+											SnackBar(
+												content: Text(
+													l10n.waitingForLocator,
+												),
+											),
+										);
+										PairingResponseService
+												.watchPairingResponse(
+											locatorId: locatorId,
+											requestId: requestId,
+										).listen((snapshot) async {
+
+											final data = snapshot.data();
+
+											if (data == null) return;
+
+											final status =
+													data['status'] ?? 'pending';
+
+											if (!context.mounted) return;
+
+											if (status == 'approved') {
+											await GroupService.addPairedLocatorToRequester(
+												locatorId: locatorId,
+											);
+											await GroupService.addPairedRequesterToLocator(
+												locatorId: locatorId,
+											);	
+											await GroupService.ensureLocatorDefaultSettings(
+												locatorId: locatorId,
+											);
+
+											await GroupService.ensureRequesterNotifySettings(
+												locatorId: locatorId,
+											);
+											ScaffoldMessenger.of(context)
+													.showSnackBar(
+												SnackBar(
+													content: Text(
+														l10n.memberpaired,
+													),
+												),
+											);
+											await PairingResponseService
+													.deletePairingRequest(
+												locatorId: locatorId,
+												requestId: requestId,
+											);
+											if (!context.mounted) return;
+											Navigator.pop(context,true);
+										}else if (status == 'rejected_capacity') {
+												ScaffoldMessenger.of(context)
+														.showSnackBar(
+													SnackBar(
+														content: Text(
+															l10n.pairingRejected,
+														),
+													),
+												);
+											}
+											else if (status.toString().startsWith('rejected')) {
+											ScaffoldMessenger.of(context).showSnackBar(
+												SnackBar(
+													content: Text(l10n.pairingRejected),
+												),
+											);
+										}
+											
+										});
+									}
+									: null,
+									style: ElevatedButton.styleFrom(
+										backgroundColor: AppColors.primary,
+										disabledBackgroundColor:
+												AppColors.surface.withValues(alpha: 0.8),
+										shape: RoundedRectangleBorder(
+											borderRadius: BorderRadius.circular(18),
+										),
+									),
+									child: Text(
+										l10n.sendPairingRequest,
+										style: AppFonts.button.copyWith(
+											color: canSend
+													? AppColors.background
+													: AppColors.textSecondary,
+										),
+									),
+              ),
+            ),
+****
+locator_pairing_service
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'code_service.dart';
+import 'identity_service.dart';
+import 'group_service.dart';
+
+class LocatorPairingService {
+  LocatorPairingService._();
+
+  static final _firestore = FirebaseFirestore.instance;
+
+		static Future<Map<String, String>?> sendPairingRequest({
+			required String locatorInput,
+			required bool groupIsFull,
+		}) async {
+    try {
+      final requesterId = await IdentityService.getRequesterId();
+
+      final requesterName = await IdentityService.getRequesterName();
+			print("sendPairingRequest IdentityService.getRequesterName");
+
+      final requesterCode = await IdentityService.getRequesterCode();
+
+      final groupId = await GroupService.getLocalGroupId();
+
+      if (requesterId == null ||
+          requesterName == null ||
+          requesterCode == null ||
+          groupId == null) {
+        print("BEACON PAIRING => MISSING REQUESTER DATA");
+        return null;
+      }
+
+      final normalized = CodeService.normalizeCode(locatorInput);
+
+      String locatorId;
+
+      if (CodeService.isValidCode(normalized)) {
+        final query = await _firestore
+            .collection('locators')
+            .where('locatorCode', isEqualTo: normalized)
+            .limit(1)
+            .get();
+
+        if (query.docs.isEmpty) {
+          print("BEACON PAIRING => LOCATOR NOT FOUND");
+          return null;
+        }
+
+        locatorId = query.docs.first.id;
+      } else {
+        locatorId = locatorInput.trim();
+      }
+			
+			if (groupId == null || groupId.isEmpty) {
+				print("BEACON PAIRING => GROUP ID MISSING");
+				return null;
+			}
+
+			final existingDeviceDoc = await _firestore
+					.collection('groups')
+					.doc(groupId)
+					.collection('devices')
+					.doc(locatorId)
+					.get();
+
+			final locatorAlreadyInGroup = existingDeviceDoc.exists;
+
+			if (groupIsFull && !locatorAlreadyInGroup) {
+				return {
+					'error': 'member_limit_reached',
+				};
+			}
+
+      final requestRef = _firestore
+          .collection('locators')
+          .doc(locatorId)
+          .collection('pairing_requests')
+          .doc();
+
+      await requestRef.set({
+        'requesterId': requesterId,
+        'requesterName': requesterName,
+        'requesterCode': requesterCode,
+        'groupId': groupId,
+        'status': 'pending',
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+
+      print(
+        "BEACON PAIRING => REQUEST SENT "
+        "=> locator:$locatorId "
+        "request:${requestRef.id}",
+      );
+
+      return {'locatorId': locatorId, 'requestId': requestRef.id};
+    } catch (e) {
+      print("BEACON PAIRING ERROR => $e");
+      return null;
+    }
+  }
+}
+
+group_service
+static Future<void> addPairedLocatorToRequester({
+  required String locatorId,
+}) async {
+
+  final requesterId =
+      await IdentityService.getRequesterId();
+
+  final groupId =
+      await getLocalGroupId();
+
+  if (requesterId == null ||
+      groupId == null) {
+
+    print(
+      "BEACON GROUP => "
+      "paired locator update failed",
+    );
+
+    return;
+  }
+
+  final locatorSnap =
+      await _firestore
+          .collection('locators')
+          .doc(locatorId)
+          .get();
+
+  final locatorData =
+      locatorSnap.data() ?? {};
+
+
+  final locatorCode =
+      locatorData['locatorCode'] ?? '------';
+
+  await _firestore
+      .collection('groups')
+      .doc(groupId)
+      .collection('devices')
+      .doc(requesterId)
+      .set({
+    'pairedLocators': {
+      locatorId: {
+        'locatorCode': locatorCode,
+				'pairedAt': FieldValue.serverTimestamp(),
+      },
+    },
+
+    'updatedAt':
+        FieldValue.serverTimestamp(),
+
+  }, SetOptions(merge: true));
+
+  print(
+    "BEACON GROUP => "
+    "paired locator added => $locatorId",
+  );
+}
+
+static Future<void> addPairedRequesterToLocator({
+  required String locatorId,
+}) async {
+  final requesterId =
+      await IdentityService.getRequesterId();
+
+  final groupId =
+      await getLocalGroupId();
+			
+	final requesterCode =
+    await IdentityService.getRequesterCode();
+
+  if (requesterId == null || groupId == null) {
+    print(
+      "BEACON GROUP => "
+      "paired requester update failed",
+    );
+    return;
+  }
+
+  await _firestore
+      .collection('groups')
+      .doc(groupId)
+      .collection('devices')
+      .doc(locatorId)
+      .set({
+    'pairedRequesters': {
+			requesterId: {
+				'pairedAt': FieldValue.serverTimestamp(),
+				'requesterCode': requesterCode,
+			},
+		},
+    'updatedAt': FieldValue.serverTimestamp(),
+  }, SetOptions(merge: true));
+
+  print(
+    "BEACON GROUP => "
+    "paired requester added => $requesterId",
+  );
+}
+
+static Future<void> removePairedLocator({
+  required String locatorId,
+}) async {
+  final groupId = await getLocalGroupId();
+  final requesterId = await IdentityService.getRequesterId();
+
+  if (groupId == null ||
+      requesterId == null) {
+    print(
+      "GROUP SERVICE => remove locator missing ids",
+    );
+    return;
+  }
+
+  await FirebaseFirestore.instance
+      .collection('groups')
+      .doc(groupId)
+      .collection('devices')
+      .doc(requesterId)
+      .set({
+    'pairedLocators': {
+      locatorId: FieldValue.delete(),
+    },
+  }, SetOptions(merge: true));
+
+  await FirebaseFirestore.instance
+      .collection('groups')
+      .doc(groupId)
+      .collection('devices')
+      .doc(locatorId)
+      .set({
+    'pairedRequesters': {
+      requesterId: FieldValue.delete(),
+    },
+  }, SetOptions(merge: true));
+
+  await FirebaseFirestore.instance
+      .collection('groups')
+      .doc(groupId)
+      .collection('devices')
+      .doc(locatorId)
+      .collection('notifyRequesters')
+      .doc(requesterId)
+      .delete();
+			
+	await FirebaseFirestore.instance
+			.collection('groups')
+			.doc(groupId)
+			.update({
+		'activeLocatorCount':
+				FieldValue.increment(-1),
+	});
+
+  print(
+    "GROUP SERVICE => locator removed => $locatorId",
+  );
+}
+
+
+************
+locator
+pairing_approval_service
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+import 'identity_service.dart';
+import '../services/active_watcher_service.dart';
+
+class PairingApprovalService {
+  PairingApprovalService._();
+
+  static final _firestore = FirebaseFirestore.instance;
+
+  static Future<String> approvePairingRequest({
+  required String requestId,
+  required Map<String, dynamic> requestData,
+}) async {
+  final locatorId = await IdentityService.getLocatorId();
+	final locatorName = await IdentityService.getLocatorName();
+	final locatorCode = await IdentityService.getLocatorCode();
+
+  if (locatorId == null || locatorId.isEmpty) {
+    print("BEACON APPROVE ERROR => locatorId not found");
+    return 'error_locator_not_found';
+  }
+
+  final groupId = requestData['groupId'];
+  final requesterId = requestData['requesterId'];
+
+  if (groupId == null || requesterId == null) {
+    print("BEACON APPROVE ERROR => invalid request data");
+    return 'invalid_request_data';
+  }
+
+  final requestRef = _firestore
+      .collection('locators')
+      .doc(locatorId)
+      .collection('pairing_requests')
+      .doc(requestId);
+
+  final groupRef = _firestore.collection('groups').doc(groupId);
+
+  final deviceRef = groupRef
+      .collection('devices')
+      .doc(locatorId);
+
+  final locatorRef = _firestore
+      .collection('locators')
+      .doc(locatorId);
+
+  final result =
+      await _firestore.runTransaction<String>((tx) async {
+    final groupSnap = await tx.get(groupRef);
+
+    if (!groupSnap.exists) {
+      tx.update(requestRef, {
+        'status': 'rejected_group_not_found',
+        'respondedAt': FieldValue.serverTimestamp(),
+      });
+
+      return 'rejected_group_not_found';
+    }
+
+    final deviceSnap = await tx.get(deviceRef);
+
+    final locatorAlreadyInGroup = deviceSnap.exists;
+
+    final groupData = groupSnap.data() ?? {};
+
+    if (!locatorAlreadyInGroup) {
+      final maxLocators = groupData['maxLocators'] ?? 1;
+      final currentLocators =
+          groupData['activeLocatorCount'] ?? 0;
+
+      if (currentLocators >= maxLocators) {
+        tx.update(requestRef, {
+          'status': 'rejected_capacity',
+          'respondedAt': FieldValue.serverTimestamp(),
+        });
+
+        return 'rejected_capacity';
+      }
+
+      tx.set(deviceRef, {
+        'active': true,
+				'role': 'locator',
+				'locatorCode': locatorCode,
+        'joinedAt': FieldValue.serverTimestamp(),
+      }, SetOptions(merge: true));
+
+      tx.update(groupRef, {
+        'activeLocatorCount': FieldValue.increment(1),
+        'updatedAt': FieldValue.serverTimestamp(),
+      });
+    }
+
+    tx.set(deviceRef, {
+      'pairedRequesters': {
+        requesterId: {
+          'requesterCode':
+              requestData['requesterCode'] ?? '------',
+          'pairedAt': FieldValue.serverTimestamp(),
+        },
+      },
+      'updatedAt': FieldValue.serverTimestamp(),
+    }, SetOptions(merge: true));
+
+    tx.set(locatorRef, {
+      'groupId': groupId,
+      'updatedAt': FieldValue.serverTimestamp(),
+    }, SetOptions(merge: true));
+
+    tx.update(requestRef, {
+      'status': 'approved',
+      'respondedAt': FieldValue.serverTimestamp(),
+    });
+    return 'approved';
+		
+		
+  });
+
+  if (result == 'approved') {
+    await IdentityService.setGroupId(groupId);
+    print("BEACON APPROVE => SUCCESS => $locatorId");
+  }
+
+  return result;
+}
+	
+	static Future<void> rejectPairingRequest({
+		required String requestId,
+		required Map<String, dynamic> requestData,
+	}) async {
+		final locatorId = await IdentityService.getLocatorId();
+
+		if (locatorId == null) return;
+
+		await FirebaseFirestore.instance
+				.collection('locators')
+				.doc(locatorId)
+				.collection('pairing_requests')
+				.doc(requestId)
+				.update({
+			'status': 'rejected',
+			'respondedAt': FieldValue.serverTimestamp(),
+		});
+	}	
+}

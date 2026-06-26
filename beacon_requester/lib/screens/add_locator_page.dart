@@ -12,7 +12,11 @@ import '../l10n/app_localizations.dart';
 
 
 class AddLocatorPage extends StatefulWidget {
-  const AddLocatorPage({super.key});
+	final bool groupIsFull;
+  const AddLocatorPage({
+    super.key,
+    required this.groupIsFull,
+  });
 
   @override
   State<AddLocatorPage> createState() => _AddLocatorPageState();
@@ -154,128 +158,123 @@ class _AddLocatorPageState extends State<AddLocatorPage> {
             SizedBox(
               width: double.infinity,
               height: 58,
-              child: ElevatedButton(
-                onPressed: canSend
-								? () async {
-										final result =
-    await LocatorPairingService
-        .sendPairingRequest(
-  locatorInput: codeCtrl.text,
-);
-
-if (result == null) {
-  if (!context.mounted) return;
-
-  ScaffoldMessenger.of(context)
-      .showSnackBar(
-    SnackBar(
-      content: Text(
-        l10n.memberNotFound,
-      ),
-    ),
-  );
-
-  return;
-}
-
-final locatorId =
-    result['locatorId']!;
-
-final requestId =
-    result['requestId']!;
-
-if (!context.mounted) return;
-
-ScaffoldMessenger.of(context)
-    .showSnackBar(
-  SnackBar(
-    content: Text(
-      l10n.waitingForLocator,
-    ),
-  ),
-);
-
-PairingResponseService
-    .watchPairingResponse(
-  locatorId: locatorId,
-  requestId: requestId,
-).listen((snapshot) async {
-
-  final data = snapshot.data();
-
-  if (data == null) return;
-
-  final status =
-      data['status'] ?? 'pending';
-
-  if (!context.mounted) return;
-
-  if (status == 'approved') {
-  await GroupService.addPairedLocatorToRequester(
-    locatorId: locatorId,
-  );
-	await GroupService.addPairedRequesterToLocator(
-		locatorId: locatorId,
-	);	
-	await GroupService.ensureLocatorDefaultSettings(
-		locatorId: locatorId,
-	);
-
-	await GroupService.ensureRequesterNotifySettings(
-		locatorId: locatorId,
-	);
-  ScaffoldMessenger.of(context)
-      .showSnackBar(
-    SnackBar(
-      content: Text(
-        l10n.memberpaired,
-      ),
-    ),
-  );
-  await PairingResponseService
-      .deletePairingRequest(
-    locatorId: locatorId,
-    requestId: requestId,
-  );
-  if (!context.mounted) return;
-  Navigator.pop(context,true);
-}else if (status == 'rejected_capacity') {
-    ScaffoldMessenger.of(context)
-        .showSnackBar(
-      SnackBar(
-        content: Text(
-          l10n.pairingRejected,
-        ),
-      ),
-    );
-  }
-	else if (status.toString().startsWith('rejected')) {
-  ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(
-      content: Text(l10n.pairingRejected),
-    ),
-  );
-}
-	
-});
+								child: ElevatedButton(
+									onPressed: canSend
+									? () async {
+											final result =
+											await LocatorPairingService
+													.sendPairingRequest(
+										locatorInput: codeCtrl.text,
+										 groupIsFull: widget.groupIsFull,
+									);
+									if (result == null) {
+										if (!context.mounted) return;
+										ScaffoldMessenger.of(context)
+												.showSnackBar(
+											SnackBar(
+												content: Text(
+													l10n.memberNotFound,
+												),
+											),
+										);
+										return;
 									}
-								: null,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
-                  disabledBackgroundColor:
-                      AppColors.surface.withValues(alpha: 0.8),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(18),
-                  ),
-                ),
-                child: Text(
-                  l10n.sendPairingRequest,
-                  style: AppFonts.button.copyWith(
-                    color: canSend
-                        ? AppColors.background
-                        : AppColors.textSecondary,
-                  ),
-                ),
+									if (result?['error'] == 'member_limit_reached') {
+										// dialog göster
+										return;
+									}
+									final locatorId = result['locatorId']!;
+									final requestId = result['requestId']!;
+									if (!context.mounted) return;
+										ScaffoldMessenger.of(context)
+												.showSnackBar(
+											SnackBar(
+												content: Text(
+													l10n.waitingForLocator,
+												),
+											),
+										);
+										PairingResponseService
+												.watchPairingResponse(
+											locatorId: locatorId,
+											requestId: requestId,
+										).listen((snapshot) async {
+
+											final data = snapshot.data();
+
+											if (data == null) return;
+
+											final status =
+													data['status'] ?? 'pending';
+
+											if (!context.mounted) return;
+
+											if (status == 'approved') {
+											await GroupService.addPairedLocatorToRequester(
+												locatorId: locatorId,
+											);
+											await GroupService.addPairedRequesterToLocator(
+												locatorId: locatorId,
+											);	
+											await GroupService.ensureLocatorDefaultSettings(
+												locatorId: locatorId,
+											);
+
+											await GroupService.ensureRequesterNotifySettings(
+												locatorId: locatorId,
+											);
+											ScaffoldMessenger.of(context)
+													.showSnackBar(
+												SnackBar(
+													content: Text(
+														l10n.memberpaired,
+													),
+												),
+											);
+											await PairingResponseService
+													.deletePairingRequest(
+												locatorId: locatorId,
+												requestId: requestId,
+											);
+											if (!context.mounted) return;
+											Navigator.pop(context,true);
+										}else if (status == 'rejected_capacity') {
+												ScaffoldMessenger.of(context)
+														.showSnackBar(
+													SnackBar(
+														content: Text(
+															l10n.pairingRejected,
+														),
+													),
+												);
+											}
+											else if (status.toString().startsWith('rejected')) {
+											ScaffoldMessenger.of(context).showSnackBar(
+												SnackBar(
+													content: Text(l10n.pairingRejected),
+												),
+											);
+										}
+											
+										});
+									}
+									: null,
+									style: ElevatedButton.styleFrom(
+										backgroundColor: AppColors.primary,
+										disabledBackgroundColor:
+												AppColors.surface.withValues(alpha: 0.8),
+										shape: RoundedRectangleBorder(
+											borderRadius: BorderRadius.circular(18),
+										),
+									),
+									child: Text(
+										l10n.sendPairingRequest,
+										style: AppFonts.button.copyWith(
+											color: canSend
+													? AppColors.background
+													: AppColors.textSecondary,
+										),
+									),
               ),
             ),
           ],

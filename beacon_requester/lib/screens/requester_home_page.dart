@@ -1559,47 +1559,25 @@ final l10n = AppLocalizations.of(context)!;
 																			final activeLocatorCount = data?['activeLocatorCount'] ?? 0;
 																			final isFull = activeLocatorCount >= maxLocators;
 																			return AppCard(
-  onTap: () async {
-    if (isFull) {
-      showDialog(
-        context: context,
-        builder: (_) => AlertDialog(
-          backgroundColor: AppColors.surface,
-          title: Text(
-            l10n.memberlimitreached,
-            style: AppFonts.subtitle,
-          ),
-          content: Text(
-            l10n.upgradeToAddMoreMembers,
-            style: AppFonts.body,
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text(l10n.ok),
-            ),
-          ],
-        ),
-      );
-      return;
-    }
+																				onTap: () async {
+																					final changed = await Navigator.push<bool>(
+																						context,
+																						MaterialPageRoute(
+																							builder: (_) => AddLocatorPage(
+																								groupIsFull: isFull,
+																							),
+																						),
+																					);
 
-    final changed = await Navigator.push<bool>(
-      context,
-      MaterialPageRoute(
-        builder: (_) => const AddLocatorPage(),
-      ),
-    );
-
-    if (changed == true && context.mounted) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (_) => const RequesterHomePage(),
-        ),
-      );
-    }
-  },
+																					if (changed == true && context.mounted) {
+																						Navigator.pushReplacement(
+																							context,
+																							MaterialPageRoute(
+																								builder: (_) => const RequesterHomePage(),
+																							),
+																						);
+																					}
+																				},
 																				
 																				child: SizedBox(
 																					height: 44,

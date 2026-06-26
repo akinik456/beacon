@@ -35,6 +35,14 @@ isim girmek neden bu kadar zor
 
 klavye açıkken taşma
 
+motion
+
+add same member
+
+paired member count not dynamic?
+
+loc home page grup bilgisi yok
+
 
 
 
