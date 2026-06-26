@@ -10,7 +10,6 @@ class LocatorPairingService {
 
 		static Future<Map<String, String>?> sendPairingRequest({
 			required String locatorInput,
-			required bool groupIsFull,
 		}) async {
     try {
       final requesterId = await IdentityService.getRequesterId();
@@ -35,6 +34,7 @@ class LocatorPairingService {
       String locatorId;
 
       if (CodeService.isValidCode(normalized)) {
+			print("BEACON PAIRING CODE QUERY => $normalized");
         final query = await _firestore
             .collection('locators')
             .where('locatorCode', isEqualTo: normalized)
@@ -62,10 +62,24 @@ class LocatorPairingService {
 					.collection('devices')
 					.doc(locatorId)
 					.get();
+					
+			final groupSnap = await _firestore
+					.collection('groups')
+					.doc(groupId)
+					.get();
+
+			final groupData = groupSnap.data() ?? {};
+
+			final maxLocators =
+					groupData['maxLocators'] ?? 1;
+
+			final activeLocatorCount =
+					groupData['activeLocatorCount'] ?? 0;
 
 			final locatorAlreadyInGroup = existingDeviceDoc.exists;
 
-			if (groupIsFull && !locatorAlreadyInGroup) {
+			if (!locatorAlreadyInGroup &&
+					activeLocatorCount >= maxLocators) {
 				return {
 					'error': 'member_limit_reached',
 				};

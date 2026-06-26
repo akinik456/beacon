@@ -12,10 +12,8 @@ import '../l10n/app_localizations.dart';
 
 
 class AddLocatorPage extends StatefulWidget {
-	final bool groupIsFull;
   const AddLocatorPage({
     super.key,
-    required this.groupIsFull,
   });
 
   @override
@@ -165,7 +163,6 @@ class _AddLocatorPageState extends State<AddLocatorPage> {
 											await LocatorPairingService
 													.sendPairingRequest(
 										locatorInput: codeCtrl.text,
-										 groupIsFull: widget.groupIsFull,
 									);
 									if (result == null) {
 										if (!context.mounted) return;
@@ -180,7 +177,14 @@ class _AddLocatorPageState extends State<AddLocatorPage> {
 										return;
 									}
 									if (result?['error'] == 'member_limit_reached') {
-										// dialog göster
+										if (!context.mounted) return;
+
+										ScaffoldMessenger.of(context).showSnackBar(
+											SnackBar(
+												content: Text(l10n.memberlimitreached),
+											),
+										);
+
 										return;
 									}
 									final locatorId = result['locatorId']!;

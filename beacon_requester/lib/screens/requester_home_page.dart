@@ -1368,9 +1368,7 @@ final l10n = AppLocalizations.of(context)!;
 								final groupId = data['groupId'] ?? '';
 								final requesterId = data['requesterId'] ?? '';
 								final groupName = data['groupName'] ?? '-';
-								final pairedLocators =
-										Map<String, dynamic>.from(data['pairedLocators'] ?? {});
-
+																
 								return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
 									stream: FirebaseFirestore.instance
 											.collection('groups')
@@ -1379,6 +1377,14 @@ final l10n = AppLocalizations.of(context)!;
 											.doc(requesterId)
 											.snapshots(),
 									builder: (context, requesterSnapshot) {
+										final requesterData =
+												requesterSnapshot.data?.data() ?? {};
+
+										final pairedLocators =
+												Map<String, dynamic>.from(
+													requesterData['pairedLocators'] ?? {},
+												);
+										
 										if (requesterSnapshot.hasData && !requesterSnapshot.data!.exists) {
 											Future.microtask(() async {
 												await GroupService.clearLocalGroup();
@@ -1563,9 +1569,7 @@ final l10n = AppLocalizations.of(context)!;
 																					final changed = await Navigator.push<bool>(
 																						context,
 																						MaterialPageRoute(
-																							builder: (_) => AddLocatorPage(
-																								groupIsFull: isFull,
-																							),
+																							builder: (_) => const AddLocatorPage(),
 																						),
 																					);
 
