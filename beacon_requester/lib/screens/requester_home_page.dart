@@ -1559,27 +1559,48 @@ final l10n = AppLocalizations.of(context)!;
 																			final activeLocatorCount = data?['activeLocatorCount'] ?? 0;
 																			final isFull = activeLocatorCount >= maxLocators;
 																			return AppCard(
-																				onTap: () async {
-																					if (!_hasFullAccess) {
-																						//_showUpgradeDialog();
-																						return;
-																					}
+  onTap: () async {
+    if (isFull) {
+      showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          backgroundColor: AppColors.surface,
+          title: Text(
+            l10n.memberlimitreached,
+            style: AppFonts.subtitle,
+          ),
+          content: Text(
+            l10n.upgradeToAddMoreMembers,
+            style: AppFonts.body,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text(l10n.ok),
+            ),
+          ],
+        ),
+      );
+      return;
+    }
 
-																					final changed = await Navigator.push<bool>(
-																						context,
-																						MaterialPageRoute(
-																							builder: (_) => const AddLocatorPage(),
-																						),
-																					);
-																					if (changed == true && context.mounted) {
-																						Navigator.pushReplacement(
-																							context,
-																							MaterialPageRoute(
-																								builder: (_) => const RequesterHomePage(),
-																							),
-																						);
-																					}
-																				},
+    final changed = await Navigator.push<bool>(
+      context,
+      MaterialPageRoute(
+        builder: (_) => const AddLocatorPage(),
+      ),
+    );
+
+    if (changed == true && context.mounted) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (_) => const RequesterHomePage(),
+        ),
+      );
+    }
+  },
+																				
 																				child: SizedBox(
 																					height: 44,
 																					child: Row(
@@ -1625,16 +1646,6 @@ final l10n = AppLocalizations.of(context)!;
 																															fontSize: 14,
 																														),
 																													),
-
-																													if (isFull)
-																														TextSpan(
-																															text: '\n(${l10n.memberlimitreached})',
-																															style: AppFonts.subtitle.copyWith(
-																																color: AppColors.textSecondary,
-																																fontWeight: FontWeight.w600,
-																																fontSize: 14,
-																															),
-																														),
 																												],
 																											),
 																										),
@@ -1644,6 +1655,8 @@ final l10n = AppLocalizations.of(context)!;
 																						],
 																					),
 																				),
+																				
+																				
 																			);
 																		},
 																	),
@@ -1695,15 +1708,6 @@ final l10n = AppLocalizations.of(context)!;
 																										lng: lng,
 																									);
 																								},
-																								
-																								/*onRequestLocation: () async {
-																									if (_groupId == null || _requesterId == null) return;
-																									await RequestLocationService.createRequestLocation(
-																										groupId: groupId,
-																										requesterId: _requesterId!,
-																										locatorId: locatorId,
-																									);
-																								},*/
 																								
 																								addressText: locator['address'] ?? l10n.addressNotAvailable,
 																								onNotificationSettings: () {

@@ -1,5 +1,6 @@
 {
 "@@locale": 													"tr",
+"upgradeToAddMoreMembers":						"Planınızı yükselterek daha fazla üye ekleyebilirsiniz.",
 
 "beingWatched": 											"İzleniyorsun",
 "isWatchingYourLocation": 						"{name} konumunu izliyor.",

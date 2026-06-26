@@ -1,5 +1,7 @@
 {
 "@@locale": 													"es",
+"upgradeToAddMoreMembers":						"Actualiza tu plan para agregar más miembros.",
+
 
 "beingWatched": 											"Te están observando",
 "isWatchingYourLocation": 						"{name} está viendo tu ubicación.",

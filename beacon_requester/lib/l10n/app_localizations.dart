@@ -99,6 +99,12 @@ abstract class AppLocalizations {
     Locale('tr')
   ];
 
+  /// No description provided for @upgradeToAddMoreMembers.
+  ///
+  /// In en, this message translates to:
+  /// **'Upgrade to add more members.'**
+  String get upgradeToAddMoreMembers;
+
   /// No description provided for @aNewVer.
   ///
   /// In en, this message translates to:

@@ -25,7 +25,6 @@ class LocatorStatusCard extends StatelessWidget {
 	final String distanceText;
 	final VoidCallback onOpenMaps;
 	final String addressText;
-	//final VoidCallback? onRequestLocation;
 	final VoidCallback? onNotificationSettings;
 	final VoidCallback? onSettings;
 	final VoidCallback? onRemove;
@@ -42,7 +41,6 @@ class LocatorStatusCard extends StatelessWidget {
 		required this.distanceText,
 		required this.onOpenMaps,
 		required this.addressText,
-		//required this.onRequestLocation,
 		required this.onNotificationSettings,
 		required this.onSettings,
 		required this.onRemove,
@@ -62,8 +60,8 @@ class LocatorStatusCard extends StatelessWidget {
 				children: [
 					Row(
 						children: [
-							
-								RichText(
+								Expanded(
+								child: RichText(
 									overflow: TextOverflow.ellipsis,
 									text: TextSpan(
 										children: [
@@ -85,9 +83,9 @@ class LocatorStatusCard extends StatelessWidget {
 										],
 									),
 								),
-							
+							),
 
-							const SizedBox(width: 32),
+							const SizedBox(width: 12),
 
 							Container(
 								padding: const EdgeInsets.symmetric(
@@ -110,8 +108,10 @@ class LocatorStatusCard extends StatelessWidget {
 								),
 							),
 
-							const Spacer(),
-
+							const SizedBox(width: 12),
+							SizedBox(
+							width: 110,
+							child: 
 							OutlinedButton.icon(
 								onPressed: locatorId.isEmpty
 										? null
@@ -149,13 +149,22 @@ class LocatorStatusCard extends StatelessWidget {
 												),
 											),
 										),
+										),
 						],
 					),
 					const SizedBox(height: 8),
 					Row(
 						children: [
 							 Icon(
-								Icons.battery_charging_full_rounded,
+								battery >= 90
+										? Icons.battery_full_rounded
+										: battery >= 70
+												? Icons.battery_6_bar_rounded
+												: battery >= 50
+														? Icons.battery_4_bar_rounded
+														: battery >= 20
+																? Icons.battery_2_bar_rounded
+																: Icons.battery_alert_rounded,
 								size: 18,
 								color: battery < 20
 										? AppColors.danger
@@ -223,7 +232,7 @@ class LocatorStatusCard extends StatelessWidget {
 							),
 							const SizedBox(width: 4),
 							Text(
-								'$distanceText away',
+								'$distanceText',
 								style: AppFonts.caption,
 							),
 						],
@@ -232,12 +241,6 @@ class LocatorStatusCard extends StatelessWidget {
 					Row(
 						mainAxisAlignment: MainAxisAlignment.spaceBetween,
 						children: [
-							/*_MiniAction(
-								icon: Icons.my_location_rounded,
-								label: 'Request',
-								color: AppColors.primary,
-								onTap: onRequestLocation,
-							),*/
 							_MiniAction(
 								icon: Icons.map_rounded,
 								label: l10n.mapbutton,

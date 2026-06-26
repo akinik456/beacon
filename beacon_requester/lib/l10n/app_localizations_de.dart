@@ -9,6 +9,9 @@ class AppLocalizationsDe extends AppLocalizations {
   AppLocalizationsDe([String locale = 'de']) : super(locale);
 
   @override
+  String get upgradeToAddMoreMembers => 'Upgrade to add more members.';
+
+  @override
   String get aNewVer => 'A new version is available. Update now for the best experience.';
 
   @override
