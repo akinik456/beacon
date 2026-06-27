@@ -17,6 +17,18 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get placeName => 'Place name';
+
+  @override
+  String get placeNameHint => 'Home, School, Work...';
+
+  @override
+  String get deletePlaceConfirmation => 'Delete this place?';
+
+  @override
+  String get delete => 'Delete';
+
+  @override
   String get aNewVer => 'A new version is available. Update now for the best experience.';
 
   @override
@@ -321,7 +333,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get maxFamilyMembersReached => 'Maximum family members reached';
 
   @override
-  String get maximum3Places => 'Maximum 3 places allowed';
+  String get maximum5Places => 'Maximum 5 places allowed';
 
   @override
   String get member => 'Member';

@@ -9,6 +9,11 @@
     }
   }
 },
+"placeName": "Yer adı",
+"placeNameHint": "Ev, Okul, İş yeri...",
+"deletePlaceConfirmation": "Bu yeri silmek istiyor musunuz?",
+"delete": "Sil",
+
 "beingWatched": 											"İzleniyorsun",
 "isWatchingYourLocation": 						"{name} konumunu izliyor.",
 "twoWatchersWatchingYourLocation": 		"{name1} ve {name2} konumunu izliyor.",
@@ -111,7 +116,7 @@
 "maxFamilyMembersReached":						"Maximum family members reached",
 "member":															"Üye",
 "memberCode":													"Üye Kodu",
-"maximum3Places":											"En fazla 3 konum kaydedilebilir",
+"maximum5Places":											"En fazla 5 konum kaydedilebilir",
 "memberlimitreached":									"Üye Limitine Ulaşıldı",
 "memberNotifications":								"Üye Bildirimleri",
 "memberNotFound":											"Üye Bulunamadı",

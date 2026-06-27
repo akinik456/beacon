@@ -29,8 +29,6 @@ watcher yenilendiğinde anında presence
 
 samsung izinler
 
-free trial en
-
 isim girmek neden bu kadar zor
 
 klavye açıkken taşma
@@ -45,7 +43,7 @@ gps off android bildirimi tekrarlanıyor mu?
 
 DB read/write counter
 
-eski tablette ivme sensörü yok
+place name
 
 
 

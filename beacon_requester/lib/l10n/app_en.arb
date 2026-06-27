@@ -11,6 +11,11 @@
     }
   }
 },
+"placeName": "Place name",
+"placeNameHint": "Home, School, Work...",
+"deletePlaceConfirmation": "Delete this place?",
+"delete": "Delete",
+
 
 "aNewVer":														"A new version is available. Update now for the best experience.",
 "addAdmin":														"Add admin",
@@ -111,7 +116,7 @@
 "manufacturerSettings":								"MANUFACTURER SETTINGS",
 "master":															"Master",
 "maxFamilyMembersReached":						"Maximum family members reached",
-"maximum3Places":											"Maximum 3 places allowed",
+"maximum5Places":											"Maximum 5 places allowed",
 "member":															"Member",
 "memberCode":													"Member Code",
 "memberlimitreached":									"Member Limit Reached",

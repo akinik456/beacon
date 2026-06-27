@@ -40,7 +40,7 @@ class _LocatorSettingsPageState extends State<LocatorSettingsPage> {
   void initState() {
     super.initState();
     _loadSettings();
-    _loadPlaceCount();
+    _loadPlaces();
   }
 
   Future<void> _loadPlaceCount() async {
@@ -61,57 +61,96 @@ class _LocatorSettingsPageState extends State<LocatorSettingsPage> {
       _placeCount = snapshot.docs.length;
     });
   }
+List<Map<String, dynamic>> _places = [];
 
+Future<void> _loadPlaces() async {
+  final groupId = await GroupService.getLocalGroupId();
+  if (groupId == null) return;
+
+  final snapshot = await FirebaseFirestore.instance
+      .collection('groups')
+      .doc(groupId)
+      .collection('devices')
+      .doc(widget.locatorId)
+      .collection('places')
+      .orderBy('createdAt')
+      .get();
+
+  if (!mounted) return;
+
+  setState(() {
+    _places = snapshot.docs.map((doc) {
+      final data = doc.data();
+      return {
+        'placeId': data['placeId'] ?? doc.id,
+        'name': data['name'] ?? '-',
+        'address': data['address'] ?? '',
+      };
+    }).toList();
+
+    _placeCount = _places.length;
+  });
+}
   Future<void> _saveLocatorLocationAsPlace() async {
-    if (!widget.isMaster) return;
-    final l10n = AppLocalizations.of(context)!;
-    if (_placeCount >= 3) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.maximum3Places)));
-      return;
-    }
+  if (!widget.isMaster) return;
 
-    final groupId = await GroupService.getLocalGroupId();
-    if (groupId == null) return;
+  final l10n = AppLocalizations.of(context)!;
 
-    final snapshot = await FirebaseDatabase.instance
-        .ref('presence/groups/$groupId/locators/${widget.locatorId}')
-        .get();
-
-    if (!snapshot.exists || snapshot.value == null) return;
-
-    final data = Map<String, dynamic>.from(snapshot.value as Map);
-
-    final placeRef = FirebaseFirestore.instance
-        .collection('groups')
-        .doc(groupId)
-        .collection('devices')
-        .doc(widget.locatorId)
-        .collection('places')
-        .doc();
-
-    await placeRef.set({
-      'placeId': placeRef.id,
-      'name': 'Place ${_placeCount + 1}',
-      'lat': data['lat'],
-      'lng': data['lng'],
-      'accuracy': data['accuracy'],
-      'address': widget.address.isNotEmpty
-          ? widget.address
-          : l10n.addressNotAvailable,
-      'isActive': true,
-      'createdAt': FieldValue.serverTimestamp(),
-    });
-
-    await _loadPlaceCount();
-
-    if (!mounted) return;
-
+  if (_placeCount >= 5) {
     ScaffoldMessenger.of(
       context,
-    ).showSnackBar(SnackBar(content: Text(l10n.placeSaved)));
+    ).showSnackBar(SnackBar(content: Text(l10n.maximum5Places)));
+    return;
   }
+
+  final placeName = await _askPlaceName();
+
+  if (!mounted) return;
+
+  if (placeName == null || placeName.isEmpty) {
+    return;
+  }
+
+  final groupId = await GroupService.getLocalGroupId();
+  if (groupId == null) return;
+
+  final snapshot = await FirebaseDatabase.instance
+      .ref('presence/groups/$groupId/locators/${widget.locatorId}')
+      .get();
+
+  if (!snapshot.exists || snapshot.value == null) return;
+
+  final data = Map<String, dynamic>.from(snapshot.value as Map);
+
+  final placeRef = FirebaseFirestore.instance
+      .collection('groups')
+      .doc(groupId)
+      .collection('devices')
+      .doc(widget.locatorId)
+      .collection('places')
+      .doc();
+
+  await placeRef.set({
+    'placeId': placeRef.id,
+    'name': placeName,
+    'lat': data['lat'],
+    'lng': data['lng'],
+    'accuracy': data['accuracy'],
+    'address': widget.address.isNotEmpty
+        ? widget.address
+        : l10n.addressNotAvailable,
+    'isActive': true,
+    'createdAt': FieldValue.serverTimestamp(),
+  });
+
+  await _loadPlaces();
+
+  if (!mounted) return;
+
+  ScaffoldMessenger.of(
+    context,
+  ).showSnackBar(SnackBar(content: Text(l10n.placeSaved)));
+}
 
   Future<void> _loadSettings() async {
     final groupId = await GroupService.getLocalGroupId();
@@ -139,7 +178,123 @@ class _LocatorSettingsPageState extends State<LocatorSettingsPage> {
       geofenceAlert = settings['geofenceAlert'] ?? false;
     });
   }
+	Future<String?> _askPlaceName() async {
+  final controller = TextEditingController();
 
+  return showDialog<String>(
+    context: context,
+    builder: (dialogContext) {
+      final l10n = AppLocalizations.of(dialogContext)!;
+
+      return AlertDialog(
+        backgroundColor: AppColors.surface,
+        title: Text(
+          l10n.placeName,
+          style: AppFonts.subtitle,
+        ),
+        content: TextField(
+          controller: controller,
+          autofocus: true,
+          textInputAction: TextInputAction.done,
+          style: AppFonts.body.copyWith(
+            color: AppColors.textPrimary,
+          ),
+          decoration: InputDecoration(
+            hintText: l10n.placeNameHint,
+            hintStyle: AppFonts.caption.copyWith(
+              color: AppColors.textSecondary,
+            ),
+          ),
+          onSubmitted: (_) {
+            Navigator.of(dialogContext).pop(controller.text.trim());
+          },
+        ),
+        actions: [
+					TextButton(
+						style: TextButton.styleFrom(
+							foregroundColor: AppColors.textSecondary,
+						),
+						onPressed: () => Navigator.of(dialogContext).pop(),
+						child: Text(
+							l10n.cancel,
+							style: AppFonts.button,
+						),
+					),
+					TextButton(
+						style: TextButton.styleFrom(
+							foregroundColor: AppColors.primary,
+						),
+						onPressed: () {
+							Navigator.of(dialogContext).pop(controller.text.trim());
+						},
+						child: Text(
+							l10n.save,
+							style: AppFonts.button.copyWith(
+								fontWeight: FontWeight.w600,
+							),
+						),
+					),
+				],
+      );
+    },
+  );
+}
+
+Future<bool> _confirmDeletePlace(String placeName) async {
+  final l10n = AppLocalizations.of(context)!;
+
+  return await showDialog<bool>(
+        context: context,
+        builder: (dialogContext) {
+          return AlertDialog(
+            backgroundColor: AppColors.surface,
+            title: Text(
+              l10n.delete,
+              style: AppFonts.subtitle,
+            ),
+            content: Text(
+              '${l10n.deletePlaceConfirmation}\n\n"$placeName"',
+              style: AppFonts.body,
+            ),
+            actions: [
+              TextButton(
+                style: TextButton.styleFrom(
+                  foregroundColor: AppColors.textSecondary,
+                ),
+                onPressed: () => Navigator.pop(dialogContext, false),
+                child: Text(l10n.cancel),
+              ),
+              TextButton(
+                style: TextButton.styleFrom(
+                  foregroundColor: AppColors.danger,
+                ),
+                onPressed: () => Navigator.pop(dialogContext, true),
+                child: Text(l10n.delete),
+              ),
+            ],
+          );
+        },
+      ) ??
+      false;
+}
+Future<void> _deletePlace(String placeId, String placeName) async {
+  final groupId = await GroupService.getLocalGroupId();
+  if (groupId == null) return;
+
+  final confirmed = await _confirmDeletePlace(placeName);
+  if (!confirmed) return;
+
+  await FirebaseFirestore.instance
+      .collection('groups')
+      .doc(groupId)
+      .collection('devices')
+      .doc(widget.locatorId)
+      .collection('places')
+      .doc(placeId)
+      .delete();
+
+  await _loadPlaces();
+}
   Future<void> _saveSettings() async {
     if (!widget.isMaster) return;
     final l10n = AppLocalizations.of(context)!;
@@ -168,7 +323,7 @@ class _LocatorSettingsPageState extends State<LocatorSettingsPage> {
     ).showSnackBar(SnackBar(content: Text(l10n.settingsSaved)));
   }
 
-  bool get canSavePlace => widget.isMaster && geofenceAlert && _placeCount < 3;
+  bool get canSavePlace => widget.isMaster && geofenceAlert && _placeCount < 5;
 
   @override
   Widget build(BuildContext context) {
@@ -317,19 +472,66 @@ class _LocatorSettingsPageState extends State<LocatorSettingsPage> {
 
             const SizedBox(height: 4),
             AppCard(
-              child: Row(
-                children: [
-                  const Icon(Icons.place_rounded, color: AppColors.primary),
-                  const SizedBox(width: 4),
-                  Expanded(
-                    child: Text(
-                      'Places: $_placeCount / 3',
-                      style: AppFonts.subtitle,
-                    ),
-                  ),
-                ],
-              ),
+  child: Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Row(
+        children: [
+          const Icon(
+            Icons.place_rounded,
+            color: AppColors.primary,
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              'Places: $_placeCount / 5',
+              style: AppFonts.subtitle,
             ),
+          ),
+        ],
+      ),
+
+      if (_places.isNotEmpty) ...[
+        const SizedBox(height: 8),
+        const Divider(),
+
+        ..._places.map((place) {
+          return ListTile(
+            dense: true,
+            contentPadding: EdgeInsets.zero,
+            leading: const Icon(
+              Icons.location_on_outlined,
+              color: AppColors.primary,
+              size: 20,
+            ),
+            title: Text(
+              place['name'],
+              style: AppFonts.body,
+            ),
+            subtitle: Text(
+              place['address'],
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: AppFonts.caption,
+            ),
+            trailing: IconButton(
+              icon: const Icon(
+                Icons.delete_outline_rounded,
+                color: AppColors.danger,
+              ),
+              onPressed: () {
+  _deletePlace(
+    place['placeId'],
+    place['name'],
+  );
+},
+            ),
+          );
+        }),
+      ],
+    ],
+  ),
+),
 						if (widget.isMaster) ...[
             const SizedBox(height: 4),
             SizedBox(
