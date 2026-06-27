@@ -35,13 +35,20 @@ isim girmek neden bu kadar zor
 
 klavye açıkken taşma
 
-motion
+motion?
+print("MOTION => listen"); sürekli
 
 add same member
 
 loc home page grup bilgisi yok
 
 REQUEST LOCATION  artık yok ancak kodlarda var
+
+gps off android bildirimi tekrarlanıyor mu?
+
+DB read/write counter
+
+eski tablette ivme sensörü yok
 
 
 

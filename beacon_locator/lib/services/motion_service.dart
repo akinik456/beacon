@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'dart:math';
+
 import 'package:sensors_plus/sensors_plus.dart';
 
 import 'smart_presence_scheduler.dart';
-
 
 class MotionService {
   MotionService._();
@@ -12,57 +12,132 @@ class MotionService {
 
   static DateTime _lastMotion =
       DateTime.fromMillisecondsSinceEpoch(0);
-			
-	static double? _lastMagnitude;
+
+  static double? _lastMagnitude;
 
   static void start() {
+    print("MOTION => started");
 
     _sub?.cancel();
+    _sub = null;
+    _lastMagnitude = null;
 
-    _sub = userAccelerometerEventStream().listen(
-      (event) {
+    _startUserAccelerometer();
+  }
 
-        final magnitude = sqrt(
-					event.x * event.x +
-					event.y * event.y +
-					event.z * event.z,
-				);
+  static void _startUserAccelerometer() {
+    try {
+      _sub = userAccelerometerEventStream().listen(
+        (event) {
+          _processMotion(
+            x: event.x,
+            y: event.y,
+            z: event.z,
+            source: 'user_accelerometer',
+          );
+        },
+        onError: (e) {
+          print(
+            "BEACON MOTION => "
+            "user accelerometer error => $e",
+          );
 
-				final last = _lastMagnitude;
-				_lastMagnitude = magnitude;
+          _startAccelerometerFallback();
+        },
+        cancelOnError: true,
+      );
+    } catch (e) {
+      print(
+        "BEACON MOTION => "
+        "user accelerometer unavailable => $e",
+      );
 
-				if (last == null) {
-					return;
-				}
+      _startAccelerometerFallback();
+    }
+  }
 
-				final delta = (magnitude - last).abs();
-				
-				//print("MOTION => magnitude=$magnitude delta=$delta");
+  static void _startAccelerometerFallback() {
+    print(
+      "BEACON MOTION => "
+      "starting accelerometer fallback",
+    );
 
-				if (delta < 2.0) {
-					return;
-				}
+    _sub?.cancel();
+    _sub = null;
+    _lastMagnitude = null;
 
-        final now = DateTime.now();
+    try {
+      _sub = accelerometerEventStream().listen(
+        (event) {
+          _processMotion(
+            x: event.x,
+            y: event.y,
+            z: event.z,
+            source: 'accelerometer',
+          );
+        },
+        onError: (e) {
+          print(
+            "BEACON MOTION => "
+            "accelerometer error => $e",
+          );
+        },
+        cancelOnError: false,
+      );
+    } catch (e) {
+      print(
+        "BEACON MOTION => "
+        "no motion sensor available => $e",
+      );
+    }
+  }
 
-        if (now
-                .difference(_lastMotion)
-                .inSeconds <
-            10) {
-          return;
-        }
+  static void _processMotion({
+    required double x,
+    required double y,
+    required double z,
+    required String source,
+  }) {
+    final magnitude = sqrt(
+      x * x + y * y + z * z,
+    );
 
-        _lastMotion = now;
+    final last = _lastMagnitude;
+    _lastMagnitude = magnitude;
 
-        print(
-          "BEACON MOTION => "
-          "detected "
-          "mag=$magnitude",
-        );
-				SmartPresenceScheduler.boostAndUpdateNow(
-					reason: 'motion',
-				);
-      },
+    if (last == null) {
+      return;
+    }
+
+    final delta = (magnitude - last).abs();
+
+    if (delta < 2.0) {
+      return;
+    }
+
+    print(
+      "MOTION => source=$source "
+      "magnitude=$magnitude "
+      "delta=$delta",
+    );
+
+    final now = DateTime.now();
+
+    if (now.difference(_lastMotion).inSeconds < 10) {
+      return;
+    }
+
+    _lastMotion = now;
+
+    print(
+      "BEACON MOTION => "
+      "detected "
+      "source=$source "
+      "mag=$magnitude",
+    );
+
+    SmartPresenceScheduler.boostAndUpdateNow(
+      reason: 'motion',
     );
   }
 
