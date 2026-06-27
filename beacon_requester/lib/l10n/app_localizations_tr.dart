@@ -29,6 +29,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get delete => 'Sil';
 
   @override
+  String get groupInfo => 'Grup Bilgileri';
+
+  @override
   String get aNewVer => 'Yeni bir sürüm mevcut. En iyi deneyim için şimdi güncelleyin.';
 
   @override

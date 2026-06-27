@@ -13,6 +13,8 @@
 "placeNameHint": "Casa, Escuela, Trabajo...",
 "deletePlaceConfirmation": "Quieres eliminar este lugar?",
 "delete": "Eliminar",
+"groupInfo": "Grup Bilgileri",
+"groupInfo": "Información del grupo",
 
 "beingWatched": 											"Te están observando",
 "isWatchingYourLocation": 						"{name} está viendo tu ubicación.",

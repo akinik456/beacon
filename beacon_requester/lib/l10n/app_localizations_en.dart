@@ -29,6 +29,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get delete => 'Delete';
 
   @override
+  String get groupInfo => 'Group Information';
+
+  @override
   String get aNewVer => 'A new version is available. Update now for the best experience.';
 
   @override

@@ -135,6 +135,12 @@ abstract class AppLocalizations {
   /// **'Delete'**
   String get delete;
 
+  /// No description provided for @groupInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Group Information'**
+  String get groupInfo;
+
   /// No description provided for @aNewVer.
   ///
   /// In en, this message translates to:

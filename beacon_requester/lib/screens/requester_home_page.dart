@@ -42,6 +42,8 @@ import 'language_select_page.dart';
 import '../l10n/app_localizations.dart';
 import '../services/subscription_service.dart';
 import '../core/widgets/subscription_expired_overlay.dart';
+import '../core/widgets/group_info_panel.dart';
+import '../services/requester_name_editor.dart';
 
 class RequesterHomePage extends StatefulWidget {
   const RequesterHomePage({super.key});
@@ -73,6 +75,7 @@ class _RequesterHomePageState
 	Timer? _timeRefreshTimer;
 	String _appVersion = '';
 	bool _hasGroup = false;
+	bool _showGroupInfo = false;
 	
 	StreamSubscription<List<PurchaseDetails>>? _purchaseSub;
 	bool _isPremium = false;
@@ -505,151 +508,7 @@ setState(() {
 		});
 	}
 
-	Future<void> _editGroupName({
-		required String groupId,
-		required String currentGroupName,
-	}) async {
-		final l10n = AppLocalizations.of(context)!;
-
-		final controller = TextEditingController(
-			text: currentGroupName,
-		);
-
-		final newName = await showDialog<String>(
-			context: context,
-			builder: (dialogContext) {
-				return AlertDialog(
-					title: Text(l10n.groupName),
-					content: TextField(
-						controller: controller,
-						maxLength: 20,
-						textCapitalization: TextCapitalization.words,
-						decoration: InputDecoration(
-							hintText: l10n.groupName,
-						),
-					),
-					actions: [
-						TextButton(
-							onPressed: () {
-								Navigator.pop(dialogContext);
-							},
-							child: Text(l10n.cancel),
-						),
-						TextButton(
-							onPressed: () {
-								Navigator.pop(
-									dialogContext,
-									controller.text.trim(),
-								);
-							},
-							child: Text(l10n.sva),
-						),
-					],
-				);
-			},
-		);
-
-		if (newName == null || newName.isEmpty) return;
-		if (newName == currentGroupName) return;
-
-		await FirebaseFirestore.instance
-				.collection('groups')
-				.doc(groupId)
-				.update({
-			'groupName': newName,
-			'updatedAt': FieldValue.serverTimestamp(),
-		});
-
-		if (!mounted) return;
-
-		ScaffoldMessenger.of(context).showSnackBar(
-			SnackBar(
-				behavior: SnackBarBehavior.floating,
-				content: Text(l10n.saved),
-			),
-		);
-	}
-
-	Future<void> _editRequesterName() async {
-		final l10n = AppLocalizations.of(context)!;
-		final currentName =
-			await IdentityService.getRequesterName();
-print("_editRequesterName IdentityService.getRequesterName");
-		final controller = TextEditingController(
-			text: currentName ?? '',
-		);
-
-		final newName = await showDialog<String>(
-			context: context,
-			builder: (context) {
-				return AlertDialog(
-					title: Text(l10n.enteryourname),
-					content: TextField(
-						controller: controller,
-						autofocus: true,
-						maxLength: 20,
-						decoration: const InputDecoration(
-							hintText: 'Requester name',
-						),
-					),
-					actions: [
-						TextButton(
-							onPressed: () {
-								Navigator.pop(context);
-							},
-							child: Text(l10n.cancel),
-						),
-						TextButton(
-							onPressed: () {
-								Navigator.pop(
-									context,
-									controller.text.trim(),
-								);
-							},
-							child: Text(l10n.sva),
-						),
-					],
-				);
-			},
-		);
-
-		if (newName == null || newName.isEmpty) {
-			return;
-		}
-
-		final requesterId =
-			await IdentityService.getRequesterId();
-
-		if (requesterId == null ||
-				requesterId.isEmpty) {
-			return;
-		}
-
-		await FirebaseFirestore.instance
-				.collection('requesters')
-				.doc(requesterId)
-				.update({
-			'requesterName': newName,
-			'updatedAt': FieldValue.serverTimestamp(),
-		});
-		
-		await IdentityService.setRequesterName(
-			newName,
-		);
-		
-		if (!mounted) return;
-		
-		setState(() {
-			_homeDataFuture = HomeDataService.loadHomeData();
-		});
-
-		ScaffoldMessenger.of(context).showSnackBar(
-			SnackBar(
-				behavior: SnackBarBehavior.floating,
-				content: Text(l10n.saved),
-			),
-		);
-	}
+	
 	
   void _showGroupQrDialog({
 		required BuildContext context,
@@ -908,7 +767,7 @@ final l10n = AppLocalizations.of(context)!;
         Column(
           children: [
             Text(
-              l10n.title,
+              l10n.title,//?*?
               textAlign: TextAlign.center,
               style: AppFonts.title.copyWith(
                 fontSize: 24,
@@ -950,13 +809,23 @@ final l10n = AppLocalizations.of(context)!;
                         ),
                         const SizedBox(width: 4),
                         GestureDetector(
-                          onTap: _editRequesterName,
-                          child: const Icon(
-                            Icons.edit_rounded,
-                            size: 18,
-                            color: AppColors.textSecondary,
-                          ),
-                        ),
+													onTap: () async {
+														final changed =
+																await RequesterNameEditor.edit(context);
+
+														if (changed && mounted) {
+															setState(() {
+																_homeDataFuture =
+																		HomeDataService.loadHomeData();
+															});
+														}
+													},
+													child: const Icon(
+														Icons.edit_rounded,
+														size: 18,
+														color: AppColors.textSecondary,
+													),
+												),
                       ],
                     ),
                   ),
@@ -1093,62 +962,7 @@ final l10n = AppLocalizations.of(context)!;
   );
 }
 	
-	Widget _requesterCodeHeader(String groupId, String groupCode) {
-	final l10n = AppLocalizations.of(context)!;
-    return InkWell(
-      borderRadius: BorderRadius.circular(16),
-      onTap: () {
-        if (groupId.isEmpty) return;
-					_showGroupQrDialog(
-						context: context,
-						groupId: groupId,
-						groupCode: groupCode,
-					);
-      },
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Stack(
-								alignment: Alignment.bottomRight,
-								children: const [
-									Icon(
-										Icons.qr_code_scanner_rounded,
-										color: AppColors.accent,
-										size: 24,
-									),
-									
-								],
-							),	
-							Icon(
-										Icons.zoom_in,
-										size: 32,
-										color: AppColors.accent,
-									),
-              const SizedBox(width: 6),
-              Text(
-							    '${l10n.groupCode}',
-								textAlign: TextAlign.center,
-								style: AppFonts.button.copyWith(color: AppColors.textSecondary),
-							),	
-							const SizedBox(width: 6),
-							Text(
-								groupCode,
-								textAlign: TextAlign.left,
-								style: AppFonts.subtitle.copyWith(
-									color: AppColors.textSecondary,
-									letterSpacing: 2,
-								),
-							),						
-            ],
-          ),          
-        ],
-      ),
-    );
-  }	
-
+	
 
   @override
 	Widget build(BuildContext context) {
@@ -1419,129 +1233,72 @@ final l10n = AppLocalizations.of(context)!;
 																			),
 																			
 																			const SizedBox(height: 6),
-																			StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-																				stream: FirebaseFirestore.instance
-																						.collection('groups')
-																						.doc(groupId)
-																						.snapshots(),
-																				builder: (context, snapshot) {
-																					final liveGroupName =
-																							snapshot.data?.data()?['groupName'] ??
-																							groupName;
-																					return Padding(
-																						padding: const EdgeInsets.symmetric(horizontal: 12),
-																						child: Row(
-																							children: [
-																								Expanded(
-																									child: Row(
-																										children: [
-																											Flexible(
-																												child: Text(
-																													liveGroupName,
-																													overflow: TextOverflow.ellipsis,
-																													style: AppFonts.title.copyWith(
-																														fontSize: 20,
-																														color: AppColors.textSecondary,
-																													),
-																												),
-																											),
-																											const SizedBox(width: 6),
-																											InkWell(
-																												borderRadius: BorderRadius.circular(12),
-																												onTap: () {
-																													_editGroupName(
-																														groupId: groupId,
-																														currentGroupName: liveGroupName,
-																													);
-																												},
-																												child: const Padding(
-																													padding: EdgeInsets.all(4),
-																													child: Icon(
-																														Icons.edit_rounded,
-																														size: 16,
-																														color: AppColors.textSecondary,
-																													),
-																												),
-																											),
-																										],
-																									),
-																								),
-																								Expanded(
-																									child: Row(
-																										mainAxisAlignment: MainAxisAlignment.end,
-																										children: [
-																											Flexible(
-																												child: Text(
-																													requesterName,
-																													overflow: TextOverflow.ellipsis,
-																													textAlign: TextAlign.right,
-																													style: AppFonts.title.copyWith(
-																														fontSize: 20,
-																														color: AppColors.textSecondary,
-																													),
-																												),
-																											),
-																											const SizedBox(width: 4),
-																											GestureDetector(
-																												onTap: _editRequesterName,
-																												child: Icon(
-																													Icons.edit_rounded,
-																													size: 18,
-																													color: AppColors.textSecondary,
-																												),
-																											),
-																										],
-																									),
-																								),
-																							],
-																						),
-																					);
-																				},
-																			),
+
+InkWell(
+  onTap: () {
+    setState(() {
+      _showGroupInfo = !_showGroupInfo;
+    });
+  },
+  borderRadius: BorderRadius.circular(8),
+  child: Padding(
+    padding: const EdgeInsets.symmetric(vertical: 4),
+    child: Row(
+  mainAxisSize: MainAxisSize.min,
+  children: [
+    Icon(
+      _showGroupInfo
+          ? Icons.keyboard_arrow_up_rounded
+          : Icons.chevron_right_rounded,
+      color: AppColors.primary,
+      size: 22,
+    ),
+    const SizedBox(width: 4),
+    Text(
+      l10n.groupInfo,
+      style: AppFonts.subtitle.copyWith(
+        color: AppColors.primary,
+      ),
+    ),
+  ],
+),
+  ),
+),
+
+AnimatedCrossFade(
+  duration: const Duration(milliseconds: 250),
+  crossFadeState: _showGroupInfo
+      ? CrossFadeState.showFirst
+      : CrossFadeState.showSecond,
+  firstChild: GroupInfoPanel(
+    groupId: groupId,
+    groupName: groupName,
+    requesterName: requesterName,
+    groupCode: _groupCode,
+    langCode: langCode,
+    onRequesterNameChanged: () {
+      setState(() {
+        _homeDataFuture = HomeDataService.loadHomeData();
+      });
+    },
+    onShowGroupQr: () {
+      _showGroupQrDialog(
+        context: context,
+        groupId: groupId,
+        groupCode: _groupCode,
+      );
+    },
+    onLanguageChanged: () {
+      setState(() {});
+    },
+  ),
+  secondChild: const SizedBox.shrink(),
+),
+																			
+																			
 																		],
 																	),									
-																	Row(
-																		children: [										
-																			const SizedBox(width: 8),								
-																			_requesterCodeHeader(groupId, _groupCode),
-																			const Spacer(),
-																			TextButton.icon(
-																				onPressed: () async {
-																					await Navigator.push(
-																						context,
-																						MaterialPageRoute(
-																							builder: (_) =>
-																									const LanguageSelectPage(),
-																						),
-																					);
-																					if (!mounted) return;
-																					setState(() {});
-																				},
-																				icon: const Icon(
-																					Icons.language_rounded,
-																					size: 18,
-																					color: AppColors.accent,
-																				),
-																				label: Row(
-																					mainAxisSize: MainAxisSize.min,
-																					children: [
-																						Text(
-																							langCode,
-																							style: AppFonts.caption.copyWith(
-																								color: AppColors.accent,
-																								fontWeight: FontWeight.w600,
-																							),
-																						),
-																						const Icon(
-																							Icons.arrow_drop_down,
-																							size: 18,
-																							color: AppColors.accent,
-																						),
-																					],
-																				),
-																			)
-																		],
-																	),							
+																			
 																	const SizedBox(height: 4),
 
 																	if (_isMaster && _groupId != null)
@@ -1549,11 +1306,6 @@ final l10n = AppLocalizations.of(context)!;
 																			groupId: _groupId!,
 																		),
 																		
-																		if (_groupId != null)//if (_isMaster && _groupId != null)
-																		RequesterListCard(
-																			groupId: _groupId!,
-																		),
-
 																	StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
 																		stream: FirebaseFirestore.instance
 																				.collection('groups')
@@ -1795,6 +1547,7 @@ final l10n = AppLocalizations.of(context)!;
 																			],
 																		),
 																	);
+																	
 																},
 															);
 														},
