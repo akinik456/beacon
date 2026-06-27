@@ -1,6 +1,14 @@
 {
 "@@locale": 													"tr",
-
+"upgradeToAddMoreMembers":						"Planınızı yükselterek daha fazla üye ekleyebilirsiniz.",
+"freeTrialDaysLeft": "Ücretsiz deneme: {days} gün kaldı",
+"@freeTrialDaysLeft": {
+  "placeholders": {
+    "days": {
+      "type": "int"
+    }
+  }
+},
 "beingWatched": 											"İzleniyorsun",
 "isWatchingYourLocation": 						"{name} konumunu izliyor.",
 "twoWatchersWatchingYourLocation": 		"{name1} ve {name2} konumunu izliyor.",

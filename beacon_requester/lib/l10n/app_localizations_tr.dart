@@ -12,6 +12,11 @@ class AppLocalizationsTr extends AppLocalizations {
   String get upgradeToAddMoreMembers => 'Planınızı yükselterek daha fazla üye ekleyebilirsiniz.';
 
   @override
+  String freeTrialDaysLeft(int days) {
+    return 'Ücretsiz deneme: $days gün kaldı';
+  }
+
+  @override
   String get aNewVer => 'Yeni bir sürüm mevcut. En iyi deneyim için şimdi güncelleyin.';
 
   @override

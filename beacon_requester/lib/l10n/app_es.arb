@@ -1,7 +1,14 @@
 {
 "@@locale": 													"es",
 "upgradeToAddMoreMembers":						"Actualiza tu plan para agregar más miembros.",
-
+"freeTrialDaysLeft": "Prueba gratuita: quedan {days} días",
+"@freeTrialDaysLeft": {
+  "placeholders": {
+    "days": {
+      "type": "int"
+    }
+  }
+},
 
 "beingWatched": 											"Te están observando",
 "isWatchingYourLocation": 						"{name} está viendo tu ubicación.",

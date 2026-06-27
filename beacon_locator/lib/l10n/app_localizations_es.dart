@@ -9,6 +9,14 @@ class AppLocalizationsEs extends AppLocalizations {
   AppLocalizationsEs([String locale = 'es']) : super(locale);
 
   @override
+  String get upgradeToAddMoreMembers => 'Actualiza tu plan para agregar más miembros.';
+
+  @override
+  String freeTrialDaysLeft(int days) {
+    return 'Prueba gratuita: quedan $days días';
+  }
+
+  @override
   String get aNewVer => 'Hay una nueva versión disponible. Actualiza ahora para disfrutar de la mejor experiencia.';
 
   @override

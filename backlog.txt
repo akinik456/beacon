@@ -35,9 +35,6 @@ isim girmek neden bu kadar zor
 
 klavye açıkken taşma
 
-motion?
-print("MOTION => listen"); sürekli
-
 add same member
 
 loc home page grup bilgisi yok

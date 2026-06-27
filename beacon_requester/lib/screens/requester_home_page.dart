@@ -1802,16 +1802,14 @@ final l10n = AppLocalizations.of(context)!;
 												),
 											),
 											
-Positioned(
-												left: 2,
-												right: 2,
-												bottom: 2,
+											Positioned(
+												left: 8,
+												right: 8,
+												bottom: 8,
 												child: Material(
 													color: Colors.transparent,
-														child: Padding(
-															padding: const EdgeInsets.fromLTRB(4, 0, 4, 4),
-																child: AppCard(
-																	padding: const EdgeInsets.all(6),
+															child: AppCard(
+																	padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
 																		child: Column(
 																			crossAxisAlignment: CrossAxisAlignment.start,
 																				children: [
@@ -1822,7 +1820,7 @@ Positioned(
 																									_isPremium
 																											? l10n.premiumActive
 																											: (_trialActive
-																													? "Free trial $_trialDaysLeft days left"
+																													? l10n.freeTrialDaysLeft(_trialDaysLeft)
 																													: l10n.trialExpired),
 																									style: AppFonts.caption.copyWith(
 																										color: Colors.white70,
@@ -1926,7 +1924,6 @@ Positioned(
 																					],
 																				),
 																				
-																			),
 																		),
 																		),
 																	),								
@@ -2001,6 +1998,8 @@ Positioned(
 															),
 														);
 													}
+													
+													
 void openFeedbackMenu() {
 final l10n = AppLocalizations.of(context)!;
   showModalBottomSheet(

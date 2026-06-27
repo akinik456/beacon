@@ -2,8 +2,15 @@
 
 "@@locale": 													"en",
 
-
-
+"upgradeToAddMoreMembers":						"Upgrade to add more members.",
+"freeTrialDaysLeft": "Free trial: {days} days left",
+"@freeTrialDaysLeft": {
+  "placeholders": {
+    "days": {
+      "type": "int"
+    }
+  }
+},
 
 "aNewVer":														"A new version is available. Update now for the best experience.",
 "addAdmin":														"Add admin",
