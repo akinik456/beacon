@@ -15,60 +15,63 @@ class RequesterRegistryService {
   static final _firestore = FirebaseFirestore.instance;
 
   static Future<void> registerRequester() async {
-	
-		final packageInfo =
-			await PackageInfo.fromPlatform();
-	
-		final deviceInfo = DeviceInfoPlugin();
-		final androidInfo = await deviceInfo.androidInfo;
-		final locale =
-				PlatformDispatcher.instance.locale;
+  final packageInfo = await PackageInfo.fromPlatform();
 
-		final countryCode =
-				locale.countryCode;
-	
+  final deviceInfo = DeviceInfoPlugin();
+  final androidInfo = await deviceInfo.androidInfo;
+  final locale = PlatformDispatcher.instance.locale;
+
+  final countryCode = locale.countryCode;
+
+  try {
+    final requesterId =
+        await IdentityService.getRequesterId();
+
+    final requesterCode =
+        await IdentityService.getRequesterCode();
+
+    final requesterName =
+        await IdentityService.getRequesterName();
+
+    print("registerRequester IdentityService.getRequesterName");
+
+    String? token;
+
     try {
-      final requesterId =
-          await IdentityService.getRequesterId();
-			
-			final requesterCode = await IdentityService.getRequesterCode();
-
-			final requesterName = await IdentityService.getRequesterName();
-			print("registerRequester IdentityService.getRequesterName");
-      
-			final token =
-          await FirebaseMessaging.instance.getToken();
-
-      final topic = "requester_$requesterId";
-
-      await _firestore.collection('requesters').doc(requesterId).set({
-			'active': true,
-			'createdAt': FieldValue.serverTimestamp(),
-			'platform': Platform.operatingSystem,
-			'requesterCode': requesterCode,
-			'requesterName': requesterName,
-
-			'platform': Platform.operatingSystem,
-			'appVersion': packageInfo.version,
-			'buildNumber': packageInfo.buildNumber,
-			'androidVersion': androidInfo.version.release,
-			'sdkInt': androidInfo.version.sdkInt,
-
-			'brand': androidInfo.brand,
-			'manufacturer': androidInfo.manufacturer,
-			'model': androidInfo.model,
-			'device': androidInfo.device,
-			'countryCode': countryCode,			
-			
-		}, SetOptions(merge: true));
-
-      print(
-        "BEACON REQUESTER REGISTRY => SUCCESS => $requesterId",
-      );
+      token = await FirebaseMessaging.instance.getToken();
     } catch (e) {
-      print(
-        "BEACON REQUESTER REGISTRY ERROR => $e",
-      );
+      print("BEACON REQUESTER REGISTRY FCM TOKEN ERROR => $e");
     }
+
+    await _firestore.collection('requesters').doc(requesterId).set({
+      'active': true,
+      'createdAt': FieldValue.serverTimestamp(),
+      'updatedAt': FieldValue.serverTimestamp(),
+      'platform': Platform.operatingSystem,
+      'requesterCode': requesterCode,
+      'requesterName': requesterName,
+      'name': requesterName,
+      'fcmToken': token,
+
+      'appVersion': packageInfo.version,
+      'buildNumber': packageInfo.buildNumber,
+      'androidVersion': androidInfo.version.release,
+      'sdkInt': androidInfo.version.sdkInt,
+
+      'brand': androidInfo.brand,
+      'manufacturer': androidInfo.manufacturer,
+      'model': androidInfo.model,
+      'device': androidInfo.device,
+      'countryCode': countryCode,
+    }, SetOptions(merge: true));
+
+    print(
+      "BEACON REQUESTER REGISTRY => SUCCESS => $requesterId",
+    );
+  } catch (e) {
+    print(
+      "BEACON REQUESTER REGISTRY ERROR => $e",
+    );
   }
+}
 }

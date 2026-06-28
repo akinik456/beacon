@@ -41,7 +41,7 @@ import 'services/notification_service.dart';
 
 				await SmartPresenceScheduler
 						.boostAndUpdateNow(
-					reason: 'fcm_foreground',
+					reason: 'fcm_background',
 				);
 
 				print(

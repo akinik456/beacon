@@ -15,6 +15,7 @@ class LocatorListService {
     try {
       final groupId = await GroupService.getLocalGroupId();
       final requesterId = await IdentityService.getRequesterId();
+			print("BEACON LOCATOR LIST => groupId=$groupId requesterId=$requesterId");
 
       if (groupId == null || requesterId == null) {
         return [];
@@ -26,7 +27,9 @@ class LocatorListService {
           .collection('devices')
           .doc(requesterId)
           .get();
-
+print(
+  "BEACON LOCATOR LIST => requesterDoc exists=${requesterDoc.exists}",
+);
       if (!requesterDoc.exists) {
         return [];
       }
@@ -86,7 +89,13 @@ class LocatorListService {
 					...presenceData,
 					'locatorName': locatorName,
 				});
+			print("BEACON LOCATOR LIST => loading locatorId=$locatorId");
+
+print(
+  "BEACON LOCATOR LIST => deviceDoc exists=${locatorDoc.exists}",
+);	
       }
+			print("BEACON LOCATOR LIST => result=${result.length}");
 
       return result;
 

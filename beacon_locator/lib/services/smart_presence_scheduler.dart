@@ -117,21 +117,23 @@ class SmartPresenceScheduler {
   }
 
   static void setActiveWatcher(bool value) {
-    _hasActiveWatcher = value;
+		final wasActive = _hasActiveWatcher;
 
-    print(
-      "SMART PRESENCE => activeWatcher=$value",
-    );
+		_hasActiveWatcher = value;
 
-    if (value) {
-      boostAndUpdateNow(
-        reason: 'active_watcher',
-      );
-    } else {
-      _scheduleNext(
-        immediate: false,
-        reason: 'active_watcher_off',
-      );
-    }
-  }
+		print(
+			"SMART PRESENCE => activeWatcher=$value",
+		);
+
+		if (!wasActive && value) {
+			boostAndUpdateNow(
+				reason: 'active_watcher_started',
+			);
+		} else if (wasActive && !value) {
+			_scheduleNext(
+				immediate: false,
+				reason: 'active_watcher_off',
+			);
+		}
+	}
 }

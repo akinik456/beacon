@@ -206,8 +206,8 @@ class _RequesterHomePageState
 			return;
 		}
 
-		await FCMService.initialize();
 		await _loadLocators();
+		await FCMService.initialize();
 	}
 	
 		Future<void> _loadVersion() async {
@@ -800,7 +800,7 @@ final l10n = AppLocalizations.of(context)!;
                       children: [
                         Flexible(
                           child: Text(
-                            l10n.yourname,
+                            requesterName,
                             overflow: TextOverflow.ellipsis,
                             textAlign: TextAlign.right,
                             style: AppFonts.title.copyWith(

@@ -763,6 +763,9 @@ Widget _pairedRequesterCard() {
 															);
 
 															await _startLocatorHome();
+															await SmartPresenceScheduler.boostAndUpdateNow(
+																reason: 'pairing_approved',
+															);
 														}
 
                             ScaffoldMessenger.of(

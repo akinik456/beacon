@@ -68,12 +68,14 @@ class RequesterNameEditor {
     }
 
     await FirebaseFirestore.instance
-        .collection('requesters')
-        .doc(requesterId)
-        .update({
-      'requesterName': newName,
-      'updatedAt': FieldValue.serverTimestamp(),
-    });
+				.collection('requesters')
+				.doc(requesterId)
+				.set({
+			'requesterId': requesterId,
+			'name': newName,
+			'requesterName': newName,
+			'updatedAt': FieldValue.serverTimestamp(),
+		}, SetOptions(merge: true));
 
     await IdentityService.setRequesterName(
       newName,

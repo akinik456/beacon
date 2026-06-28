@@ -49,7 +49,7 @@ class PresenceService {
     "gps=$gpsEnabled",
   );
 
-  await _db.child("presence/groups/$groupId/locators/$locatorId").set({
+  await _db.child("presence/groups/$groupId/locators/$locatorId").update({
     'status': 'online',
     'lastSeen': ServerValue.timestamp,
     'battery': batteryLevel,
@@ -57,6 +57,7 @@ class PresenceService {
     'lat': position?.latitude,
     'lng': position?.longitude,
     'accuracy': position?.accuracy,
+		'updateCount': ServerValue.increment(1),
   });
 	if (position != null) {
 		await GeofenceService.checkPlaces(
