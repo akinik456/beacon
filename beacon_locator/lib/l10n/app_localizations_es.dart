@@ -17,6 +17,21 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String get placeName => 'Nombre del lugar';
+
+  @override
+  String get placeNameHint => 'Casa, Escuela, Trabajo...';
+
+  @override
+  String get deletePlaceConfirmation => 'Quieres eliminar este lugar?';
+
+  @override
+  String get delete => 'Eliminar';
+
+  @override
+  String get groupInfo => 'Información del grupo';
+
+  @override
   String get aNewVer => 'Hay una nueva versión disponible. Actualiza ahora para disfrutar de la mejor experiencia.';
 
   @override
@@ -321,7 +336,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get maxFamilyMembersReached => 'Se alcanzó el número máximo de miembros';
 
   @override
-  String get maximum3Places => 'Máximo 3 lugares permitidos';
+  String get maximum5Places => 'Máximo 5 lugares permitidos';
 
   @override
   String get member => 'Miembro';

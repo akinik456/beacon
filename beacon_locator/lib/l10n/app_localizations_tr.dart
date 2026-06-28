@@ -17,6 +17,21 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
+  String get placeName => 'Yer adı';
+
+  @override
+  String get placeNameHint => 'Ev, Okul, İş yeri...';
+
+  @override
+  String get deletePlaceConfirmation => 'Bu yeri silmek istiyor musunuz?';
+
+  @override
+  String get delete => 'Sil';
+
+  @override
+  String get groupInfo => 'Grup Bilgileri';
+
+  @override
   String get aNewVer => 'Yeni bir sürüm mevcut. En iyi deneyim için şimdi güncelleyin.';
 
   @override
@@ -321,7 +336,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get maxFamilyMembersReached => 'Maximum family members reached';
 
   @override
-  String get maximum3Places => 'En fazla 3 konum kaydedilebilir';
+  String get maximum5Places => 'En fazla 5 konum kaydedilebilir';
 
   @override
   String get member => 'Üye';

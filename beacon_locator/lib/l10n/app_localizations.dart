@@ -111,6 +111,36 @@ abstract class AppLocalizations {
   /// **'Free trial: {days} days left'**
   String freeTrialDaysLeft(int days);
 
+  /// No description provided for @placeName.
+  ///
+  /// In en, this message translates to:
+  /// **'Place name'**
+  String get placeName;
+
+  /// No description provided for @placeNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Home, School, Work...'**
+  String get placeNameHint;
+
+  /// No description provided for @deletePlaceConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this place?'**
+  String get deletePlaceConfirmation;
+
+  /// No description provided for @delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get delete;
+
+  /// No description provided for @groupInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Group Information'**
+  String get groupInfo;
+
   /// No description provided for @aNewVer.
   ///
   /// In en, this message translates to:
@@ -687,11 +717,11 @@ abstract class AppLocalizations {
   /// **'Maximum family members reached'**
   String get maxFamilyMembersReached;
 
-  /// No description provided for @maximum3Places.
+  /// No description provided for @maximum5Places.
   ///
   /// In en, this message translates to:
-  /// **'Maximum 3 places allowed'**
-  String get maximum3Places;
+  /// **'Maximum 5 places allowed'**
+  String get maximum5Places;
 
   /// No description provided for @member.
   ///

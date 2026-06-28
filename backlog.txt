@@ -43,7 +43,7 @@ gps off android bildirimi tekrarlanıyor mu?
 
 DB read/write counter
 
-place name
+req grup info da req code , master ve admin ile dene
 
 
 

@@ -9,6 +9,12 @@
     }
   }
 },
+"placeName": "Nombre del lugar",
+"placeNameHint": "Casa, Escuela, Trabajo...",
+"deletePlaceConfirmation": "Quieres eliminar este lugar?",
+"delete": "Eliminar",
+"groupInfo": "Grup Bilgileri",
+"groupInfo": "Información del grupo",
 
 "beingWatched": 											"Te están observando",
 "isWatchingYourLocation": 						"{name} está viendo tu ubicación.",
@@ -110,7 +116,7 @@
 "manufacturerSettings": 							"AJUSTES DEL FABRICANTE",
 "master": 														"Administrador principal",
 "maxFamilyMembersReached": 						"Se alcanzó el número máximo de miembros",
-"maximum3Places": 										"Máximo 3 lugares permitidos",
+"maximum5Places": 										"Máximo 5 lugares permitidos",
 "member": 														"Miembro",
 "memberCode": 												"Código del miembro",
 "memberlimitreached": 								"Límite de miembros alcanzado",

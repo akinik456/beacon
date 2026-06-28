@@ -62,8 +62,7 @@ class _LocatorHomePageState extends State<LocatorHomePage>
 	final List<StreamSubscription> _subscriptions = [];
 	bool _hasGroup = false;
 	bool _hasFullAccess = true;
-	bool _showGroupInfo = false;
-	
+
  @override
 void initState() {
   super.initState();
@@ -293,32 +292,17 @@ Future<void> _startNativePresenceIfAllowed() async {
 		_subscriptions.add(sub);
 	}
 
-Future<Map<String, String>> _loadLocatorCodeData() async {
-  final locatorId = await IdentityService.getLocatorId() ?? '';
-  final locatorCode = await IdentityService.getLocatorCode() ?? '------';
-  final locatorName = await IdentityService.getLocatorName() ?? 'Member';
+  Future<Map<String, String>> _loadLocatorCodeData() async {
+    final locatorId = await IdentityService.getLocatorId() ?? '';
+    final locatorCode = await IdentityService.getLocatorCode() ?? '------';
+    final locatorName = await IdentityService.getLocatorName() ?? 'Member';
 
-  final groupId = await IdentityService.getGroupId() ?? '';
-
-  String groupName = '';
-
-  if (groupId.isNotEmpty) {
-    final doc = await FirebaseFirestore.instance
-        .collection('groups')
-        .doc(groupId)
-        .get();
-
-    groupName = doc.data()?['groupName'] ?? '';
+    return {
+      'locatorId': locatorId,
+      'locatorCode': locatorCode,
+      'locatorName': locatorName,
+    };
   }
-
-  return {
-    'locatorId': locatorId,
-    'locatorCode': locatorCode,
-    'locatorName': locatorName,
-    'groupId': groupId,
-    'groupName': groupName,
-  };
-}
 
 Stream<List<Map<String, String>>> _watchPairedRequesterData() async* {
   final groupId = await IdentityService.getGroupId();
@@ -894,7 +878,76 @@ Widget _activeWatchersCard() {
     },
   );
 }	
+Future<void> _editLocatorName(
+  String currentName,
+) async {
+	final l10n = AppLocalizations.of(context)!;
+  final controller = TextEditingController(
+    text: currentName,
+  );
 
+  final newName = await showDialog<String>(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: Text(l10n.enterMemberName),
+        content: TextField(
+          controller: controller,
+          autofocus: true,
+          maxLength: 20,
+          decoration: InputDecoration(
+            hintText: l10n.enterMemberName,
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(
+                context,
+                controller.text.trim(),
+              );
+            },
+            child: Text(l10n.save),
+          ),
+        ],
+      );
+    },
+  );
+
+  if (newName == null || newName.isEmpty) {
+    return;
+  }
+
+  final locatorId =
+      await IdentityService.getLocatorId();
+
+  if (locatorId == null ||
+      locatorId.isEmpty) {
+    return;
+  }
+
+  await FirebaseFirestore.instance
+      .collection('locators')
+      .doc(locatorId)
+      .update({
+    'locatorName': newName,
+    'updatedAt': FieldValue.serverTimestamp(),
+  });
+
+  await IdentityService.setLocatorName(
+    newName,
+  );
+
+  if (!mounted) return;
+
+  setState(() {});
+}
   @override
 Widget build(BuildContext context) {
 final l10n = AppLocalizations.of(context)!;
@@ -910,8 +963,6 @@ final l10n = AppLocalizations.of(context)!;
            final locatorId = snapshot.data?['locatorId'] ?? '';
             final locatorCode = snapshot.data?['locatorCode'] ?? '------';
             final locatorName = snapshot.data?['locatorName'] ?? l10n.member;
-						final groupId = snapshot.data?['groupId'] ?? '';
-						final groupName = snapshot.data?['groupName'] ?? '';
 						final langCode =
 						Localizations.localeOf(context).languageCode.toUpperCase();
             return Padding(
@@ -940,73 +991,82 @@ final l10n = AppLocalizations.of(context)!;
 																	),
 																],
 															),
-														),													
+														),
+                            const SizedBox(height: 6),
+                            Row(
+															mainAxisAlignment: MainAxisAlignment.center,
+															children: [
+																Flexible(
+																	child: Text(
+																		'$locatorName',
+																		overflow: TextOverflow.ellipsis,
+																		textAlign: TextAlign.center,
+																		style: AppFonts.title.copyWith(
+																			fontSize: 20,
+																			color: AppColors.textSecondary,
+																		),
+																	),
+																),
+
+																const SizedBox(width: 4),
+
+																GestureDetector(
+																	onTap: () => _editLocatorName(locatorName),
+																	child: Icon(
+																		Icons.edit_rounded,
+																		size: 18,
+																		color: AppColors.textSecondary,
+																	),
+																),
+															],
+														),
                           ],
                         ),
                       ),
                     ],
                   ),
-const SizedBox(height: 6),
-
-if (groupId.isNotEmpty) ...[
-  InkWell(
-    onTap: () {
-      setState(() {
-        _showGroupInfo = !_showGroupInfo;
-      });
-    },
-    borderRadius: BorderRadius.circular(8),
-    child: Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            _showGroupInfo
-                ? Icons.keyboard_arrow_up_rounded
-                : Icons.chevron_right_rounded,
-            color: AppColors.primary,
-            size: 22,
-          ),
-          const SizedBox(width: 4),
-          Text(
-            l10n.groupInfo,
-            style: AppFonts.subtitle.copyWith(
-              color: AppColors.primary,
-            ),
-          ),
-        ],
-      ),
-    ),
-  ),
-
-  AnimatedCrossFade(
-    duration: const Duration(milliseconds: 250),
-    crossFadeState: _showGroupInfo
-        ? CrossFadeState.showFirst
-        : CrossFadeState.showSecond,
-    firstChild: GroupInfoPanel(
-      groupName: groupName,
-      locatorName: locatorName,
-      locatorCode: locatorCode,
-      langCode: langCode,
-      onLocatorNameChanged: () {
-        setState(() {});
-      },
-      onShowLocatorQr: () {
-        _showLocatorQrDialog(
-          locatorId: locatorId,
-          locatorCode: locatorCode,
-        );
-      },
-      onLanguageChanged: () {
-        setState(() {});
-      },
-    ),
-    secondChild: const SizedBox.shrink(),
-  ),
-],									
-									
+									Row(
+										children: [
+											const SizedBox(width: 16),
+											_locatorCodeHeader(locatorId, locatorCode),
+											const Spacer(),
+											TextButton.icon(
+												onPressed: () async {
+													await Navigator.push(
+														context,
+														MaterialPageRoute(
+															builder: (_) =>
+																	const LanguageSelectPage(),
+														),
+													);
+													if (!mounted) return;
+													setState(() {});
+												},
+												icon: const Icon(
+													Icons.language_rounded,
+													size: 18,
+													color: AppColors.accent,
+												),
+												label: Row(
+													mainAxisSize: MainAxisSize.min,
+													children: [
+														Text(
+															langCode,
+															style: AppFonts.caption.copyWith(
+																color: AppColors.accent,
+																fontWeight: FontWeight.w600,
+															),
+														),
+														const Icon(
+															Icons.arrow_drop_down,
+															size: 18,
+															color: AppColors.accent,
+														),
+													],
+												),
+											)
+										],
+									),									
                   const SizedBox(height: 12),
                   _buildPairingArea(),
 									const SizedBox(height: 12),
