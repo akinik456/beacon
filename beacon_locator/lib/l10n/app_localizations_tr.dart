@@ -32,6 +32,33 @@ class AppLocalizationsTr extends AppLocalizations {
   String get groupInfo => 'Grup Bilgileri';
 
   @override
+  String get quickGuide => 'Quick Guide';
+
+  @override
+  String get locatorGuide1 => 'Konumunuzu paylaşabilmek için önce bir aile grubuna katılmalısınız.';
+
+  @override
+  String get locatorGuide2 => 'Eşleştirme isteği alabilmek için Üye Kodunuzu aile yöneticinizle paylaşın.';
+
+  @override
+  String get locatorGuide3 => 'Üye Kodunuzu Grup Bilgileri panelini açarak görebilirsiniz.';
+
+  @override
+  String get locatorGuide4 => 'Aile yöneticilerinizin size ulaşmasını istediğinizde Beni Ara butonunu kullanabilirsiniz.';
+
+  @override
+  String get requesterGuide1 => 'Bir aile grubu oluşturun veya mevcut bir gruba katılın.';
+
+  @override
+  String get requesterGuide2 => 'Üye Kodunu girerek veya QR kodunu tarayarak üyeleri davet edin.';
+
+  @override
+  String get requesterGuide3 => 'Konum talep etmeden önce üyelerin eşleştirme isteğinizi onaylamasını bekleyin.';
+
+  @override
+  String get requesterGuide4 => 'Canlı Konum ve Beni Ara özelliklerini yalnızca gerektiğinde kullanın.';
+
+  @override
   String get aNewVer => 'Yeni bir sürüm mevcut. En iyi deneyim için şimdi güncelleyin.';
 
   @override

@@ -141,6 +141,60 @@ abstract class AppLocalizations {
   /// **'Group Information'**
   String get groupInfo;
 
+  /// No description provided for @quickGuide.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick Guide'**
+  String get quickGuide;
+
+  /// No description provided for @locatorGuide1.
+  ///
+  /// In en, this message translates to:
+  /// **'To share your location, you must first join a family group.'**
+  String get locatorGuide1;
+
+  /// No description provided for @locatorGuide2.
+  ///
+  /// In en, this message translates to:
+  /// **'Share your Member Code with your family administrator to receive a pairing request.'**
+  String get locatorGuide2;
+
+  /// No description provided for @locatorGuide3.
+  ///
+  /// In en, this message translates to:
+  /// **'You can find your Member Code by opening the Group Information panel.'**
+  String get locatorGuide3;
+
+  /// No description provided for @locatorGuide4.
+  ///
+  /// In en, this message translates to:
+  /// **'Use the Call Me button whenever you want your family administrators to contact you.'**
+  String get locatorGuide4;
+
+  /// No description provided for @requesterGuide1.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a family group or join an existing one.'**
+  String get requesterGuide1;
+
+  /// No description provided for @requesterGuide2.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite members by entering their Member Code or scanning their QR code.'**
+  String get requesterGuide2;
+
+  /// No description provided for @requesterGuide3.
+  ///
+  /// In en, this message translates to:
+  /// **'Wait for members to approve your pairing request before requesting their location.'**
+  String get requesterGuide3;
+
+  /// No description provided for @requesterGuide4.
+  ///
+  /// In en, this message translates to:
+  /// **'Use Live Location and Call Me only when needed.'**
+  String get requesterGuide4;
+
   /// No description provided for @aNewVer.
   ///
   /// In en, this message translates to:

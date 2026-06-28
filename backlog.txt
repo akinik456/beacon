@@ -45,6 +45,8 @@ DB read/write counter
 
 req grup info da req code , master ve admin ile dene
 
+locator stop sharing?
+
 
 
 

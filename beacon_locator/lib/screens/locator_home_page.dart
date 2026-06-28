@@ -43,6 +43,7 @@ import '../core/widgets/locator_subscription_expired_overlay.dart';
 import '../services/notification_service.dart';
 import '../core/widgets/group_info_panel.dart';
 import '../services/locator_name_editor.dart';
+import '../core/widgets/guide_panel.dart';
 
 
 class LocatorHomePage extends StatefulWidget {
@@ -63,6 +64,7 @@ class _LocatorHomePageState extends State<LocatorHomePage>
 	bool _hasGroup = false;
 	bool _hasFullAccess = true;
 	bool _showGroupInfo = false;
+	bool _showGuide = false;
 	
  @override
 void initState() {
@@ -938,6 +940,24 @@ final l10n = AppLocalizations.of(context)!;
 																			color: AppColors.primary,
 																		),
 																	),
+
+																	Positioned(
+																		right: 0,
+																		child: IconButton(
+																			onPressed: () {
+																				setState(() {
+																					_showGuide = !_showGuide;
+																				});
+																			},
+																			icon: Icon(
+																				_showGuide
+																						? Icons.keyboard_arrow_up_rounded
+																						: Icons.help_outline_rounded,
+																				color: AppColors.primary,
+																				size: 22,
+																			),
+																		),
+																	),
 																],
 															),
 														),													
@@ -946,66 +966,72 @@ final l10n = AppLocalizations.of(context)!;
                       ),
                     ],
                   ),
-const SizedBox(height: 6),
+									AnimatedCrossFade(
+										duration: const Duration(milliseconds: 250),
+										crossFadeState: _showGuide
+												? CrossFadeState.showFirst
+												: CrossFadeState.showSecond,
+										firstChild: const GuidePanel(),
+										secondChild: const SizedBox.shrink(),
+									),
+										const SizedBox(height: 6),
 
-if (groupId.isNotEmpty) ...[
-  InkWell(
-    onTap: () {
-      setState(() {
-        _showGroupInfo = !_showGroupInfo;
-      });
-    },
-    borderRadius: BorderRadius.circular(8),
-    child: Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            _showGroupInfo
-                ? Icons.keyboard_arrow_up_rounded
-                : Icons.chevron_right_rounded,
-            color: AppColors.primary,
-            size: 22,
-          ),
-          const SizedBox(width: 4),
-          Text(
-            l10n.groupInfo,
-            style: AppFonts.subtitle.copyWith(
-              color: AppColors.primary,
-            ),
-          ),
-        ],
-      ),
-    ),
-  ),
+											InkWell(
+												onTap: () {
+													setState(() {
+														_showGroupInfo = !_showGroupInfo;
+													});
+												},
+												borderRadius: BorderRadius.circular(8),
+												child: Padding(
+													padding: const EdgeInsets.symmetric(vertical: 4),
+													child: Row(
+														mainAxisSize: MainAxisSize.min,
+														children: [
+															Icon(
+																_showGroupInfo
+																		? Icons.keyboard_arrow_up_rounded
+																		: Icons.chevron_right_rounded,
+																color: AppColors.primary,
+																size: 22,
+															),
+															const SizedBox(width: 4),
+															Text(
+																l10n.groupInfo,
+																style: AppFonts.subtitle.copyWith(
+																	color: AppColors.primary,
+																),
+															),
+														],
+													),
+												),
+											),
 
-  AnimatedCrossFade(
-    duration: const Duration(milliseconds: 250),
-    crossFadeState: _showGroupInfo
-        ? CrossFadeState.showFirst
-        : CrossFadeState.showSecond,
-    firstChild: GroupInfoPanel(
-      groupName: groupName,
-      locatorName: locatorName,
-      locatorCode: locatorCode,
-      langCode: langCode,
-      onLocatorNameChanged: () {
-        setState(() {});
-      },
-      onShowLocatorQr: () {
-        _showLocatorQrDialog(
-          locatorId: locatorId,
-          locatorCode: locatorCode,
-        );
-      },
-      onLanguageChanged: () {
-        setState(() {});
-      },
-    ),
-    secondChild: const SizedBox.shrink(),
-  ),
-],									
+											AnimatedCrossFade(
+												duration: const Duration(milliseconds: 250),
+												crossFadeState: _showGroupInfo
+														? CrossFadeState.showFirst
+														: CrossFadeState.showSecond,
+												firstChild: GroupInfoPanel(
+													groupName: groupName,
+													locatorName: locatorName,
+													locatorCode: locatorCode,
+													langCode: langCode,
+													onLocatorNameChanged: () {
+														setState(() {});
+													},
+													onShowLocatorQr: () {
+														_showLocatorQrDialog(
+															locatorId: locatorId,
+															locatorCode: locatorCode,
+														);
+													},
+													onLanguageChanged: () {
+														setState(() {});
+													},
+												),
+												secondChild: const SizedBox.shrink(),
+											),
 									
                   const SizedBox(height: 12),
                   _buildPairingArea(),
@@ -1020,139 +1046,139 @@ if (groupId.isNotEmpty) ...[
             },
           ),
         ),
-Positioned(
-  left: 2,
-  right: 2,
-  bottom: 2,
-  child: Material(
-    color: Colors.transparent,
-    child: Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12),
-      child: Row(
-        children: [
-          InkWell(
-            onTap: () {
-              openFeedbackMenu();
-            },
-            borderRadius: BorderRadius.circular(20),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 4,
-                vertical: 2,
-              ),
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.chat_bubble_outline_rounded,
-                    size: 18,
-                    color: const Color(0xFF8FD8FF).withOpacity(0.50),
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    l10n.feedback,
-                    style: TextStyle(
-                      color: const Color(0xFF8FD8FF).withOpacity(0.50),
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-
-          const Spacer(),
-
-          Text(
-            "${l10n.version} $_appVersion",
-            style: TextStyle(
-              color: Colors.white.withOpacity(0.4),
-              fontSize: 15,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-
-          const Spacer(),
-
-          InkWell(
-            onTap: () async {
-              final Uri url = Uri.parse(
-                'https://play.google.com/store/apps/developer?id=Lynra',
-              );
-
-              await launchUrl(
-                url,
-                mode: LaunchMode.externalApplication,
-              );
-            },
-            borderRadius: BorderRadius.circular(20),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 4,
-                vertical: 2,
-              ),
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.apps_rounded,
-                    size: 18,
-                    color: const Color(0xFF8FD8FF).withOpacity(0.50),
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    l10n.otherApps,
-                    style: TextStyle(
-                      color: const Color(0xFF8FD8FF).withOpacity(0.50),
-                      fontSize: 		14,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    ),
-  ),
-),
-if (_callMeData != null)
-  Positioned.fill(
-    child: CallMeOverlay(
-      data: _callMeData!,
-      onDismiss: () async {
-											final callMeId = _callMeData!['callMeId'];
-
-											final groupId = _callMeData!['groupId'];
-
-											final locatorId = _callMeData!['targetLocatorId'];
-
-											await FirebaseFirestore.instance
-													.collection('groups')
-													.doc(groupId)
-													.collection('call_me')
-													.doc(locatorId)
-													.collection('items')
-													.doc(callMeId)
-													.delete();
-											if (!mounted) return;
-											setState(() {
-												_pendingCallMeQueue.removeWhere(
-													(x) => x['callMeId'] == callMeId,
-												);
-												_callMeData = _pendingCallMeQueue.isNotEmpty
-														? _pendingCallMeQueue.first
-														: null;
-											});
+				Positioned(
+					left: 2,
+					right: 2,
+					bottom: 2,
+					child: Material(
+						color: Colors.transparent,
+						child: Padding(
+							padding: const EdgeInsets.symmetric(horizontal: 12),
+							child: Row(
+								children: [
+									InkWell(
+										onTap: () {
+											openFeedbackMenu();
 										},
-									),	
-),
-      if (!_hasFullAccess && _hasGroup)
-        const LocatorSubscriptionExpiredOverlay(),
-    ],
-		),
-  );
-}
+										borderRadius: BorderRadius.circular(20),
+										child: Padding(
+											padding: const EdgeInsets.symmetric(
+												horizontal: 4,
+												vertical: 2,
+											),
+											child: Row(
+												children: [
+													Icon(
+														Icons.chat_bubble_outline_rounded,
+														size: 18,
+														color: const Color(0xFF8FD8FF).withOpacity(0.50),
+													),
+													const SizedBox(width: 4),
+													Text(
+														l10n.feedback,
+														style: TextStyle(
+															color: const Color(0xFF8FD8FF).withOpacity(0.50),
+															fontSize: 14,
+															fontWeight: FontWeight.w500,
+														),
+													),
+												],
+											),
+										),
+									),
+
+									const Spacer(),
+
+									Text(
+										"${l10n.version} $_appVersion",
+										style: TextStyle(
+											color: Colors.white.withOpacity(0.4),
+											fontSize: 15,
+											fontWeight: FontWeight.w500,
+										),
+									),
+
+									const Spacer(),
+
+									InkWell(
+										onTap: () async {
+											final Uri url = Uri.parse(
+												'https://play.google.com/store/apps/developer?id=Lynra',
+											);
+
+											await launchUrl(
+												url,
+												mode: LaunchMode.externalApplication,
+											);
+										},
+										borderRadius: BorderRadius.circular(20),
+										child: Padding(
+											padding: const EdgeInsets.symmetric(
+												horizontal: 4,
+												vertical: 2,
+											),
+											child: Row(
+												children: [
+													Icon(
+														Icons.apps_rounded,
+														size: 18,
+														color: const Color(0xFF8FD8FF).withOpacity(0.50),
+													),
+													const SizedBox(width: 4),
+													Text(
+														l10n.otherApps,
+														style: TextStyle(
+															color: const Color(0xFF8FD8FF).withOpacity(0.50),
+															fontSize: 		14,
+															fontWeight: FontWeight.w500,
+														),
+													),
+												],
+											),
+										),
+									),
+								],
+							),
+						),
+					),
+				),
+				if (_callMeData != null)
+					Positioned.fill(
+						child: CallMeOverlay(
+							data: _callMeData!,
+							onDismiss: () async {
+								final callMeId = _callMeData!['callMeId'];
+
+								final groupId = _callMeData!['groupId'];
+
+								final locatorId = _callMeData!['targetLocatorId'];
+
+								await FirebaseFirestore.instance
+										.collection('groups')
+										.doc(groupId)
+										.collection('call_me')
+										.doc(locatorId)
+										.collection('items')
+										.doc(callMeId)
+										.delete();
+								if (!mounted) return;
+								setState(() {
+									_pendingCallMeQueue.removeWhere(
+										(x) => x['callMeId'] == callMeId,
+									);
+									_callMeData = _pendingCallMeQueue.isNotEmpty
+											? _pendingCallMeQueue.first
+											: null;
+								});
+							},
+						),	
+				),
+							if (!_hasFullAccess && _hasGroup)
+								const LocatorSubscriptionExpiredOverlay(),
+						],
+						),
+					);
+				}
 void openFeedbackMenu() {
 final l10n = AppLocalizations.of(context)!;
   showModalBottomSheet(

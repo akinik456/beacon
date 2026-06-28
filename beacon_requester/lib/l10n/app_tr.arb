@@ -14,6 +14,17 @@
 "deletePlaceConfirmation": "Bu yeri silmek istiyor musunuz?",
 "delete": "Sil",
 "groupInfo": "Grup Bilgileri",
+"quickGuide": "Quick Guide",
+
+"locatorGuide1": "Konumunuzu paylaşabilmek için önce bir aile grubuna katılmalısınız.",
+"locatorGuide2": "Eşleştirme isteği alabilmek için Üye Kodunuzu aile yöneticinizle paylaşın.",
+"locatorGuide3": "Üye Kodunuzu Grup Bilgileri panelini açarak görebilirsiniz.",
+"locatorGuide4": "Aile yöneticilerinizin size ulaşmasını istediğinizde Beni Ara butonunu kullanabilirsiniz.",
+"requesterGuide1": "Bir aile grubu oluşturun veya mevcut bir gruba katılın.",
+"requesterGuide2": "Üye Kodunu girerek veya QR kodunu tarayarak üyeleri davet edin.",
+"requesterGuide3": "Konum talep etmeden önce üyelerin eşleştirme isteğinizi onaylamasını bekleyin.",
+"requesterGuide4": "Canlı Konum ve Beni Ara özelliklerini yalnızca gerektiğinde kullanın.",
+
 
 "beingWatched": 											"İzleniyorsun",
 "isWatchingYourLocation": 						"{name} konumunu izliyor.",

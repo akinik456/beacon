@@ -32,6 +32,33 @@ class AppLocalizationsEn extends AppLocalizations {
   String get groupInfo => 'Group Information';
 
   @override
+  String get quickGuide => 'Quick Guide';
+
+  @override
+  String get locatorGuide1 => 'To share your location, you must first join a family group.';
+
+  @override
+  String get locatorGuide2 => 'Share your Member Code with your family administrator to receive a pairing request.';
+
+  @override
+  String get locatorGuide3 => 'You can find your Member Code by opening the Group Information panel.';
+
+  @override
+  String get locatorGuide4 => 'Use the Call Me button whenever you want your family administrators to contact you.';
+
+  @override
+  String get requesterGuide1 => 'Create a family group or join an existing one.';
+
+  @override
+  String get requesterGuide2 => 'Invite members by entering their Member Code or scanning their QR code.';
+
+  @override
+  String get requesterGuide3 => 'Wait for members to approve your pairing request before requesting their location.';
+
+  @override
+  String get requesterGuide4 => 'Use Live Location and Call Me only when needed.';
+
+  @override
   String get aNewVer => 'A new version is available. Update now for the best experience.';
 
   @override

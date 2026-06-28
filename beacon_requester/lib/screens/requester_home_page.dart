@@ -44,6 +44,7 @@ import '../services/subscription_service.dart';
 import '../core/widgets/subscription_expired_overlay.dart';
 import '../core/widgets/group_info_panel.dart';
 import '../services/requester_name_editor.dart';
+import '../core/widgets/guide_panel.dart';
 
 class RequesterHomePage extends StatefulWidget {
   const RequesterHomePage({super.key});
@@ -76,6 +77,7 @@ class _RequesterHomePageState
 	String _appVersion = '';
 	bool _hasGroup = false;
 	bool _showGroupInfo = false;
+	bool _showGuide = false;
 	
 	StreamSubscription<List<PurchaseDetails>>? _purchaseSub;
 	bool _isPremium = false;
@@ -767,7 +769,7 @@ final l10n = AppLocalizations.of(context)!;
         Column(
           children: [
             Text(
-              l10n.title,//?*?
+              l10n.title,
               textAlign: TextAlign.center,
               style: AppFonts.title.copyWith(
                 fontSize: 24,
@@ -1222,79 +1224,111 @@ final l10n = AppLocalizations.of(context)!;
 												crossAxisAlignment: CrossAxisAlignment.start,
 													children: [						
 																	Column(
-																		children: [
-																			Text(
-																				l10n.title,
-																				textAlign: TextAlign.center,
-																				style: AppFonts.title.copyWith(
-																					fontSize: 24,
-																					color: AppColors.primary,
-																				),
-																			),
-																			
-																			const SizedBox(height: 6),
-
-InkWell(
-  onTap: () {
-    setState(() {
-      _showGroupInfo = !_showGroupInfo;
-    });
-  },
-  borderRadius: BorderRadius.circular(8),
-  child: Padding(
-    padding: const EdgeInsets.symmetric(vertical: 4),
-    child: Row(
-  mainAxisSize: MainAxisSize.min,
   children: [
-    Icon(
-      _showGroupInfo
-          ? Icons.keyboard_arrow_up_rounded
-          : Icons.chevron_right_rounded,
-      color: AppColors.primary,
-      size: 22,
-    ),
-    const SizedBox(width: 4),
-    Text(
-      l10n.groupInfo,
-      style: AppFonts.subtitle.copyWith(
-        color: AppColors.primary,
+    SizedBox(
+      width: double.infinity,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          Text(
+            l10n.title,
+            style: AppFonts.title.copyWith(
+              fontSize: 24,
+              color: AppColors.primary,
+            ),
+          ),
+
+          Positioned(
+            right: 0,
+            child: IconButton(
+              onPressed: () {
+                setState(() {
+                  _showGuide = !_showGuide;
+                });
+              },
+              icon: Icon(
+                _showGuide
+                    ? Icons.keyboard_arrow_up_rounded
+                    : Icons.help_outline_rounded,
+                color: AppColors.primary,
+                size: 22,
+              ),
+            ),
+          ),
+        ],
       ),
     ),
-  ],
-),
-  ),
-),
 
-AnimatedCrossFade(
-  duration: const Duration(milliseconds: 250),
-  crossFadeState: _showGroupInfo
-      ? CrossFadeState.showFirst
-      : CrossFadeState.showSecond,
-  firstChild: GroupInfoPanel(
-    groupId: groupId,
-    groupName: groupName,
-    requesterName: requesterName,
-    groupCode: _groupCode,
-    langCode: langCode,
-    onRequesterNameChanged: () {
-      setState(() {
-        _homeDataFuture = HomeDataService.loadHomeData();
-      });
-    },
-    onShowGroupQr: () {
-      _showGroupQrDialog(
-        context: context,
-        groupId: groupId,
-        groupCode: _groupCode,
-      );
-    },
-    onLanguageChanged: () {
-      setState(() {});
-    },
-  ),
-  secondChild: const SizedBox.shrink(),
-),
+    AnimatedCrossFade(
+      duration: const Duration(milliseconds: 250),
+      crossFadeState: _showGuide
+          ? CrossFadeState.showFirst
+          : CrossFadeState.showSecond,
+      firstChild: const GuidePanel(),
+      secondChild: const SizedBox.shrink(),
+    ),
 																			
+																			const SizedBox(height: 6),
+																			InkWell(
+																				onTap: () {
+																					setState(() {
+																						_showGroupInfo = !_showGroupInfo;
+																					});
+																				},
+																				borderRadius: BorderRadius.circular(8),
+																				child: Padding(
+																					padding: const EdgeInsets.symmetric(vertical: 4),
+																					child: Row(
+																				mainAxisSize: MainAxisSize.min,
+																				children: [
+																					Icon(
+																						_showGroupInfo
+																								? Icons.keyboard_arrow_up_rounded
+																								: Icons.chevron_right_rounded,
+																						color: AppColors.primary,
+																						size: 22,
+																					),
+																					const SizedBox(width: 4),
+																					Text(
+																						l10n.groupInfo,
+																						style: AppFonts.subtitle.copyWith(
+																							color: AppColors.primary,
+																						),
+																					),
+																				],
+																			),
+																		),
+																	),
+
+																	AnimatedCrossFade(
+																		duration: const Duration(milliseconds: 250),
+																		crossFadeState: _showGroupInfo
+																				? CrossFadeState.showFirst
+																				: CrossFadeState.showSecond,
+																		firstChild: GroupInfoPanel(
+																			groupId: groupId,
+																			groupName: groupName,
+																			requesterName: requesterName,
+																			groupCode: _groupCode,
+																			langCode: langCode,
+																			onRequesterNameChanged: () {
+																				setState(() {
+																					_homeDataFuture = HomeDataService.loadHomeData();
+																				});
+																			},
+																			onShowGroupQr: () {
+																				_showGroupQrDialog(
+																					context: context,
+																					groupId: groupId,
+																					groupCode: _groupCode,
+																				);
+																			},
+																			onLanguageChanged: () {
+																				setState(() {});
+																			},
+																		),
+																		secondChild: const SizedBox.shrink(),
+																	),																		
 																			
 																		],
 																	),									

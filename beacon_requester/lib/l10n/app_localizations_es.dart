@@ -32,6 +32,33 @@ class AppLocalizationsEs extends AppLocalizations {
   String get groupInfo => 'Información del grupo';
 
   @override
+  String get quickGuide => 'Quick Guide';
+
+  @override
+  String get locatorGuide1 => 'Para compartir tu ubicación, primero debes unirte a un grupo familiar.';
+
+  @override
+  String get locatorGuide2 => 'Comparte tu Código de Miembro con el administrador de tu familia para recibir una solicitud de vinculación.';
+
+  @override
+  String get locatorGuide3 => 'Puedes encontrar tu Código de Miembro abriendo el panel Información del Grupo.';
+
+  @override
+  String get locatorGuide4 => 'Utiliza el botón Llámame cuando quieras que los administradores de tu familia se pongan en contacto contigo.';
+
+  @override
+  String get requesterGuide1 => 'Crea un grupo familiar o únete a uno existente.';
+
+  @override
+  String get requesterGuide2 => 'Invita a los miembros introduciendo su Código de Miembro o escaneando su código QR.';
+
+  @override
+  String get requesterGuide3 => 'Espera a que los miembros aprueben tu solicitud de vinculación antes de solicitar su ubicación.';
+
+  @override
+  String get requesterGuide4 => 'Utiliza Ubicación en Vivo y Llámame solo cuando sea necesario.';
+
+  @override
   String get aNewVer => 'Hay una nueva versión disponible. Actualiza ahora para disfrutar de la mejor experiencia.';
 
   @override

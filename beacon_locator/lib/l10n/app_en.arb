@@ -16,6 +16,16 @@
 "deletePlaceConfirmation": "Delete this place?",
 "delete": "Delete",
 "groupInfo": "Group Information",
+"quickGuide": "Quick Guide",
+
+"locatorGuide1": "To share your location, you must first join a family group.",
+"locatorGuide2": "Share your Member Code with your family administrator to receive a pairing request.",
+"locatorGuide3": "You can find your Member Code by opening the Group Information panel.",
+"locatorGuide4": "Use the Call Me button whenever you want your family administrators to contact you.",
+"requesterGuide1": "Create a family group or join an existing one.",
+"requesterGuide2": "Invite members by entering their Member Code or scanning their QR code.",
+"requesterGuide3": "Wait for members to approve your pairing request before requesting their location.",
+"requesterGuide4": "Use Live Location and Call Me only when needed.",
 
 
 "aNewVer":														"A new version is available. Update now for the best experience.",

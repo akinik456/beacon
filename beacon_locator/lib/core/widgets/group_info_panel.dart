@@ -121,13 +121,15 @@ class GroupInfoPanel extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  groupName,
-                  overflow: TextOverflow.ellipsis,
-                  style: AppFonts.title.copyWith(
-                    fontSize: 20,
-                    color: AppColors.textSecondary,
-                  ),
-                ),
+									groupName.isEmpty
+											? AppLocalizations.of(context)!.noGroupYet
+											: groupName,
+									overflow: TextOverflow.ellipsis,
+									style: AppFonts.title.copyWith(
+										fontSize: 20,
+										color: AppColors.textSecondary,
+									),
+								),
               ),
               Expanded(
                 child: Row(
