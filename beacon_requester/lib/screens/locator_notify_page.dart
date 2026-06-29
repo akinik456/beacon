@@ -82,13 +82,13 @@ class _LocatorNotifyPageState extends State<LocatorNotifyPage> {
       gpsOffEnabledByMaster = config['gpsOffAlert'] == true;
       batteryLowEnabledByMaster = config['batteryLowAlert'] == true;
       geofenceEnabledByMaster = config['geofenceAlert'] == true;
+			movementEnabledByMaster = config['movementAlert'] == true;
 
       callMe = notify['callMe'] ?? true;
       gpsOff = gpsOffEnabledByMaster && (notify['gpsOff'] ?? false);
-      batteryLow =
-          batteryLowEnabledByMaster && (notify['batteryLow'] ?? false);
+      batteryLow = batteryLowEnabledByMaster && (notify['batteryLow'] ?? false);
       geofence = geofenceEnabledByMaster && (notify['geofence'] ?? false);
-
+			movement = movementEnabledByMaster && (notify['movement'] ?? false);
       loading = false;
     });
   }
@@ -112,7 +112,8 @@ class _LocatorNotifyPageState extends State<LocatorNotifyPage> {
       'gpsOff': gpsOffEnabledByMaster ? gpsOff : false,
       'batteryLow': batteryLowEnabledByMaster ? batteryLow : false,
       'geofence': geofenceEnabledByMaster ? geofence : false,
-      'updatedAt': FieldValue.serverTimestamp(),
+      'movement': movementEnabledByMaster ? movement : false,
+			'updatedAt': FieldValue.serverTimestamp(),
     }, SetOptions(merge: true));
 
     if (!mounted) return;

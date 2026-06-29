@@ -79,6 +79,28 @@ print(
 				final presenceData = presenceSnapshot.value is Map
 						? Map<String, dynamic>.from(presenceSnapshot.value as Map)
 						: <String, dynamic>{};
+						
+				final settingsDoc = await _firestore
+						.collection('groups')
+						.doc(groupId)
+						.collection('devices')
+						.doc(locatorId)
+						.collection('settings')
+						.doc('config')
+						.get();
+
+				final settingsData = settingsDoc.data() ?? {};
+
+				final notifyDoc = await _firestore
+						.collection('groups')
+						.doc(groupId)
+						.collection('devices')
+						.doc(locatorId)
+						.collection('notify')
+						.doc(requesterId)
+						.get();
+
+				final notifyData = notifyDoc.data() ?? {};		
 
 				result.add({
 					'locatorId': locatorId,
@@ -87,9 +109,14 @@ print(
 					...locatorDoc.data()!,
 					...pairData,
 					...presenceData,
+					'movementAlert': settingsData['movementAlert'] ?? true,
+					'movementMeters': settingsData['movementMeters'] ?? 50,
+					'movement': notifyData['movement'] ?? true,
 					'locatorName': locatorName,
 				});
 			print("BEACON LOCATOR LIST => loading locatorId=$locatorId");
+			
+			
 
 print(
   "BEACON LOCATOR LIST => deviceDoc exists=${locatorDoc.exists}",

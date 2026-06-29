@@ -31,4 +31,24 @@ class NotificationService {
         ?.createNotificationChannel(channel);
   }
 	
+	static Future<void> showMovementAlert({
+		required String locatorName,
+		required double movedMeters,
+	}) async {
+		await _plugin.show(
+			2001,
+			'Movement Alert',
+			'$locatorName moved ${movedMeters.toStringAsFixed(0)}m.',
+			const NotificationDetails(
+				android: AndroidNotificationDetails(
+					'call_me',
+					'Call Me',
+					channelDescription: 'Call me notifications',
+					importance: Importance.max,
+					priority: Priority.high,
+				),
+			),
+		);
+	}
+	
 }

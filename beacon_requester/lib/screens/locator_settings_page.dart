@@ -177,7 +177,10 @@ Future<void> _loadPlaces() async {
       gpsOffAlert = settings['gpsOffAlert'] ?? true;
       batteryLowAlert = settings['batteryLowAlert'] ?? true;
       batteryLowLevel = settings['batteryLowLevel'] ?? 20;
-      geofenceAlert = settings['geofenceAlert'] ?? false;
+      geofenceAlert = settings['geofenceAlert'] ?? false;			
+			movementAlert = settings['movementAlert'] ?? true;
+			movementMeters = settings['movementMeters'] ?? 50;
+			
     });
   }
 	Future<String?> _askPlaceName() async {
@@ -315,6 +318,8 @@ Future<void> _deletePlace(String placeId, String placeName) async {
           'batteryLowAlert': batteryLowAlert,
           'batteryLowLevel': batteryLowLevel,
           'geofenceAlert': geofenceAlert,
+					'movementAlert': movementAlert,
+					'movementMeters': movementMeters,
           'updatedAt': FieldValue.serverTimestamp(),
         });
 

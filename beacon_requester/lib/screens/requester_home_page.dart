@@ -45,6 +45,7 @@ import '../core/widgets/subscription_expired_overlay.dart';
 import '../core/widgets/group_info_panel.dart';
 import '../services/requester_name_editor.dart';
 import '../core/widgets/guide_panel.dart';
+import '../services/notification_service.dart';
 
 class RequesterHomePage extends StatefulWidget {
   const RequesterHomePage({super.key});
@@ -78,12 +79,16 @@ class _RequesterHomePageState
 	bool _hasGroup = false;
 	bool _showGroupInfo = false;
 	bool _showGuide = false;
+	bool _appInForeground = true;
 	
 	StreamSubscription<List<PurchaseDetails>>? _purchaseSub;
 	bool _isPremium = false;
 	bool _trialActive = false;
 	bool get _hasFullAccess => _isPremium || _trialActive;
 	int _trialDaysLeft = 0;
+	final Map<String, DateTime> _lastMovementAlert = {};
+	Map<String, dynamic>? _movementAlertData;
+	
 	
 		@override
 	void initState() {
@@ -176,6 +181,7 @@ class _RequesterHomePageState
 				state == AppLifecycleState.detached) {
 			await _removeActiveWatchers();
 		}
+	_appInForeground = state == AppLifecycleState.resumed;
 	}	
 	
 	Future<void> _startHome() async {
@@ -369,20 +375,55 @@ print("_addActiveWatchers IdentityService.getRequesterName");
 					(x) => x['locatorId'] == locatorId,
 					orElse: () => {},
 				);
+				
+				final movementNotify =
+						locator['movement'] == true;
 
 				final movementAlert =
 						locator['movementAlert'] == true;
 
 				final movementMeters =
 						(locator['movementMeters'] as num?)?.toDouble() ?? 50;
-						
-				if (movementAlert && movedMeters >= movementMeters) {
-					print(
-						"BEACON MOVEMENT ALERT => "
-						"$locatorId moved=${movedMeters.toStringAsFixed(1)}m "
-						"limit=${movementMeters.toStringAsFixed(0)}m",
-					);
-				}		
+
+				if (movementAlert &&
+				movementNotify &&
+				movedMeters >= movementMeters) {
+					final now = DateTime.now();
+					final last = _lastMovementAlert[locatorId];
+
+					if (last == null ||
+							now.difference(last) >= const Duration(minutes: 5)) {
+						_lastMovementAlert[locatorId] = now;
+
+						final locatorName =
+								(locator['locatorName'] as String?)?.trim().isNotEmpty == true
+										? locator['locatorName']
+										: 'Member';
+
+						print(
+							"BEACON MOVEMENT ALERT => "
+							"$locatorId moved=${movedMeters.toStringAsFixed(1)}m "
+							"limit=${movementMeters.toStringAsFixed(0)}m",
+						);
+
+						if (!mounted) return;
+
+						if (_appInForeground) {
+							setState(() {
+								_movementAlertData = {
+									'type': 'movement',
+									'locatorName': locatorName,
+									'movedMeters': movedMeters,
+								};
+							});
+						} else {
+							await NotificationService.showMovementAlert(
+								locatorName: locatorName,
+								movedMeters: movedMeters,
+							);
+						}
+					}
+				}
 				
 				if (!mounted) return;
 
@@ -1796,6 +1837,15 @@ final l10n = AppLocalizations.of(context)!;
 																			});
 																		},		
 																	),	
+																	if (_movementAlertData != null)
+																	AlertOverlay(
+																		data: _movementAlertData!,
+																		onDismiss: () {
+																			setState(() {
+																				_movementAlertData = null;
+																			});
+																		},
+																	),
 																	if (!_hasFullAccess && _hasGroup)
 																	SubscriptionExpiredOverlay(
 																		isMaster: _isMaster,
