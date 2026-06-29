@@ -9,6 +9,18 @@ class AppLocalizationsEs extends AppLocalizations {
   AppLocalizationsEs([String locale = 'es']) : super(locale);
 
   @override
+  String get movementAlert => 'Alerta de movimiento';
+
+  @override
+  String get notifyMovement => 'Notificar cuando haya movimiento';
+
+  @override
+  String get movementDistance => 'Distancia de movimiento';
+
+  @override
+  String get receiveMovement => 'Recibir alertas de movimiento';
+
+  @override
   String get allowOneMoreAdmin => 'Permitir un administrador más';
 
   @override

@@ -362,6 +362,28 @@ print("_addActiveWatchers IdentityService.getRequesterName");
 				final presence =
 						Map<String, dynamic>.from(value as Map);
 
+				final movedMeters =
+						(presence['movedSinceLastUpdateMeters'] as num?)?.toDouble() ?? 0;
+
+				final locator = _locators.firstWhere(
+					(x) => x['locatorId'] == locatorId,
+					orElse: () => {},
+				);
+
+				final movementAlert =
+						locator['movementAlert'] == true;
+
+				final movementMeters =
+						(locator['movementMeters'] as num?)?.toDouble() ?? 50;
+						
+				if (movementAlert && movedMeters >= movementMeters) {
+					print(
+						"BEACON MOVEMENT ALERT => "
+						"$locatorId moved=${movedMeters.toStringAsFixed(1)}m "
+						"limit=${movementMeters.toStringAsFixed(0)}m",
+					);
+				}		
+				
 				if (!mounted) return;
 
 				final lat = presence['lat']?.toDouble();

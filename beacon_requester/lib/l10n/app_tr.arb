@@ -1,5 +1,10 @@
 {
 "@@locale": 													"tr",
+"movementAlert": 											"Hareket Uyarısı",
+"notifyMovement": 										"Hareket algılandığında bildir",
+"movementDistance": 									"Hareket Mesafesi",
+"receiveMovement": 										"Hareket uyarılarını al",
+
 "upgradeToAddMoreMembers":						"Planınızı yükselterek daha fazla üye ekleyebilirsiniz.",
 "freeTrialDaysLeft": "Ücretsiz deneme: {days} gün kaldı",
 "@freeTrialDaysLeft": {

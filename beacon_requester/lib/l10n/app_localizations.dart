@@ -99,6 +99,30 @@ abstract class AppLocalizations {
     Locale('tr')
   ];
 
+  /// No description provided for @movementAlert.
+  ///
+  /// In en, this message translates to:
+  /// **'Movement Alert'**
+  String get movementAlert;
+
+  /// No description provided for @notifyMovement.
+  ///
+  /// In en, this message translates to:
+  /// **'Notify on Movement'**
+  String get notifyMovement;
+
+  /// No description provided for @movementDistance.
+  ///
+  /// In en, this message translates to:
+  /// **'Movement Distance'**
+  String get movementDistance;
+
+  /// No description provided for @receiveMovement.
+  ///
+  /// In en, this message translates to:
+  /// **'Receive movement alerts'**
+  String get receiveMovement;
+
   /// No description provided for @allowOneMoreAdmin.
   ///
   /// In en, this message translates to:

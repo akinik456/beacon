@@ -35,6 +35,8 @@ class _LocatorSettingsPageState extends State<LocatorSettingsPage> {
 
   int batteryLowLevel = 20;
   int _placeCount = 0;
+	bool movementAlert = false;
+	int movementMeters = 50;
 
   @override
   void initState() {
@@ -460,6 +462,48 @@ Future<void> _deletePlace(String placeId, String placeName) async {
                 ],
               ),
             ),
+						
+						const SizedBox(height: 12),
+_SwitchCard(
+  title: l10n.movementAlert,
+  subtitle: l10n.notifyMovement,
+  value: movementAlert,
+  enabled: widget.isMaster,
+  onChanged: (v) => setState(() => movementAlert = v),
+),
+
+const SizedBox(height: 12),
+AppCard(
+  child: Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(
+        l10n.movementDistance,
+        style: AppFonts.subtitle,
+      ),
+      const SizedBox(height: 12),
+      Row(
+        children: [25, 50, 100].map((meters) {
+          final selected = movementMeters == meters;
+          final enabled = widget.isMaster && movementAlert;
+
+          return Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(right: 8),
+              child: ChoiceChip(
+                selected: selected,
+                label: Text('${meters}m'),
+                onSelected: enabled
+                    ? (_) => setState(() => movementMeters = meters)
+                    : null,
+              ),
+            ),
+          );
+        }).toList(),
+      ),
+    ],
+  ),
+),
 
             const SizedBox(height: 4),
             _SwitchCard(

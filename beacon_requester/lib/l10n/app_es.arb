@@ -1,5 +1,10 @@
 {
 "@@locale": 													"es",
+"movementAlert": "Alerta de movimiento",
+"notifyMovement": "Notificar cuando haya movimiento",
+"movementDistance": "Distancia de movimiento",
+"receiveMovement": "Recibir alertas de movimiento",
+
 "upgradeToAddMoreMembers":						"Actualiza tu plan para agregar más miembros.",
 "freeTrialDaysLeft": "Prueba gratuita: quedan {days} días",
 "@freeTrialDaysLeft": {

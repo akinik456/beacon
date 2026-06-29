@@ -35,6 +35,8 @@ class _LocatorNotifyPageState extends State<LocatorNotifyPage> {
   bool geofenceEnabledByMaster = false;
 
   bool loading = true;
+	bool movement = true;
+	bool movementEnabledByMaster = true;
 
   @override
   void initState() {
@@ -215,6 +217,18 @@ class _LocatorNotifyPageState extends State<LocatorNotifyPage> {
                   enabled: batteryLowEnabledByMaster,
                   onChanged: (v) => setState(() => batteryLow = v),
                 ),
+								
+								const SizedBox(height: 12),
+
+								_NotifySwitchCard(
+									title: l10n.movementAlert,
+									subtitle: movementEnabledByMaster
+											? l10n.receiveMovement
+											: l10n.disabledByMaster,
+									value: movement,
+									enabled: movementEnabledByMaster,
+									onChanged: (v) => setState(() => movement = v),
+								),
 
                 const SizedBox(height: 12),
 

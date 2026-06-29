@@ -1,5 +1,9 @@
 {
 "@@locale": 													"en",
+"movementAlert":											"Movement Alert",
+"notifyMovement":											"Notify on Movement",
+"movementDistance":										"Movement Distance",
+"receiveMovement": 										"Receive movement alerts",
 
 "allowOneMoreAdmin":									"Allow one more admin",
 "allowOneMoreMember":									"Allow one more member",

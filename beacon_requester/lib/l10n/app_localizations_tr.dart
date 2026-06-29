@@ -9,6 +9,18 @@ class AppLocalizationsTr extends AppLocalizations {
   AppLocalizationsTr([String locale = 'tr']) : super(locale);
 
   @override
+  String get movementAlert => 'Hareket Uyarısı';
+
+  @override
+  String get notifyMovement => 'Hareket algılandığında bildir';
+
+  @override
+  String get movementDistance => 'Hareket Mesafesi';
+
+  @override
+  String get receiveMovement => 'Hareket uyarılarını al';
+
+  @override
   String get allowOneMoreAdmin => 'Bir yönetici daha ekle';
 
   @override

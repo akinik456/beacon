@@ -9,6 +9,18 @@ class AppLocalizationsDe extends AppLocalizations {
   AppLocalizationsDe([String locale = 'de']) : super(locale);
 
   @override
+  String get movementAlert => 'Movement Alert';
+
+  @override
+  String get notifyMovement => 'Notify on Movement';
+
+  @override
+  String get movementDistance => 'Movement Distance';
+
+  @override
+  String get receiveMovement => 'Receive movement alerts';
+
+  @override
   String get allowOneMoreAdmin => 'Allow one more admin';
 
   @override
