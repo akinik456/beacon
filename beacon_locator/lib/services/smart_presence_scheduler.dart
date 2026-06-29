@@ -14,10 +14,12 @@ class SmartPresenceScheduler {
   static bool _isUpdating = false;
 
   static const _fastPeriod =
-      Duration(seconds: 30);
+      Duration(seconds: 60);
 
   static const _slowPeriod =
       Duration(hours: 1);
+			
+
 
   static const _fastWindow =
       Duration(minutes: 2);
@@ -71,7 +73,9 @@ class SmartPresenceScheduler {
     _isUpdating = true;
 
     try {
-      await PresenceService.updateOnline();
+      await PresenceService.updateOnline(
+				reason: reason,
+			);
 
       await AlertMonitorService.checkNow();
     } finally {

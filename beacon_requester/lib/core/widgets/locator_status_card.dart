@@ -201,7 +201,7 @@ class LocatorStatusCard extends StatelessWidget {
 											: AppColors.danger,
 								),
 							),							
-							const SizedBox(width: 32),
+							/*const SizedBox(width: 32),
 							const Icon(
 								Icons.access_time_rounded,
 								size: 18,
@@ -211,7 +211,7 @@ class LocatorStatusCard extends StatelessWidget {
 							Text(
 								lastSeenText,
 								style: AppFonts.caption,
-							),					
+							),	*/				
 						],
 					),
 					const SizedBox(height: 8),

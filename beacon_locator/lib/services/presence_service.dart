@@ -13,17 +13,18 @@ class PresenceService {
   static final _db = FirebaseDatabase.instance.ref();
 	static StreamSubscription<DatabaseEvent>? _connectedSub;
 
- static Future<void> updateOnline() async {
+ static Future<void> updateOnline({
+  String reason = 'unknown',
+}) async {
   final groupId = await IdentityService.getGroupId();
   final locatorId = await IdentityService.getLocatorId();
 
   if (groupId == null || locatorId == null) {
-    print(
-      "BEACON PRESENCE => "
-      "missing group/locator",
-    );
+    print("BEACON PRESENCE => missing group/locator");
     return;
   }
+
+  final path = "presence/groups/$groupId/locators/$locatorId";
 
   final batteryLevel = await Battery().batteryLevel;
   final gpsEnabled = await Geolocator.isLocationServiceEnabled();
@@ -36,20 +37,51 @@ class PresenceService {
         desiredAccuracy: LocationAccuracy.high,
       );
     } catch (e) {
-      print(
-        "BEACON PRESENCE => "
-        "getCurrentPosition failed => $e",
-      );
+      print("BEACON PRESENCE => getCurrentPosition failed => $e");
     }
   }
 
-  print(
-    "BEACON PRESENCE => "
-    "battery=$batteryLevel "
-    "gps=$gpsEnabled",
-  );
+  double? movedMeters;
 
-  await _db.child("presence/groups/$groupId/locators/$locatorId").update({
+  if (position != null) {
+    final snapshot = await _db.child(path).get();
+    final data = snapshot.value;
+
+    if (data is Map) {
+      final oldLat = data['lat'];
+      final oldLng = data['lng'];
+
+      if (oldLat is num && oldLng is num) {
+        movedMeters = Geolocator.distanceBetween(
+          oldLat.toDouble(),
+          oldLng.toDouble(),
+          position.latitude,
+          position.longitude,
+        );
+
+        print(
+          "BEACON PRESENCE => "
+          "reason=$reason "
+          "moved=${movedMeters.toStringAsFixed(1)}m",
+        );
+      }
+    }
+  }
+
+  final shouldSkipSmallMove =
+      (reason == 'timer' || reason == 'motion') &&
+      movedMeters != null &&
+      movedMeters < 25;
+
+  if (shouldSkipSmallMove) {
+    print(
+      "BEACON PRESENCE => "
+      "skip reason=$reason moved=${movedMeters.toStringAsFixed(1)}m",
+    );
+    return;
+  }
+
+  await _db.child(path).update({
     'status': 'online',
     'lastSeen': ServerValue.timestamp,
     'battery': batteryLevel,
@@ -57,19 +89,22 @@ class PresenceService {
     'lat': position?.latitude,
     'lng': position?.longitude,
     'accuracy': position?.accuracy,
-		'updateCount': ServerValue.increment(1),
+    'movedSinceLastUpdateMeters': movedMeters?.round(),
+    'updateCount': ServerValue.increment(1),
   });
-	if (position != null) {
-		await GeofenceService.checkPlaces(
-			groupId: groupId,
-			locatorId: locatorId,
-			lat: position.latitude,
-			lng: position.longitude,
-		);
-	}
+
+  if (position != null) {
+    await GeofenceService.checkPlaces(
+      groupId: groupId,
+      locatorId: locatorId,
+      lat: position.latitude,
+      lng: position.longitude,
+    );
+  }
+
   print(
     "BEACON PRESENCE => "
-    "online updated",
+    "online updated reason=$reason",
   );
 }
 
