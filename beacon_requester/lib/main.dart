@@ -26,7 +26,7 @@ Future<void> main() async {
 
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
-  runApp(const MyApp());
+	runApp(const MyApp());
 }
 
 class MyApp extends StatefulWidget {

@@ -61,14 +61,14 @@ import 'services/notification_service.dart';
 					"BEACON FCM BG => CALL ME received",
 				);
 
-				await NotificationService.showCallMe(
-					requesterName:
-							message.data['requesterName'] ??
-							'Requester',
-					requesterCode:
-							message.data['requesterCode'] ??
-							'',
-				);
+				if (message.notification == null) {
+					await NotificationService.showCallMe(
+						requesterName:
+								message.data['requesterName'] ?? 'Requester',
+						requesterCode:
+								message.data['requesterCode'] ?? '',
+					);
+				}
 
 				break;
 			

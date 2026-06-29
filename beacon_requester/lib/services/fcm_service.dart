@@ -2,6 +2,8 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'identity_service.dart';
 import 'requester_registry_service.dart';
 import 'package:flutter/foundation.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'notification_service.dart';
 
 class FCMService {
   FCMService._();

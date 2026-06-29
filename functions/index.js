@@ -92,15 +92,32 @@ exports.onCallMeCreated = onDocumentCreated(
     console.log("CALL ME FCM TOPIC", topic);
 
     try {
-      const response = await admin.messaging().send({
-        topic,
+      const notificationTitle = "Call Me";
 
-        android: {
-          priority: "high",
-        },
+			const notificationBody =
+				isRequesterToLocator
+					? `${data.requesterName || "Requester"} wants you to call.`
+					: `${data.locatorName || "Member"} wants you to call.`;
 
-        data: payload,
-      });
+			const response = await admin.messaging().send({
+				topic,
+
+				notification: {
+					title: notificationTitle,
+					body: notificationBody,
+				},
+
+				android: {
+					priority: "high",
+					notification: {
+						channelId: "call_me",
+						priority: "max",
+						defaultSound: true,
+					},
+				},
+
+				data: payload,
+			});
 
       console.log("CALL ME FCM SENT", topic, response);
     } catch (error) {
