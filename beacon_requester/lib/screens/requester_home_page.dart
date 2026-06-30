@@ -46,6 +46,7 @@ import '../core/widgets/group_info_panel.dart';
 import '../services/requester_name_editor.dart';
 import '../core/widgets/guide_panel.dart';
 import '../services/notification_service.dart';
+import '../services/requester_registry_service.dart';
 
 class RequesterHomePage extends StatefulWidget {
   const RequesterHomePage({super.key});
@@ -1221,7 +1222,10 @@ final l10n = AppLocalizations.of(context)!;
 														builder: (context, deviceSnapshot) {
 															if (deviceSnapshot.hasData &&
 																	deviceSnapshot.data!.exists) {
-																Future.microtask(() {
+																Future.microtask(() async {
+																	await GroupService.setLocalIsMaster(false);
+																	await RequesterRegistryService.registerRequester();
+
 																	if (!context.mounted) return;
 
 																	Navigator.pushReplacement(

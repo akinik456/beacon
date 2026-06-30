@@ -90,9 +90,15 @@ class JoinRequestCard extends StatelessWidget {
 												onPressed: () async {
 													final joinData = doc.data();
 
-													final requesterId = joinData['requesterId'];
+													final requesterId = doc.id;
 
-													if (requesterId == null || groupId == null) {
+													print(
+														"BEACON JOIN APPROVE TAP => "
+														"groupId=$groupId requesterId=$requesterId",
+													);
+
+													if (requesterId == null || requesterId.isEmpty) {
+														print("BEACON JOIN APPROVE => missing requesterId");
 														return;
 													}
 
@@ -105,22 +111,25 @@ class JoinRequestCard extends StatelessWidget {
 													final requesterRef = groupRef
 															.collection('devices')
 															.doc(requesterId);
-															
+
 													final requesterRefroot = firestore
 															.collection('requesters')
-															.doc(requesterId);		
+															.doc(requesterId);
 
 													final joinRequestRef = doc.reference;
 
 													try {
 														await firestore.runTransaction((tx) async {
-															final freshGroup = await tx.get(groupRef);
+															final freshJoinRequest = await tx.get(joinRequestRef);
 
+															if (!freshJoinRequest.exists) {
+																throw Exception('join_request_not_found');
+															}
+
+															final freshGroup = await tx.get(groupRef);
 															final groupData = freshGroup.data() ?? {};
 
-															final maxRequesters =
-																	groupData['maxRequesters'] ?? 1;
-
+															final maxRequesters = groupData['maxRequesters'] ?? 1;
 															final activeRequesterCount =
 																	groupData['activeRequesterCount'] ?? 0;
 
@@ -129,8 +138,9 @@ class JoinRequestCard extends StatelessWidget {
 															}
 
 															tx.set(requesterRef, {
-																'requesterId': joinData['requesterId'],
 																'requesterCode': joinData['requesterCode'],
+																'requesterName': joinData['requesterName'],
+																'name': joinData['requesterName'],
 																'role': 'requester',
 																'isMaster': false,
 																'active': true,
@@ -138,37 +148,32 @@ class JoinRequestCard extends StatelessWidget {
 																'joinedAt': FieldValue.serverTimestamp(),
 																'createdAt': FieldValue.serverTimestamp(),
 															});
-															print(" set requesterRef");
 
 															tx.update(groupRef, {
-																'activeRequesterCount':
-																		FieldValue.increment(1),
-																'updatedAt':
-																		FieldValue.serverTimestamp(),
+																'activeRequesterCount': FieldValue.increment(1),
+																'updatedAt': FieldValue.serverTimestamp(),
 															});
-															
+
 															tx.set(requesterRefroot, {
 																'groupId': groupId,
 																'updatedAt': FieldValue.serverTimestamp(),
 															}, SetOptions(merge: true));
 
-															print(" set requesterRefroot");
-															
 															tx.delete(joinRequestRef);
 														});
 
-														print(
-															"BEACON JOIN APPROVED => $requesterId",
-														);
+														print("BEACON JOIN APPROVED => $requesterId");
 													} catch (e) {
-														await doc.reference.delete();
+														print("BEACON JOIN APPROVE ERROR => $e");
 
 														if (!context.mounted) return;
 
 														ScaffoldMessenger.of(context).showSnackBar(
 															SnackBar(
 																content: Text(
-																	l10n.maxFamilyMembersReached,
+																	e.toString().contains('requester_capacity_reached')
+																			? l10n.maxFamilyMembersReached
+																			: 'Join request could not be approved.',
 																),
 															),
 														);
