@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
@@ -176,6 +177,25 @@ class _AddLocatorPageState extends State<AddLocatorPage> {
 										);
 										return;
 									}
+									if (result?['error'] == 'pairing_request_pending') {
+										ScaffoldMessenger.of(context).showSnackBar(
+											SnackBar(
+												content: Text(l10n.pairingRequestPending),
+											),
+										);
+										return;
+									}
+									if (result?['error'] == 'member_already_paired') {
+										if (!context.mounted) return;
+
+										ScaffoldMessenger.of(context).showSnackBar(
+											SnackBar(
+												content: Text(l10n.memberAlreadyPaired),
+											),
+										);
+
+										return;
+									}
 									if (result?['error'] == 'member_limit_reached') {
 										if (!context.mounted) return;
 
@@ -198,68 +218,74 @@ class _AddLocatorPageState extends State<AddLocatorPage> {
 												),
 											),
 										);
-										PairingResponseService
-												.watchPairingResponse(
-											locatorId: locatorId,
-											requestId: requestId,
-										).listen((snapshot) async {
+										
+										
+										StreamSubscription? pairingSub;
 
+										pairingSub = PairingResponseService
+												.watchPairingResponse(
+													locatorId: locatorId,
+													requestId: requestId,
+												)
+												.listen((snapshot) async {
 											final data = snapshot.data();
 
 											if (data == null) return;
 
-											final status =
-													data['status'] ?? 'pending';
+											final status = data['status'] ?? 'pending';
+
+											if (status == 'pending') return;
+
+											await pairingSub?.cancel();
 
 											if (!context.mounted) return;
 
 											if (status == 'approved') {
-											await GroupService.addPairedLocatorToRequester(
-												locatorId: locatorId,
-											);
-											await GroupService.addPairedRequesterToLocator(
-												locatorId: locatorId,
-											);	
-											await GroupService.ensureLocatorDefaultSettings(
-												locatorId: locatorId,
-											);
+												await GroupService.addPairedLocatorToRequester(
+													locatorId: locatorId,
+												);
 
-											await GroupService.ensureRequesterNotifySettings(
-												locatorId: locatorId,
-											);
-											ScaffoldMessenger.of(context)
-													.showSnackBar(
-												SnackBar(
-													content: Text(
-														l10n.memberpaired,
+												await GroupService.addPairedRequesterToLocator(
+													locatorId: locatorId,
+												);
+
+												await GroupService.ensureLocatorDefaultSettings(
+													locatorId: locatorId,
+												);
+
+												await GroupService.ensureRequesterNotifySettings(
+													locatorId: locatorId,
+												);
+
+												await PairingResponseService.deletePairingRequest(
+													locatorId: locatorId,
+													requestId: requestId,
+												);
+
+												if (!context.mounted) return;
+
+												ScaffoldMessenger.of(context).showSnackBar(
+													SnackBar(
+														content: Text(l10n.memberpaired),
 													),
-												),
-											);
-											await PairingResponseService
-													.deletePairingRequest(
+												);
+
+												Navigator.pop(context, true);
+												return;
+											}
+
+											await PairingResponseService.deletePairingRequest(
 												locatorId: locatorId,
 												requestId: requestId,
 											);
+
 											if (!context.mounted) return;
-											Navigator.pop(context,true);
-										}else if (status == 'rejected_capacity') {
-												ScaffoldMessenger.of(context)
-														.showSnackBar(
-													SnackBar(
-														content: Text(
-															l10n.pairingRejected,
-														),
-													),
-												);
-											}
-											else if (status.toString().startsWith('rejected')) {
+
 											ScaffoldMessenger.of(context).showSnackBar(
 												SnackBar(
 													content: Text(l10n.pairingRejected),
 												),
 											);
-										}
-											
 										});
 									}
 									: null,

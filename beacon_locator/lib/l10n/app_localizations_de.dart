@@ -272,6 +272,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get member => 'Mitglied';
 
   @override
+  String get memberAlreadyPaired => 'Member Already Paired';
+
+  @override
   String get memberCode => 'Mitgliedscode';
 
   @override
@@ -378,13 +381,16 @@ class AppLocalizationsDe extends AppLocalizations {
   String get pairedMembers => 'Paired Members';
 
   @override
-  String get pairedRequesters => 'Gekoppelte Administratoren';
-
-  @override
   String get pairingRejected => 'Kopplungsanfrage abgelehnt';
 
   @override
   String get pairingRequest => 'Kopplungsanfrage';
+
+  @override
+  String get pairedRequesters => 'Gekoppelte Administratoren';
+
+  @override
+  String get pairingRequestPending => 'This member already has a pending pairing request.';
 
   @override
   String get permissions => 'Berechtigungen';
@@ -480,6 +486,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get save => 'Save';
 
   @override
+  String get saved => 'Gespeichert';
+
+  @override
   String get saveMemberLocation => 'Mitgliedsstandort als Ort speichern';
 
   @override
@@ -500,10 +509,13 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String get sendPairingRequest => 'Kopplungsanfrage senden';
+  String get sendFeedback => 'Send Feedback';
 
   @override
-  String get sendFeedback => 'Send Feedback';
+  String get sendJoinRequest => 'Send Join Request';
+
+  @override
+  String get sendPairingRequest => 'Kopplungsanfrage senden';
 
   @override
   String get settings => 'Settings';
@@ -519,9 +531,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get sva => 'Speichern';
-
-  @override
-  String get saved => 'Gespeichert';
 
   @override
   String get systemPermissions => 'SYSTEMBERECHTIGUNGEN';

@@ -272,6 +272,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get member => 'Miembro';
 
   @override
+  String get memberAlreadyPaired => 'Este miembro ya está vinculado.';
+
+  @override
   String get memberCode => 'Código del miembro';
 
   @override
@@ -378,13 +381,16 @@ class AppLocalizationsEs extends AppLocalizations {
   String get pairedMembers => 'Miembros vinculados';
 
   @override
-  String get pairedRequesters => 'Administradores vinculados';
-
-  @override
   String get pairingRejected => 'Solicitud de vinculación rechazada';
 
   @override
   String get pairingRequest => 'Solicitud de vinculación';
+
+  @override
+  String get pairedRequesters => 'Administradores vinculados';
+
+  @override
+  String get pairingRequestPending => 'Este miembro ya tiene una solicitud de vinculación pendiente.';
 
   @override
   String get permissions => 'Permisos';
@@ -480,6 +486,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get save => 'Guardar';
 
   @override
+  String get saved => 'Guardado';
+
+  @override
   String get saveMemberLocation => 'Guardar ubicación del miembro como lugar';
 
   @override
@@ -500,10 +509,13 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get sendPairingRequest => 'Enviar solicitud de vinculación';
+  String get sendFeedback => 'Enviar comentarios';
 
   @override
-  String get sendFeedback => 'Enviar comentarios';
+  String get sendJoinRequest => 'Enviar solicitud para unirse';
+
+  @override
+  String get sendPairingRequest => 'Enviar solicitud de vinculación';
 
   @override
   String get settings => 'ajustes';
@@ -519,9 +531,6 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get sva => 'Guardar';
-
-  @override
-  String get saved => 'Guardado';
 
   @override
   String get systemPermissions => 'PERMISOS DEL SISTEMA';

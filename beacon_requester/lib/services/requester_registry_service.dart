@@ -51,7 +51,6 @@ class RequesterRegistryService {
       'requesterCode': requesterCode,
       'requesterName': requesterName,
       'name': requesterName,
-      'fcmToken': token,
 
       'appVersion': packageInfo.version,
       'buildNumber': packageInfo.buildNumber,

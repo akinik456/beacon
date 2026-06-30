@@ -176,7 +176,7 @@ print("_confirmJoin IdentityService.getRequesterName");
                   ),
                 ),
                 child: Text(
-                  l10n.confirm,
+                  l10n.sendJoinRequest,
                   style: AppFonts.button.copyWith(
                     color: AppColors.background,
                   ),

@@ -609,6 +609,12 @@ abstract class AppLocalizations {
   /// **'Member'**
   String get member;
 
+  /// No description provided for @memberAlreadyPaired.
+  ///
+  /// In en, this message translates to:
+  /// **'Member Already Paired'**
+  String get memberAlreadyPaired;
+
   /// No description provided for @memberCode.
   ///
   /// In en, this message translates to:
@@ -813,12 +819,6 @@ abstract class AppLocalizations {
   /// **'Paired Members'**
   String get pairedMembers;
 
-  /// No description provided for @pairedRequesters.
-  ///
-  /// In en, this message translates to:
-  /// **'Paired Admins'**
-  String get pairedRequesters;
-
   /// No description provided for @pairingRejected.
   ///
   /// In en, this message translates to:
@@ -830,6 +830,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Pairing request'**
   String get pairingRequest;
+
+  /// No description provided for @pairedRequesters.
+  ///
+  /// In en, this message translates to:
+  /// **'Paired Admins'**
+  String get pairedRequesters;
+
+  /// No description provided for @pairingRequestPending.
+  ///
+  /// In en, this message translates to:
+  /// **'This member already has a pending pairing request.'**
+  String get pairingRequestPending;
 
   /// No description provided for @permissions.
   ///
@@ -1017,6 +1029,12 @@ abstract class AppLocalizations {
   /// **'Save'**
   String get save;
 
+  /// No description provided for @saved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved'**
+  String get saved;
+
   /// No description provided for @saveMemberLocation.
   ///
   /// In en, this message translates to:
@@ -1053,17 +1071,23 @@ abstract class AppLocalizations {
   /// **'{count} sec ago'**
   String secondsAgo(Object count);
 
-  /// No description provided for @sendPairingRequest.
-  ///
-  /// In en, this message translates to:
-  /// **'Send Pairing Request'**
-  String get sendPairingRequest;
-
   /// No description provided for @sendFeedback.
   ///
   /// In en, this message translates to:
   /// **'Send Feedback'**
   String get sendFeedback;
+
+  /// No description provided for @sendJoinRequest.
+  ///
+  /// In en, this message translates to:
+  /// **'Send Join Request'**
+  String get sendJoinRequest;
+
+  /// No description provided for @sendPairingRequest.
+  ///
+  /// In en, this message translates to:
+  /// **'Send Pairing Request'**
+  String get sendPairingRequest;
 
   /// No description provided for @settings.
   ///
@@ -1094,12 +1118,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Save'**
   String get sva;
-
-  /// No description provided for @saved.
-  ///
-  /// In en, this message translates to:
-  /// **'Saved'**
-  String get saved;
 
   /// No description provided for @systemPermissions.
   ///

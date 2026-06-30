@@ -51,9 +51,33 @@ class LocatorPairingService {
         locatorId = locatorInput.trim();
       }
 			
-			if (groupId == null || groupId.isEmpty) {
+			if (groupId.isEmpty) {
 				print("BEACON PAIRING => GROUP ID MISSING");
 				return null;
+			}
+			
+			final requesterDoc = await _firestore
+					.collection('groups')
+					.doc(groupId)
+					.collection('devices')
+					.doc(requesterId)
+					.get();
+			if (!requesterDoc.exists) {
+				print("BEACON PAIRING => REQUESTER DEVICE DOC MISSING");
+				return {
+					'error': 'missing_requester_device',
+				};
+			}
+			final requesterData = requesterDoc.data() ?? {};
+
+			final pairedLocators = Map<String, dynamic>.from(
+				requesterData['pairedLocators'] ?? {},
+			);
+
+			if (pairedLocators.containsKey(locatorId)) {
+				return {
+					'error': 'member_already_paired',
+				};
 			}
 
 			final existingDeviceDoc = await _firestore
@@ -82,6 +106,20 @@ class LocatorPairingService {
 					activeLocatorCount >= maxLocators) {
 				return {
 					'error': 'member_limit_reached',
+				};
+			}
+			
+			final pendingRequestSnap = await _firestore
+					.collection('locators')
+					.doc(locatorId)
+					.collection('pairing_requests')
+					.where('status', isEqualTo: 'pending')
+					.limit(1)
+					.get();
+
+			if (pendingRequestSnap.docs.isNotEmpty) {
+				return {
+					'error': 'pairing_request_pending',
 				};
 			}
 

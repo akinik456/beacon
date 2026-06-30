@@ -272,6 +272,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get member => 'Üye';
 
   @override
+  String get memberAlreadyPaired => 'Bu üye zaten bağlı.';
+
+  @override
   String get memberCode => 'Üye Kodu';
 
   @override
@@ -378,13 +381,16 @@ class AppLocalizationsTr extends AppLocalizations {
   String get pairedMembers => 'Eşleştirilmiş Üyeler';
 
   @override
-  String get pairedRequesters => 'Eşleştirilmiş Yöneticiler';
-
-  @override
   String get pairingRejected => 'Bağlantı isteği reddedildi';
 
   @override
   String get pairingRequest => 'Bağlantı isteği';
+
+  @override
+  String get pairedRequesters => 'Eşleştirilmiş Yöneticiler';
+
+  @override
+  String get pairingRequestPending => 'Bu üyeye gönderilmiş bekleyen bir bağlantı isteği var.';
 
   @override
   String get permissions => 'İzinler';
@@ -480,6 +486,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get save => 'Kaydet';
 
   @override
+  String get saved => 'Kaydedildi';
+
+  @override
   String get saveMemberLocation => 'Üye konumunu kaydet';
 
   @override
@@ -500,10 +509,13 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
-  String get sendPairingRequest => 'Bağlantı isteği gönder';
+  String get sendFeedback => 'Geri Bildirim Gönder';
 
   @override
-  String get sendFeedback => 'Geri Bildirim Gönder';
+  String get sendJoinRequest => 'Katılma İsteği Gönder';
+
+  @override
+  String get sendPairingRequest => 'Bağlantı isteği gönder';
 
   @override
   String get settings => 'Ayarlar';
@@ -519,9 +531,6 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get sva => 'Kaydet';
-
-  @override
-  String get saved => 'Kaydedildi';
 
   @override
   String get systemPermissions => 'SİSTEM İZİNLERİ';

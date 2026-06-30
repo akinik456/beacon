@@ -5,6 +5,7 @@ groups/groupid/devices/locatorId
 groups/groupid/devices/locatorId/notifyRequesters/requesterId
 groups/groupid/devices/locatorId/places/placeid
 groups/groupid/devices/locatorId/settings/config
+
 groups/groupid/devices/requesterId
 
 groups/groupid/alerts
@@ -14,6 +15,9 @@ groups/groupid/alerts/requesterId/items/alertid
 
 groups/groupid/call_me/requesterId/items/callmeid
 groups/groupid/call_me/locatorId/items/callmeid
+
+locators/locatorId/pairing_requests/pairing_requestid
+requesters/requesterId
 
 RTDB
 presence/groups/groupid/active_watchers/locatorId/requesterId
