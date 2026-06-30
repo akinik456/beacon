@@ -9,180 +9,22 @@ class AppLocalizationsEs extends AppLocalizations {
   AppLocalizationsEs([String locale = 'es']) : super(locale);
 
   @override
-  String get upgradeToAddMoreMembers => 'Actualiza tu plan para agregar más miembros.';
-
-  @override
-  String freeTrialDaysLeft(int days) {
-    return 'Prueba gratuita: quedan $days días';
-  }
-
-  @override
-  String get placeName => 'Nombre del lugar';
-
-  @override
-  String get placeNameHint => 'Casa, Escuela, Trabajo...';
-
-  @override
-  String get deletePlaceConfirmation => 'Quieres eliminar este lugar?';
-
-  @override
-  String get delete => 'Eliminar';
-
-  @override
-  String get groupInfo => 'Información del grupo';
-
-  @override
-  String get quickGuide => 'Quick Guide';
-
-  @override
-  String get locatorGuide1 => 'Para compartir tu ubicación, primero debes unirte a un grupo familiar.';
-
-  @override
-  String get locatorGuide2 => 'Comparte tu Código de Miembro con el administrador de tu familia para recibir una solicitud de vinculación.';
-
-  @override
-  String get locatorGuide3 => 'Puedes encontrar tu Código de Miembro abriendo el panel Información del Grupo.';
-
-  @override
-  String get locatorGuide4 => 'Utiliza el botón Llámame cuando quieras que los administradores de tu familia se pongan en contacto contigo.';
-
-  @override
-  String get requesterGuide1 => 'Crea un grupo familiar o únete a uno existente.';
-
-  @override
-  String get requesterGuide2 => 'Invita a los miembros introduciendo su Código de Miembro o escaneando su código QR.';
-
-  @override
-  String get requesterGuide3 => 'Espera a que los miembros aprueben tu solicitud de vinculación antes de solicitar su ubicación.';
-
-  @override
-  String get requesterGuide4 => 'Utiliza Ubicación en Vivo y Llámame solo cuando sea necesario.';
-
-  @override
-  String get aNewVer => 'Hay una nueva versión disponible. Actualiza ahora para disfrutar de la mejor experiencia.';
-
-  @override
-  String get addAdmin => 'Agregar administrador';
-
-  @override
-  String get addressNotAvailable => 'Dirección no disponible';
-
-  @override
-  String get addressResolving => 'Resolviendo dirección...';
-
-  @override
-  String get allowOneMoreAdmin => 'Permitir un administrador más';
-
-  @override
-  String get allowOneMoreMember => 'Permitir un miembro más';
-
-  @override
-  String get askTheGroup => 'Pide al propietario del grupo que actualice LynraFamily.';
-
-  @override
-  String get beingWatched => 'Te están observando';
-
-  @override
-  String get goPremium => 'Hazte Premium';
-
-  @override
-  String get feedback => 'Comentarios';
-
-  @override
-  String isWatchingYourLocation(Object name) {
-    return '$name está viendo tu ubicación.';
-  }
-
-  @override
-  String get later => 'MÁS TARDE';
-
-  @override
-  String get lifeTimeAccess => 'Acceso de por vida';
-
-  @override
-  String get mapbutton => 'Mapa';
-
-  @override
-  String multipleWatchersWatchingYourLoc(Object count, Object name) {
-    return '$name y $count personas más están viendo tu ubicación.';
-  }
-
-  @override
-  String get name => 'nombre';
-
-  @override
-  String get notify => 'Notificar';
-
-  @override
-  String get otherApps => 'Otras aplicaciones';
-
-  @override
-  String get places => 'Lugares';
-
-  @override
-  String get premiumActive => 'Premium activo';
-
-  @override
-  String get purchase => 'Comprar';
-
-  @override
-  String get rateOnPlayStore => 'Valorar en Play Store';
-
-  @override
-  String get requesterName => 'nombre de administrador';
-
-  @override
-  String get save => 'Guardar';
-
-  @override
-  String get scanQRCode => 'Escanear código QR';
-
-  @override
-  String get sendFeedback => 'Enviar comentarios';
-
-  @override
-  String get settings => 'ajustes';
-
-  @override
-  String get trialExpired => 'Período de prueba finalizado';
-
-  @override
-  String twoWatchersWatchingYourLocation(Object name1, Object name2) {
-    return '$name1 y $name2 están viendo tu ubicación.';
-  }
-
-  @override
-  String get update => 'ACTUALIZAR';
-
-  @override
-  String get updateAvailable => 'Actualización disponible';
-
-  @override
-  String get version => 'Versión';
-
-  @override
-  String watchingLocationSingle(Object name) {
-    return '$name está viendo tu ubicación.';
-  }
-
-  @override
-  String watchingLocationDouble(Object name1, Object name2) {
-    return '$name1 y $name2 están viendo tu ubicación.';
-  }
-
-  @override
-  String watchingLocationMultiple(Object count, Object name) {
-    return '$name y $count personas más están viendo tu ubicación.';
-  }
-
-  @override
   String get actionRequired => 'Acción requerida';
 
   @override
   String get activeWatchers => 'Observadores activos';
 
   @override
+  String get addAdmin => 'Agregar administrador';
+
+  @override
   String get addMember => 'Agregar miembro';
+
+  @override
+  String get addressNotAvailable => 'Dirección no disponible';
+
+  @override
+  String get addressResolving => 'Resolviendo dirección...';
 
   @override
   String get adminName => 'Nombre del administrador';
@@ -194,10 +36,22 @@ class AppLocalizationsEs extends AppLocalizations {
   String get allPermissionsGranted => 'Todos los permisos concedidos';
 
   @override
+  String get allowOneMoreAdmin => 'Permitir un administrador más';
+
+  @override
+  String get allowOneMoreMember => 'Permitir un miembro más';
+
+  @override
+  String get aNewVer => 'Hay una nueva versión disponible. Actualiza ahora para disfrutar de la mejor experiencia.';
+
+  @override
   String get appName => 'LynraFamily';
 
   @override
   String get approve => 'Aprobar';
+
+  @override
+  String get askTheGroup => 'Pide al propietario del grupo que actualice LynraFamily.';
 
   @override
   String get askEverybody => 'Pedir a todos que me llamen';
@@ -206,13 +60,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get autoStart => 'Inicio automático';
 
   @override
-  String get callMeSent => 'Llamada solicitada.';
+  String get backgroundAccessInstructions => 'En la pantalla inicial, busque \"LynraFamily Member\" y active el interruptor para garantizar la fiabilidad en segundo plano.\n\nEsta ventana se cerrará en 10 segundos...';
 
   @override
   String get backgroundPermissions => 'LynraFamily Member requiere estos permisos para funcionar en segundo plano.';
-
-  @override
-  String get backgroundAccessInstructions => 'En la pantalla inicial, busque \"LynraFamily Member\" y active el interruptor para garantizar la fiabilidad en segundo plano.\n\nEsta ventana se cerrará en 10 segundos...';
 
   @override
   String get batteryAlertlevel => 'Nivel de alerta de batería';
@@ -227,16 +78,22 @@ class AppLocalizationsEs extends AppLocalizations {
   String get batteryOptimizationDescription => 'Configurar como \"Sin restricciones\" para el funcionamiento en segundo plano';
 
   @override
+  String get beingWatched => 'Te están observando';
+
+  @override
   String get callme => 'Llámame';
+
+  @override
+  String get callMeSent => 'Llamada solicitada.';
 
   @override
   String get callMeSentAll => 'Solicitud de llamada enviada a todos los administradores';
 
   @override
-  String get cameraPermissionTitle => 'Permiso de cámara';
+  String get cameraPermissionDesc => 'Se utiliza solo al escanear un código QR.';
 
   @override
-  String get cameraPermissionDesc => 'Se utiliza solo al escanear un código QR.';
+  String get cameraPermissionTitle => 'Permiso de cámara';
 
   @override
   String get cancel => 'Cancelar';
@@ -257,15 +114,21 @@ class AppLocalizationsEs extends AppLocalizations {
   String get connectAMember => 'Conectar un miembro';
 
   @override
-  String get createOrJoin => 'Crear un nuevo grupo o unirse a un grupo existente';
+  String get createNewGroup => 'Crear un nuevo grupo';
 
   @override
-  String get createNewGroup => 'Crear un nuevo grupo';
+  String get createOrJoin => 'Crear un nuevo grupo o unirse a un grupo existente';
 
   @override
   String daysAgo(Object count) {
     return 'hace $count días';
   }
+
+  @override
+  String get delete => 'Eliminar';
+
+  @override
+  String get deletePlaceConfirmation => 'Quieres eliminar este lugar?';
 
   @override
   String get disabledByMaster => 'Deshabilitado por el administrador';
@@ -289,6 +152,14 @@ class AppLocalizationsEs extends AppLocalizations {
   String get familyHome => 'Familia, Hogar...';
 
   @override
+  String get feedback => 'Comentarios';
+
+  @override
+  String freeTrialDaysLeft(int days) {
+    return 'Prueba gratuita: quedan $days días';
+  }
+
+  @override
   String get hello => 'Hola';
 
   @override
@@ -307,7 +178,13 @@ class AppLocalizationsEs extends AppLocalizations {
   String get geofenceAlert => 'Alerta de geovalla';
 
   @override
+  String get goPremium => 'Hazte Premium';
+
+  @override
   String get gpsOffAlert => 'Alerta de GPS desactivado';
+
+  @override
+  String get groupInfo => 'Información del grupo';
 
   @override
   String get granted => 'Concedido';
@@ -322,10 +199,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get groupCode => 'Código del grupo';
 
   @override
-  String get groupQRCode => 'Código QR del grupo';
+  String get groupName => 'Nombre del grupo';
 
   @override
-  String get groupName => 'Nombre del grupo';
+  String get groupQRCode => 'Código QR del grupo';
 
   @override
   String hoursAgo(Object count) {
@@ -339,7 +216,18 @@ class AppLocalizationsEs extends AppLocalizations {
   String get importantFor => 'Importante para la visibilidad de solicitudes';
 
   @override
+  String isWatchingYourLocation(Object name) {
+    return '$name está viendo tu ubicación.';
+  }
+
+  @override
   String get language => 'Idioma';
+
+  @override
+  String get later => 'MÁS TARDE';
+
+  @override
+  String get lifeTimeAccess => 'Acceso de por vida';
 
   @override
   String get locationAccess => 'Acceso a ubicación';
@@ -354,7 +242,22 @@ class AppLocalizationsEs extends AppLocalizations {
   String get locationPermissionDescription => 'LynraFamily Member necesita permiso de ubicación para responder a solicitudes familiares y compartir actualizaciones de ubicación.\n\nEl acceso a la ubicación en segundo plano permite proporcionar actualizaciones incluso cuando la aplicación no está abierta.\n\nSu ubicación solo se comparte con miembros de confianza de su grupo familiar.';
 
   @override
+  String get locatorGuide1 => 'Para compartir tu ubicación, primero debes unirte a un grupo familiar.';
+
+  @override
+  String get locatorGuide2 => 'Comparte tu Código de Miembro con el administrador de tu familia para recibir una solicitud de vinculación.';
+
+  @override
+  String get locatorGuide3 => 'Puedes encontrar tu Código de Miembro abriendo el panel Información del Grupo.';
+
+  @override
+  String get locatorGuide4 => 'Utiliza el botón Llámame cuando quieras que los administradores de tu familia se pongan en contacto contigo.';
+
+  @override
   String get manufacturerSettings => 'AJUSTES DEL FABRICANTE';
+
+  @override
+  String get mapbutton => 'Mapa';
 
   @override
   String get master => 'Administrador principal';
@@ -413,6 +316,23 @@ class AppLocalizationsEs extends AppLocalizations {
   String get missing => 'Falta';
 
   @override
+  String get movementAlert => 'Alerta de movimiento';
+
+  @override
+  String get movementDistance => 'Distancia de movimiento';
+
+  @override
+  String multipleWatchersWatchingYourLoc(Object count, Object name) {
+    return '$name y $count personas más están viendo tu ubicación.';
+  }
+
+  @override
+  String get name => 'nombre';
+
+  @override
+  String get notify => 'Notificar';
+
+  @override
   String get noActiveWatchers => 'No hay observadores activos';
 
   @override
@@ -437,6 +357,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get notifyGPS => 'Notificar cuando el GPS se desactive';
 
   @override
+  String get notifyMovement => 'Notificar cuando haya movimiento';
+
+  @override
   String get notifyPlaces => 'Notificar cuando un miembro entre o salga de lugares';
 
   @override
@@ -446,7 +369,13 @@ class AppLocalizationsEs extends AppLocalizations {
   String get onlyTheMaster => 'Solo el administrador principal puede editar esta configuración.';
 
   @override
+  String get otherApps => 'Otras aplicaciones';
+
+  @override
   String get pairedMember => 'Miembro vinculado';
+
+  @override
+  String get pairedMembers => 'Miembros vinculados';
 
   @override
   String get pairedRequesters => 'Administradores vinculados';
@@ -458,10 +387,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get pairingRequest => 'Solicitud de vinculación';
 
   @override
-  String get permissionIntroTitle => 'Antes de comenzar';
+  String get permissions => 'Permisos';
 
   @override
-  String get permissions => 'Permisos';
+  String get permissionIntroTitle => 'Antes de comenzar';
 
   @override
   String get permissionIntroSubtitle => 'LynraFamily necesita algunos permisos para funcionar de forma segura y correcta.';
@@ -473,10 +402,31 @@ class AppLocalizationsEs extends AppLocalizations {
   String get physicalActivity => 'Actividad física';
 
   @override
+  String get places => 'Lugares';
+
+  @override
+  String get placeName => 'Nombre del lugar';
+
+  @override
+  String get placeNameHint => 'Casa, Escuela, Trabajo...';
+
+  @override
+  String get premiumActive => 'Premium activo';
+
+  @override
   String get placeSaved => 'Lugar guardado';
 
   @override
   String get preventSystemKillDescription => 'Evitar que el sistema cierre LynraFamily Member';
+
+  @override
+  String get purchase => 'Comprar';
+
+  @override
+  String get quickGuide => 'Guía rápida';
+
+  @override
+  String get rateOnPlayStore => 'Valorar en Play Store';
 
   @override
   String get receiveCallMe => 'Recibir solicitudes de llamada de este miembro';
@@ -486,6 +436,9 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get receivelowbattery => 'Recibir alertas de batería baja';
+
+  @override
+  String get receiveMovement => 'Recibir alertas de movimiento';
 
   @override
   String get reject => 'Rechazar';
@@ -506,7 +459,25 @@ class AppLocalizationsEs extends AppLocalizations {
   String get requesters => 'Administradores';
 
   @override
+  String get requesterGuide1 => 'Crea un grupo familiar o únete a uno existente.';
+
+  @override
+  String get requesterGuide2 => 'Invita a los miembros introduciendo su Código de Miembro o escaneando su código QR.';
+
+  @override
+  String get requesterGuide3 => 'Espera a que los miembros aprueben tu solicitud de vinculación antes de solicitar su ubicación.';
+
+  @override
+  String get requesterGuide4 => 'Utiliza Ubicación en Vivo y Llámame solo cuando sea necesario.';
+
+  @override
   String get requiredForMotion => 'Requerido para detección de movimiento';
+
+  @override
+  String get requesterName => 'nombre de administrador';
+
+  @override
+  String get save => 'Guardar';
 
   @override
   String get saveMemberLocation => 'Guardar ubicación del miembro como lugar';
@@ -518,18 +489,24 @@ class AppLocalizationsEs extends AppLocalizations {
   String get scanMemberCodeWithCamera => 'Escanear código del miembro con la cámara';
 
   @override
-  String get scanQRcode => 'Escanear código QR';
+  String get scanQRCode => 'Escanear código QR';
 
   @override
   String get scanTheMember => 'Escanee el código QR del miembro o introduzca su código corto manualmente.';
 
   @override
-  String get sendPairingRequest => 'Enviar solicitud de vinculación';
-
-  @override
   String secondsAgo(Object count) {
     return 'hace $count seg';
   }
+
+  @override
+  String get sendPairingRequest => 'Enviar solicitud de vinculación';
+
+  @override
+  String get sendFeedback => 'Enviar comentarios';
+
+  @override
+  String get settings => 'ajustes';
 
   @override
   String get settingsSaved => 'Configuración guardada';
@@ -556,10 +533,30 @@ class AppLocalizationsEs extends AppLocalizations {
   String get title => 'LynraFamily';
 
   @override
+  String get titleMember => 'LynraFamily Member';
+
+  @override
+  String get trialExpired => 'Período de prueba finalizado';
+
+  @override
+  String twoWatchersWatchingYourLocation(Object name1, Object name2) {
+    return '$name1 y $name2 están viendo tu ubicación.';
+  }
+
+  @override
   String get unknown => 'Desconocido';
 
   @override
-  String get titleMember => 'LynraFamily Member';
+  String get update => 'ACTUALIZAR';
+
+  @override
+  String get updateAvailable => 'Actualización disponible';
+
+  @override
+  String get upgradeToAddMoreMembers => 'Actualiza tu plan para agregar más miembros.';
+
+  @override
+  String get version => 'Versión';
 
   @override
   String get viewOnly => 'Solo lectura';
@@ -572,6 +569,21 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get wantsYoutoCall => 'Quiere que lo llame';
+
+  @override
+  String watchingLocationSingle(Object name) {
+    return '$name está viendo tu ubicación.';
+  }
+
+  @override
+  String watchingLocationDouble(Object name1, Object name2) {
+    return '$name1 y $name2 están viendo tu ubicación.';
+  }
+
+  @override
+  String watchingLocationMultiple(Object count, Object name) {
+    return '$name y $count personas más están viendo tu ubicación.';
+  }
 
   @override
   String get wellcome => 'Bienvenido';

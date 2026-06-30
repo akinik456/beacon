@@ -99,312 +99,6 @@ abstract class AppLocalizations {
     Locale('tr')
   ];
 
-  /// No description provided for @upgradeToAddMoreMembers.
-  ///
-  /// In en, this message translates to:
-  /// **'Upgrade to add more members.'**
-  String get upgradeToAddMoreMembers;
-
-  /// No description provided for @freeTrialDaysLeft.
-  ///
-  /// In en, this message translates to:
-  /// **'Free trial: {days} days left'**
-  String freeTrialDaysLeft(int days);
-
-  /// No description provided for @placeName.
-  ///
-  /// In en, this message translates to:
-  /// **'Place name'**
-  String get placeName;
-
-  /// No description provided for @placeNameHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Home, School, Work...'**
-  String get placeNameHint;
-
-  /// No description provided for @deletePlaceConfirmation.
-  ///
-  /// In en, this message translates to:
-  /// **'Delete this place?'**
-  String get deletePlaceConfirmation;
-
-  /// No description provided for @delete.
-  ///
-  /// In en, this message translates to:
-  /// **'Delete'**
-  String get delete;
-
-  /// No description provided for @groupInfo.
-  ///
-  /// In en, this message translates to:
-  /// **'Group Information'**
-  String get groupInfo;
-
-  /// No description provided for @quickGuide.
-  ///
-  /// In en, this message translates to:
-  /// **'Quick Guide'**
-  String get quickGuide;
-
-  /// No description provided for @locatorGuide1.
-  ///
-  /// In en, this message translates to:
-  /// **'To share your location, you must first join a family group.'**
-  String get locatorGuide1;
-
-  /// No description provided for @locatorGuide2.
-  ///
-  /// In en, this message translates to:
-  /// **'Share your Member Code with your family administrator to receive a pairing request.'**
-  String get locatorGuide2;
-
-  /// No description provided for @locatorGuide3.
-  ///
-  /// In en, this message translates to:
-  /// **'You can find your Member Code by opening the Group Information panel.'**
-  String get locatorGuide3;
-
-  /// No description provided for @locatorGuide4.
-  ///
-  /// In en, this message translates to:
-  /// **'Use the Call Me button whenever you want your family administrators to contact you.'**
-  String get locatorGuide4;
-
-  /// No description provided for @requesterGuide1.
-  ///
-  /// In en, this message translates to:
-  /// **'Create a family group or join an existing one.'**
-  String get requesterGuide1;
-
-  /// No description provided for @requesterGuide2.
-  ///
-  /// In en, this message translates to:
-  /// **'Invite members by entering their Member Code or scanning their QR code.'**
-  String get requesterGuide2;
-
-  /// No description provided for @requesterGuide3.
-  ///
-  /// In en, this message translates to:
-  /// **'Wait for members to approve your pairing request before requesting their location.'**
-  String get requesterGuide3;
-
-  /// No description provided for @requesterGuide4.
-  ///
-  /// In en, this message translates to:
-  /// **'Use Live Location and Call Me only when needed.'**
-  String get requesterGuide4;
-
-  /// No description provided for @aNewVer.
-  ///
-  /// In en, this message translates to:
-  /// **'A new version is available. Update now for the best experience.'**
-  String get aNewVer;
-
-  /// No description provided for @addAdmin.
-  ///
-  /// In en, this message translates to:
-  /// **'Add admin'**
-  String get addAdmin;
-
-  /// No description provided for @addressNotAvailable.
-  ///
-  /// In en, this message translates to:
-  /// **'Address not available'**
-  String get addressNotAvailable;
-
-  /// No description provided for @addressResolving.
-  ///
-  /// In en, this message translates to:
-  /// **'Resolving address...'**
-  String get addressResolving;
-
-  /// No description provided for @allowOneMoreAdmin.
-  ///
-  /// In en, this message translates to:
-  /// **'Allow one more admin'**
-  String get allowOneMoreAdmin;
-
-  /// No description provided for @allowOneMoreMember.
-  ///
-  /// In en, this message translates to:
-  /// **'Allow one more member'**
-  String get allowOneMoreMember;
-
-  /// No description provided for @askTheGroup.
-  ///
-  /// In en, this message translates to:
-  /// **'Ask the group owner to upgrade LynraFamily.'**
-  String get askTheGroup;
-
-  /// No description provided for @beingWatched.
-  ///
-  /// In en, this message translates to:
-  /// **'Being watched'**
-  String get beingWatched;
-
-  /// No description provided for @goPremium.
-  ///
-  /// In en, this message translates to:
-  /// **'Go Premium'**
-  String get goPremium;
-
-  /// No description provided for @feedback.
-  ///
-  /// In en, this message translates to:
-  /// **'Feedback'**
-  String get feedback;
-
-  /// No description provided for @isWatchingYourLocation.
-  ///
-  /// In en, this message translates to:
-  /// **'{name} is watching your location.'**
-  String isWatchingYourLocation(Object name);
-
-  /// No description provided for @later.
-  ///
-  /// In en, this message translates to:
-  /// **'LATER'**
-  String get later;
-
-  /// No description provided for @lifeTimeAccess.
-  ///
-  /// In en, this message translates to:
-  /// **'Lifetime access'**
-  String get lifeTimeAccess;
-
-  /// No description provided for @mapbutton.
-  ///
-  /// In en, this message translates to:
-  /// **'Map'**
-  String get mapbutton;
-
-  /// No description provided for @multipleWatchersWatchingYourLoc.
-  ///
-  /// In en, this message translates to:
-  /// **'{name} and {count} others are watching your location.'**
-  String multipleWatchersWatchingYourLoc(Object count, Object name);
-
-  /// No description provided for @name.
-  ///
-  /// In en, this message translates to:
-  /// **'name'**
-  String get name;
-
-  /// No description provided for @notify.
-  ///
-  /// In en, this message translates to:
-  /// **'Notify'**
-  String get notify;
-
-  /// No description provided for @otherApps.
-  ///
-  /// In en, this message translates to:
-  /// **'Other Apps'**
-  String get otherApps;
-
-  /// No description provided for @places.
-  ///
-  /// In en, this message translates to:
-  /// **'Places'**
-  String get places;
-
-  /// No description provided for @premiumActive.
-  ///
-  /// In en, this message translates to:
-  /// **'Premium active'**
-  String get premiumActive;
-
-  /// No description provided for @purchase.
-  ///
-  /// In en, this message translates to:
-  /// **'Purchase'**
-  String get purchase;
-
-  /// No description provided for @rateOnPlayStore.
-  ///
-  /// In en, this message translates to:
-  /// **'Rate on Play Store'**
-  String get rateOnPlayStore;
-
-  /// No description provided for @requesterName.
-  ///
-  /// In en, this message translates to:
-  /// **'Admin name'**
-  String get requesterName;
-
-  /// No description provided for @save.
-  ///
-  /// In en, this message translates to:
-  /// **'Save'**
-  String get save;
-
-  /// No description provided for @scanQRCode.
-  ///
-  /// In en, this message translates to:
-  /// **'Scan QR code'**
-  String get scanQRCode;
-
-  /// No description provided for @sendFeedback.
-  ///
-  /// In en, this message translates to:
-  /// **'Send Feedback'**
-  String get sendFeedback;
-
-  /// No description provided for @settings.
-  ///
-  /// In en, this message translates to:
-  /// **'Settings'**
-  String get settings;
-
-  /// No description provided for @trialExpired.
-  ///
-  /// In en, this message translates to:
-  /// **'Trial expired'**
-  String get trialExpired;
-
-  /// No description provided for @twoWatchersWatchingYourLocation.
-  ///
-  /// In en, this message translates to:
-  /// **'{name1} and {name2} are watching your location.'**
-  String twoWatchersWatchingYourLocation(Object name1, Object name2);
-
-  /// No description provided for @update.
-  ///
-  /// In en, this message translates to:
-  /// **'UPDATE'**
-  String get update;
-
-  /// No description provided for @updateAvailable.
-  ///
-  /// In en, this message translates to:
-  /// **'Update Available'**
-  String get updateAvailable;
-
-  /// No description provided for @version.
-  ///
-  /// In en, this message translates to:
-  /// **'Version'**
-  String get version;
-
-  /// No description provided for @watchingLocationSingle.
-  ///
-  /// In en, this message translates to:
-  /// **'{name} is watching your location.'**
-  String watchingLocationSingle(Object name);
-
-  /// No description provided for @watchingLocationDouble.
-  ///
-  /// In en, this message translates to:
-  /// **'{name1} and {name2} are watching your location.'**
-  String watchingLocationDouble(Object name1, Object name2);
-
-  /// No description provided for @watchingLocationMultiple.
-  ///
-  /// In en, this message translates to:
-  /// **'{name} and {count} others are watching your location.'**
-  String watchingLocationMultiple(Object count, Object name);
-
   /// No description provided for @actionRequired.
   ///
   /// In en, this message translates to:
@@ -417,11 +111,29 @@ abstract class AppLocalizations {
   /// **'Active Watchers'**
   String get activeWatchers;
 
+  /// No description provided for @addAdmin.
+  ///
+  /// In en, this message translates to:
+  /// **'Add admin'**
+  String get addAdmin;
+
   /// No description provided for @addMember.
   ///
   /// In en, this message translates to:
   /// **'Add Member'**
   String get addMember;
+
+  /// No description provided for @addressNotAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Address not available'**
+  String get addressNotAvailable;
+
+  /// No description provided for @addressResolving.
+  ///
+  /// In en, this message translates to:
+  /// **'Resolving address...'**
+  String get addressResolving;
 
   /// No description provided for @adminName.
   ///
@@ -441,6 +153,24 @@ abstract class AppLocalizations {
   /// **'All Permissions Granted'**
   String get allPermissionsGranted;
 
+  /// No description provided for @allowOneMoreAdmin.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow one more admin'**
+  String get allowOneMoreAdmin;
+
+  /// No description provided for @allowOneMoreMember.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow one more member'**
+  String get allowOneMoreMember;
+
+  /// No description provided for @aNewVer.
+  ///
+  /// In en, this message translates to:
+  /// **'A new version is available. Update now for the best experience.'**
+  String get aNewVer;
+
   /// No description provided for @appName.
   ///
   /// In en, this message translates to:
@@ -452,6 +182,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Approve'**
   String get approve;
+
+  /// No description provided for @askTheGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask the group owner to upgrade LynraFamily.'**
+  String get askTheGroup;
 
   /// No description provided for @askEverybody.
   ///
@@ -465,23 +201,17 @@ abstract class AppLocalizations {
   /// **'Auto-Start'**
   String get autoStart;
 
-  /// No description provided for @callMeSent.
+  /// No description provided for @backgroundAccessInstructions.
   ///
   /// In en, this message translates to:
-  /// **'Call Me Sent'**
-  String get callMeSent;
+  /// **'In the opening screen, please find \"LynraFamily Member\" and turn the switch ON to ensure background reliability.\n\nThis window will close in 10 seconds...'**
+  String get backgroundAccessInstructions;
 
   /// No description provided for @backgroundPermissions.
   ///
   /// In en, this message translates to:
   /// **'LynraFamily Member requires these permissions to work in background.'**
   String get backgroundPermissions;
-
-  /// No description provided for @backgroundAccessInstructions.
-  ///
-  /// In en, this message translates to:
-  /// **'In the opening screen, please find \"LynraFamily Member\" and turn the switch ON to ensure background reliability.\n\nThis window will close in 10 seconds...'**
-  String get backgroundAccessInstructions;
 
   /// No description provided for @batteryAlertlevel.
   ///
@@ -507,11 +237,23 @@ abstract class AppLocalizations {
   /// **'Set to \"No Restrictions\" for background operation'**
   String get batteryOptimizationDescription;
 
+  /// No description provided for @beingWatched.
+  ///
+  /// In en, this message translates to:
+  /// **'Being watched'**
+  String get beingWatched;
+
   /// No description provided for @callme.
   ///
   /// In en, this message translates to:
   /// **'Call Me'**
   String get callme;
+
+  /// No description provided for @callMeSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Call Me Sent'**
+  String get callMeSent;
 
   /// No description provided for @callMeSentAll.
   ///
@@ -519,17 +261,17 @@ abstract class AppLocalizations {
   /// **'Call Me sent to all requesters'**
   String get callMeSentAll;
 
-  /// No description provided for @cameraPermissionTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Camera permission'**
-  String get cameraPermissionTitle;
-
   /// No description provided for @cameraPermissionDesc.
   ///
   /// In en, this message translates to:
   /// **'Used only when scanning a QR code.'**
   String get cameraPermissionDesc;
+
+  /// No description provided for @cameraPermissionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera permission'**
+  String get cameraPermissionTitle;
 
   /// No description provided for @cancel.
   ///
@@ -567,23 +309,35 @@ abstract class AppLocalizations {
   /// **'Connect A Member'**
   String get connectAMember;
 
-  /// No description provided for @createOrJoin.
-  ///
-  /// In en, this message translates to:
-  /// **'Create a new group or join an existing group'**
-  String get createOrJoin;
-
   /// No description provided for @createNewGroup.
   ///
   /// In en, this message translates to:
   /// **'Create a new group'**
   String get createNewGroup;
 
+  /// No description provided for @createOrJoin.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a new group or join an existing group'**
+  String get createOrJoin;
+
   /// No description provided for @daysAgo.
   ///
   /// In en, this message translates to:
   /// **'{count} days ago'**
   String daysAgo(Object count);
+
+  /// No description provided for @delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get delete;
+
+  /// No description provided for @deletePlaceConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this place?'**
+  String get deletePlaceConfirmation;
 
   /// No description provided for @disabledByMaster.
   ///
@@ -627,6 +381,18 @@ abstract class AppLocalizations {
   /// **'Family,Home...'**
   String get familyHome;
 
+  /// No description provided for @feedback.
+  ///
+  /// In en, this message translates to:
+  /// **'Feedback'**
+  String get feedback;
+
+  /// No description provided for @freeTrialDaysLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'Free trial: {days} days left'**
+  String freeTrialDaysLeft(int days);
+
   /// No description provided for @hello.
   ///
   /// In en, this message translates to:
@@ -663,11 +429,23 @@ abstract class AppLocalizations {
   /// **'Geofence Alert'**
   String get geofenceAlert;
 
+  /// No description provided for @goPremium.
+  ///
+  /// In en, this message translates to:
+  /// **'Go Premium'**
+  String get goPremium;
+
   /// No description provided for @gpsOffAlert.
   ///
   /// In en, this message translates to:
   /// **'GPS Off Alert'**
   String get gpsOffAlert;
+
+  /// No description provided for @groupInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Group Information'**
+  String get groupInfo;
 
   /// No description provided for @granted.
   ///
@@ -693,17 +471,17 @@ abstract class AppLocalizations {
   /// **'Group Code'**
   String get groupCode;
 
-  /// No description provided for @groupQRCode.
-  ///
-  /// In en, this message translates to:
-  /// **'Group QR Code'**
-  String get groupQRCode;
-
   /// No description provided for @groupName.
   ///
   /// In en, this message translates to:
   /// **'Group Name'**
   String get groupName;
+
+  /// No description provided for @groupQRCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Group QR Code'**
+  String get groupQRCode;
 
   /// No description provided for @hoursAgo.
   ///
@@ -723,11 +501,29 @@ abstract class AppLocalizations {
   /// **'Important for request visibility'**
   String get importantFor;
 
+  /// No description provided for @isWatchingYourLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} is watching your location.'**
+  String isWatchingYourLocation(Object name);
+
   /// No description provided for @language.
   ///
   /// In en, this message translates to:
   /// **'Language'**
   String get language;
+
+  /// No description provided for @later.
+  ///
+  /// In en, this message translates to:
+  /// **'LATER'**
+  String get later;
+
+  /// No description provided for @lifeTimeAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Lifetime access'**
+  String get lifeTimeAccess;
 
   /// No description provided for @locationAccess.
   ///
@@ -753,11 +549,41 @@ abstract class AppLocalizations {
   /// **'LynraFamily Member needs location permission to respond to family location requests and share location updates.\n\nBackground location access allows the app to provide location updates even when the app is not open.\n\nYour location is only shared with trusted members of your family group.'**
   String get locationPermissionDescription;
 
+  /// No description provided for @locatorGuide1.
+  ///
+  /// In en, this message translates to:
+  /// **'To share your location, you must first join a family group.'**
+  String get locatorGuide1;
+
+  /// No description provided for @locatorGuide2.
+  ///
+  /// In en, this message translates to:
+  /// **'Share your Member Code with your family administrator to receive a pairing request.'**
+  String get locatorGuide2;
+
+  /// No description provided for @locatorGuide3.
+  ///
+  /// In en, this message translates to:
+  /// **'You can find your Member Code by opening the Group Information panel.'**
+  String get locatorGuide3;
+
+  /// No description provided for @locatorGuide4.
+  ///
+  /// In en, this message translates to:
+  /// **'Use the Call Me button whenever you want your family administrators to contact you.'**
+  String get locatorGuide4;
+
   /// No description provided for @manufacturerSettings.
   ///
   /// In en, this message translates to:
   /// **'MANUFACTURER SETTINGS'**
   String get manufacturerSettings;
+
+  /// No description provided for @mapbutton.
+  ///
+  /// In en, this message translates to:
+  /// **'Map'**
+  String get mapbutton;
 
   /// No description provided for @master.
   ///
@@ -867,6 +693,36 @@ abstract class AppLocalizations {
   /// **'Missing'**
   String get missing;
 
+  /// No description provided for @movementAlert.
+  ///
+  /// In en, this message translates to:
+  /// **'Movement Alert'**
+  String get movementAlert;
+
+  /// No description provided for @movementDistance.
+  ///
+  /// In en, this message translates to:
+  /// **'Movement Distance'**
+  String get movementDistance;
+
+  /// No description provided for @multipleWatchersWatchingYourLoc.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} and {count} others are watching your location.'**
+  String multipleWatchersWatchingYourLoc(Object count, Object name);
+
+  /// No description provided for @name.
+  ///
+  /// In en, this message translates to:
+  /// **'name'**
+  String get name;
+
+  /// No description provided for @notify.
+  ///
+  /// In en, this message translates to:
+  /// **'Notify'**
+  String get notify;
+
   /// No description provided for @noActiveWatchers.
   ///
   /// In en, this message translates to:
@@ -915,6 +771,12 @@ abstract class AppLocalizations {
   /// **'Notify when GPS is turned off'**
   String get notifyGPS;
 
+  /// No description provided for @notifyMovement.
+  ///
+  /// In en, this message translates to:
+  /// **'Notify on Movement'**
+  String get notifyMovement;
+
   /// No description provided for @notifyPlaces.
   ///
   /// In en, this message translates to:
@@ -933,11 +795,23 @@ abstract class AppLocalizations {
   /// **'Only the master can edit these settings.'**
   String get onlyTheMaster;
 
+  /// No description provided for @otherApps.
+  ///
+  /// In en, this message translates to:
+  /// **'Other Apps'**
+  String get otherApps;
+
   /// No description provided for @pairedMember.
   ///
   /// In en, this message translates to:
   /// **'Paired Member'**
   String get pairedMember;
+
+  /// No description provided for @pairedMembers.
+  ///
+  /// In en, this message translates to:
+  /// **'Paired Members'**
+  String get pairedMembers;
 
   /// No description provided for @pairedRequesters.
   ///
@@ -957,17 +831,17 @@ abstract class AppLocalizations {
   /// **'Pairing request'**
   String get pairingRequest;
 
-  /// No description provided for @permissionIntroTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Before we start'**
-  String get permissionIntroTitle;
-
   /// No description provided for @permissions.
   ///
   /// In en, this message translates to:
   /// **'Permissions'**
   String get permissions;
+
+  /// No description provided for @permissionIntroTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Before we start'**
+  String get permissionIntroTitle;
 
   /// No description provided for @permissionIntroSubtitle.
   ///
@@ -987,6 +861,30 @@ abstract class AppLocalizations {
   /// **'Physical Activity'**
   String get physicalActivity;
 
+  /// No description provided for @places.
+  ///
+  /// In en, this message translates to:
+  /// **'Places'**
+  String get places;
+
+  /// No description provided for @placeName.
+  ///
+  /// In en, this message translates to:
+  /// **'Place name'**
+  String get placeName;
+
+  /// No description provided for @placeNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Home, School, Work...'**
+  String get placeNameHint;
+
+  /// No description provided for @premiumActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Premium active'**
+  String get premiumActive;
+
   /// No description provided for @placeSaved.
   ///
   /// In en, this message translates to:
@@ -998,6 +896,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Prevent the system from killing LynraFamily Member'**
   String get preventSystemKillDescription;
+
+  /// No description provided for @purchase.
+  ///
+  /// In en, this message translates to:
+  /// **'Purchase'**
+  String get purchase;
+
+  /// No description provided for @quickGuide.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick Guide'**
+  String get quickGuide;
+
+  /// No description provided for @rateOnPlayStore.
+  ///
+  /// In en, this message translates to:
+  /// **'Rate on Play Store'**
+  String get rateOnPlayStore;
 
   /// No description provided for @receiveCallMe.
   ///
@@ -1016,6 +932,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Receive low battery alerts'**
   String get receivelowbattery;
+
+  /// No description provided for @receiveMovement.
+  ///
+  /// In en, this message translates to:
+  /// **'Receive movement alerts'**
+  String get receiveMovement;
 
   /// No description provided for @reject.
   ///
@@ -1053,11 +975,47 @@ abstract class AppLocalizations {
   /// **'Admins'**
   String get requesters;
 
+  /// No description provided for @requesterGuide1.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a family group or join an existing one.'**
+  String get requesterGuide1;
+
+  /// No description provided for @requesterGuide2.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite members by entering their Member Code or scanning their QR code.'**
+  String get requesterGuide2;
+
+  /// No description provided for @requesterGuide3.
+  ///
+  /// In en, this message translates to:
+  /// **'Wait for members to approve your pairing request before requesting their location.'**
+  String get requesterGuide3;
+
+  /// No description provided for @requesterGuide4.
+  ///
+  /// In en, this message translates to:
+  /// **'Use Live Location and Call Me only when needed.'**
+  String get requesterGuide4;
+
   /// No description provided for @requiredForMotion.
   ///
   /// In en, this message translates to:
   /// **'Required for motion detection'**
   String get requiredForMotion;
+
+  /// No description provided for @requesterName.
+  ///
+  /// In en, this message translates to:
+  /// **'Admin name'**
+  String get requesterName;
+
+  /// No description provided for @save.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get save;
 
   /// No description provided for @saveMemberLocation.
   ///
@@ -1077,11 +1035,11 @@ abstract class AppLocalizations {
   /// **'Scan member code with camera'**
   String get scanMemberCodeWithCamera;
 
-  /// No description provided for @scanQRcode.
+  /// No description provided for @scanQRCode.
   ///
   /// In en, this message translates to:
   /// **'Scan QR code'**
-  String get scanQRcode;
+  String get scanQRCode;
 
   /// No description provided for @scanTheMember.
   ///
@@ -1089,17 +1047,29 @@ abstract class AppLocalizations {
   /// **'Scan the member QR code or enter its short code manually.'**
   String get scanTheMember;
 
+  /// No description provided for @secondsAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} sec ago'**
+  String secondsAgo(Object count);
+
   /// No description provided for @sendPairingRequest.
   ///
   /// In en, this message translates to:
   /// **'Send Pairing Request'**
   String get sendPairingRequest;
 
-  /// No description provided for @secondsAgo.
+  /// No description provided for @sendFeedback.
   ///
   /// In en, this message translates to:
-  /// **'{count} sec ago'**
-  String secondsAgo(Object count);
+  /// **'Send Feedback'**
+  String get sendFeedback;
+
+  /// No description provided for @settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settings;
 
   /// No description provided for @settingsSaved.
   ///
@@ -1149,17 +1119,53 @@ abstract class AppLocalizations {
   /// **'LynraFamily'**
   String get title;
 
+  /// No description provided for @titleMember.
+  ///
+  /// In en, this message translates to:
+  /// **'LynraFamily Member'**
+  String get titleMember;
+
+  /// No description provided for @trialExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'Trial expired'**
+  String get trialExpired;
+
+  /// No description provided for @twoWatchersWatchingYourLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'{name1} and {name2} are watching your location.'**
+  String twoWatchersWatchingYourLocation(Object name1, Object name2);
+
   /// No description provided for @unknown.
   ///
   /// In en, this message translates to:
   /// **'Unknown'**
   String get unknown;
 
-  /// No description provided for @titleMember.
+  /// No description provided for @update.
   ///
   /// In en, this message translates to:
-  /// **'LynraFamily Member'**
-  String get titleMember;
+  /// **'UPDATE'**
+  String get update;
+
+  /// No description provided for @updateAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Available'**
+  String get updateAvailable;
+
+  /// No description provided for @upgradeToAddMoreMembers.
+  ///
+  /// In en, this message translates to:
+  /// **'Upgrade to add more members.'**
+  String get upgradeToAddMoreMembers;
+
+  /// No description provided for @version.
+  ///
+  /// In en, this message translates to:
+  /// **'Version'**
+  String get version;
 
   /// No description provided for @viewOnly.
   ///
@@ -1184,6 +1190,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Wants You to Call'**
   String get wantsYoutoCall;
+
+  /// No description provided for @watchingLocationSingle.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} is watching your location.'**
+  String watchingLocationSingle(Object name);
+
+  /// No description provided for @watchingLocationDouble.
+  ///
+  /// In en, this message translates to:
+  /// **'{name1} and {name2} are watching your location.'**
+  String watchingLocationDouble(Object name1, Object name2);
+
+  /// No description provided for @watchingLocationMultiple.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} and {count} others are watching your location.'**
+  String watchingLocationMultiple(Object count, Object name);
 
   /// No description provided for @wellcome.
   ///

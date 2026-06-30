@@ -99,54 +99,6 @@ abstract class AppLocalizations {
     Locale('tr')
   ];
 
-  /// No description provided for @movementAlert.
-  ///
-  /// In en, this message translates to:
-  /// **'Movement Alert'**
-  String get movementAlert;
-
-  /// No description provided for @notifyMovement.
-  ///
-  /// In en, this message translates to:
-  /// **'Notify on Movement'**
-  String get notifyMovement;
-
-  /// No description provided for @movementDistance.
-  ///
-  /// In en, this message translates to:
-  /// **'Movement Distance'**
-  String get movementDistance;
-
-  /// No description provided for @receiveMovement.
-  ///
-  /// In en, this message translates to:
-  /// **'Receive movement alerts'**
-  String get receiveMovement;
-
-  /// No description provided for @allowOneMoreAdmin.
-  ///
-  /// In en, this message translates to:
-  /// **'Allow one more admin'**
-  String get allowOneMoreAdmin;
-
-  /// No description provided for @allowOneMoreMember.
-  ///
-  /// In en, this message translates to:
-  /// **'Allow one more member'**
-  String get allowOneMoreMember;
-
-  /// No description provided for @aNewVer.
-  ///
-  /// In en, this message translates to:
-  /// **'A new version is available. Update now for the best experience.'**
-  String get aNewVer;
-
-  /// No description provided for @askTheGroup.
-  ///
-  /// In en, this message translates to:
-  /// **'Ask the group owner to upgrade LynraFamily.'**
-  String get askTheGroup;
-
   /// No description provided for @actionRequired.
   ///
   /// In en, this message translates to:
@@ -201,6 +153,24 @@ abstract class AppLocalizations {
   /// **'All Permissions Granted'**
   String get allPermissionsGranted;
 
+  /// No description provided for @allowOneMoreAdmin.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow one more admin'**
+  String get allowOneMoreAdmin;
+
+  /// No description provided for @allowOneMoreMember.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow one more member'**
+  String get allowOneMoreMember;
+
+  /// No description provided for @aNewVer.
+  ///
+  /// In en, this message translates to:
+  /// **'A new version is available. Update now for the best experience.'**
+  String get aNewVer;
+
   /// No description provided for @appName.
   ///
   /// In en, this message translates to:
@@ -213,6 +183,12 @@ abstract class AppLocalizations {
   /// **'Approve'**
   String get approve;
 
+  /// No description provided for @askTheGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask the group owner to upgrade LynraFamily.'**
+  String get askTheGroup;
+
   /// No description provided for @askEverybody.
   ///
   /// In en, this message translates to:
@@ -224,18 +200,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Auto-Start'**
   String get autoStart;
-
-  /// No description provided for @beingWatched.
-  ///
-  /// In en, this message translates to:
-  /// **'Being watched'**
-  String get beingWatched;
-
-  /// No description provided for @callMeSent.
-  ///
-  /// In en, this message translates to:
-  /// **'Call Me Sent'**
-  String get callMeSent;
 
   /// No description provided for @backgroundAccessInstructions.
   ///
@@ -273,11 +237,23 @@ abstract class AppLocalizations {
   /// **'Set to \"No Restrictions\" for background operation'**
   String get batteryOptimizationDescription;
 
+  /// No description provided for @beingWatched.
+  ///
+  /// In en, this message translates to:
+  /// **'Being watched'**
+  String get beingWatched;
+
   /// No description provided for @callme.
   ///
   /// In en, this message translates to:
   /// **'Call Me'**
   String get callme;
+
+  /// No description provided for @callMeSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Call Me Sent'**
+  String get callMeSent;
 
   /// No description provided for @callMeSentAll.
   ///
@@ -333,17 +309,17 @@ abstract class AppLocalizations {
   /// **'Connect A Member'**
   String get connectAMember;
 
-  /// No description provided for @createOrJoin.
-  ///
-  /// In en, this message translates to:
-  /// **'Create a new group or join an existing group'**
-  String get createOrJoin;
-
   /// No description provided for @createNewGroup.
   ///
   /// In en, this message translates to:
   /// **'Create a new group'**
   String get createNewGroup;
+
+  /// No description provided for @createOrJoin.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a new group or join an existing group'**
+  String get createOrJoin;
 
   /// No description provided for @daysAgo.
   ///
@@ -717,6 +693,18 @@ abstract class AppLocalizations {
   /// **'Missing'**
   String get missing;
 
+  /// No description provided for @movementAlert.
+  ///
+  /// In en, this message translates to:
+  /// **'Movement Alert'**
+  String get movementAlert;
+
+  /// No description provided for @movementDistance.
+  ///
+  /// In en, this message translates to:
+  /// **'Movement Distance'**
+  String get movementDistance;
+
   /// No description provided for @multipleWatchersWatchingYourLoc.
   ///
   /// In en, this message translates to:
@@ -783,6 +771,12 @@ abstract class AppLocalizations {
   /// **'Notify when GPS is turned off'**
   String get notifyGPS;
 
+  /// No description provided for @notifyMovement.
+  ///
+  /// In en, this message translates to:
+  /// **'Notify on Movement'**
+  String get notifyMovement;
+
   /// No description provided for @notifyPlaces.
   ///
   /// In en, this message translates to:
@@ -812,6 +806,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Paired Member'**
   String get pairedMember;
+
+  /// No description provided for @pairedMembers.
+  ///
+  /// In en, this message translates to:
+  /// **'Paired Members'**
+  String get pairedMembers;
 
   /// No description provided for @pairedRequesters.
   ///
@@ -933,6 +933,12 @@ abstract class AppLocalizations {
   /// **'Receive low battery alerts'**
   String get receivelowbattery;
 
+  /// No description provided for @receiveMovement.
+  ///
+  /// In en, this message translates to:
+  /// **'Receive movement alerts'**
+  String get receiveMovement;
+
   /// No description provided for @reject.
   ///
   /// In en, this message translates to:
@@ -1023,23 +1029,17 @@ abstract class AppLocalizations {
   /// **'Save Settings'**
   String get saveSettings;
 
-  /// No description provided for @scanQRCode.
-  ///
-  /// In en, this message translates to:
-  /// **'Scan QR code'**
-  String get scanQRCode;
-
   /// No description provided for @scanMemberCodeWithCamera.
   ///
   /// In en, this message translates to:
   /// **'Scan member code with camera'**
   String get scanMemberCodeWithCamera;
 
-  /// No description provided for @scanQRcode.
+  /// No description provided for @scanQRCode.
   ///
   /// In en, this message translates to:
   /// **'Scan QR code'**
-  String get scanQRcode;
+  String get scanQRCode;
 
   /// No description provided for @scanTheMember.
   ///
@@ -1047,17 +1047,17 @@ abstract class AppLocalizations {
   /// **'Scan the member QR code or enter its short code manually.'**
   String get scanTheMember;
 
-  /// No description provided for @sendPairingRequest.
-  ///
-  /// In en, this message translates to:
-  /// **'Send Pairing Request'**
-  String get sendPairingRequest;
-
   /// No description provided for @secondsAgo.
   ///
   /// In en, this message translates to:
   /// **'{count} sec ago'**
   String secondsAgo(Object count);
+
+  /// No description provided for @sendPairingRequest.
+  ///
+  /// In en, this message translates to:
+  /// **'Send Pairing Request'**
+  String get sendPairingRequest;
 
   /// No description provided for @sendFeedback.
   ///

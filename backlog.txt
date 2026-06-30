@@ -18,13 +18,9 @@ joingrup snackbar
 Trial abuse prevention
 
 
-FS kurallar
 
 
 joingrup buton onay değil gruba girme isteği filan
-
-
-watcher yenilendiğinde anında presence
 
 
 samsung izinler
@@ -35,18 +31,45 @@ klavye açıkken taşma
 
 add same member
 
-loc home page grup bilgisi yok
-
 REQUEST LOCATION  artık yok ancak kodlarda var
 
 gps off android bildirimi tekrarlanıyor mu?
 
-DB read/write counter
-
 req grup info da req code , master ve admin ile dene
 
-locator stop sharing?
+movement alert locator side ?
+
+*******
+Purchase Protection
+
+- Never charge a paying user twice.
+- Server-side purchase verification.
+- Restore purchases on reinstall/new device.
+- Protect against unlimited free usage.
+- Keep entitlements synchronized with Google Play.
+Support future products without changing the architecture.
+**********
+
+loc quick guide a ekle
+
+Şu:
+
+To stop sharing, contact your family administrator.
+yerine daha yumuşak:
+
+Location sharing is managed by your family administrator.eya
+
+To stop sharing, ask your family administrator to remove this device.
 
 
+firebase_options.dart requester da yok
 
+Production Firestore Rules + Anonymous Auth
+FS kurallar
 
+group/groupid/reqs de fcmtoken yazılan bir yer var
+
+alerts metinler
+bildirim ikon
+
+pairing timeout

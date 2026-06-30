@@ -9,30 +9,6 @@ class AppLocalizationsTr extends AppLocalizations {
   AppLocalizationsTr([String locale = 'tr']) : super(locale);
 
   @override
-  String get movementAlert => 'Hareket Uyarısı';
-
-  @override
-  String get notifyMovement => 'Hareket algılandığında bildir';
-
-  @override
-  String get movementDistance => 'Hareket Mesafesi';
-
-  @override
-  String get receiveMovement => 'Hareket uyarılarını al';
-
-  @override
-  String get allowOneMoreAdmin => 'Bir yönetici daha ekle';
-
-  @override
-  String get allowOneMoreMember => 'Bir üye daha ekle';
-
-  @override
-  String get aNewVer => 'Yeni bir sürüm mevcut. En iyi deneyim için şimdi güncelleyin.';
-
-  @override
-  String get askTheGroup => 'Grup sahibinden LynraFamily\'i yükseltmesini isteyin.';
-
-  @override
   String get actionRequired => 'İşlem Gerekli';
 
   @override
@@ -45,7 +21,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get addMember => 'Üye Ekle';
 
   @override
-  String get addressNotAvailable => 'Adres bilgisi mevcut değil.';
+  String get addressNotAvailable => 'Adres mevcut değil';
 
   @override
   String get addressResolving => 'Adres çözümleniyor...';
@@ -60,22 +36,28 @@ class AppLocalizationsTr extends AppLocalizations {
   String get allPermissionsGranted => 'Tüm İzinler Verildi';
 
   @override
+  String get allowOneMoreAdmin => 'Bir yönetici daha ekle';
+
+  @override
+  String get allowOneMoreMember => 'Bir üye daha ekle';
+
+  @override
+  String get aNewVer => 'Yeni bir sürüm mevcut. En iyi deneyim için şimdi güncelleyin.';
+
+  @override
   String get appName => 'LynraFamily';
 
   @override
   String get approve => 'Onay';
 
   @override
+  String get askTheGroup => 'Grup sahibinden LynraFamily\'i yükseltmesini isteyin.';
+
+  @override
   String get askEverybody => 'Herkese \'Beni Ara\' İsteği Gönder';
 
   @override
   String get autoStart => 'Otomatik Başlatma';
-
-  @override
-  String get beingWatched => 'İzleniyorsun';
-
-  @override
-  String get callMeSent => 'Beni Ara Gönderildi';
 
   @override
   String get backgroundAccessInstructions => 'Açılan ekranda \"LynraFamily Member\" seçeneğini bulun ve arka planda güvenilir çalışması için anahtarı AÇIK konuma getirin.\n\nBu pencere 10 saniye içinde kapanacaktır...';
@@ -96,7 +78,13 @@ class AppLocalizationsTr extends AppLocalizations {
   String get batteryOptimizationDescription => 'Arka planda çalışabilmesi için \"Kısıtlama Yok\" olarak ayarlayın';
 
   @override
+  String get beingWatched => 'İzleniyorsun';
+
+  @override
   String get callme => 'Beni Ara';
+
+  @override
+  String get callMeSent => 'Beni Ara Gönderildi';
 
   @override
   String get callMeSentAll => 'Arama İsteği tüm yöneticilere gönderildi';
@@ -126,10 +114,10 @@ class AppLocalizationsTr extends AppLocalizations {
   String get connectAMember => 'Bir üyeye bağlan';
 
   @override
-  String get createOrJoin => 'Yeni bir grup oluşturun veya mevcut bir gruba katılın.';
+  String get createNewGroup => 'Yeni grup oluştur';
 
   @override
-  String get createNewGroup => 'Yeni grup oluştur';
+  String get createOrJoin => 'Yeni bir grup oluşturun veya mevcut bir gruba katılın.';
 
   @override
   String daysAgo(Object count) {
@@ -328,6 +316,12 @@ class AppLocalizationsTr extends AppLocalizations {
   String get missing => 'Eksik';
 
   @override
+  String get movementAlert => 'Hareket Uyarısı';
+
+  @override
+  String get movementDistance => 'Hareket Mesafesi';
+
+  @override
   String multipleWatchersWatchingYourLoc(Object count, Object name) {
     return '$name ve $count kişi daha konumunu izliyor.';
   }
@@ -363,6 +357,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get notifyGPS => 'GPS kapatıldığında bildir';
 
   @override
+  String get notifyMovement => 'Hareket algılandığında bildir';
+
+  @override
   String get notifyPlaces => 'Üye belirlenen yerlere girdiğinde veya ayrıldığında bildir';
 
   @override
@@ -376,6 +373,9 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get pairedMember => 'Eşleştirilmiş Üye';
+
+  @override
+  String get pairedMembers => 'Eşleştirilmiş Üyeler';
 
   @override
   String get pairedRequesters => 'Eşleştirilmiş Yöneticiler';
@@ -438,6 +438,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get receivelowbattery => 'Pil seviyesi düşük uyarısı alın';
 
   @override
+  String get receiveMovement => 'Hareket uyarılarını al';
+
+  @override
   String get reject => 'Reddet';
 
   @override
@@ -483,24 +486,21 @@ class AppLocalizationsTr extends AppLocalizations {
   String get saveSettings => 'Ayarları Kaydet';
 
   @override
-  String get scanQRCode => 'QR kodunu tara';
-
-  @override
   String get scanMemberCodeWithCamera => 'Üye kodunu kamera ile taratın';
 
   @override
-  String get scanQRcode => 'QR kodu taratınız';
+  String get scanQRCode => 'QR kodunu tara';
 
   @override
   String get scanTheMember => 'Üye QR kodunu taratın veya kısa kodunu manuel olarak girin.';
 
   @override
-  String get sendPairingRequest => 'Bağlantı isteği gönder';
-
-  @override
   String secondsAgo(Object count) {
     return '$count sn önce';
   }
+
+  @override
+  String get sendPairingRequest => 'Bağlantı isteği gönder';
 
   @override
   String get sendFeedback => 'Geri Bildirim Gönder';

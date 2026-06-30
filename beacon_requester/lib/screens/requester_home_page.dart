@@ -88,6 +88,7 @@ class _RequesterHomePageState
 	int _trialDaysLeft = 0;
 	final Map<String, DateTime> _lastMovementAlert = {};
 	Map<String, dynamic>? _movementAlertData;
+	Timer? _requesterPositionTimer;
 	
 	
 		@override
@@ -164,6 +165,7 @@ class _RequesterHomePageState
 		_removeActiveWatchers();
 		_timeRefreshTimer?.cancel();
 		_purchaseSub?.cancel();
+		_stopRequesterPositionTimer();
 		super.dispose();
 	}
 	
@@ -312,6 +314,7 @@ class _RequesterHomePageState
 	
 	Future<void> _addActiveWatchers() async {
 		if (_groupId == null) return;
+		_startRequesterPositionTimer();
 		
 		final _requesterName = await IdentityService.getRequesterName();
 		final _requesterCode = await IdentityService.getRequesterCode();
@@ -332,6 +335,7 @@ print("_addActiveWatchers IdentityService.getRequesterName");
 	}
 
 	Future<void> _removeActiveWatchers() async {
+	_stopRequesterPositionTimer();
 		if (_groupId == null) return;
 
 		for (final locator in _locators) {
@@ -345,6 +349,34 @@ print("_addActiveWatchers IdentityService.getRequesterName");
 			);
 		}
 	}	
+
+void _startRequesterPositionTimer() {
+  _requesterPositionTimer?.cancel();
+
+  _updateRequesterPosition();
+
+  _requesterPositionTimer = Timer.periodic(
+    const Duration(seconds: 30),
+    (_) => _updateRequesterPosition(),
+  );
+}
+
+void _stopRequesterPositionTimer() {
+  _requesterPositionTimer?.cancel();
+  _requesterPositionTimer = null;
+}
+
+Future<void> _updateRequesterPosition() async {
+  final position = await LocationHelper.getCurrentPosition();
+
+  if (position == null || !mounted) return;
+
+  setState(() {
+    _myLat = position.latitude;
+    _myLng = position.longitude;
+  });
+}	
+	
 	
 	void _listenLocatorPresence(String locatorId) {
 	final l10n = AppLocalizations.of(context)!;
@@ -822,8 +854,8 @@ final l10n = AppLocalizations.of(context)!;
   required String requesterName,
 	}) {
   final l10n = AppLocalizations.of(context)!;
-						final langCode =
-						Localizations.localeOf(context).languageCode.toUpperCase();
+			final langCode =
+			Localizations.localeOf(context).languageCode.toUpperCase();
   return Padding(
     padding: const EdgeInsets.all(10),
     child: Column(
@@ -831,14 +863,26 @@ final l10n = AppLocalizations.of(context)!;
       children: [
         Column(
           children: [
-            Text(
-              l10n.title,
-              textAlign: TextAlign.center,
-              style: AppFonts.title.copyWith(
-                fontSize: 24,
-                color: AppColors.primary,
-              ),
-            ),
+            RichText(
+							text: TextSpan(
+								style: AppFonts.title.copyWith(
+									fontSize: 24,
+									color: AppColors.primary,
+								),
+								children: [
+									TextSpan(text: l10n.title),
+
+									if (_isMaster)
+										TextSpan(
+											text: ' Ⓜ',
+											style: AppFonts.title.copyWith(
+												fontSize: 14, // biraz daha küçük
+												color: AppColors.primary.withValues(alpha: 0.85),
+											),
+										),
+								],
+							),
+						),
 
             const SizedBox(height: 6),
 
@@ -1287,49 +1331,62 @@ final l10n = AppLocalizations.of(context)!;
 												crossAxisAlignment: CrossAxisAlignment.start,
 													children: [						
 																	Column(
-  children: [
-    SizedBox(
-      width: double.infinity,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          Text(
-            l10n.title,
-            style: AppFonts.title.copyWith(
-              fontSize: 24,
-              color: AppColors.primary,
-            ),
-          ),
+																		children: [
+																			SizedBox(
+																				width: double.infinity,
+																				child: Stack(
+																					alignment: Alignment.center,
+																					children: [
+																						RichText(
+																							text: TextSpan(
+																								style: AppFonts.title.copyWith(
+																									fontSize: 24,
+																									color: AppColors.primary,
+																								),
+																								children: [
+																									TextSpan(text: l10n.title),
 
-          Positioned(
-            right: 0,
-            child: IconButton(
-              onPressed: () {
-                setState(() {
-                  _showGuide = !_showGuide;
-                });
-              },
-              icon: Icon(
-                _showGuide
-                    ? Icons.keyboard_arrow_up_rounded
-                    : Icons.help_outline_rounded,
-                color: AppColors.primary,
-                size: 22,
-              ),
-            ),
-          ),
-        ],
-      ),
-    ),
+																									if (_isMaster)
+																										TextSpan(
+																											text: ' Ⓜ',
+																											style: AppFonts.title.copyWith(
+																												fontSize: 14, // biraz daha küçük
+																												color: AppColors.primary.withValues(alpha: 0.85),
+																											),
+																										),
+																								],
+																							),
+																						),
 
-    AnimatedCrossFade(
-      duration: const Duration(milliseconds: 250),
-      crossFadeState: _showGuide
-          ? CrossFadeState.showFirst
-          : CrossFadeState.showSecond,
-      firstChild: const GuidePanel(),
-      secondChild: const SizedBox.shrink(),
-    ),
+																						Positioned(
+																							right: 0,
+																							child: IconButton(
+																								onPressed: () {
+																									setState(() {
+																										_showGuide = !_showGuide;
+																									});
+																								},
+																								icon: Icon(
+																									_showGuide
+																											? Icons.keyboard_arrow_up_rounded
+																											: Icons.help_outline_rounded,
+																									color: AppColors.primary,
+																									size: 22,
+																								),
+																							),
+																						),
+																					],
+																				),
+																			),
+
+																			AnimatedCrossFade(
+																				duration: const Duration(milliseconds: 250),
+																				crossFadeState: _showGuide
+																						? CrossFadeState.showFirst
+																						: CrossFadeState.showSecond,
+																				firstChild: const GuidePanel(),
+																				secondChild: const SizedBox.shrink(),
+																			),
 																			
 																			const SizedBox(height: 6),
 																			InkWell(
@@ -1443,7 +1500,8 @@ final l10n = AppLocalizations.of(context)!;
 																							),
 																							const SizedBox(width: 8),
 																							Text(
-																								'${pairedLocators.length} ${l10n.pairedMember}',
+																								'${pairedLocators.length} '
+																								'${pairedLocators.length == 1 ? l10n.pairedMember : l10n.pairedMembers}',
 																								style: AppFonts.subtitle.copyWith(
 																									color: AppColors.primary,
 																									fontWeight: FontWeight.w600,

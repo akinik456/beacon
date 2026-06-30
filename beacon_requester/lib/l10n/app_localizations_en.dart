@@ -9,30 +9,6 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get movementAlert => 'Movement Alert';
-
-  @override
-  String get notifyMovement => 'Notify on Movement';
-
-  @override
-  String get movementDistance => 'Movement Distance';
-
-  @override
-  String get receiveMovement => 'Receive movement alerts';
-
-  @override
-  String get allowOneMoreAdmin => 'Allow one more admin';
-
-  @override
-  String get allowOneMoreMember => 'Allow one more member';
-
-  @override
-  String get aNewVer => 'A new version is available. Update now for the best experience.';
-
-  @override
-  String get askTheGroup => 'Ask the group owner to upgrade LynraFamily.';
-
-  @override
   String get actionRequired => 'Action Required';
 
   @override
@@ -60,22 +36,28 @@ class AppLocalizationsEn extends AppLocalizations {
   String get allPermissionsGranted => 'All Permissions Granted';
 
   @override
+  String get allowOneMoreAdmin => 'Allow one more admin';
+
+  @override
+  String get allowOneMoreMember => 'Allow one more member';
+
+  @override
+  String get aNewVer => 'A new version is available. Update now for the best experience.';
+
+  @override
   String get appName => 'LynraFamily';
 
   @override
   String get approve => 'Approve';
 
   @override
+  String get askTheGroup => 'Ask the group owner to upgrade LynraFamily.';
+
+  @override
   String get askEverybody => 'Ask Everybody To Call Me';
 
   @override
   String get autoStart => 'Auto-Start';
-
-  @override
-  String get beingWatched => 'Being watched';
-
-  @override
-  String get callMeSent => 'Call Me Sent';
 
   @override
   String get backgroundAccessInstructions => 'In the opening screen, please find \"LynraFamily Member\" and turn the switch ON to ensure background reliability.\n\nThis window will close in 10 seconds...';
@@ -96,7 +78,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get batteryOptimizationDescription => 'Set to \"No Restrictions\" for background operation';
 
   @override
+  String get beingWatched => 'Being watched';
+
+  @override
   String get callme => 'Call Me';
+
+  @override
+  String get callMeSent => 'Call Me Sent';
 
   @override
   String get callMeSentAll => 'Call Me sent to all requesters';
@@ -126,10 +114,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get connectAMember => 'Connect A Member';
 
   @override
-  String get createOrJoin => 'Create a new group or join an existing group';
+  String get createNewGroup => 'Create a new group';
 
   @override
-  String get createNewGroup => 'Create a new group';
+  String get createOrJoin => 'Create a new group or join an existing group';
 
   @override
   String daysAgo(Object count) {
@@ -328,6 +316,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get missing => 'Missing';
 
   @override
+  String get movementAlert => 'Movement Alert';
+
+  @override
+  String get movementDistance => 'Movement Distance';
+
+  @override
   String multipleWatchersWatchingYourLoc(Object count, Object name) {
     return '$name and $count others are watching your location.';
   }
@@ -363,6 +357,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notifyGPS => 'Notify when GPS is turned off';
 
   @override
+  String get notifyMovement => 'Notify on Movement';
+
+  @override
   String get notifyPlaces => 'Notify when member enters or leaves places';
 
   @override
@@ -376,6 +373,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pairedMember => 'Paired Member';
+
+  @override
+  String get pairedMembers => 'Paired Members';
 
   @override
   String get pairedRequesters => 'Paired Admins';
@@ -438,6 +438,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get receivelowbattery => 'Receive low battery alerts';
 
   @override
+  String get receiveMovement => 'Receive movement alerts';
+
+  @override
   String get reject => 'Reject';
 
   @override
@@ -483,24 +486,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get saveSettings => 'Save Settings';
 
   @override
-  String get scanQRCode => 'Scan QR code';
-
-  @override
   String get scanMemberCodeWithCamera => 'Scan member code with camera';
 
   @override
-  String get scanQRcode => 'Scan QR code';
+  String get scanQRCode => 'Scan QR code';
 
   @override
   String get scanTheMember => 'Scan the member QR code or enter its short code manually.';
 
   @override
-  String get sendPairingRequest => 'Send Pairing Request';
-
-  @override
   String secondsAgo(Object count) {
     return '$count sec ago';
   }
+
+  @override
+  String get sendPairingRequest => 'Send Pairing Request';
 
   @override
   String get sendFeedback => 'Send Feedback';

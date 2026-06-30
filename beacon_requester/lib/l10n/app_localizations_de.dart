@@ -9,30 +9,6 @@ class AppLocalizationsDe extends AppLocalizations {
   AppLocalizationsDe([String locale = 'de']) : super(locale);
 
   @override
-  String get movementAlert => 'Movement Alert';
-
-  @override
-  String get notifyMovement => 'Notify on Movement';
-
-  @override
-  String get movementDistance => 'Movement Distance';
-
-  @override
-  String get receiveMovement => 'Receive movement alerts';
-
-  @override
-  String get allowOneMoreAdmin => 'Allow one more admin';
-
-  @override
-  String get allowOneMoreMember => 'Allow one more member';
-
-  @override
-  String get aNewVer => 'A new version is available. Update now for the best experience.';
-
-  @override
-  String get askTheGroup => 'Ask the group owner to upgrade LynraFamily.';
-
-  @override
   String get actionRequired => 'Aktion erforderlich';
 
   @override
@@ -60,22 +36,28 @@ class AppLocalizationsDe extends AppLocalizations {
   String get allPermissionsGranted => 'Alle Berechtigungen erteilt';
 
   @override
+  String get allowOneMoreAdmin => 'Allow one more admin';
+
+  @override
+  String get allowOneMoreMember => 'Allow one more member';
+
+  @override
+  String get aNewVer => 'A new version is available. Update now for the best experience.';
+
+  @override
   String get appName => 'LynraFamily';
 
   @override
   String get approve => 'Genehmigen';
 
   @override
+  String get askTheGroup => 'Ask the group owner to upgrade LynraFamily.';
+
+  @override
   String get askEverybody => 'Alle bitten, mich anzurufen';
 
   @override
   String get autoStart => 'Autostart';
-
-  @override
-  String get beingWatched => 'Being watched';
-
-  @override
-  String get callMeSent => 'Call Me Sent';
 
   @override
   String get backgroundAccessInstructions => 'Bitte suchen Sie auf dem Startbildschirm nach „LynraFamily Member“ und aktivieren Sie den Schalter für eine zuverlässige Hintergrundfunktion.\n\nDieses Fenster schließt sich in 10 Sekunden...';
@@ -96,7 +78,13 @@ class AppLocalizationsDe extends AppLocalizations {
   String get batteryOptimizationDescription => 'Für den Hintergrundbetrieb auf „Keine Einschränkungen“ setzen';
 
   @override
+  String get beingWatched => 'Being watched';
+
+  @override
   String get callme => 'Ruf mich an';
+
+  @override
+  String get callMeSent => 'Call Me Sent';
 
   @override
   String get callMeSentAll => '„Ruf mich an“ an alle Administratoren gesendet';
@@ -126,10 +114,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get connectAMember => 'Mitglied verbinden';
 
   @override
-  String get createOrJoin => 'Neue Gruppe erstellen oder bestehender Gruppe beitreten';
+  String get createNewGroup => 'Neue Gruppe erstellen';
 
   @override
-  String get createNewGroup => 'Neue Gruppe erstellen';
+  String get createOrJoin => 'Neue Gruppe erstellen oder bestehender Gruppe beitreten';
 
   @override
   String daysAgo(Object count) {
@@ -328,6 +316,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get missing => 'Fehlt';
 
   @override
+  String get movementAlert => 'Movement Alert';
+
+  @override
+  String get movementDistance => 'Movement Distance';
+
+  @override
   String multipleWatchersWatchingYourLoc(Object count, Object name) {
     return '$name and $count others are watching your location.';
   }
@@ -363,6 +357,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get notifyGPS => 'Benachrichtigen, wenn GPS deaktiviert wird';
 
   @override
+  String get notifyMovement => 'Notify on Movement';
+
+  @override
   String get notifyPlaces => 'Benachrichtigen, wenn ein Mitglied Orte betritt oder verlässt';
 
   @override
@@ -376,6 +373,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get pairedMember => 'Gekoppeltes Mitglied';
+
+  @override
+  String get pairedMembers => 'Paired Members';
 
   @override
   String get pairedRequesters => 'Gekoppelte Administratoren';
@@ -438,6 +438,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get receivelowbattery => 'Warnungen bei niedrigem Akkustand erhalten';
 
   @override
+  String get receiveMovement => 'Receive movement alerts';
+
+  @override
   String get reject => 'Ablehnen';
 
   @override
@@ -483,24 +486,21 @@ class AppLocalizationsDe extends AppLocalizations {
   String get saveSettings => 'Einstellungen speichern';
 
   @override
-  String get scanQRCode => 'Scan QR code';
-
-  @override
   String get scanMemberCodeWithCamera => 'Mitgliedscode mit Kamera scannen';
 
   @override
-  String get scanQRcode => 'QR-Code scannen';
+  String get scanQRCode => 'Scan QR code';
 
   @override
   String get scanTheMember => 'QR-Code des Mitglieds scannen oder Kurzcode manuell eingeben.';
 
   @override
-  String get sendPairingRequest => 'Kopplungsanfrage senden';
-
-  @override
   String secondsAgo(Object count) {
     return 'vor $count Sek.';
   }
+
+  @override
+  String get sendPairingRequest => 'Kopplungsanfrage senden';
 
   @override
   String get sendFeedback => 'Send Feedback';

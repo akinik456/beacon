@@ -143,7 +143,7 @@ print("_confirmJoin IdentityService.getRequesterName");
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(l10n.scanQRcode, style: AppFonts.subtitle),
+                        Text(l10n.scanQRCode, style: AppFonts.subtitle),
                         const SizedBox(height: 4),
                         Text(
                           l10n.joinInstantlyWithCamera,
