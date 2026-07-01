@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../l10n/app_localizations.dart';
 import 'identity_service.dart';
+import '../core/widgets/app_banner.dart';
 
 class LocatorNameEditor {
   LocatorNameEditor._();
@@ -79,14 +80,10 @@ class LocatorNameEditor {
     if (!context.mounted) {
       return false;
     }
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        behavior: SnackBarBehavior.floating,
-        content: Text(l10n.saved),
-      ),
-    );
-
+		AppBanner.success(
+			context,
+			l10n.saved,
+		);
     return true;
   }
 }

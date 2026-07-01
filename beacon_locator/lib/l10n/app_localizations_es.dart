@@ -160,21 +160,6 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get hello => 'Hola';
-
-  @override
-  String get joinGroup => 'Unirse al grupo';
-
-  @override
-  String get joinInstantlyWithCamera => 'Unirse instantáneamente con la cámara';
-
-  @override
-  String get joinRequest => 'Solicitud de unión';
-
-  @override
-  String get justNow => 'Justo ahora';
-
-  @override
   String get geofenceAlert => 'Alerta de geovalla';
 
   @override
@@ -205,6 +190,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get groupQRCode => 'Código QR del grupo';
 
   @override
+  String get hello => 'Hola';
+
+  @override
   String hoursAgo(Object count) {
     return 'hace $count hora(s)';
   }
@@ -219,6 +207,21 @@ class AppLocalizationsEs extends AppLocalizations {
   String isWatchingYourLocation(Object name) {
     return '$name está viendo tu ubicación.';
   }
+
+  @override
+  String get joinGroup => 'Unirse al grupo';
+
+  @override
+  String get joinInstantlyWithCamera => 'Unirse instantáneamente con la cámara';
+
+  @override
+  String get joinRequest => 'Solicitud de unión';
+
+  @override
+  String get joinRequestCouldNotBeApproved => 'No se pudo aprobar la solicitud para unirse.';
+
+  @override
+  String get justNow => 'Justo ahora';
 
   @override
   String get language => 'Idioma';

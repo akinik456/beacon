@@ -44,6 +44,7 @@ import '../services/notification_service.dart';
 import '../core/widgets/group_info_panel.dart';
 import '../services/locator_name_editor.dart';
 import '../core/widgets/guide_panel.dart';
+import '../core/widgets/app_banner.dart';
 
 
 class LocatorHomePage extends StatefulWidget {
@@ -602,13 +603,10 @@ Widget _pairedRequesterCard() {
 														targetRequesterId: requesterId,
 													);
 
-													if (!context.mounted) return;
-
-													ScaffoldMessenger.of(context).showSnackBar(
-														SnackBar(
-															content: Text(l10n.callMeSent),
-															duration: const Duration(seconds: 2),
-														),
+													if (!context.mounted) return;													
+													AppBanner.success(
+														context,
+														l10n.callMeSent,
 													);
 												},
                       icon: const Icon(
@@ -651,15 +649,11 @@ Widget _pairedRequesterCard() {
                     );
                   }
 
-                  if (!context.mounted) return;
-
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        l10n.callMeSentAll,
-                      ),
-                    ),
-                  );
+                  if (!context.mounted) return;             
+									AppBanner.success(
+										context,
+										l10n.callMeSentAll,
+									);
                 },
                 icon: Icon(
                   Icons.campaign_outlined,
@@ -729,13 +723,10 @@ Widget _pairedRequesterCard() {
 															requestId: doc.id,
 															requestData: data,
 														);
-
 														if (!context.mounted) return;
-
-														ScaffoldMessenger.of(context).showSnackBar(
-															SnackBar(
-																content: Text(l10n.pairingRejected),
-															),
+														AppBanner.error(
+															context,
+															l10n.pairingRejected,
 														);
 													},
                           child: Text(
@@ -767,10 +758,10 @@ Widget _pairedRequesterCard() {
 																reason: 'pairing_approved',
 															);
 														}
-
-                            ScaffoldMessenger.of(
-                              context,
-                            ).showSnackBar(SnackBar(content: Text(result)));
+														AppBanner.info(
+															context,
+															result,
+														);
                           },
                           child: Text(
                             l10n.approve,

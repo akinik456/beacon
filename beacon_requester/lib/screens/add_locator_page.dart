@@ -168,7 +168,7 @@ class _AddLocatorPageState extends State<AddLocatorPage> {
 									);
 									if (result == null) {
 										if (!context.mounted) return;
-										AppBanner.info(
+										AppBanner.error(
 										context,
 										l10n.memberNotFound,
 										);	
@@ -183,7 +183,7 @@ class _AddLocatorPageState extends State<AddLocatorPage> {
 									}
 									if (result?['error'] == 'member_already_paired') {
 										if (!context.mounted) return;
-										AppBanner.info(
+										AppBanner.error(
 										context,
 										l10n.memberAlreadyPaired,
 										);		
@@ -191,7 +191,7 @@ class _AddLocatorPageState extends State<AddLocatorPage> {
 									}
 									if (result?['error'] == 'member_limit_reached') {
 										if (!context.mounted) return;
-										AppBanner.info(
+										AppBanner.error(
 										context,
 										l10n.memberlimitreached,
 										);		
@@ -246,7 +246,7 @@ class _AddLocatorPageState extends State<AddLocatorPage> {
 												);
 
 												if (!context.mounted) return;
-												AppBanner.info(
+												AppBanner.success(
 													context,
 													l10n.memberpaired,
 												);
@@ -260,7 +260,7 @@ class _AddLocatorPageState extends State<AddLocatorPage> {
 											);
 
 											if (!context.mounted) return;
-											AppBanner.info(
+											AppBanner.error(
 												context,
 												l10n.pairingRejected,
 											);

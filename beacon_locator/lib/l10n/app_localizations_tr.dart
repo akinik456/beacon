@@ -160,21 +160,6 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
-  String get hello => 'Merhaba';
-
-  @override
-  String get joinGroup => 'Gruba katıl';
-
-  @override
-  String get joinInstantlyWithCamera => 'Kamerayla anında katılın';
-
-  @override
-  String get joinRequest => 'Gruba Katılma İsteği';
-
-  @override
-  String get justNow => 'Az önce';
-
-  @override
   String get geofenceAlert => 'Konum Alarmı';
 
   @override
@@ -205,6 +190,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get groupQRCode => 'Grup QR Kodu';
 
   @override
+  String get hello => 'Merhaba';
+
+  @override
   String hoursAgo(Object count) {
     return '$count saat önce';
   }
@@ -219,6 +207,21 @@ class AppLocalizationsTr extends AppLocalizations {
   String isWatchingYourLocation(Object name) {
     return '$name konumunu izliyor.';
   }
+
+  @override
+  String get joinGroup => 'Gruba katıl';
+
+  @override
+  String get joinInstantlyWithCamera => 'Kamerayla anında katılın';
+
+  @override
+  String get joinRequest => 'Gruba Katılma İsteği';
+
+  @override
+  String get joinRequestCouldNotBeApproved => 'Katılma isteği onaylanamadı.';
+
+  @override
+  String get justNow => 'Az önce';
 
   @override
   String get language => 'Dil';
@@ -272,7 +275,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get member => 'Üye';
 
   @override
-  String get memberAlreadyPaired => 'Bu üye zaten bağlı.';
+  String get memberAlreadyPaired => 'Bu üye zaten listede.';
 
   @override
   String get memberCode => 'Üye Kodu';

@@ -118,7 +118,7 @@ class _LocatorNotifyPageState extends State<LocatorNotifyPage> {
     }, SetOptions(merge: true));
 
     if (!mounted) return;    
-			AppBanner.info(
+			AppBanner.success(
 				context,
 				l10n.notificationSettingsSaved,
 			);

@@ -91,7 +91,7 @@ class GroupInfoPanel  extends StatelessWidget {
     });
 
     if (!context.mounted) return;
-		AppBanner.info(
+		AppBanner.success(
 			context,
 			l10n.saved,
 		);

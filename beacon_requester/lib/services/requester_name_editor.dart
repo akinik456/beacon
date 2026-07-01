@@ -85,7 +85,7 @@ class RequesterNameEditor {
     if (!context.mounted) {
       return false;
     }
-    AppBanner.info(
+    AppBanner.success(
 			context,
 			l10n.saved,
 		);

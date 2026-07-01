@@ -393,36 +393,6 @@ abstract class AppLocalizations {
   /// **'Free trial: {days} days left'**
   String freeTrialDaysLeft(int days);
 
-  /// No description provided for @hello.
-  ///
-  /// In en, this message translates to:
-  /// **'Hello'**
-  String get hello;
-
-  /// No description provided for @joinGroup.
-  ///
-  /// In en, this message translates to:
-  /// **'Join group'**
-  String get joinGroup;
-
-  /// No description provided for @joinInstantlyWithCamera.
-  ///
-  /// In en, this message translates to:
-  /// **'Join instantly with camera'**
-  String get joinInstantlyWithCamera;
-
-  /// No description provided for @joinRequest.
-  ///
-  /// In en, this message translates to:
-  /// **'Join Request'**
-  String get joinRequest;
-
-  /// No description provided for @justNow.
-  ///
-  /// In en, this message translates to:
-  /// **'Just now'**
-  String get justNow;
-
   /// No description provided for @geofenceAlert.
   ///
   /// In en, this message translates to:
@@ -483,6 +453,12 @@ abstract class AppLocalizations {
   /// **'Group QR Code'**
   String get groupQRCode;
 
+  /// No description provided for @hello.
+  ///
+  /// In en, this message translates to:
+  /// **'Hello'**
+  String get hello;
+
   /// No description provided for @hoursAgo.
   ///
   /// In en, this message translates to:
@@ -506,6 +482,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{name} is watching your location.'**
   String isWatchingYourLocation(Object name);
+
+  /// No description provided for @joinGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Join group'**
+  String get joinGroup;
+
+  /// No description provided for @joinInstantlyWithCamera.
+  ///
+  /// In en, this message translates to:
+  /// **'Join instantly with camera'**
+  String get joinInstantlyWithCamera;
+
+  /// No description provided for @joinRequest.
+  ///
+  /// In en, this message translates to:
+  /// **'Join Request'**
+  String get joinRequest;
+
+  /// No description provided for @joinRequestCouldNotBeApproved.
+  ///
+  /// In en, this message translates to:
+  /// **'The join request could not be approved.'**
+  String get joinRequestCouldNotBeApproved;
+
+  /// No description provided for @justNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Just now'**
+  String get justNow;
 
   /// No description provided for @language.
   ///

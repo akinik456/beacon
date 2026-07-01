@@ -275,7 +275,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get member => 'Üye';
 
   @override
-  String get memberAlreadyPaired => 'Bu üye zaten bağlı.';
+  String get memberAlreadyPaired => 'Bu üye zaten listede.';
 
   @override
   String get memberCode => 'Üye Kodu';

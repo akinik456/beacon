@@ -1690,7 +1690,7 @@ final l10n = AppLocalizations.of(context)!;
 																									await _loadLocators();
 																									
 																									if (!context.mounted) return;
-																										AppBanner.info(
+																										AppBanner.success(
 																											context,
 																											l10n.memberremoved,
 																										);

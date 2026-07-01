@@ -100,7 +100,7 @@ Future<void> _loadPlaces() async {
   final l10n = AppLocalizations.of(context)!;
 
   if (_placeCount >= 5) {
-		AppBanner.info(
+		AppBanner.error(
 			context,
 			l10n.maximum5Places,
 		);
@@ -150,7 +150,7 @@ Future<void> _loadPlaces() async {
   await _loadPlaces();
 
   if (!mounted) return;
-		AppBanner.info(
+		AppBanner.success(
 		context,
 		l10n.placeSaved,
 	);
@@ -326,7 +326,7 @@ Future<void> _deletePlace(String placeId, String placeName) async {
         });
 
     if (!mounted) return;
-		AppBanner.info(
+		AppBanner.success(
 			context,
 			l10n.settingsSaved,
 		);
