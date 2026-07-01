@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../l10n/app_localizations.dart';
 import 'identity_service.dart';
 import '../core/widgets/app_banner.dart';
+import '../core/widgets/dialogs/app_input_dialog.dart';
 
 class LocatorNameEditor {
   LocatorNameEditor._();
@@ -14,43 +15,15 @@ class LocatorNameEditor {
     final currentName =
         await IdentityService.getLocatorName();
 
-    final controller = TextEditingController(
-      text: currentName ?? '',
-    );
-
-    final newName = await showDialog<String>(
-      context: context,
-      builder: (dialogContext) {
-        return AlertDialog(
-          title: Text(l10n.enterMemberName),
-          content: TextField(
-            controller: controller,
-            autofocus: true,
-            maxLength: 20,
-            decoration: InputDecoration(
-              hintText: l10n.enterMemberName,
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(dialogContext);
-              },
-              child: Text(l10n.cancel),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(
-                  dialogContext,
-                  controller.text.trim(),
-                );
-              },
-              child: Text(l10n.save),
-            ),
-          ],
-        );
-      },
-    );
+    final newName = await AppInputDialog.show(
+			context: context,
+			title: l10n.enterMemberName,
+			hintText: l10n.enterMemberName,
+			confirmText: l10n.save,
+			cancelText: l10n.cancel,
+			autofocus: true,
+			maxLength: 20,
+		);
 
     if (newName == null || newName.isEmpty) {
       return false;

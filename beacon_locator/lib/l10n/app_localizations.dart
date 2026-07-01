@@ -1185,6 +1185,12 @@ abstract class AppLocalizations {
   /// **'Upgrade to add more members.'**
   String get upgradeToAddMoreMembers;
 
+  /// No description provided for @upgradeToContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Upgrade to continue monitoring your family members.'**
+  String get upgradeToContinue;
+
   /// No description provided for @version.
   ///
   /// In en, this message translates to:
