@@ -9,6 +9,7 @@ import '../../screens/language_select_page.dart';
 import 'requester_list_card.dart';
 import '../../services/requester_name_editor.dart';
 import 'app_banner.dart';
+import 'dialogs/app_input_dialog.dart';
 
 
 class GroupInfoPanel  extends StatelessWidget {
@@ -43,39 +44,15 @@ class GroupInfoPanel  extends StatelessWidget {
       text: currentGroupName,
     );
 
-    final newName = await showDialog<String>(
-      context: context,
-      builder: (dialogContext) {
-        return AlertDialog(
-          title: Text(l10n.groupName),
-          content: TextField(
-            controller: controller,
-            maxLength: 20,
-            textCapitalization: TextCapitalization.words,
-            decoration: InputDecoration(
-              hintText: l10n.groupName,
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(dialogContext);
-              },
-              child: Text(l10n.cancel),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(
-                  dialogContext,
-                  controller.text.trim(),
-                );
-              },
-              child: Text(l10n.sva),
-            ),
-          ],
-        );
-      },
-    );
+    final newName = await AppInputDialog.show(
+			context: context,
+			title: l10n.groupName,
+			hintText: l10n.groupName,
+			confirmText: l10n.sva,
+			cancelText: l10n.cancel,
+			maxLength: 20,
+			textCapitalization: TextCapitalization.words,
+		);
 
 
     if (newName == null || newName.isEmpty) return;

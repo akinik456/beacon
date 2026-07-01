@@ -48,6 +48,9 @@ import '../core/widgets/guide_panel.dart';
 import '../services/notification_service.dart';
 import '../services/requester_registry_service.dart';
 import '../core/widgets/app_banner.dart';
+import '../core/widgets/dialogs/app_confirm_dialog.dart';
+import '../core/widgets/dialogs/app_info_dialog.dart';
+import '../core/widgets/dialogs/app_input_dialog.dart';
 
 class RequesterHomePage extends StatefulWidget {
   const RequesterHomePage({super.key});
@@ -245,34 +248,20 @@ class _RequesterHomePageState
 		}
 	}
 	
-	void _showUpdateDialog() {
-	final l10n = AppLocalizations.of(context)!;
-		showDialog(
+	void _showUpdateDialog() async {
+		final l10n = AppLocalizations.of(context)!;
+
+		await AppInfoDialog.show(
 			context: context,
-			barrierDismissible: true,
-			builder: (context) {
-				return AlertDialog(
-					title: Text(l10n.updateAvailable),
-					content: Text(
-						l10n.aNewVer,
-					),
-					actions: [
-						TextButton(
-							onPressed: () => Navigator.pop(context),
-							child: Text(l10n.later),
-						),
-						TextButton(
-							onPressed: () async {
-								Navigator.pop(context);
-								try {
-									await InAppUpdate.startFlexibleUpdate();
-									await InAppUpdate.completeFlexibleUpdate();
-								} catch (_) {}
-							},
-							child: Text(l10n.update),
-						),
-					],
-				);
+			title: l10n.updateAvailable,
+			message: l10n.aNewVer,
+			cancelText: l10n.later,
+			confirmText: l10n.update,
+			onConfirm: () async {
+				try {
+					await InAppUpdate.startFlexibleUpdate();
+					await InAppUpdate.completeFlexibleUpdate();
+				} catch (_) {}
 			},
 		);
 	}
@@ -1631,47 +1620,14 @@ final l10n = AppLocalizations.of(context)!;
 																									);
 																								},
 																								onRemove: () async {
-																									final result = await showDialog<bool>(
+																									final result = await AppConfirmDialog.show(
 																										context: context,
-																										builder: (_) => AlertDialog(
-																											backgroundColor: AppColors.surface,
-																											title: Text(
-																												l10n.removeMember,
-																												style: AppFonts.title,
-																											),
-																											content: Text(
-																												l10n.thismember,
-																												style: AppFonts.body.copyWith(
-																													color: AppColors.textSecondary,
-																												),
-																											),
-																											actions: [
-																												TextButton(
-																													onPressed: () {
-																														Navigator.pop(context, false);
-																													},
-																													child: Text(
-																														l10n.cancel,
-																														style: AppFonts.button.copyWith(
-																															color: AppColors.textSecondary,
-																														),
-																													),
-																												),
-																												TextButton(
-																													onPressed: () {
-																														Navigator.pop(context, true);
-																													},
-																													child: Text(
-																														l10n.remove,
-																														style: AppFonts.button.copyWith(
-																															color: AppColors.danger,
-																														),
-																													),
-																												),
-																											],
-																										),
+																										title: l10n.removeMember,
+																										message: l10n.thismember,
+																										confirmText: l10n.remove,
+																										cancelText: l10n.cancel,
+																										confirmColor: AppColors.danger,
 																									);
-
 																									if (result != true) return;
 																									
 																									if (_groupId == null) return;

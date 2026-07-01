@@ -8,6 +8,8 @@ import '../core/widgets/app_card.dart';
 import '../services/group_service.dart';
 import '../../l10n/app_localizations.dart';
 import '../core/widgets/app_banner.dart';
+import '../core/widgets/dialogs/app_confirm_dialog.dart';
+import '../core/widgets/dialogs/app_input_dialog.dart';
 
 class LocatorSettingsPage extends StatefulWidget {
   final String locatorId;
@@ -186,102 +188,32 @@ Future<void> _loadPlaces() async {
     });
   }
 	Future<String?> _askPlaceName() async {
-  final controller = TextEditingController();
+		final l10n = AppLocalizations.of(context)!;
 
-  return showDialog<String>(
-    context: context,
-    builder: (dialogContext) {
-      final l10n = AppLocalizations.of(dialogContext)!;
+		return AppInputDialog.show(
+			context: context,
+			title: l10n.placeName,
+			hintText: l10n.placeNameHint,
+			confirmText: l10n.save,
+			cancelText: l10n.cancel,
+			maxLength: 20,
+			textInputAction: TextInputAction.done,
+			autofocus: true,
+		);
+	}
 
-      return AlertDialog(
-        backgroundColor: AppColors.surface,
-        title: Text(
-          l10n.placeName,
-          style: AppFonts.subtitle,
-        ),
-        content: TextField(
-          controller: controller,
-          autofocus: true,
-          textInputAction: TextInputAction.done,
-          style: AppFonts.body.copyWith(
-            color: AppColors.textPrimary,
-          ),
-          decoration: InputDecoration(
-            hintText: l10n.placeNameHint,
-            hintStyle: AppFonts.caption.copyWith(
-              color: AppColors.textSecondary,
-            ),
-          ),
-          onSubmitted: (_) {
-            Navigator.of(dialogContext).pop(controller.text.trim());
-          },
-        ),
-        actions: [
-					TextButton(
-						style: TextButton.styleFrom(
-							foregroundColor: AppColors.textSecondary,
-						),
-						onPressed: () => Navigator.of(dialogContext).pop(),
-						child: Text(
-							l10n.cancel,
-							style: AppFonts.button,
-						),
-					),
-					TextButton(
-						style: TextButton.styleFrom(
-							foregroundColor: AppColors.primary,
-						),
-						onPressed: () {
-							Navigator.of(dialogContext).pop(controller.text.trim());
-						},
-						child: Text(
-							l10n.save,
-							style: AppFonts.button.copyWith(
-								fontWeight: FontWeight.w600,
-							),
-						),
-					),
-				],
-      );
-    },
-  );
-}
+			Future<bool> _confirmDeletePlace(String placeName) async {
+				final l10n = AppLocalizations.of(context)!;
 
-Future<bool> _confirmDeletePlace(String placeName) async {
-  final l10n = AppLocalizations.of(context)!;
-
-  return await showDialog<bool>(
-        context: context,
-        builder: (dialogContext) {
-          return AlertDialog(
-            backgroundColor: AppColors.surface,
-            title: Text(
-              l10n.delete,
-              style: AppFonts.subtitle,
-            ),
-            content: Text(
-              '${l10n.deletePlaceConfirmation}\n\n"$placeName"',
-              style: AppFonts.body,
-            ),
-            actions: [
-              TextButton(
-                style: TextButton.styleFrom(
-                  foregroundColor: AppColors.textSecondary,
-                ),
-                onPressed: () => Navigator.pop(dialogContext, false),
-                child: Text(l10n.cancel),
-              ),
-              TextButton(
-                style: TextButton.styleFrom(
-                  foregroundColor: AppColors.danger,
-                ),
-                onPressed: () => Navigator.pop(dialogContext, true),
-                child: Text(l10n.delete),
-              ),
-            ],
-          );
-        },
-      ) ??
+				return AppConfirmDialog.show(
+				context: context,
+				title: l10n.delete,
+				message:
+						'${l10n.deletePlaceConfirmation}\n\n"$placeName"',
+				confirmText: l10n.delete,
+				cancelText: l10n.cancel,
+				confirmColor: AppColors.danger,
+			) ??
       false;
 }
 Future<void> _deletePlace(String placeId, String placeName) async {

@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import '../l10n/app_localizations.dart';
 import 'identity_service.dart';
 import '../core/widgets/app_banner.dart';
+import '../core/widgets/dialogs/app_input_dialog.dart';
+
 
 class RequesterNameEditor {
   RequesterNameEditor._();
@@ -18,39 +20,15 @@ class RequesterNameEditor {
       text: currentName ?? '',
     );
 
-    final newName = await showDialog<String>(
-      context: context,
-      builder: (dialogContext) {
-        return AlertDialog(
-          title: Text(l10n.enteryourname),
-          content: TextField(
-            controller: controller,
-            autofocus: true,
-            maxLength: 20,
-            decoration: const InputDecoration(
-              hintText: 'Requester name',
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(dialogContext);
-              },
-              child: Text(l10n.cancel),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(
-                  dialogContext,
-                  controller.text.trim(),
-                );
-              },
-              child: Text(l10n.sva),
-            ),
-          ],
-        );
-      },
-    );
+    final newName = await AppInputDialog.show(
+			context: context,
+			title: l10n.enteryourname,
+			hintText: l10n.requesterName,
+			confirmText: l10n.sva,
+			cancelText: l10n.cancel,
+			autofocus: true,
+			maxLength: 20,
+		);
 
     if (newName == null || newName.isEmpty) {
       return false;
