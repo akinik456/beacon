@@ -47,7 +47,7 @@ class CallMeOverlay extends StatelessWidget {
               const SizedBox(height: 18),
 
               Text(
-                '$locatorName - $locatorCode',
+                '$locatorName',
                 style: AppFonts.title,
                 textAlign: TextAlign.center,
               ),

@@ -239,7 +239,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get locationPermissionTitle => 'Konum izni';
 
   @override
-  String get locationPermissionDescription => 'LynraFamily Member, aile konum taleplerine yanıt verebilmek ve konum güncellemelerini paylaşabilmek için konum iznine ihtiyaç duyar.\n\nArka plan konum erişimi, uygulama açık olmasa bile konum güncellemelerinin gönderilebilmesini sağlar.\n\nKonumunuz yalnızca aile grubunuzdaki güvenilir üyelerle paylaşılır.';
+  String get locationPermissionDescription => 'LynraFamily, konumunuzu yalnızca sizinle eşleştirilmiş üyeler arasındaki mesafeyi hesaplamak için kullanır.\n\nKonumunuz üyelerle veya başka kullanıcılarla paylaşılmaz.';
 
   @override
   String get locatorGuide1 => 'Konumunuzu paylaşabilmek için önce bir aile grubuna katılmalısınız.';
@@ -305,7 +305,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get memoryProtection => 'Bellek Koruması';
 
   @override
-  String get memoryProtectionInstructions => 'LynraFamily Member uygulamasının arka planda çalışmaya devam etmesi için lütfen aşağıdaki adımları uygulayın:\n\n• Xiaomi: Güvenlik uygulaması > Hızlandırma > Ayarlar > Uygulama Kilidi > LynraFamily Member uygulamasını etkinleştirin.\n• Diğer cihazlar: Son Uygulamalar ekranını açın, LynraFamily Member uygulamasına uzun basın veya aşağı kaydırın, ardından Kilit simgesine dokunun.\n\nBu işlem, sistemin RAM tasarrufu yapmak için uygulamayı kapatmasını önlemeye yardımcı olur.';
+  String get memoryProtectionInstructions => 'LynraFamily Member uygulamasının arka planda çalışmaya devam etmesi için lütfen aşağıdaki adımları uygulayın:\n\n• Xiaomi: Güvenlik uygulaması > Hızlandırma > Ayarlar > Uygulama Kilidi > LynraFamily Member uygulamasını etkinleştirin.\n• Diğer Android cihazları: Son Uygulamalar ekranında LynraFamily Member uygulamasının simgesine dokunarak veya uzun basarak Uygulama Bilgileri menüsünü açın.\nÜreticiniz destekliyorsa uygulamayı bellekte tutma / açık tutma seçeneğini etkinleştirin.';
 
   @override
   String get memberReady => 'Hazır';

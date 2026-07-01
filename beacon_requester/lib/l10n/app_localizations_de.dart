@@ -160,21 +160,6 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String get hello => 'Hallo';
-
-  @override
-  String get joinGroup => 'Gruppe beitreten';
-
-  @override
-  String get joinInstantlyWithCamera => 'Sofort mit der Kamera beitreten';
-
-  @override
-  String get joinRequest => 'Beitrittsanfrage';
-
-  @override
-  String get justNow => 'Gerade eben';
-
-  @override
   String get geofenceAlert => 'Geofence-Warnung';
 
   @override
@@ -205,6 +190,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get groupQRCode => 'QR-Code der Gruppe';
 
   @override
+  String get hello => 'Hallo';
+
+  @override
   String hoursAgo(Object count) {
     return 'vor $count Stunde(n)';
   }
@@ -219,6 +207,21 @@ class AppLocalizationsDe extends AppLocalizations {
   String isWatchingYourLocation(Object name) {
     return '$name is watching your location.';
   }
+
+  @override
+  String get joinGroup => 'Gruppe beitreten';
+
+  @override
+  String get joinInstantlyWithCamera => 'Sofort mit der Kamera beitreten';
+
+  @override
+  String get joinRequest => 'Beitrittsanfrage';
+
+  @override
+  String get joinRequestCouldNotBeApproved => 'The join request could not be approved.';
+
+  @override
+  String get justNow => 'Gerade eben';
 
   @override
   String get language => 'Sprache';

@@ -17,8 +17,9 @@
 
 		<application
         android:label="LynraFamily Member"
-        android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+				android:name="${applicationName}"
+				android:icon="@mipmap/ic_launcher"
+				android:allowBackup="false">
         <activity
             android:name=".MainActivity"
             android:exported="true"

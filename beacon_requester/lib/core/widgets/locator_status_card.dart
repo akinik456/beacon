@@ -3,6 +3,7 @@ import 'app_card.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_fonts.dart';
 import 'app_card.dart';
+import 'app_banner.dart';
 
 import '../../services/call_me_service.dart';
 import '../../l10n/app_localizations.dart';
@@ -129,11 +130,9 @@ class LocatorStatusCard extends StatelessWidget {
 												);
 												if (!context.mounted) return;
 
-												ScaffoldMessenger.of(context).showSnackBar(
-													SnackBar(
-														content: Text(l10n.callMeSent),
-														duration: const Duration(seconds: 2),
-													),
+												AppBanner.success(
+													context,
+													l10n.callMeSent,
 												);
 											},
 											icon: const Icon(

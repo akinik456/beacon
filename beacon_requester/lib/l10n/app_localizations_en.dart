@@ -160,21 +160,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get hello => 'Hello';
-
-  @override
-  String get joinGroup => 'Join group';
-
-  @override
-  String get joinInstantlyWithCamera => 'Join instantly with camera';
-
-  @override
-  String get joinRequest => 'Join Request';
-
-  @override
-  String get justNow => 'Just now';
-
-  @override
   String get geofenceAlert => 'Geofence Alert';
 
   @override
@@ -205,6 +190,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get groupQRCode => 'Group QR Code';
 
   @override
+  String get hello => 'Hello';
+
+  @override
   String hoursAgo(Object count) {
     return '$count hour ago';
   }
@@ -219,6 +207,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String isWatchingYourLocation(Object name) {
     return '$name is watching your location.';
   }
+
+  @override
+  String get joinGroup => 'Join group';
+
+  @override
+  String get joinInstantlyWithCamera => 'Join instantly with camera';
+
+  @override
+  String get joinRequest => 'Join Request';
+
+  @override
+  String get joinRequestCouldNotBeApproved => 'The join request could not be approved.';
+
+  @override
+  String get justNow => 'Just now';
 
   @override
   String get language => 'Language';
@@ -239,7 +242,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get locationPermissionTitle => 'Location permission';
 
   @override
-  String get locationPermissionDescription => 'LynraFamily Member needs location permission to respond to family location requests and share location updates.\n\nBackground location access allows the app to provide location updates even when the app is not open.\n\nYour location is only shared with trusted members of your family group.';
+  String get locationPermissionDescription => 'LynraFamily uses your location only to calculate the distance between you and your paired members.\n\nYour location is not shared with members or other users.';
 
   @override
   String get locatorGuide1 => 'To share your location, you must first join a family group.';
@@ -305,7 +308,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get memoryProtection => 'Memory Protection';
 
   @override
-  String get memoryProtectionInstructions => 'To keep LynraFamily Member running in the background, please follow these steps:\n\n• Xiaomi: Security app > Boost Speed > Settings > App Lock > Enable LynraFamily Member.\n• Others: Open Recent Apps, long press LynraFamily Member or swipe down, then tap the Lock icon.\n\nThis helps prevent the system from closing the app to save RAM.';
+  String get memoryProtectionInstructions => 'To help LynraFamily Member continue running in the background, please follow these steps:\n\n• Xiaomi: Open the Security app > Boost speed > Settings > App lock, then enable LynraFamily Member.\n• Other Android devices: Open the Recent Apps screen, tap or press and hold the LynraFamily Member app icon to open App Info.\nIf your device supports it, enable the option to keep the app in memory or keep it open.';
 
   @override
   String get memberReady => 'Member Ready';

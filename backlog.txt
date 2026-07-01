@@ -1,19 +1,13 @@
  app cihazdan kaldırılırsa FS den nasıl sileceğiz ?
  
 ********
-
-
 SMS
 Messaging
-
 
 manuel bildirim hazırlığı 
 lynrafamily_all
 lynrafamily_requesters
 lynrafamily_members
-
-
-joingrup snackbar
 
 Trial abuse prevention
 
@@ -21,7 +15,6 @@ samsung izinler
 
 isim girmek neden bu kadar zor
 
-add same member
 
 REQUEST LOCATION  artık yok ancak kodlarda var
 
@@ -63,7 +56,7 @@ pairing timeout
 
 ***************
 
-brom ekranlarda taşma kontrolü için genel olarak yapabileceğimiz bişey yok mu,her cihazda deneme şansımız olmadığına göre
+ekranlarda taşma kontrolü için genel olarak yapabileceğimiz bişey yok mu,her cihazda deneme şansımız olmadığına göre
 
 Brom bu konu benim de çok önem verdiğim bir konu. Evet, %100 garanti yok ama taşmaların %95'ini önleyecek bir tasarım disiplini oluşturabiliriz.
 

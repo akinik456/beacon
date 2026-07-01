@@ -393,36 +393,6 @@ abstract class AppLocalizations {
   /// **'Free trial: {days} days left'**
   String freeTrialDaysLeft(int days);
 
-  /// No description provided for @hello.
-  ///
-  /// In en, this message translates to:
-  /// **'Hello'**
-  String get hello;
-
-  /// No description provided for @joinGroup.
-  ///
-  /// In en, this message translates to:
-  /// **'Join group'**
-  String get joinGroup;
-
-  /// No description provided for @joinInstantlyWithCamera.
-  ///
-  /// In en, this message translates to:
-  /// **'Join instantly with camera'**
-  String get joinInstantlyWithCamera;
-
-  /// No description provided for @joinRequest.
-  ///
-  /// In en, this message translates to:
-  /// **'Join Request'**
-  String get joinRequest;
-
-  /// No description provided for @justNow.
-  ///
-  /// In en, this message translates to:
-  /// **'Just now'**
-  String get justNow;
-
   /// No description provided for @geofenceAlert.
   ///
   /// In en, this message translates to:
@@ -483,6 +453,12 @@ abstract class AppLocalizations {
   /// **'Group QR Code'**
   String get groupQRCode;
 
+  /// No description provided for @hello.
+  ///
+  /// In en, this message translates to:
+  /// **'Hello'**
+  String get hello;
+
   /// No description provided for @hoursAgo.
   ///
   /// In en, this message translates to:
@@ -506,6 +482,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{name} is watching your location.'**
   String isWatchingYourLocation(Object name);
+
+  /// No description provided for @joinGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Join group'**
+  String get joinGroup;
+
+  /// No description provided for @joinInstantlyWithCamera.
+  ///
+  /// In en, this message translates to:
+  /// **'Join instantly with camera'**
+  String get joinInstantlyWithCamera;
+
+  /// No description provided for @joinRequest.
+  ///
+  /// In en, this message translates to:
+  /// **'Join Request'**
+  String get joinRequest;
+
+  /// No description provided for @joinRequestCouldNotBeApproved.
+  ///
+  /// In en, this message translates to:
+  /// **'The join request could not be approved.'**
+  String get joinRequestCouldNotBeApproved;
+
+  /// No description provided for @justNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Just now'**
+  String get justNow;
 
   /// No description provided for @language.
   ///
@@ -546,7 +552,7 @@ abstract class AppLocalizations {
   /// No description provided for @locationPermissionDescription.
   ///
   /// In en, this message translates to:
-  /// **'LynraFamily Member needs location permission to respond to family location requests and share location updates.\n\nBackground location access allows the app to provide location updates even when the app is not open.\n\nYour location is only shared with trusted members of your family group.'**
+  /// **'LynraFamily uses your location only to calculate the distance between you and your paired members.\n\nYour location is not shared with members or other users.'**
   String get locationPermissionDescription;
 
   /// No description provided for @locatorGuide1.
@@ -678,7 +684,7 @@ abstract class AppLocalizations {
   /// No description provided for @memoryProtectionInstructions.
   ///
   /// In en, this message translates to:
-  /// **'To keep LynraFamily Member running in the background, please follow these steps:\n\n• Xiaomi: Security app > Boost Speed > Settings > App Lock > Enable LynraFamily Member.\n• Others: Open Recent Apps, long press LynraFamily Member or swipe down, then tap the Lock icon.\n\nThis helps prevent the system from closing the app to save RAM.'**
+  /// **'To help LynraFamily Member continue running in the background, please follow these steps:\n\n• Xiaomi: Open the Security app > Boost speed > Settings > App lock, then enable LynraFamily Member.\n• Other Android devices: Open the Recent Apps screen, tap or press and hold the LynraFamily Member app icon to open App Info.\nIf your device supports it, enable the option to keep the app in memory or keep it open.'**
   String get memoryProtectionInstructions;
 
   /// No description provided for @memberReady.

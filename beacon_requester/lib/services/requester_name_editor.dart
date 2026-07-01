@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../l10n/app_localizations.dart';
 import 'identity_service.dart';
+import '../core/widgets/app_banner.dart';
 
 class RequesterNameEditor {
   RequesterNameEditor._();
@@ -84,14 +85,10 @@ class RequesterNameEditor {
     if (!context.mounted) {
       return false;
     }
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        behavior: SnackBarBehavior.floating,
-        content: Text(l10n.saved),
-      ),
-    );
-
+    AppBanner.info(
+			context,
+			l10n.saved,
+		);
     return true;
   }
 }

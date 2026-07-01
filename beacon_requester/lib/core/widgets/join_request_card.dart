@@ -6,6 +6,7 @@ import '../theme/app_fonts.dart';
 import 'app_card.dart';
 import '../../services/join_request_service.dart';
 import '../../l10n/app_localizations.dart';
+import 'app_banner.dart';
 
 
 class JoinRequestCard extends StatelessWidget {
@@ -164,18 +165,12 @@ class JoinRequestCard extends StatelessWidget {
 
 														print("BEACON JOIN APPROVED => $requesterId");
 													} catch (e) {
-														print("BEACON JOIN APPROVE ERROR => $e");
-
 														if (!context.mounted) return;
-
-														ScaffoldMessenger.of(context).showSnackBar(
-															SnackBar(
-																content: Text(
-																	e.toString().contains('requester_capacity_reached')
-																			? l10n.maxFamilyMembersReached
-																			: 'Join request could not be approved.',
-																),
-															),
+														AppBanner.error(
+															context,
+															e.toString().contains('requester_capacity_reached')
+																	? l10n.maxFamilyMembersReached
+																	: l10n.joinRequestCouldNotBeApproved,
 														);
 													}
 												},

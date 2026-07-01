@@ -160,21 +160,6 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get hello => 'Hola';
-
-  @override
-  String get joinGroup => 'Unirse al grupo';
-
-  @override
-  String get joinInstantlyWithCamera => 'Unirse instantáneamente con la cámara';
-
-  @override
-  String get joinRequest => 'Solicitud de unión';
-
-  @override
-  String get justNow => 'Justo ahora';
-
-  @override
   String get geofenceAlert => 'Alerta de geovalla';
 
   @override
@@ -205,6 +190,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get groupQRCode => 'Código QR del grupo';
 
   @override
+  String get hello => 'Hola';
+
+  @override
   String hoursAgo(Object count) {
     return 'hace $count hora(s)';
   }
@@ -219,6 +207,21 @@ class AppLocalizationsEs extends AppLocalizations {
   String isWatchingYourLocation(Object name) {
     return '$name está viendo tu ubicación.';
   }
+
+  @override
+  String get joinGroup => 'Unirse al grupo';
+
+  @override
+  String get joinInstantlyWithCamera => 'Unirse instantáneamente con la cámara';
+
+  @override
+  String get joinRequest => 'Solicitud de unión';
+
+  @override
+  String get joinRequestCouldNotBeApproved => 'No se pudo aprobar la solicitud para unirse.';
+
+  @override
+  String get justNow => 'Justo ahora';
 
   @override
   String get language => 'Idioma';
@@ -239,7 +242,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get locationPermissionTitle => 'Permiso de ubicación';
 
   @override
-  String get locationPermissionDescription => 'LynraFamily Member necesita permiso de ubicación para responder a solicitudes familiares y compartir actualizaciones de ubicación.\n\nEl acceso a la ubicación en segundo plano permite proporcionar actualizaciones incluso cuando la aplicación no está abierta.\n\nSu ubicación solo se comparte con miembros de confianza de su grupo familiar.';
+  String get locationPermissionDescription => 'LynraFamily usa tu ubicación solo para calcular la distancia entre tú y los miembros vinculados.\n\nTu ubicación no se comparte con los miembros ni con otros usuarios.';
 
   @override
   String get locatorGuide1 => 'Para compartir tu ubicación, primero debes unirte a un grupo familiar.';
@@ -305,7 +308,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get memoryProtection => 'Protección de memoria';
 
   @override
-  String get memoryProtectionInstructions => 'Para mantener LynraFamily Member ejecutándose en segundo plano, siga estos pasos:\n\n• Xiaomi: Aplicación Seguridad > Aumentar velocidad > Ajustes > Bloqueo de aplicaciones > Activar LynraFamily Member.\n• Otros: Abra aplicaciones recientes, mantenga pulsado LynraFamily Member o deslice hacia abajo y toque el icono de bloqueo.\n\nEsto ayuda a evitar que el sistema cierre la aplicación para ahorrar RAM.';
+  String get memoryProtectionInstructions => 'Para ayudar a que LynraFamily Member siga funcionando en segundo plano, siga estos pasos:\n\n• Xiaomi: Abra la aplicación Seguridad > Aumentar velocidad > Ajustes > Bloqueo de aplicaciones y active LynraFamily Member.\n• Otros dispositivos Android: Abra la pantalla de Aplicaciones recientes y toque o mantenga presionado el icono de LynraFamily Member para abrir la información de la aplicación.\nSi su dispositivo lo permite, active la opción para mantener la aplicación en memoria o mantenerla abierta.';
 
   @override
   String get memberReady => 'Miembro listo';

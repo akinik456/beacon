@@ -7,6 +7,7 @@ import '../core/widgets/app_card.dart';
 import '../services/group_service.dart';
 import '../services/identity_service.dart';
 import '../l10n/app_localizations.dart';
+import '../core/widgets/app_banner.dart';
 
 class LocatorNotifyPage extends StatefulWidget {
   final String locatorId;
@@ -116,14 +117,11 @@ class _LocatorNotifyPageState extends State<LocatorNotifyPage> {
 			'updatedAt': FieldValue.serverTimestamp(),
     }, SetOptions(merge: true));
 
-    if (!mounted) return;
-
-    ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-        content: Text(l10n.notificationSettingsSaved,),
-      ),
-    );
-
+    if (!mounted) return;    
+			AppBanner.info(
+				context,
+				l10n.notificationSettingsSaved,
+			);
     Navigator.pop(context);
   }
 

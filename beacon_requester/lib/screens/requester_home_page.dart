@@ -47,6 +47,7 @@ import '../services/requester_name_editor.dart';
 import '../core/widgets/guide_panel.dart';
 import '../services/notification_service.dart';
 import '../services/requester_registry_service.dart';
+import '../core/widgets/app_banner.dart';
 
 class RequesterHomePage extends StatefulWidget {
   const RequesterHomePage({super.key});
@@ -1689,14 +1690,10 @@ final l10n = AppLocalizations.of(context)!;
 																									await _loadLocators();
 																									
 																									if (!context.mounted) return;
-
-																									ScaffoldMessenger.of(context).showSnackBar(
-																										SnackBar(
-																											behavior: SnackBarBehavior.floating,
-																											content: Text(l10n.memberremoved),
-																										),
-																									);
-
+																										AppBanner.info(
+																											context,
+																											l10n.memberremoved,
+																										);
 																									setState(() {});
 																								},
 																							);

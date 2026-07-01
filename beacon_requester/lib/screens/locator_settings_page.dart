@@ -7,6 +7,7 @@ import '../core/theme/app_fonts.dart';
 import '../core/widgets/app_card.dart';
 import '../services/group_service.dart';
 import '../../l10n/app_localizations.dart';
+import '../core/widgets/app_banner.dart';
 
 class LocatorSettingsPage extends StatefulWidget {
   final String locatorId;
@@ -99,9 +100,10 @@ Future<void> _loadPlaces() async {
   final l10n = AppLocalizations.of(context)!;
 
   if (_placeCount >= 5) {
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(l10n.maximum5Places)));
+		AppBanner.info(
+			context,
+			l10n.maximum5Places,
+		);
     return;
   }
 
@@ -148,10 +150,10 @@ Future<void> _loadPlaces() async {
   await _loadPlaces();
 
   if (!mounted) return;
-
-  ScaffoldMessenger.of(
-    context,
-  ).showSnackBar(SnackBar(content: Text(l10n.placeSaved)));
+		AppBanner.info(
+		context,
+		l10n.placeSaved,
+	);
 }
 
   Future<void> _loadSettings() async {
@@ -324,10 +326,10 @@ Future<void> _deletePlace(String placeId, String placeName) async {
         });
 
     if (!mounted) return;
-
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(l10n.settingsSaved)));
+		AppBanner.info(
+			context,
+			l10n.settingsSaved,
+		);
   }
 
   bool get canSavePlace => widget.isMaster && geofenceAlert && _placeCount < 5;

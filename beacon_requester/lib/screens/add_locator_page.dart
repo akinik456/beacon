@@ -10,6 +10,7 @@ import '../services/locator_pairing_service.dart';
 import '../services/pairing_response_service.dart';
 import '../services/group_service.dart';
 import '../l10n/app_localizations.dart';
+import '../core/widgets/app_banner.dart';
 
 
 class AddLocatorPage extends StatefulWidget {
@@ -167,61 +168,43 @@ class _AddLocatorPageState extends State<AddLocatorPage> {
 									);
 									if (result == null) {
 										if (!context.mounted) return;
-										ScaffoldMessenger.of(context)
-												.showSnackBar(
-											SnackBar(
-												content: Text(
-													l10n.memberNotFound,
-												),
-											),
-										);
+										AppBanner.info(
+										context,
+										l10n.memberNotFound,
+										);	
 										return;
 									}
 									if (result?['error'] == 'pairing_request_pending') {
-										ScaffoldMessenger.of(context).showSnackBar(
-											SnackBar(
-												content: Text(l10n.pairingRequestPending),
-											),
-										);
+										AppBanner.info(
+										context,
+										l10n.pairingRequestPending,
+										);	
 										return;
 									}
 									if (result?['error'] == 'member_already_paired') {
 										if (!context.mounted) return;
-
-										ScaffoldMessenger.of(context).showSnackBar(
-											SnackBar(
-												content: Text(l10n.memberAlreadyPaired),
-											),
-										);
-
+										AppBanner.info(
+										context,
+										l10n.memberAlreadyPaired,
+										);		
 										return;
 									}
 									if (result?['error'] == 'member_limit_reached') {
 										if (!context.mounted) return;
-
-										ScaffoldMessenger.of(context).showSnackBar(
-											SnackBar(
-												content: Text(l10n.memberlimitreached),
-											),
-										);
-
+										AppBanner.info(
+										context,
+										l10n.memberlimitreached,
+										);		
 										return;
 									}
 									final locatorId = result['locatorId']!;
 									final requestId = result['requestId']!;
 									if (!context.mounted) return;
-										ScaffoldMessenger.of(context)
-												.showSnackBar(
-											SnackBar(
-												content: Text(
-													l10n.waitingForLocator,
-												),
-											),
-										);
-										
-										
+										AppBanner.info(
+										context,
+										l10n.waitingForLocator,
+										);										
 										StreamSubscription? pairingSub;
-
 										pairingSub = PairingResponseService
 												.watchPairingResponse(
 													locatorId: locatorId,
@@ -263,13 +246,10 @@ class _AddLocatorPageState extends State<AddLocatorPage> {
 												);
 
 												if (!context.mounted) return;
-
-												ScaffoldMessenger.of(context).showSnackBar(
-													SnackBar(
-														content: Text(l10n.memberpaired),
-													),
+												AppBanner.info(
+													context,
+													l10n.memberpaired,
 												);
-
 												Navigator.pop(context, true);
 												return;
 											}
@@ -280,11 +260,9 @@ class _AddLocatorPageState extends State<AddLocatorPage> {
 											);
 
 											if (!context.mounted) return;
-
-											ScaffoldMessenger.of(context).showSnackBar(
-												SnackBar(
-													content: Text(l10n.pairingRejected),
-												),
+											AppBanner.info(
+												context,
+												l10n.pairingRejected,
 											);
 										});
 									}

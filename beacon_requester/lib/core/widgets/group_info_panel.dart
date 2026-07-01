@@ -8,6 +8,7 @@ import '../theme/app_fonts.dart';
 import '../../screens/language_select_page.dart';
 import 'requester_list_card.dart';
 import '../../services/requester_name_editor.dart';
+import 'app_banner.dart';
 
 
 class GroupInfoPanel  extends StatelessWidget {
@@ -90,13 +91,10 @@ class GroupInfoPanel  extends StatelessWidget {
     });
 
     if (!context.mounted) return;
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        behavior: SnackBarBehavior.floating,
-        content: Text(l10n.saved),
-      ),
-    );
+		AppBanner.info(
+			context,
+			l10n.saved,
+		);
   }
 
   Widget _buildCodeRow(BuildContext context) {
