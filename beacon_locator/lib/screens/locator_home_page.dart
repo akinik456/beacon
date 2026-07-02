@@ -45,6 +45,7 @@ import '../core/widgets/group_info_panel.dart';
 import '../services/locator_name_editor.dart';
 import '../core/widgets/guide_panel.dart';
 import '../core/widgets/app_banner.dart';
+import '../services/theme_service.dart';
 
 
 class LocatorHomePage extends StatefulWidget {
@@ -66,11 +67,12 @@ class _LocatorHomePageState extends State<LocatorHomePage>
 	bool _hasFullAccess = true;
 	bool _showGroupInfo = false;
 	bool _showGuide = false;
+	bool _isDarkTheme = true;
 	
  @override
 void initState() {
   super.initState();
-
+	_loadTheme();
 	//MotionService.start();
   unawaited(_startLocatorHome());
 
@@ -125,6 +127,18 @@ Future<void> _startLocatorHome() async {
 		WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
+	
+	Future<void> _loadTheme() async {
+		final isDark = await ThemeService.isDarkTheme();
+
+		AppColors.isDark = isDark;
+
+		if (!mounted) return;
+
+		setState(() {
+			_isDarkTheme = isDark;
+		});
+	}
 	
 Future<void> _startNativePresenceIfAllowed() async {
   final locationAlways =
@@ -447,7 +461,7 @@ Stream<List<Map<String, String>>> _watchPairedRequesterData() async* {
             children: [
               Stack(
 								alignment: Alignment.bottomRight,
-								children: const [
+								children: [
 									Icon(
 										Icons.qr_code_scanner_rounded,
 										color: AppColors.accent,
@@ -609,7 +623,7 @@ Widget _pairedRequesterCard() {
 														l10n.callMeSent,
 													);
 												},
-                      icon: const Icon(
+                      icon: Icon(
                         Icons.call_rounded,
                         color: AppColors.primary,
                       ),
@@ -791,7 +805,7 @@ Widget _activeWatchersCard() {
         return AppCard(
           child: Column(
             children: [
-              const Icon(
+              Icon(
                 Icons.check_circle_outline_rounded,
                 color: AppColors.primary,
                 size: 42,
@@ -838,7 +852,7 @@ Widget _activeWatchersCard() {
 										children: [
 											Row(
 												children: [
-													const Icon(
+													Icon(
 														Icons.visibility_rounded,
 														color: AppColors.primary,
 														size: 20,
@@ -934,7 +948,31 @@ final l10n = AppLocalizations.of(context)!;
 																			color: AppColors.primary,
 																		),
 																	),
+																	Positioned(
+																		right: 40,
+																		child: IconButton(
+																			onPressed: () async {
+																				final next = !_isDarkTheme;
 
+																				await ThemeService.setDarkTheme(next);
+
+																				AppColors.isDark = next;
+
+																				if (!mounted) return;
+
+																				setState(() {
+																					_isDarkTheme = next;
+																				});
+																			},
+																			icon: Icon(
+																				_isDarkTheme
+																						? Icons.light_mode_rounded
+																						: Icons.dark_mode_rounded,
+																				color: AppColors.primary,
+																				size: 22,
+																			),
+																		),
+																	),
 																	Positioned(
 																		right: 0,
 																		child: IconButton(
@@ -1065,13 +1103,13 @@ final l10n = AppLocalizations.of(context)!;
 													Icon(
 														Icons.chat_bubble_outline_rounded,
 														size: 18,
-														color: const Color(0xFF8FD8FF).withOpacity(0.50),
+														color: AppColors.primary,
 													),
 													const SizedBox(width: 4),
 													Text(
 														l10n.feedback,
 														style: TextStyle(
-															color: const Color(0xFF8FD8FF).withOpacity(0.50),
+															color: AppColors.primary,
 															fontSize: 14,
 															fontWeight: FontWeight.w500,
 														),
@@ -1086,7 +1124,7 @@ final l10n = AppLocalizations.of(context)!;
 									Text(
 										"${l10n.version} $_appVersion",
 										style: TextStyle(
-											color: Colors.white.withOpacity(0.4),
+											color: AppColors.textPrimary,
 											fontSize: 15,
 											fontWeight: FontWeight.w500,
 										),
@@ -1122,7 +1160,7 @@ final l10n = AppLocalizations.of(context)!;
 													Text(
 														l10n.otherApps,
 														style: TextStyle(
-															color: const Color(0xFF8FD8FF).withOpacity(0.50),
+															color: AppColors.primary,
 															fontSize: 		14,
 															fontWeight: FontWeight.w500,
 														),

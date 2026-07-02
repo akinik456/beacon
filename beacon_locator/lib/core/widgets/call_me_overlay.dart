@@ -46,7 +46,7 @@ Widget build(BuildContext context) {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(
+                  Icon(
                     Icons.phone_in_talk_rounded,
                     color: AppColors.primary,
                     size: 24,

@@ -39,7 +39,7 @@ class GroupInfoPanel extends StatelessWidget {
             children: [
               Stack(
                 alignment: Alignment.bottomRight,
-                children: const [
+                children: [
                   Icon(
                     Icons.qr_code_scanner_rounded,
                     color: AppColors.accent,
@@ -47,7 +47,7 @@ class GroupInfoPanel extends StatelessWidget {
                   ),
                 ],
               ),
-              const Icon(
+              Icon(
                 Icons.zoom_in,
                 size: 32,
                 color: AppColors.accent,
@@ -84,7 +84,7 @@ class GroupInfoPanel extends StatelessWidget {
 
             onLanguageChanged();
           },
-          icon: const Icon(
+          icon: Icon(
             Icons.language_rounded,
             size: 18,
             color: AppColors.accent,
@@ -99,7 +99,7 @@ class GroupInfoPanel extends StatelessWidget {
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              const Icon(
+              Icon(
                 Icons.arrow_drop_down,
                 size: 18,
                 color: AppColors.accent,
@@ -156,7 +156,7 @@ class GroupInfoPanel extends StatelessWidget {
                           onLocatorNameChanged();
                         }
                       },
-                      child: const Icon(
+                      child: Icon(
                         Icons.edit_rounded,
                         size: 18,
                         color: AppColors.textSecondary,

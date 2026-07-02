@@ -207,7 +207,7 @@ Widget build(BuildContext context) {
                       ),
                       title: Row(
                         children: [
-                          const Icon(
+                          Icon(
                             Icons.info_outline,
                             color: AppColors.primary,
                           ),
@@ -258,7 +258,7 @@ Widget build(BuildContext context) {
                     ),
                     title: Row(
                       children: [
-                        const Icon(
+                        Icon(
                           Icons.lock_clock_rounded,
                           color: AppColors.primary,
                         ),

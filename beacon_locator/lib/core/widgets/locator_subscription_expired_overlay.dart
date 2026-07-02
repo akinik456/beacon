@@ -24,7 +24,7 @@ class LocatorSubscriptionExpiredOverlay extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(
+                  Icon(
                     Icons.lock_clock_rounded,
                     color: AppColors.primary,
                     size: 48,

@@ -50,7 +50,7 @@ class _PermissionIntroPageState
 										if (!mounted) return;
 										setState(() {});
 									},
-									icon: const Icon(
+									icon: Icon(
 										Icons.language_rounded,
 										size: 18,
 										color: AppColors.accent,
@@ -65,7 +65,7 @@ class _PermissionIntroPageState
 																fontWeight: FontWeight.w600,
 															),
 														),
-														const Icon(
+														Icon(
 															Icons.arrow_drop_down,
 															size: 18,
 															color: AppColors.accent,
@@ -89,7 +89,7 @@ class _PermissionIntroPageState
                     ],
                   ),
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.location_searching_rounded,
                   color: AppColors.primary,
                   size: 52,
