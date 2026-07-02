@@ -53,8 +53,8 @@ class LocatorStatusCard extends StatelessWidget {
   return GestureDetector(
     child: AppCard(
 			borderColor: status == 'online'
-      ? Colors.green.withValues(alpha: 0.70)
-      : Colors.red.withValues(alpha: 0.70),
+      ? AppColors.accent.withValues(alpha: 0.70)
+      : AppColors.danger.withValues(alpha: 0.70),
   borderWidth: 3.0,
 			child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -103,8 +103,8 @@ class LocatorStatusCard extends StatelessWidget {
 									status.toUpperCase(),
 									style: AppFonts.caption.copyWith(
 										color: status == 'online'
-												? Colors.green
-												: Colors.red,
+												? AppColors.accent
+												: AppColors.danger,
 									),
 								),
 							),

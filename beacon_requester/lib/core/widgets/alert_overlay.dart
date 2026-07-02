@@ -29,7 +29,7 @@ class AlertOverlay extends StatelessWidget {
 
     return Positioned.fill(
       child: Material(
-        color: Colors.black.withValues(
+        color: AppColors.background.withValues(
           alpha: 0.65,
         ),
         child: Center(
@@ -38,9 +38,9 @@ class AlertOverlay extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
 
-                const Icon(
+                Icon(
                   Icons.warning_amber_rounded,
-                  color: Colors.orange,
+                  color: AppColors.warning,
                   size: 54,
                 ),
 

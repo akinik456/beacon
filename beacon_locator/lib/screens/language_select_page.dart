@@ -144,7 +144,7 @@ class _LanguageSelectPageState
                           },
 													style: ElevatedButton.styleFrom(
 														backgroundColor: AppColors.primary,
-														shadowColor: Colors.transparent,
+														shadowColor: AppColors.background,
 														shape: RoundedRectangleBorder(
 															borderRadius: BorderRadius.circular(18),
 														),

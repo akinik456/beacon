@@ -70,7 +70,7 @@ class AppBanner {
       context: context,
       message: message,
       icon: Icons.warning_amber_rounded,
-      color: Colors.orange,
+      color: AppColors.warning,
     );
   }
 

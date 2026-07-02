@@ -16,7 +16,7 @@ class LocatorSubscriptionExpiredOverlay extends StatelessWidget {
 	final l10n = AppLocalizations.of(context)!;
     return Positioned.fill(
       child: Container(
-        color: Colors.black.withValues(alpha: 0.65),
+        color: AppColors.background,
         child: Center(
           child: Padding(
             padding: const EdgeInsets.all(24),

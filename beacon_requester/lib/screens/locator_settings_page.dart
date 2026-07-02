@@ -390,7 +390,7 @@ Future<void> _deletePlace(String placeId, String placeName) async {
 															side: BorderSide(
 																color: selected
 																		? AppColors.primary.withValues(alpha: 0.45)
-																		: Colors.white.withValues(alpha: 0.05),
+																		: AppColors.textPrimary.withValues(alpha: 0.05),
 															),
 														),
 													),

@@ -32,7 +32,7 @@ class CallMeOverlay extends StatelessWidget {
 
   return Positioned.fill(
     child: Material(
-      color: Colors.black.withValues(alpha: 0.65),
+      color: AppColors.background.withValues(alpha: 0.65),
       child: Center(
         child: AppCard(
           child: Column(

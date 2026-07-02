@@ -35,7 +35,7 @@ Widget build(BuildContext context) {
   );
 
   return Material(
-    color: Colors.black.withOpacity(0.45),
+    color: AppColors.background,
     child: Center(
       child: Padding(
         padding: const EdgeInsets.all(20),

@@ -138,6 +138,20 @@ Future<void> _startLocatorHome() async {
 		setState(() {
 			_isDarkTheme = isDark;
 		});
+	_applySystemBars();
+	}
+	
+	void _applySystemBars() {
+		SystemChrome.setSystemUIOverlayStyle(
+			SystemUiOverlayStyle(
+				statusBarColor: AppColors.background,
+				statusBarIconBrightness:
+						AppColors.isDark ? Brightness.light : Brightness.dark,
+				systemNavigationBarColor: AppColors.background,
+				systemNavigationBarIconBrightness:
+						AppColors.isDark ? Brightness.light : Brightness.dark,
+			),
+		);
 	}
 	
 Future<void> _startNativePresenceIfAllowed() async {
@@ -406,7 +420,7 @@ Stream<List<Map<String, String>>> _watchPairedRequesterData() async* {
 					AppLocalizations.of(dialogContext)!;
 
 			return Dialog(
-        backgroundColor: AppColors.surface,
+        backgroundColor: AppColors.background,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
         child: Padding(
           padding: const EdgeInsets.all(24),
@@ -957,7 +971,7 @@ final l10n = AppLocalizations.of(context)!;
 																				await ThemeService.setDarkTheme(next);
 
 																				AppColors.isDark = next;
-
+																				_applySystemBars();
 																				if (!mounted) return;
 
 																				setState(() {
@@ -1083,7 +1097,7 @@ final l10n = AppLocalizations.of(context)!;
 					right: 2,
 					bottom: 2,
 					child: Material(
-						color: Colors.transparent,
+						color: AppColors.background,
 						child: Padding(
 							padding: const EdgeInsets.symmetric(horizontal: 12),
 							child: Row(
@@ -1154,7 +1168,7 @@ final l10n = AppLocalizations.of(context)!;
 													Icon(
 														Icons.apps_rounded,
 														size: 18,
-														color: const Color(0xFF8FD8FF).withOpacity(0.50),
+														color: AppColors.primary,
 													),
 													const SizedBox(width: 4),
 													Text(
@@ -1215,7 +1229,7 @@ void openFeedbackMenu() {
 final l10n = AppLocalizations.of(context)!;
   showModalBottomSheet(
     context: context,
-    backgroundColor: const Color(0xFF111827),
+    backgroundColor: AppColors.surface,
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(
         top: Radius.circular(24),
@@ -1311,28 +1325,27 @@ class _FeedbackItem extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.06),
+          color: AppColors.card,
           borderRadius: BorderRadius.circular(18),
           border: Border.all(
-            color: Colors.white.withOpacity(0.08),
+            color: AppColors.primary.withValues(alpha: 0.18),
           ),
         ),
         child: Row(
           children: [
             Icon(
               icon,
-              color: const Color(0xFF8FD8FF).withOpacity(0.85),
+              color: AppColors.primary,
               size: 22,
             ),
             const SizedBox(width: 14),
             Text(
-              title,
-              style: const TextStyle(
-                color: Colors.white70,
-                fontSize: 15,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
+							title,
+							style: AppFonts.body.copyWith(
+								color: AppColors.textPrimary,
+								fontWeight: FontWeight.w600,
+							),
+						),
           ],
         ),
       ),
