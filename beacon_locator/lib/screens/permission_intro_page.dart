@@ -8,6 +8,7 @@ import '../l10n/app_localizations.dart';
 
 import '../services/identity_service.dart';
 import '../services/locator_registry_service.dart';
+import '../services/firebase_authentication_service.dart';
 import 'locator_home_page.dart';
 import 'language_select_page.dart';
 
@@ -122,7 +123,8 @@ class _PermissionIntroPageState
 										await IdentityService.setLocatorName(l10n.member);
 
 										await IdentityService.createLocatorId();
-
+										final authUid = await AuthService.ensureSignedIn();
+										await LocatorRegistryService.ensureLocatorAuthUid();
 										await LocatorRegistryService.registerLocator();
 
 										if (!context.mounted) return;

@@ -7,6 +7,7 @@ import 'dart:ui';
 import 'identity_service.dart';
 import 'code_service.dart';
 import 'requester_registry_service.dart';
+import '../services/firebase_authentication_service.dart';
 
 class GroupService {
   GroupService._();
@@ -71,6 +72,7 @@ class GroupService {
 
       tx.set(requesterRef, {
         'active': true,
+				'authUid': AuthService.uid,
         'isMaster': true,
         'joinedAt': now,
         'pairedLocators': {},

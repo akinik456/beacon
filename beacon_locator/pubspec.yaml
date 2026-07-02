@@ -33,6 +33,7 @@ dependencies:
   sensors_plus: ^7.0.0
   flutter_local_notifications: ^18.0.1
   url_launcher: ^6.3.0
+  firebase_auth: ^6.1.2
   
 dev_dependencies:
   flutter_test:

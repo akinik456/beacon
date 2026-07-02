@@ -7,6 +7,7 @@ import 'app_card.dart';
 import '../../services/join_request_service.dart';
 import '../../l10n/app_localizations.dart';
 import 'app_banner.dart';
+import '../../services/firebase_authentication_service.dart';
 
 
 class JoinRequestCard extends StatelessWidget {
@@ -145,6 +146,7 @@ class JoinRequestCard extends StatelessWidget {
 																'role': 'requester',
 																'isMaster': false,
 																'active': true,
+																'authUid': AuthService.uid,
 																'pairedLocators': {},
 																'joinedAt': FieldValue.serverTimestamp(),
 																'createdAt': FieldValue.serverTimestamp(),

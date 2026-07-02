@@ -3,6 +3,9 @@ firebase_options.dart requester da yok
 Production Firestore Rules + Anonymous Auth
 FS kurallar 
  
+brom not alıyorum test bitince migration ı kaldıracaz. 
+
+**************************
  
  app cihazdan kaldırılırsa FS den nasıl sileceğiz ?
  

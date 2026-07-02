@@ -7,6 +7,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'dart:ui';
 
 import 'identity_service.dart';
+import 'firebase_authentication_service.dart';
 
 class LocatorRegistryService {
   LocatorRegistryService._();
@@ -76,4 +77,36 @@ class LocatorRegistryService {
       );
     }
   }
+static Future<void> ensureLocatorAuthUid() async {
+  final locatorId = await IdentityService.getLocatorId();
+  final authUid = AuthService.uid;
+
+  if (locatorId == null || locatorId.isEmpty) {
+    print("BEACON AUTH MIGRATION => locatorId missing");
+    return;
+  }
+
+  if (authUid == null || authUid.isEmpty) {
+    print("BEACON AUTH MIGRATION => authUid missing");
+    return;
+  }
+
+  final locatorRef =
+      _firestore.collection('locators').doc(locatorId);
+
+  final doc = await locatorRef.get();
+  final currentAuthUid = doc.data()?['authUid'];
+
+  if (currentAuthUid != null && currentAuthUid.toString().isNotEmpty) {
+    print("BEACON AUTH MIGRATION => locator authUid already exists");
+    return;
+  }
+
+  await locatorRef.set({
+    'authUid': authUid,
+  }, SetOptions(merge: true));
+
+  print("BEACON AUTH MIGRATION => locator authUid written");
+}	
+	
 }
