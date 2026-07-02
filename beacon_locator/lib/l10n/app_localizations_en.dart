@@ -245,6 +245,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get locationPermissionDescription => 'LynraFamily uses your location only to calculate the distance between you and your paired members.\n\nYour location is not shared with members or other users.';
 
   @override
+  String get locationPermissionDescForLocator => 'LynraFamily Member requires location access so your trusted family can request your location when needed.\n\nBackground location access allows these requests to work even when the app is closed.\n\nYour location is only shared with trusted family members.';
+
+  @override
   String get locatorGuide1 => 'To share your location, you must first join a family group.';
 
   @override

@@ -555,6 +555,12 @@ abstract class AppLocalizations {
   /// **'LynraFamily uses your location only to calculate the distance between you and your paired members.\n\nYour location is not shared with members or other users.'**
   String get locationPermissionDescription;
 
+  /// No description provided for @locationPermissionDescForLocator.
+  ///
+  /// In en, this message translates to:
+  /// **'LynraFamily Member requires location access so your trusted family can request your location when needed.\n\nBackground location access allows these requests to work even when the app is closed.\n\nYour location is only shared with trusted family members.'**
+  String get locationPermissionDescForLocator;
+
   /// No description provided for @locatorGuide1.
   ///
   /// In en, this message translates to:

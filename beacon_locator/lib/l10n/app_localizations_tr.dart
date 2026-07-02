@@ -245,6 +245,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get locationPermissionDescription => 'LynraFamily, konumunuzu yalnızca sizinle eşleştirilmiş üyeler arasındaki mesafeyi hesaplamak için kullanır.\n\nKonumunuz üyelerle veya başka kullanıcılarla paylaşılmaz.';
 
   @override
+  String get locationPermissionDescForLocator => 'LynraFamily Member, güvenilir aile üyelerinizin gerektiğinde konumunuzu isteyebilmesi için konum erişimine ihtiyaç duyar.\n\nArka plan konum izni, uygulama kapalı olsa bile bu isteklerin çalışmasını sağlar.\n\nKonumunuz yalnızca güvenilir aile üyelerinizle paylaşılır.';
+
+  @override
   String get locatorGuide1 => 'Konumunuzu paylaşabilmek için önce bir aile grubuna katılmalısınız.';
 
   @override

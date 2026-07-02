@@ -13,11 +13,6 @@ brom not alıyorum test bitince migration ı kaldıracaz.
 SMS
 Messaging
 
-manuel bildirim hazırlığı 
-lynrafamily_all
-lynrafamily_requesters
-lynrafamily_members
-
 Trial abuse prevention
 
 isim girmek neden bu kadar zor

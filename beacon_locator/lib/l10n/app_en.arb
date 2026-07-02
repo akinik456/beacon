@@ -85,6 +85,7 @@
 "locationAlwaysDescription": 					"Set to \"Allow all the time\" for tracking",
 "locationPermissionTitle": 						"Location permission",
 "locationPermissionDescription": 			"LynraFamily uses your location only to calculate the distance between you and your paired members.\n\nYour location is not shared with members or other users.",
+"locationPermissionDescForLocator": 	"LynraFamily Member requires location access so your trusted family can request your location when needed.\n\nBackground location access allows these requests to work even when the app is closed.\n\nYour location is only shared with trusted family members.",
 "locatorGuide1": 											"To share your location, you must first join a family group.",
 "locatorGuide2": 											"Share your Member Code with your family administrator to receive a pairing request.",
 "locatorGuide3": 											"You can find your Member Code by opening the Group Information panel.",

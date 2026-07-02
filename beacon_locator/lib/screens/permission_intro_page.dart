@@ -106,7 +106,7 @@ class _PermissionIntroPageState
               ),
               const SizedBox(height: 18),
               Text(
-								l10n.locationPermissionDescription,
+								l10n.locationPermissionDescForLocator,
 								style: AppFonts.body.copyWith(
 									color: AppColors.textSecondary,
 									height: 1.6,
