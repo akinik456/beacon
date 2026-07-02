@@ -135,9 +135,10 @@ static Future<void> initialize() async {
 			return;
 		}
 
-		final topic = "requester_$requesterId";
+		final requesterTopic = "requester_$requesterId";
 
-		await subscribeToTopicWithRetry(topic);
+		await subscribeToTopicWithRetry(requesterTopic);
+		await subscribeToTopicWithRetry("lynra_news");
 	}
 	
 	static Future<void> subscribeToTopicWithRetry(

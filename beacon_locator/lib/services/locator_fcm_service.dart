@@ -162,9 +162,10 @@ static int _initAttempt = 0;
 			return;
 		}
 
-		final topic = 'locator_$locatorId';
+		final locatorTopic = 'locator_$locatorId';
 
-		await subscribeToTopicWithRetry(topic);
+		await subscribeToTopicWithRetry(locatorTopic);
+		await subscribeToTopicWithRetry("lynra_news");
 	}
 	
 	static Future<void> subscribeToTopicWithRetry(
