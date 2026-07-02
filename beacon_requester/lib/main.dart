@@ -23,6 +23,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 	
   await Firebase.initializeApp();
+	//AuthService.startAuthListener();
 
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
