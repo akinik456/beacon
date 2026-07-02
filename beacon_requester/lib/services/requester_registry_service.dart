@@ -8,6 +8,7 @@ import 'dart:ui';
 
 import 'identity_service.dart';
 import 'code_service.dart';
+import 'firebase_authentication_service.dart';
 
 class RequesterRegistryService {
   RequesterRegistryService._();
@@ -45,6 +46,7 @@ class RequesterRegistryService {
 
     await _firestore.collection('requesters').doc(requesterId).set({
       'active': true,
+			'authUid': AuthService.uid,
       'createdAt': FieldValue.serverTimestamp(),
       'updatedAt': FieldValue.serverTimestamp(),
       'platform': Platform.operatingSystem,
@@ -72,5 +74,37 @@ class RequesterRegistryService {
       "BEACON REQUESTER REGISTRY ERROR => $e",
     );
   }
+}
+
+static Future<void> ensureRequesterAuthUid() async {
+  final requesterId = await IdentityService.getRequesterId();
+  final authUid = AuthService.uid;
+
+  if (requesterId == null || requesterId.isEmpty) {
+    print("BEACON AUTH MIGRATION => requesterId missing");
+    return;
+  }
+
+  if (authUid == null || authUid.isEmpty) {
+    print("BEACON AUTH MIGRATION => authUid missing");
+    return;
+  }
+
+  final requesterRef =
+      _firestore.collection('requesters').doc(requesterId);
+
+  final doc = await requesterRef.get();
+  final currentAuthUid = doc.data()?['authUid'];
+
+  if (currentAuthUid != null && currentAuthUid.toString().isNotEmpty) {
+    print("BEACON AUTH MIGRATION => requester authUid already exists");
+    return;
+  }
+
+  await requesterRef.set({
+    'authUid': authUid,
+  }, SetOptions(merge: true));
+
+  print("BEACON AUTH MIGRATION => requester authUid written");
 }
 }

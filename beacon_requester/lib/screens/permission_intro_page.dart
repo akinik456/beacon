@@ -7,6 +7,8 @@ import '../l10n/app_localizations.dart';
 import 'join_group_page.dart';
 import '../services/identity_service.dart';
 import '../services/requester_registry_service.dart';
+import '../services/firebase_authentication_service.dart';
+
 import 'requester_home_page.dart';
 import 'language_select_page.dart';
 
@@ -223,8 +225,9 @@ final langCode =
                   child: ElevatedButton(
                     onPressed: () async {
 											await IdentityService.setRequesterName(l10n.yourname);
-
 											await IdentityService.createRequesterId();
+											final authUid = await AuthService.ensureSignedIn();
+											await RequesterRegistryService.ensureRequesterAuthUid();
 
 											await RequesterRegistryService.registerRequester();
 
