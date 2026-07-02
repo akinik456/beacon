@@ -949,7 +949,7 @@ final l10n = AppLocalizations.of(context)!;
 																		),
 																	),
 																	Positioned(
-																		right: 40,
+																		right: 30,
 																		child: IconButton(
 																			onPressed: () async {
 																				final next = !_isDarkTheme;
