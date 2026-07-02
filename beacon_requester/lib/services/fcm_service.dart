@@ -11,35 +11,86 @@ class FCMService {
   static final FirebaseMessaging _messaging =
       FirebaseMessaging.instance;
 
-  static Future<void> initialize() async {
-		try {
-		// Permission
-			final settings = await _messaging.requestPermission();
+static bool _initializing = false;
+static bool _initialized = false;
+static int _initAttempt = 0;
 
-			print(
-				"BEACON FCM => permission => ${settings.authorizationStatus}",
-			);
+static Future<void> initialize() async {
+  if (_initialized || _initializing) return;
 
-			// Token
-			final token = await _messaging.getToken();
+  _initializing = true;
+  _initAttempt++;
 
-			print("BEACON FCM => token => $token");
-			
-			FirebaseMessaging.instance.onTokenRefresh.listen((newToken) async {
-				print("BEACON FCM => token refreshed => $newToken");
-			});
-		
-		} catch (e) {
-			print("BEACON FCM ERROR => $e");
+  try {
+    final settings = await _messaging.requestPermission();
+
+    print(
+      "BEACON FCM => permission => ${settings.authorizationStatus}",
+    );
+
+    final token = await _messaging.getToken();
+
+    print("BEACON FCM => token => $token");
+
+    FirebaseMessaging.instance.onTokenRefresh.listen((newToken) async {
+      print("BEACON FCM => token refreshed => $newToken");
+      await _setupTopicSubscription();
+    });
+
+    if (token == null || token.isEmpty) {
+      print("BEACON FCM => token empty");
+      return;
+    }
+
+    await _setupTopicSubscription();
+
+    _initialized = true;
+    print("BEACON FCM => initialized");
+  } catch (e) {
+    print("BEACON FCM ERROR => $e");
+
+    if (_initAttempt < 5) {
+      final delay = Duration(seconds: _initAttempt * 10);
+
+      print(
+        "BEACON FCM => retry init later "
+        "attempt=$_initAttempt delay=${delay.inSeconds}s",
+      );
+
+      Future.delayed(delay, () {
+        initialize();
+      });
+    } else {
+			print("BEACON FCM => init postponed, trying token reset once");
+
+			try {
+				await _messaging.deleteToken();
+
+				print("BEACON FCM => token deleted");
+
+				await Future.delayed(const Duration(seconds: 2));
+
+				final token = await _messaging.getToken();
+
+				print("BEACON FCM => token after reset => $token");
+
+				if (token != null && token.isNotEmpty) {
+					await _setupTopicSubscription();
+
+					_initialized = true;
+
+					print("BEACON FCM => initialized after token reset");
+				} else {
+					print("BEACON FCM => token still empty after reset");
+				}
+			} catch (e) {
+				print("BEACON FCM => token reset failed => $e");
+			}
 		}
-		
-		try {
-			await _setupTopicSubscription();
-		} catch (e) {
-			print("BEACON FCM => setup topic error => $e");
-		}
-		
-		// ================= FOREGROUND LISTENER =================
+  } finally {
+    _initializing = false;
+  }
+// ================= FOREGROUND LISTENER =================
 
 		FirebaseMessaging.onMessage.listen((message) {
 			print("BEACON FCM => FOREGROUND MESSAGE RECEIVED");
@@ -73,8 +124,9 @@ class FCMService {
 				"${initialMessage.data}",
 			);
 		}				
-	}
 	
+	
+}	
 	static Future<void> _setupTopicSubscription() async {
 		final requesterId = await IdentityService.getRequesterId();
 

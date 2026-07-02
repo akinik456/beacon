@@ -1,3 +1,9 @@
+firebase_options.dart requester da yok
+
+Production Firestore Rules + Anonymous Auth
+FS kurallar 
+ 
+ 
  app cihazdan kaldırılırsa FS den nasıl sileceğiz ?
  
 ********
@@ -41,10 +47,7 @@ Location sharing is managed by your family administrator.eya
 To stop sharing, ask your family administrator to remove this device.
 
 
-firebase_options.dart requester da yok
 
-Production Firestore Rules + Anonymous Auth
-FS kurallar
 
 alerts metinler
 bildirim ikon
