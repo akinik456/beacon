@@ -568,6 +568,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get upgradeToAddMoreMembers => 'Upgrade to add more members.';
 
   @override
+  String get upgradeToContinue => 'Upgrade to continue monitoring your family members.';
+
+  @override
   String get version => 'Version';
 
   @override

@@ -148,10 +148,10 @@ class _InputField extends StatelessWidget {
         hintText: hint,
         labelStyle: AppFonts.caption,
         hintStyle: AppFonts.caption,
-        enabledBorder: const UnderlineInputBorder(
+        enabledBorder: UnderlineInputBorder(
           borderSide: BorderSide(color: AppColors.border),
         ),
-        focusedBorder: const UnderlineInputBorder(
+        focusedBorder: UnderlineInputBorder(
           borderSide: BorderSide(color: AppColors.primary),
         ),
       ),

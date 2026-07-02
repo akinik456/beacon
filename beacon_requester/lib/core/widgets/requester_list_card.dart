@@ -193,7 +193,7 @@ class RequesterListCard extends StatelessWidget {
                       "BEACON REQUESTER REMOVED => $requesterId",
                     );
                   },
-                  icon: const Icon(
+                  icon: Icon(
                     Icons.person_remove_rounded,
                     color: AppColors.danger,
                     size: 18,

@@ -30,7 +30,7 @@ class SubscriptionExpiredOverlay extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(
+                  Icon(
                     Icons.lock_clock_rounded,
                     color: AppColors.primary,
                     size: 48,
@@ -39,7 +39,7 @@ class SubscriptionExpiredOverlay extends StatelessWidget {
                   const SizedBox(height: 16),
 
                   Text(
-                    'Trial expired',
+                    l10n.trialExpired,
                     style: AppFonts.title,
                     textAlign: TextAlign.center,
                   ),
@@ -48,8 +48,8 @@ class SubscriptionExpiredOverlay extends StatelessWidget {
 
                   Text(
                     isMaster
-                        ? 'Upgrade to continue monitoring your family members.'
-                        : 'l10n.askTheGroup',
+                        ? l10n.upgradeToContinue
+                        : l10n.askTheGroup,
                     style: AppFonts.body.copyWith(
                       color: AppColors.textSecondary,
                     ),

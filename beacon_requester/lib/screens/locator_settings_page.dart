@@ -460,7 +460,7 @@ AppCard(
     children: [
       Row(
         children: [
-          const Icon(
+          Icon(
             Icons.place_rounded,
             color: AppColors.primary,
           ),
@@ -482,7 +482,7 @@ AppCard(
           return ListTile(
             dense: true,
             contentPadding: EdgeInsets.zero,
-            leading: const Icon(
+            leading: Icon(
               Icons.location_on_outlined,
               color: AppColors.primary,
               size: 20,
@@ -498,7 +498,7 @@ AppCard(
               style: AppFonts.caption,
             ),
             trailing: IconButton(
-              icon: const Icon(
+              icon: Icon(
                 Icons.delete_outline_rounded,
                 color: AppColors.danger,
               ),

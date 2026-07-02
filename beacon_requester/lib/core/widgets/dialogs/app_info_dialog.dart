@@ -14,7 +14,7 @@ class AppInfoDialog {
     required String cancelText,
     required Future<void> Function() onConfirm,
     bool barrierDismissible = true,
-    Color confirmColor = AppColors.primary,
+    Color? confirmColor,
   }) {
     return showDialog<void>(
       context: context,
@@ -52,7 +52,7 @@ class AppInfoDialog {
             ),
             TextButton(
               style: TextButton.styleFrom(
-                foregroundColor: confirmColor,
+                foregroundColor: confirmColor ?? AppColors.primary,
               ),
               onPressed: () async {
                 Navigator.pop(dialogContext);
@@ -61,7 +61,7 @@ class AppInfoDialog {
               child: Text(
                 confirmText,
                 style: AppFonts.button.copyWith(
-                  color: confirmColor,
+                  color: confirmColor ?? AppColors.primary,
                   fontWeight: FontWeight.w600,
                 ),
               ),

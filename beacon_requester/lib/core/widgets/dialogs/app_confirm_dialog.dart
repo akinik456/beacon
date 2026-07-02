@@ -12,7 +12,7 @@ class AppConfirmDialog {
     required String message,
     required String confirmText,
     required String cancelText,
-    Color confirmColor = AppColors.primary,
+    Color? confirmColor,
   }) async {
     final result = await showDialog<bool>(
       context: context,
@@ -49,7 +49,7 @@ class AppConfirmDialog {
             ),
             TextButton(
               style: TextButton.styleFrom(
-                foregroundColor: confirmColor,
+                foregroundColor: confirmColor ?? AppColors.primary,
               ),
               onPressed: () {
                 Navigator.pop(dialogContext, true);
@@ -57,7 +57,7 @@ class AppConfirmDialog {
               child: Text(
                 confirmText,
                 style: AppFonts.button.copyWith(
-                  color: confirmColor,
+                  color: confirmColor ?? AppColors.primary,
                   fontWeight: FontWeight.w600,
                 ),
               ),

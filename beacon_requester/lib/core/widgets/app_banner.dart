@@ -10,16 +10,16 @@ class AppBanner {
     required BuildContext context,
     required String message,
     IconData icon = Icons.info_outline,
-    Color color = AppColors.primary,
+    Color? color,
     Duration duration = const Duration(seconds: 3),
   }) {
     final messenger = ScaffoldMessenger.of(context);
-
+		final bannerColor = color ?? AppColors.primary;
     messenger.hideCurrentMaterialBanner();
 
     messenger.showMaterialBanner(
       MaterialBanner(
-        backgroundColor: color.withValues(alpha: 0.10),
+        backgroundColor: bannerColor.withValues(alpha: 0.10),
         elevation: 0,
         leading: Icon(
           icon,

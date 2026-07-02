@@ -51,6 +51,7 @@ import '../core/widgets/app_banner.dart';
 import '../core/widgets/dialogs/app_confirm_dialog.dart';
 import '../core/widgets/dialogs/app_info_dialog.dart';
 import '../core/widgets/dialogs/app_input_dialog.dart';
+import '../services/theme_service.dart';
 
 class RequesterHomePage extends StatefulWidget {
   const RequesterHomePage({super.key});
@@ -85,6 +86,7 @@ class _RequesterHomePageState
 	bool _showGroupInfo = false;
 	bool _showGuide = false;
 	bool _appInForeground = true;
+	bool _isDarkTheme = true;
 	
 	StreamSubscription<List<PurchaseDetails>>? _purchaseSub;
 	bool _isPremium = false;
@@ -102,7 +104,7 @@ class _RequesterHomePageState
 		super.initState();
 	print("state _hasFullAccess $_hasFullAccess ,_isPremium $_isPremium ,_trialActive $_trialActive"); 
 		_homeDataFuture = HomeDataService.loadHomeData();
-		
+		_loadTheme();
 		unawaited(_startHome());
 		unawaited(_loadVersion());
 		unawaited(_checkForUpdate());
@@ -190,6 +192,18 @@ class _RequesterHomePageState
 		}
 	_appInForeground = state == AppLifecycleState.resumed;
 	}	
+	
+	Future<void> _loadTheme() async {
+		final isDark = await ThemeService.isDarkTheme();
+
+		AppColors.isDark = isDark;
+
+		if (!mounted) return;
+
+		setState(() {
+			_isDarkTheme = isDark;
+		});
+	}
 	
 	Future<void> _startHome() async {
 	print("_startHome called");
@@ -783,7 +797,7 @@ final l10n = AppLocalizations.of(context)!;
 
               const SizedBox(width: 8),
 
-              const Icon(
+              Icon(
                 Icons.chevron_right_rounded,
                 color: AppColors.textSecondary,
               ),
@@ -920,7 +934,7 @@ final l10n = AppLocalizations.of(context)!;
 															});
 														}
 													},
-													child: const Icon(
+													child: Icon(
 														Icons.edit_rounded,
 														size: 18,
 														color: AppColors.textSecondary,
@@ -955,7 +969,7 @@ final l10n = AppLocalizations.of(context)!;
                 if (!mounted) return;
                 setState(() {});
               },
-              icon: const Icon(
+              icon: Icon(
                 Icons.language_rounded,
                 size: 18,
                 color: AppColors.accent,
@@ -970,7 +984,7 @@ final l10n = AppLocalizations.of(context)!;
 											fontWeight: FontWeight.w600,
 										),
 									),
-                  const Icon(
+                  Icon(
                     Icons.arrow_drop_down,
                     size: 18,
                     color: AppColors.accent,
@@ -1079,7 +1093,7 @@ final l10n = AppLocalizations.of(context)!;
 									future: _homeDataFuture,
 										builder: (context, snapshot) {
 											if (snapshot.connectionState == ConnectionState.waiting) {
-												return const Center(
+												return  Center(
 													child: CircularProgressIndicator(
 													color: AppColors.primary,
 													),
@@ -1152,7 +1166,7 @@ final l10n = AppLocalizations.of(context)!;
 																	child: Column(
 																		mainAxisSize: MainAxisSize.min,
 																		children: [
-																			const Icon(
+																			Icon(
 																				Icons.block_rounded,
 																				color: AppColors.danger,
 																				size: 48,
@@ -1236,7 +1250,7 @@ final l10n = AppLocalizations.of(context)!;
 																		child: Column(
 																			mainAxisSize: MainAxisSize.min,
 																			children: [
-																				const Icon(
+																				Icon(
 																					Icons.hourglass_top_rounded,
 																					color: AppColors.primary,
 																					size: 48,
@@ -1351,7 +1365,31 @@ final l10n = AppLocalizations.of(context)!;
 																								],
 																							),
 																						),
+																						Positioned(
+																							right: 40,
+																							child: IconButton(
+																								onPressed: () async {
+																									final next = !_isDarkTheme;
 
+																									await ThemeService.setDarkTheme(next);
+
+																									AppColors.isDark = next;
+
+																									if (!mounted) return;
+
+																									setState(() {
+																										_isDarkTheme = next;
+																									});
+																								},
+																								icon: Icon(
+																									_isDarkTheme
+																											? Icons.light_mode_rounded
+																											: Icons.dark_mode_rounded,
+																									color: AppColors.primary,
+																									size: 22,
+																								),
+																							),
+																						),
 																						Positioned(
 																							right: 0,
 																							child: IconButton(
@@ -1487,7 +1525,7 @@ final l10n = AppLocalizations.of(context)!;
 																					height: 44,
 																					child: Row(
 																						children: [
-																							const Icon(
+																							Icon(
 																								Icons.location_searching_rounded,
 																								color: AppColors.primary,
 																								size: 26,
@@ -1688,7 +1726,7 @@ final l10n = AppLocalizations.of(context)!;
 																													? l10n.freeTrialDaysLeft(_trialDaysLeft)
 																													: l10n.trialExpired),
 																									style: AppFonts.caption.copyWith(
-																										color: Colors.white70,
+																										color: AppColors.textPrimary,
 																										fontWeight: FontWeight.w600,
 																									),
 																								),
@@ -1698,7 +1736,7 @@ final l10n = AppLocalizations.of(context)!;
 																								Text(
 																									"${l10n.version} $_appVersion",
 																									style: AppFonts.caption.copyWith(
-																										color: Colors.white.withValues(alpha: 0.4),
+																										color: AppColors.textPrimary,
 																										fontWeight: FontWeight.w500,
 																									),
 																								),
@@ -1732,15 +1770,13 @@ final l10n = AppLocalizations.of(context)!;
 																												Icon(
 																													Icons.chat_bubble_outline_rounded,
 																													size: 13,
-																													color: const Color(0xFF8FD8FF)
-																															.withValues(alpha: 0.50),
+																													color: AppColors.primary,
 																												),
 																												const SizedBox(width: 16),
 																												Text(
 																													l10n.feedback,
 																													style: AppFonts.caption.copyWith(
-																														color: const Color(0xFF8FD8FF)
-																																.withValues(alpha: 0.50),
+																														color: AppColors.primary,
 																													),
 																												),
 																											],
@@ -1769,15 +1805,13 @@ final l10n = AppLocalizations.of(context)!;
 																												Icon(
 																													Icons.apps_rounded,
 																													size: 13,
-																													color: const Color(0xFF8FD8FF)
-																															.withValues(alpha: 0.50),
+																													color: AppColors.primary,
 																												),
 																												const SizedBox(width: 4),
 																												Text(
 																													l10n.otherApps,
 																													style: AppFonts.caption.copyWith(
-																														color: const Color(0xFF8FD8FF)
-																																.withValues(alpha: 0.50),
+																														color: AppColors.primary,
 																													),
 																												),
 																											],

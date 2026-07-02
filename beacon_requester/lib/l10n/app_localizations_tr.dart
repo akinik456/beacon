@@ -568,6 +568,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get upgradeToAddMoreMembers => 'Planınızı yükselterek daha fazla üye ekleyebilirsiniz.';
 
   @override
+  String get upgradeToContinue => 'Aile üyelerinizi takip etmeye devam etmek için Premium\'a yükseltin.';
+
+  @override
   String get version => 'Sürüm';
 
   @override

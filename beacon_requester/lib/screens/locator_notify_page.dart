@@ -143,7 +143,7 @@ class _LocatorNotifyPageState extends State<LocatorNotifyPage> {
         ),
       ),
       body: loading
-          ? const Center(
+          ? Center(
               child: CircularProgressIndicator(
                 color: AppColors.primary,
               ),

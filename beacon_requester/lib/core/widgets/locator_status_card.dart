@@ -135,7 +135,7 @@ class LocatorStatusCard extends StatelessWidget {
 													l10n.callMeSent,
 												);
 											},
-											icon: const Icon(
+											icon: Icon(
 												Icons.call_rounded,
 												size: 16,
 												color: AppColors.primary,
@@ -200,17 +200,6 @@ class LocatorStatusCard extends StatelessWidget {
 											: AppColors.danger,
 								),
 							),							
-							/*const SizedBox(width: 32),
-							const Icon(
-								Icons.access_time_rounded,
-								size: 18,
-								color: AppColors.accent,
-							),
-							const SizedBox(width: 4),
-							Text(
-								lastSeenText,
-								style: AppFonts.caption,
-							),	*/				
 						],
 					),
 					const SizedBox(height: 8),
@@ -224,7 +213,7 @@ class LocatorStatusCard extends StatelessWidget {
 								overflow: TextOverflow.ellipsis,
 							),
 							const SizedBox(width: 22),
-							const Icon(
+							Icon(
 								Icons.near_me_rounded,
 								size: 18,
 								color: AppColors.accent,

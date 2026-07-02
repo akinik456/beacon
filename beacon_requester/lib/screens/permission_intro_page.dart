@@ -48,7 +48,7 @@ final langCode =
 														if (!mounted) return;
 														setState(() {});
 													},
-													icon: const Icon(
+													icon: Icon(
 														Icons.language_rounded,
 														size: 18,
 														color: AppColors.primary,

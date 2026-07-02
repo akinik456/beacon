@@ -568,6 +568,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get upgradeToAddMoreMembers => 'Actualiza tu plan para agregar más miembros.';
 
   @override
+  String get upgradeToContinue => 'Actualice a Premium para seguir supervisando a los miembros de su familia.';
+
+  @override
   String get version => 'Versión';
 
   @override

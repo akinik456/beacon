@@ -38,7 +38,7 @@ class CallMeOverlay extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(
+              Icon(
                 Icons.phone_in_talk_rounded,
                 color: AppColors.primary,
                 size: 54,

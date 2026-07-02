@@ -126,7 +126,7 @@ class _AddLocatorPageState extends State<AddLocatorPage> {
                       color: AppColors.primary.withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(14),
                     ),
-                    child: const Icon(
+                    child: Icon(
                       Icons.qr_code_scanner_rounded,
                       color: AppColors.primary,
                     ),
@@ -145,7 +145,7 @@ class _AddLocatorPageState extends State<AddLocatorPage> {
                       ],
                     ),
                   ),
-                  const Icon(
+                  Icon(
                     Icons.chevron_right_rounded,
                     color: AppColors.textSecondary,
                   ),
@@ -403,7 +403,7 @@ class _InputField extends StatelessWidget {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(16),
-              borderSide: const BorderSide(
+              borderSide: BorderSide(
                 color: AppColors.primary,
               ),
             ),
