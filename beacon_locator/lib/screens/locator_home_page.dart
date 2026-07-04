@@ -801,6 +801,9 @@ Widget _pairedRequesterCard() {
                       const SizedBox(width: 12),
                       Expanded(
                         child: ElevatedButton(
+													style: ElevatedButton.styleFrom(
+														backgroundColor: AppColors.primary,
+													),
                           onPressed: () async {
                             final result =
                                 await PairingApprovalService.approvePairingRequest(
@@ -971,22 +974,29 @@ final l10n = AppLocalizations.of(context)!;
 						final groupName = snapshot.data?['groupName'] ?? '';
 						final langCode =
 						Localizations.localeOf(context).languageCode.toUpperCase();
-            return Padding(
+            
+						return Padding(
               padding: const EdgeInsets.all(20),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-														SizedBox(
-															width: double.infinity,
-															child: Stack(
-																alignment: Alignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,								
+                children: [								
+                  Expanded(
+									child: SingleChildScrollView(
+										padding: const EdgeInsets.only(bottom: 16),
+										child: Column(
+											crossAxisAlignment: CrossAxisAlignment.start,
+											children: [
+												Row(
+													crossAxisAlignment: CrossAxisAlignment.start,
+													children: [
+														Expanded(
+															child: Column(
+																crossAxisAlignment: CrossAxisAlignment.center,
+																children: [
+																	SizedBox(
+																		width: double.infinity,
+																		child: Stack(
+																			alignment: Alignment.centerLeft,																
 																children: [
 																	Text(
 																		l10n.titleMember,
@@ -1036,7 +1046,7 @@ final l10n = AppLocalizations.of(context)!;
 																				size: 22,
 																			),
 																		),
-																	),
+																	),																	
 																],
 															),
 														),													
@@ -1045,84 +1055,92 @@ final l10n = AppLocalizations.of(context)!;
                       ),
                     ],
                   ),
-									AnimatedCrossFade(
-										duration: const Duration(milliseconds: 250),
-										crossFadeState: _showGuide
-												? CrossFadeState.showFirst
-												: CrossFadeState.showSecond,
-										firstChild: const GuidePanel(),
-										secondChild: const SizedBox.shrink(),
-									),
-										const SizedBox(height: 6),
-
-											InkWell(
-												onTap: () {
-													setState(() {
-														_showGroupInfo = !_showGroupInfo;
-													});
-												},
-												borderRadius: BorderRadius.circular(8),
-												child: Padding(
-													padding: const EdgeInsets.symmetric(vertical: 4),
-													child: Row(
-														mainAxisSize: MainAxisSize.min,
-														children: [
-															Icon(
-																_showGroupInfo
-																		? Icons.keyboard_arrow_up_rounded
-																		: Icons.chevron_right_rounded,
-																color: AppColors.primary,
-																size: 22,
-															),
-															const SizedBox(width: 4),
-															Text(
-																l10n.groupInfo,
-																style: AppFonts.subtitle.copyWith(
-																	color: AppColors.primary,
-																),
-															),
-														],
+													AnimatedCrossFade(
+														duration: const Duration(milliseconds: 250),
+														crossFadeState: _showGuide
+																? CrossFadeState.showFirst
+																: CrossFadeState.showSecond,
+														firstChild: const GuidePanel(),
+														secondChild: const SizedBox.shrink(),
 													),
-												),
-											),
+													const SizedBox(height: 6),
 
-											AnimatedCrossFade(
-												duration: const Duration(milliseconds: 250),
-												crossFadeState: _showGroupInfo
-														? CrossFadeState.showFirst
-														: CrossFadeState.showSecond,
-												firstChild: GroupInfoPanel(
-													groupName: groupName,
-													locatorName: locatorName,
-													locatorCode: locatorCode,
-													langCode: langCode,
-													onLocatorNameChanged: () {
-														setState(() {});
-													},
-													onShowLocatorQr: () {
-														_showLocatorQrDialog(
-															locatorId: locatorId,
+													InkWell(
+														onTap: () {
+															setState(() {
+																_showGroupInfo = !_showGroupInfo;
+															});
+														},
+														borderRadius: BorderRadius.circular(8),
+														child: Padding(
+															padding: const EdgeInsets.symmetric(vertical: 4),
+															child: Row(
+																mainAxisSize: MainAxisSize.min,
+																children: [
+																	Icon(
+																		_showGroupInfo
+																				? Icons.keyboard_arrow_up_rounded
+																				: Icons.chevron_right_rounded,
+																		color: AppColors.primary,
+																		size: 22,
+																	),
+																	const SizedBox(width: 4),
+																	Flexible(
+																		child: Text(
+																			l10n.groupInfo,
+																			overflow: TextOverflow.ellipsis,
+																			style: AppFonts.subtitle.copyWith(
+																				color: AppColors.primary,
+																			),
+																		),
+																	),
+																],
+															),
+														),
+													),
+
+													AnimatedCrossFade(
+														duration: const Duration(milliseconds: 250),
+														crossFadeState: _showGroupInfo
+																? CrossFadeState.showFirst
+																: CrossFadeState.showSecond,
+														firstChild: GroupInfoPanel(
+															groupName: groupName,
+															locatorName: locatorName,
 															locatorCode: locatorCode,
-														);
-													},
-													onLanguageChanged: () {
-														setState(() {});
-													},
-												),
-												secondChild: const SizedBox.shrink(),
-											),
+															langCode: langCode,
+															onLocatorNameChanged: () {
+																setState(() {});
+															},
+															onShowLocatorQr: () {
+																_showLocatorQrDialog(
+																	locatorId: locatorId,
+																	locatorCode: locatorCode,
+																);
+															},
+															onLanguageChanged: () {
+																setState(() {});
+															},
+														),
+														secondChild: const SizedBox.shrink(),
+													),
 									
-                  const SizedBox(height: 12),
-                  _buildPairingArea(),
+													const SizedBox(height: 12),
+													_buildPairingArea(),
+													const SizedBox(height: 12),
+													_activeWatchersCard(),
+												],
+											),
+										),
+									),	
 									const SizedBox(height: 12),
-									_activeWatchersCard(),				
-									const Spacer(),
-                  _permissionsButton(),
+									_permissionsButton(),
 									const SizedBox(height: 70),
-                  ],
+									],	
                 ),
               );
-            },
+							
+            },						
           ),
         ),
 				Positioned(

@@ -1736,7 +1736,8 @@ Widget build(BuildContext context) {
 																					Row(
 																						children: [
 																							if (_hasGroup) ...[
-																								Text(
+																								Expanded(
+																								child: Text(
 																									_isPremium
 																											? l10n.premiumActive
 																											: (_trialActive
@@ -1747,20 +1748,29 @@ Widget build(BuildContext context) {
 																										fontWeight: FontWeight.w600,
 																									),
 																								),
+																								),
 																							],
 																							const SizedBox(width: 32),						
 																							if (_appVersion.isNotEmpty)
-																								Text(
+																								Flexible(
+																								flex: 0,
+																								child: Text(
 																									"${l10n.version} $_appVersion",
 																									style: AppFonts.caption.copyWith(
 																										color: AppColors.textPrimary,
 																										fontWeight: FontWeight.w500,
 																									),
 																								),
-																								const Spacer(),
+																								),
+																								const SizedBox(width: 8),
 																								if (_isMaster)
 																									TextButton(
 																										onPressed: _showPurchaseMenu,
+																										style: TextButton.styleFrom(
+																											padding: const EdgeInsets.symmetric(horizontal: 8),
+																											minimumSize: const Size(0, 32),
+																											tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+																										),
 																										child: Text(
 																											l10n.purchase,
 																											style: AppFonts.button.copyWith(
@@ -1769,6 +1779,7 @@ Widget build(BuildContext context) {
 																											),
 																										),
 																									),
+																									
 																								],
 																							),
 																						const SizedBox(height: 2),

@@ -48,6 +48,7 @@ class ActiveWatcherService {
       "BEACON WATCHER => listening "
       "updateScheduler=$updateScheduler",
     );
+		print("groupid:$groupId");
 
     _sub = ref.onValue.listen((event) async {
       final watchers = _parseWatchers(event.snapshot.value);

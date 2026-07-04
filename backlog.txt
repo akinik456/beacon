@@ -6,6 +6,12 @@ RTDB kurallar
  
 brom not alıyorum test bitince migration ı kaldıracaz. 
 
+master olmayan place silebiliyor?
+
+bildirim ayarları check
+pairing/join timeout
+
+locator izinler kayboldu?
 **************************
  
  app cihazdan kaldırılırsa FS den nasıl sileceğiz ?
@@ -13,6 +19,8 @@ brom not alıyorum test bitince migration ı kaldıracaz.
 ********
 SMS
 Messaging
+
+inApp map
 
 Trial abuse prevention
 
