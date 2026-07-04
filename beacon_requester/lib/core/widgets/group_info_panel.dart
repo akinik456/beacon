@@ -17,9 +17,10 @@ class GroupInfoPanel  extends StatelessWidget {
     super.key,
     required this.groupId,
     required this.groupName,
-    required this.requesterName,
-    required this.onRequesterNameChanged,
 		required this.groupCode,
+    required this.requesterName,
+		required this.isMaster,
+    required this.onRequesterNameChanged,
 		required this.langCode,
 		required this.onShowGroupQr,
 		required this.onLanguageChanged,
@@ -27,9 +28,10 @@ class GroupInfoPanel  extends StatelessWidget {
 
   final String groupId;
   final String groupName;
-  final String requesterName;
-  final VoidCallback onRequesterNameChanged;
 	final String groupCode;
+  final String requesterName;
+	final bool isMaster;
+  final VoidCallback onRequesterNameChanged;
 	final String langCode;
 	final VoidCallback onShowGroupQr;
 	final VoidCallback onLanguageChanged;
@@ -78,7 +80,7 @@ class GroupInfoPanel  extends StatelessWidget {
 		return Row(
 			children: [
 				const SizedBox(width: 8),
-
+			if (isMaster) ...[
 				InkWell(
 					borderRadius: BorderRadius.circular(16),
 					onTap: onShowGroupQr,
@@ -117,7 +119,7 @@ class GroupInfoPanel  extends StatelessWidget {
 						],
 					),
 				),
-
+				],
 				const Spacer(),
 
 				TextButton.icon(
@@ -190,6 +192,7 @@ class GroupInfoPanel  extends StatelessWidget {
                         ),
                       ),
                     ),
+										if (isMaster) ...[
                     const SizedBox(width: 6),
                     InkWell(
                       borderRadius: BorderRadius.circular(12),
@@ -208,6 +211,7 @@ class GroupInfoPanel  extends StatelessWidget {
                         ),
                       ),
                     ),
+										],
                   ],
                 ),
               ),

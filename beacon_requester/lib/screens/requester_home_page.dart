@@ -1401,9 +1401,10 @@ Widget _buildGroupHome({
 																				: CrossFadeState.showSecond,
 																		firstChild: GroupInfoPanel(
 																			groupId: groupId,
-																			groupName: groupName,
-																			requesterName: requesterName,
 																			groupCode: _groupCode,
+																			groupName: groupName,
+																			requesterName: requesterName,																			
+																			isMaster: _isMaster,
 																			langCode: langCode,
 																			onRequesterNameChanged: () {
 																				setState(() {
