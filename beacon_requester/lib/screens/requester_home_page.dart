@@ -929,6 +929,78 @@ Widget _buildRejectedHome({
     ),
   );
 }
+
+Widget _buildPendingHome({
+  required String? pendingGroupId,
+  required String? requesterId,
+  required String requesterName,
+}) {
+  final l10n = AppLocalizations.of(context)!;
+
+  if (pendingGroupId == null ||
+      pendingGroupId.isEmpty ||
+      requesterId == null ||
+      requesterId.isEmpty) {
+    return _buildNoGroupHome(
+      requesterName: requesterName,
+    );
+  }
+
+  return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+    stream: FirebaseFirestore.instance
+        .collection('groups')
+        .doc(pendingGroupId)
+        .collection('join_requests')
+        .doc(requesterId)
+        .snapshots(),
+    builder: (context, joinSnapshot) {
+      final status = joinSnapshot.data?.data()?['status'];
+
+      if (status != null && status != 'pending') {
+        Future.microtask(() {
+          if (!mounted) return;
+
+          setState(() {
+            _homeDataFuture = HomeDataService.loadHomeData();
+          });
+        });
+
+        return const SizedBox.shrink();
+      }
+
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: AppCard(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.hourglass_top_rounded,
+                  color: AppColors.primary,
+                  size: 48,
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  l10n.waitingForApproval,
+                  style: AppFonts.title,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  l10n.yourrequest,
+                  textAlign: TextAlign.center,
+                  style: AppFonts.body.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    },
+  );
+}
 	
 	Widget _buildNoGroupHome({
   required String requesterName,
@@ -1151,149 +1223,25 @@ Widget _buildRejectedHome({
   );
 }
 	
-	
-
-@override
-Widget build(BuildContext context) {
-  final l10n = AppLocalizations.of(context)!;
-  final langCode = Localizations.localeOf(context).languageCode.toUpperCase();
-
-  return Scaffold(
-    backgroundColor: AppColors.background,
-    body: Stack(
-      children: [
-        SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.only(bottom: 80),
-            child: FutureBuilder<Map<String, dynamic>?>(
-              future: _homeDataFuture,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(
-                    child: CircularProgressIndicator(
-                      color: AppColors.primary,
-                    ),
-                  );
-                }
-
-                final data = snapshot.data;
-
-                if (data == null) {
-                  return Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(24),
-                      child: Text(
-                        'Home data could not be loaded.',
-                        style: AppFonts.body.copyWith(
-                          color: AppColors.textSecondary,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  );
-                }
-
-                final requesterName = data['requesterName'] ?? '-';
-
-                if (data['isPending'] == true) {
-  final pendingGroupId = data['pendingGroupId'] as String?;
-  final requesterId = data['requesterId'] as String?;
-
-  if (pendingGroupId == null ||
-      pendingGroupId.isEmpty ||
-      requesterId == null ||
-      requesterId.isEmpty) {
-    return _buildNoGroupHome(
-      requesterName: requesterName,
-    );
-  }
+Widget _buildGroupHome({
+	required String requesterName,
+  required Map<String, dynamic> data,
+  required AppLocalizations l10n,
+  required String langCode,
+}) {
+  final groupId = data['groupId'] ?? '';
+  final requesterId = data['requesterId'] ?? '';
+  final groupName = data['groupName'] ?? '-';
 
   return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
     stream: FirebaseFirestore.instance
         .collection('groups')
-        .doc(pendingGroupId)
-        .collection('join_requests')
+        .doc(groupId)
+        .collection('devices')
         .doc(requesterId)
         .snapshots(),
-    builder: (context, joinSnapshot) {
-      final status = joinSnapshot.data?.data()?['status'];
-
-      if (status != null && status != 'pending') {
-        Future.microtask(() {
-          if (!context.mounted) return;
-
-          setState(() {
-            _homeDataFuture = HomeDataService.loadHomeData();
-          });
-        });
-
-        return const SizedBox.shrink();
-      }
-
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: AppCard(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  Icons.hourglass_top_rounded,
-                  color: AppColors.primary,
-                  size: 48,
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  l10n.waitingForApproval,
-                  style: AppFonts.title,
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  l10n.yourrequest,
-                  textAlign: TextAlign.center,
-                  style: AppFonts.body.copyWith(
-                    color: AppColors.textSecondary,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
-    },
-  );
-}
-
-if (data['isRejected'] == true) {
-  return _buildRejectedHome(
-    requesterName: requesterName,
-  );
-}
-
-								
-								
-								_hasGroup =
-										data['hasGroup'] == true;					
-
-								if (!_hasGroup) {
-									return _buildNoGroupHome(
-										requesterName: requesterName,
-									);
-								}
-						
-								final groupId = data['groupId'] ?? '';
-								final requesterId = data['requesterId'] ?? '';
-								final groupName = data['groupName'] ?? '-';
-																
-								return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-									stream: FirebaseFirestore.instance
-											.collection('groups')
-											.doc(groupId)
-											.collection('devices')
-											.doc(requesterId)
-											.snapshots(),
-									builder: (context, requesterSnapshot) {
-										final requesterData =
+    builder: (context, requesterSnapshot) {
+      										final requesterData =
 												requesterSnapshot.data?.data() ?? {};
 
 										final pairedLocators =
@@ -1681,8 +1629,84 @@ if (data['isRejected'] == true) {
 																		),
 																	);
 																	
-																},
-															);
+
+    },
+  );
+}	
+
+@override
+Widget build(BuildContext context) {
+  final l10n = AppLocalizations.of(context)!;
+  final langCode = Localizations.localeOf(context).languageCode.toUpperCase();
+
+  return Scaffold(
+    backgroundColor: AppColors.background,
+    body: Stack(
+      children: [
+        SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 80),
+            child: FutureBuilder<Map<String, dynamic>?>(
+              future: _homeDataFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(
+                    child: CircularProgressIndicator(
+                      color: AppColors.primary,
+                    ),
+                  );
+                }
+
+                final data = snapshot.data;
+
+                if (data == null) {
+                  return Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(24),
+                      child: Text(
+                        'Home data could not be loaded.',
+                        style: AppFonts.body.copyWith(
+                          color: AppColors.textSecondary,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  );
+                }
+
+                final requesterName = data['requesterName'] ?? '-';
+
+                if (data['isPending'] == true) {
+									return _buildPendingHome(
+										pendingGroupId: data['pendingGroupId'] as String?,
+										requesterId: data['requesterId'] as String?,
+										requesterName: requesterName,
+									);
+								}
+								if (data['isRejected'] == true) {
+									return _buildRejectedHome(
+										requesterName: requesterName,
+									);
+								}
+
+								
+								
+								_hasGroup =
+										data['hasGroup'] == true;					
+
+								if (!_hasGroup) {
+									return _buildNoGroupHome(
+										requesterName: requesterName,
+									);
+								}
+								
+								return _buildGroupHome(
+									requesterName: requesterName,
+									data: data,
+									l10n: l10n,
+									langCode: langCode,
+								);
+						
 														},
 													),
 												),
