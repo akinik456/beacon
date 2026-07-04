@@ -955,15 +955,24 @@ Widget _buildPendingHome({
         .snapshots(),
     builder: (context, joinSnapshot) {
       final status = joinSnapshot.data?.data()?['status'];
+			print("JOIN WATCH => status=$status");
 
       if (status != null && status != 'pending') {
-        Future.microtask(() {
-          if (!mounted) return;
+        Future.microtask(() async {
+  final future = HomeDataService.loadHomeData();
 
-          setState(() {
-            _homeDataFuture = HomeDataService.loadHomeData();
-          });
-        });
+  setState(() {
+    _homeDataFuture = future;
+  });
+
+  await future;
+
+  await _startHome();
+
+  if (!mounted) return;
+
+  setState(() {});
+});
 
         return const SizedBox.shrink();
       }

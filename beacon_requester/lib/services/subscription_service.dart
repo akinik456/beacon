@@ -26,17 +26,36 @@ class SubscriptionService {
       FirebaseFirestore.instance;
 
   static Future<SubscriptionInfo> load() async {
-    final groupId =
-        await GroupService.getLocalGroupId();
+    final requesterId =
+    await IdentityService.getRequesterId();
 
-    if (groupId == null || groupId.isEmpty) {
-      return const SubscriptionInfo(
-        isPremium: false,
-        trialActive: false,
-        trialDaysLeft: 0,
-      );
-    }
+		if (requesterId == null || requesterId.isEmpty) {
+			return const SubscriptionInfo(
+				isPremium: false,
+				trialActive: false,
+				trialDaysLeft: 0,
+			);
+		}
 
+		final requesterDoc = await _firestore
+				.collection('requesters')
+				.doc(requesterId)
+				.get();
+		print("SUB => requesterId=$requesterId");
+
+		final groupId =
+				requesterDoc.data()?['groupId'] as String?;
+				
+		print("SUB => groupId=$groupId");
+
+		if (groupId == null || groupId.isEmpty) {
+			return const SubscriptionInfo(
+				isPremium: false,
+				trialActive: false,
+				trialDaysLeft: 0,
+			);
+		}
+ print("SUB => loading subscription for group=$groupId");   
     final doc = await _firestore
         .collection('groups')
         .doc(groupId)
