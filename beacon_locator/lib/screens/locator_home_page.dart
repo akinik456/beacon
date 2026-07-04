@@ -68,6 +68,8 @@ class _LocatorHomePageState extends State<LocatorHomePage>
 	bool _showGroupInfo = false;
 	bool _showGuide = false;
 	bool _isDarkTheme = true;
+	bool _clearingGroupAfterUnpair = false;
+	bool _hadPairedRequester = false;
 	
  @override
 void initState() {
@@ -324,6 +326,31 @@ Future<void> _startNativePresenceIfAllowed() async {
 		_subscriptions.add(sub);
 	}
 
+Future<void> _clearLocatorGroupIfNoRequester() async {
+  if (_clearingGroupAfterUnpair) return;
+
+  _clearingGroupAfterUnpair = true;
+
+  try {
+    final locatorId = await IdentityService.getLocatorId();
+
+    if (locatorId == null || locatorId.isEmpty) return;
+
+    await FirebaseFirestore.instance
+        .collection('locators')
+        .doc(locatorId)
+        .set({
+          'groupId': FieldValue.delete(),
+          'updatedAt': FieldValue.serverTimestamp(),
+        }, SetOptions(merge: true));
+
+    print("LOCATOR SYNC => groupId cleared because no paired requester");
+  } catch (e) {
+    print("LOCATOR SYNC => clear groupId failed => $e");
+  } finally {
+    _clearingGroupAfterUnpair = false;
+  }
+}
 Future<Map<String, String>> _loadLocatorCodeData() async {
   final locatorId = await IdentityService.getLocatorId() ?? '';
   final locatorCode = await IdentityService.getLocatorCode() ?? '------';
@@ -561,7 +588,13 @@ Widget _pairedRequesterCard() {
     builder: (context, snapshot) {
       final requesters = snapshot.data ?? [];
 			final l10n = AppLocalizations.of(context)!;
-      if (requesters.isEmpty) {
+			if (requesters.isNotEmpty) {
+				_hadPairedRequester = true;
+			}
+      if (requesters.isEmpty && _hadPairedRequester) {
+					WidgetsBinding.instance.addPostFrameCallback((_) {
+				unawaited(_clearLocatorGroupIfNoRequester());
+			});
         return AppCard(
           child: Text(
             l10n.noPairedRequester,

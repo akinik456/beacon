@@ -17,6 +17,8 @@ class GroupService {
   static const _groupIdKey = 'group_id';
 	
 	static const _isMasterKey = 'is_master';
+	
+	static const _pendingGroupIdKey = 'pending_group_id';
 
 	static Future<void> setLocalIsMaster(bool value) async {
 		final prefs = await SharedPreferences.getInstance();
@@ -153,6 +155,7 @@ class GroupService {
   await joinRequestRef.set({
     'requesterCode': requesterCode,
     'requesterName': requesterName.trim(),
+		'authUid': AuthService.uid,
     'status': 'pending',
     'createdAt': FieldValue.serverTimestamp(),
     'updatedAt': FieldValue.serverTimestamp(),
@@ -160,9 +163,9 @@ class GroupService {
 
   final prefs = await SharedPreferences.getInstance();
 
-  await prefs.setString(_groupIdKey, groupId);
-  await prefs.setString('group_code', normalizedCode);
-  await prefs.setString('join_status', 'pending');
+  await prefs.setString('pending_group_id', groupId);
+	await prefs.setString('group_code', normalizedCode);
+	await prefs.setString('join_status', 'pending');
 
   print("BEACON GROUP => JOIN REQUEST SENT => $groupId");
 
@@ -372,9 +375,7 @@ static Future<void> removePairedLocator({
         Map<String, dynamic>.from(
           locatorData['pairedRequesters'] ?? {},
         );
-
     pairedRequesters.remove(requesterId);
-
     tx.set(requesterDeviceRef, {
       'pairedLocators': {
         locatorId: FieldValue.delete(),
@@ -385,10 +386,10 @@ static Future<void> removePairedLocator({
     if (pairedRequesters.isEmpty) {
       tx.delete(locatorDeviceRef);
 
-      tx.set(locatorRef, {
+      /*tx.set(locatorRef, {
         'groupId': FieldValue.delete(),
         'updatedAt': FieldValue.serverTimestamp(),
-      }, SetOptions(merge: true));
+      }, SetOptions(merge: true));*/
 
       tx.update(groupRef, {
         'activeLocatorCount': FieldValue.increment(-1),
@@ -423,6 +424,7 @@ static Future<void> clearLocalGroup() async {
   await prefs.remove('group_code');
   await prefs.remove('join_status');
   await prefs.remove(_isMasterKey);
+	await prefs.remove(_pendingGroupIdKey);
 }
 
 }

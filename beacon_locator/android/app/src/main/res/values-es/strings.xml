@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="presence_service_channel_name">Servicio de LynraFamily Member</string>
+    <string name="presence_service_notification_title">LynraFamily Member está activo</string>
+    <string name="presence_service_notification_body">Listo para responder a solicitudes de ubicación de familiares de confianza.</string>
+</resources>

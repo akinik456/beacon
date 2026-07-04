@@ -8,11 +8,11 @@ import '../../services/join_request_service.dart';
 import '../../l10n/app_localizations.dart';
 import 'app_banner.dart';
 import '../../services/firebase_authentication_service.dart';
-
+import '../../services/identity_service.dart';
 
 class JoinRequestCard extends StatelessWidget {
   final String groupId;
-
+	
   const JoinRequestCard({
     super.key,
     required this.groupId,
@@ -90,6 +90,8 @@ class JoinRequestCard extends StatelessWidget {
 										Expanded(
 											child: ElevatedButton(
 												onPressed: () async {
+													final currentRequesterId =
+														await IdentityService.getRequesterId();
 													final joinData = doc.data();
 
 													final requesterId = doc.id;
@@ -119,18 +121,38 @@ class JoinRequestCard extends StatelessWidget {
 															.doc(requesterId);
 
 													final joinRequestRef = doc.reference;
+													
+													if (currentRequesterId == null ||
+															currentRequesterId.isEmpty) {
+														print(
+															"BEACON JOIN APPROVE => currentRequesterId missing",
+														);
+														return;
+													}
 
 													try {
 														await firestore.runTransaction((tx) async {
 															final freshJoinRequest = await tx.get(joinRequestRef);
-
 															if (!freshJoinRequest.exists) {
 																throw Exception('join_request_not_found');
 															}
-
 															final freshGroup = await tx.get(groupRef);
-															final groupData = freshGroup.data() ?? {};
+															final currentRequesterRef = groupRef
+																	.collection('devices')
+																	.doc(currentRequesterId);
 
+															final currentRequesterDoc = await tx.get(currentRequesterRef);
+
+															if (!currentRequesterDoc.exists) {
+																throw Exception('current_requester_not_found');
+															}
+
+															final currentRequesterData = currentRequesterDoc.data() ?? {};
+
+															if (currentRequesterData['isMaster'] != true) {
+																throw Exception('not_master_requester');
+															}
+															final groupData = freshGroup.data() ?? {};
 															final maxRequesters = groupData['maxRequesters'] ?? 1;
 															final activeRequesterCount =
 																	groupData['activeRequesterCount'] ?? 0;
@@ -138,7 +160,6 @@ class JoinRequestCard extends StatelessWidget {
 															if (activeRequesterCount >= maxRequesters) {
 																throw Exception('requester_capacity_reached');
 															}
-
 															tx.set(requesterRef, {
 																'requesterCode': joinData['requesterCode'],
 																'requesterName': joinData['requesterName'],
@@ -146,23 +167,24 @@ class JoinRequestCard extends StatelessWidget {
 																'role': 'requester',
 																'isMaster': false,
 																'active': true,
-																'authUid': AuthService.uid,
+																'authUid': joinData['authUid'] ?? '',
 																'pairedLocators': {},
 																'joinedAt': FieldValue.serverTimestamp(),
 																'createdAt': FieldValue.serverTimestamp(),
 															});
-
 															tx.update(groupRef, {
 																'activeRequesterCount': FieldValue.increment(1),
 																'updatedAt': FieldValue.serverTimestamp(),
 															});
-
-															tx.set(requesterRefroot, {
+															/*tx.set(requesterRefroot, {
 																'groupId': groupId,
 																'updatedAt': FieldValue.serverTimestamp(),
-															}, SetOptions(merge: true));
-
-															tx.delete(joinRequestRef);
+															}, SetOptions(merge: true));*/
+															tx.update(joinRequestRef, {
+																'status': 'approved',
+																'approvedAt': FieldValue.serverTimestamp(),
+																'updatedAt': FieldValue.serverTimestamp(),
+															});
 														});
 
 														print("BEACON JOIN APPROVED => $requesterId");

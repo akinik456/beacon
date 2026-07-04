@@ -103,6 +103,7 @@ class _RequesterHomePageState
 	void initState() {
 		WidgetsBinding.instance.addObserver(this);
 		super.initState();
+		print("RequesterHome initState");
 	print("state _hasFullAccess $_hasFullAccess ,_isPremium $_isPremium ,_trialActive $_trialActive"); 
 		_homeDataFuture = HomeDataService.loadHomeData();
 		_loadTheme();
@@ -867,6 +868,67 @@ final l10n = AppLocalizations.of(context)!;
     },
   );
 }
+
+Widget _buildRejectedHome({
+  required String requesterName,
+}) {
+  final l10n = AppLocalizations.of(context)!;
+
+  return Center(
+    child: Padding(
+      padding: const EdgeInsets.all(24),
+      child: AppCard(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.block_rounded,
+              color: AppColors.danger,
+              size: 48,
+            ),
+
+            const SizedBox(height: 16),
+
+            Text(
+              l10n.rejected,
+              style: AppFonts.title.copyWith(
+                color: AppColors.danger,
+              ),
+            ),
+
+            const SizedBox(height: 8),
+
+            Text(
+              l10n.rejected,
+              textAlign: TextAlign.center,
+              style: AppFonts.body.copyWith(
+                color: AppColors.textSecondary,
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () async {
+                  await GroupService.clearLocalGroup();
+
+                  if (!mounted) return;
+
+                  setState(() {
+                    _homeDataFuture = HomeDataService.loadHomeData();
+                  });
+                },
+                child: Text(l10n.ok),
+              ),
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
+}
 	
 	Widget _buildNoGroupHome({
   required String requesterName,
@@ -1091,223 +1153,133 @@ final l10n = AppLocalizations.of(context)!;
 	
 	
 
-  @override
-	Widget build(BuildContext context) {
+@override
+Widget build(BuildContext context) {
   final l10n = AppLocalizations.of(context)!;
   final langCode = Localizations.localeOf(context).languageCode.toUpperCase();
-		return Scaffold(
-			backgroundColor: AppColors.background,
-				body: Stack(
-					children: [
-						SafeArea(
-							child: Padding(
-								padding: const EdgeInsets.only(bottom: 80),
-									child: FutureBuilder<Map<String, dynamic>?>(				
-									future: _homeDataFuture,
-										builder: (context, snapshot) {
-											if (snapshot.connectionState == ConnectionState.waiting) {
-												return  Center(
-													child: CircularProgressIndicator(
-													color: AppColors.primary,
-													),
-												);
-											}
-										final data = snapshot.data;
-											if (data == null) {// ?*?
-												return Center(
-													child: Padding(
-														padding: const EdgeInsets.all(24),
-														child: Text(
-															'Home data could not be loaded.',
-															style: AppFonts.body.copyWith(
-																color: AppColors.textSecondary,
-															),
-															textAlign: TextAlign.center,
-														),
-													),
-												);
-											}						
-										if (data['isPending'] == true) {//?*? nogrup kontrol
-										final groupId = data['groupId'];
-										final requesterId = data['requesterId'];
-											return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-												stream: FirebaseFirestore.instance
-													.collection('groups')
-													.doc(groupId)
-													.collection('join_requests')
-													.doc(requesterId)
-													.snapshots(),
-												builder: (context, joinSnapshot) {
-													if (joinSnapshot.hasData && !joinSnapshot.data!.exists) {
-															Future.microtask(() async {
-																final deviceDoc = await FirebaseFirestore.instance
-																		.collection('groups')
-																		.doc(groupId)
-																		.collection('devices')
-																		.doc(requesterId)
-																		.get();
-																	if (deviceDoc.exists) {
-																		if (!context.mounted) return;
-																			Navigator.pushReplacement(
-																				context,
-																				MaterialPageRoute(
-																					builder: (_) => const RequesterHomePage(),
-																				),
-																			);
-																		return;
-																	}
-																await GroupService.clearLocalGroup();
-																	if (!context.mounted) return;
-																	Navigator.pushReplacement(
-																		context,
-																		MaterialPageRoute(
-																			builder: (_) => const RequesterHomePage(),
-																		),
-																	);
-															});
-														return const SizedBox.shrink();
-													}
 
-													final joinData = joinSnapshot.data?.data();
-													final status = joinData?['status'];
+  return Scaffold(
+    backgroundColor: AppColors.background,
+    body: Stack(
+      children: [
+        SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 80),
+            child: FutureBuilder<Map<String, dynamic>?>(
+              future: _homeDataFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(
+                    child: CircularProgressIndicator(
+                      color: AppColors.primary,
+                    ),
+                  );
+                }
 
-													if (status == 'rejected') {
-														return Center(
-															child: Padding(
-																padding: const EdgeInsets.all(24),
-																child: AppCard(
-																	child: Column(
-																		mainAxisSize: MainAxisSize.min,
-																		children: [
-																			Icon(
-																				Icons.block_rounded,
-																				color: AppColors.danger,
-																				size: 48,
-																			),
+                final data = snapshot.data;
 
-																			const SizedBox(height: 16),
+                if (data == null) {
+                  return Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(24),
+                      child: Text(
+                        'Home data could not be loaded.',
+                        style: AppFonts.body.copyWith(
+                          color: AppColors.textSecondary,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  );
+                }
 
-																			Text(
-																				l10n.rejected,
-																				style: AppFonts.title.copyWith(
-																					color: AppColors.danger,
-																				),
-																			),
+                final requesterName = data['requesterName'] ?? '-';
 
-																			const SizedBox(height: 20),
+                if (data['isPending'] == true) {
+  final pendingGroupId = data['pendingGroupId'] as String?;
+  final requesterId = data['requesterId'] as String?;
 
-																			SizedBox(
-																				width: double.infinity,
-																				child: ElevatedButton(
-																					onPressed: () async {
-																						await FirebaseFirestore.instance
-																								.collection('groups')
-																								.doc(groupId)
-																								.collection('join_requests')
-																								.doc(requesterId)
-																								.delete();
+  if (pendingGroupId == null ||
+      pendingGroupId.isEmpty ||
+      requesterId == null ||
+      requesterId.isEmpty) {
+    return _buildNoGroupHome(
+      requesterName: requesterName,
+    );
+  }
 
-																						await GroupService.clearLocalGroup();
+  return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+    stream: FirebaseFirestore.instance
+        .collection('groups')
+        .doc(pendingGroupId)
+        .collection('join_requests')
+        .doc(requesterId)
+        .snapshots(),
+    builder: (context, joinSnapshot) {
+      final status = joinSnapshot.data?.data()?['status'];
 
-																						if (!context.mounted) return;
+      if (status != null && status != 'pending') {
+        Future.microtask(() {
+          if (!context.mounted) return;
 
-																						Navigator.pushReplacement(
-																							context,
-																							MaterialPageRoute(
-																								builder: (_) =>
-																										const RequesterHomePage(),
-																							),
-																						);
-																					},
-																					child: Text(l10n.ok),
-																				),
-																			),
-																		],
-																	),
-																),
-															),
-														);
-													}
+          setState(() {
+            _homeDataFuture = HomeDataService.loadHomeData();
+          });
+        });
 
-													return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-														stream: FirebaseFirestore.instance
-																.collection('groups')
-																.doc(groupId)
-																.collection('devices')
-																.doc(requesterId)
-																.snapshots(),
-														builder: (context, deviceSnapshot) {
-															if (deviceSnapshot.hasData &&
-																	deviceSnapshot.data!.exists) {
-																Future.microtask(() async {
-																	await GroupService.setLocalIsMaster(false);
-																	await RequesterRegistryService.registerRequester();
+        return const SizedBox.shrink();
+      }
 
-																	if (!context.mounted) return;
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: AppCard(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.hourglass_top_rounded,
+                  color: AppColors.primary,
+                  size: 48,
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  l10n.waitingForApproval,
+                  style: AppFonts.title,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  l10n.yourrequest,
+                  textAlign: TextAlign.center,
+                  style: AppFonts.body.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    },
+  );
+}
 
-																	Navigator.pushReplacement(
-																		context,
-																		MaterialPageRoute(
-																			builder: (_) => const RequesterHomePage(),
-																		),
-																	);
-																});
+if (data['isRejected'] == true) {
+  return _buildRejectedHome(
+    requesterName: requesterName,
+  );
+}
 
-																return const SizedBox.shrink();
-															}
-
-															return Center(
-																child: Padding(
-																	padding: const EdgeInsets.all(24),
-																	child: AppCard(
-																		child: Column(
-																			mainAxisSize: MainAxisSize.min,
-																			children: [
-																				Icon(
-																					Icons.hourglass_top_rounded,
-																					color: AppColors.primary,
-																					size: 48,
-																				),
-
-																				const SizedBox(height: 16),
-
-																				Text(
-																					l10n.waitingForApproval,
-																					style: AppFonts.title,
-																				),
-
-																				const SizedBox(height: 8),
-
-																				Text(
-																					l10n.yourrequest,
-																					textAlign: TextAlign.center,
-																					style: AppFonts.body.copyWith(
-																						color: AppColors.textSecondary,
-																					),
-																				),
-																			],
-																		),
-																	),
-																),
-															);
-														},
-													);
-										},
-									);
-								}
+								
+								
 								_hasGroup =
-										data['hasGroup'] == true;
-
-								final requesterName =
-										data['requesterName'] ?? '-';
-										
+										data['hasGroup'] == true;					
 
 								if (!_hasGroup) {
 									return _buildNoGroupHome(
 										requesterName: requesterName,
 									);
 								}
-						
 						
 								final groupId = data['groupId'] ?? '';
 								final requesterId = data['requesterId'] ?? '';
@@ -1588,9 +1560,7 @@ final l10n = AppLocalizations.of(context)!;
 																							),
 																						],
 																					),
-																				),
-																				
-																				
+																				),																			
 																			);
 																		},
 																	),

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">LynraFamily Member</string>
+
+    <string name="presence_service_channel_name">LynraFamily Member Servisi</string>
+    <string name="presence_service_notification_title">LynraFamily Member aktif</string>
+    <string name="presence_service_notification_body">Güvenilir aile konum isteklerine yanıt vermeye hazır.</string>
+</resources>

@@ -18,6 +18,60 @@ const admin = require("firebase-admin");
 admin.initializeApp();
 const logger = require("firebase-functions/logger");
 
+const messages = {
+  en: {
+    callMeTitle: "Call Me",
+    callMeBody: (name) => `${name} wants you to call.`,
+    alertTitle: "Lynra Alert",
+  },
+  tr: {
+    callMeTitle: "Beni Ara",
+    callMeBody: (name) => `${name} aramanı istiyor.`,
+    alertTitle: "Lynra Alarm",
+  },
+  es: {
+    callMeTitle: "Llámame",
+    callMeBody: (name) => `${name} quiere que lo llames.`,
+    alertTitle: "Alerta de Lynra",
+  },
+};
+
+function getLanguageFromCountry(countryCode) {
+  const code = (countryCode || "").toUpperCase();
+
+  if (code === "TR") return "tr";
+  if (code === "ES") return "es";
+
+  return "en";
+}
+
+async function getCountryCodeForTarget(collectionName, targetId, groupId) {
+  try {
+    const targetSnap = await admin
+      .firestore()
+      .collection(collectionName)
+      .doc(targetId)
+      .get();
+
+    const targetCountryCode = targetSnap.data()?.countryCode;
+
+    if (targetCountryCode) {
+      return targetCountryCode;
+    }
+
+    const groupSnap = await admin
+      .firestore()
+      .collection("groups")
+      .doc(groupId)
+      .get();
+
+    return groupSnap.data()?.countryCode || "US";
+  } catch (error) {
+    console.error("COUNTRY CODE ERROR", error);
+    return "US";
+  }
+}
+
 // For cost control, you can set the maximum number of containers that can be
 // running at the same time. This helps mitigate the impact of unexpected
 // traffic spikes by instead downgrading performance. This limit is a
@@ -91,13 +145,33 @@ exports.onCallMeCreated = onDocumentCreated(
     console.log("CALL ME CREATED", data);
     console.log("CALL ME FCM TOPIC", topic);
 
-    try {
-      const notificationTitle = "Call Me";
+		try {
+			let text = messages.en;
 
-			const notificationBody =
+			try {
+				const targetCollection =
+					isRequesterToLocator ? "locators" : "requesters";
+
+				const countryCode = await getCountryCodeForTarget(
+					targetCollection,
+					targetId,
+					event.params.groupId,
+				);
+
+				const lang = getLanguageFromCountry(countryCode);
+				text = messages[lang] || messages.en;
+			} catch (error) {
+				console.error("CALL ME LOCALIZATION ERROR", error);
+			}
+
+			const notificationTitle = text.callMeTitle;
+
+			const callerName =
 				isRequesterToLocator
-					? `${data.requesterName || "Requester"} wants you to call.`
-					: `${data.locatorName || "Member"} wants you to call.`;
+					? data.requesterName || "Requester"
+					: data.locatorName || "Member";
+
+			const notificationBody = text.callMeBody(callerName);
 
 			const response = await admin.messaging().send({
 				topic,
@@ -119,10 +193,10 @@ exports.onCallMeCreated = onDocumentCreated(
 				data: payload,
 			});
 
-      console.log("CALL ME FCM SENT", topic, response);
-    } catch (error) {
-      console.error("CALL ME FCM ERROR", error);
-    }
+			console.log("CALL ME FCM SENT", topic, response);
+		} catch (error) {
+			console.error("CALL ME FCM ERROR", error);
+		}
   }
 );
 exports.onAlertCreated = onDocumentCreated(
@@ -142,37 +216,52 @@ exports.onAlertCreated = onDocumentCreated(
     console.log("ALERT CREATED", data);
     console.log("ALERT FCM TOPIC", topic);
 
-    try {
-      const response = await admin.messaging().send({
-        topic,
+				try {
+			let text = messages.en;
 
-        notification: {
-          title: "Beacon Alert",
-          body: `${locatorName}: ${alertType}`,
-        },
+			try {
+				const countryCode = await getCountryCodeForTarget(
+					"requesters",
+					requesterId,
+					event.params.groupId,
+				);
 
-        android: {
-          priority: "high",
-          notification: {
-            channelId: "call_me",
-            priority: "max",
-            defaultSound: true,
-          },
-        },
+				const lang = getLanguageFromCountry(countryCode);
+				text = messages[lang] || messages.en;
+			} catch (error) {
+				console.error("ALERT LOCALIZATION ERROR", error);
+			}
 
-        data: {
-          type: "alert",
-          alertId,
-          alertType,
-          locatorName,
-          locatorCode,
-        },
-      });
+			const response = await admin.messaging().send({
+				topic,
 
-      console.log("ALERT FCM SENT", topic, response);
-    } catch (error) {
-      console.error("ALERT FCM ERROR", error);
-    }
+				notification: {
+					title: text.alertTitle,
+					body: `${locatorName}: ${alertType}`,
+				},
+
+				android: {
+					priority: "high",
+					notification: {
+						channelId: "call_me",
+						priority: "max",
+						defaultSound: true,
+					},
+				},
+
+				data: {
+					type: "alert",
+					alertId,
+					alertType,
+					locatorName,
+					locatorCode,
+				},
+			});
+
+			console.log("ALERT FCM SENT", topic, response);
+		} catch (error) {
+			console.error("ALERT FCM ERROR", error);
+		}
   }
 );
 exports.onRequestLocationCreated = onDocumentCreated(

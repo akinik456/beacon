@@ -86,8 +86,8 @@ class LocatorPresenceForegroundService : Service() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 channelId,
-                "LynraFamily Member Service",
-                NotificationManager.IMPORTANCE_LOW,
+								getString(R.string.presence_service_channel_name),
+								NotificationManager.IMPORTANCE_LOW,
             )
 
             val manager =
@@ -102,8 +102,12 @@ class LocatorPresenceForegroundService : Service() {
             this,
             channelId,
         )
-            .setContentTitle("LynraFamily Member is active")
-            .setContentText("Sharing status with your family group.")
+            .setContentTitle(
+								getString(R.string.presence_service_notification_title),
+						)
+						.setContentText(
+								getString(R.string.presence_service_notification_body),
+						)
             .setSmallIcon(android.R.drawable.ic_menu_mylocation)
             .build()
     }
