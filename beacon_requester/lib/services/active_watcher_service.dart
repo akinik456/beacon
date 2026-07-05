@@ -13,6 +13,7 @@ class ActiveWatcherService {
     required String groupId,
     required String locatorId,
   }) async {
+	print("addWatcher called");
     try {
       final requesterId =
           await IdentityService.getRequesterId();

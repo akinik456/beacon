@@ -42,7 +42,28 @@ class AlertService {
 		);
 
 		print("BEACON ALERT => $type sent => $placeName");
-	}	
+	}
+
+	static Future<void> sendMovementAlert({
+		required double movedMeters,
+		bool detectedWhileOffline = false,
+	}) async {
+	print("sendMovementAlert is called");
+		await _sendAlertToPairedRequesters(
+			type: 'movement',
+			extraData: {
+				'movedMeters': movedMeters.round(),
+				'detectedWhileOffline': detectedWhileOffline,
+			},
+		);
+
+		print(
+			"BEACON ALERT => movement sent "
+			"moved=${movedMeters.toStringAsFixed(1)}m "
+			"offline=$detectedWhileOffline",
+		);
+	}
+	
 
   static Future<void> _sendAlertToPairedRequesters({
   required String type,
@@ -157,6 +178,9 @@ class AlertService {
 			case 'place_enter':
 			case 'place_exit':
 				return 'geofence';
+				
+			case 'movement':
+				return 'movement';	
 
 			default:
 				return '';

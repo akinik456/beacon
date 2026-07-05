@@ -311,6 +311,7 @@ static Future<void> ensureLocatorDefaultSettings({
     'batteryLowAlert': true,
     'batteryLowLevel': 20,
     'geofenceAlert': false,
+		'movementAlert': false,
     'createdAt': FieldValue.serverTimestamp(),
     'updatedAt': FieldValue.serverTimestamp(),
   }, SetOptions(merge: true));
@@ -339,6 +340,7 @@ static Future<void> ensureRequesterNotifySettings({
     'gpsOff': true,
     'batteryLow': true,
     'geofence': false,
+		'movement': false,
     'createdAt': FieldValue.serverTimestamp(),
     'updatedAt': FieldValue.serverTimestamp(),
   }, SetOptions(merge: true));

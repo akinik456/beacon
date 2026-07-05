@@ -18,20 +18,25 @@ class LocatorSettingsService {
 	static bool _batteryLowAlertEnabled = true;
 	static int _batteryLowLevel = 20;
 	static bool _geofenceAlertEnabled = false;
-
+	static bool _movementAlertEnabled = false;
+	
 	static bool _hasGpsOffNotifyTarget = false;
 	static bool _hasBatteryLowNotifyTarget = false;
 	static bool _hasGeofenceNotifyTarget = false;
+	static bool _hasMovementNotifyTarget = false;
 	static bool _hasCallMeNotifyTarget = false;
 
 	static bool get gpsOffAlertEnabled => _gpsOffAlertEnabled;
 	static bool get batteryLowAlertEnabled => _batteryLowAlertEnabled;
 	static int get batteryLowLevel => _batteryLowLevel;
 	static bool get geofenceAlertEnabled => _geofenceAlertEnabled;
+	static bool get movementAlertEnabled => _movementAlertEnabled;
+
 
 	static bool get hasGpsOffNotifyTarget => _hasGpsOffNotifyTarget;
 	static bool get hasBatteryLowNotifyTarget => _hasBatteryLowNotifyTarget;
 	static bool get hasGeofenceNotifyTarget => _hasGeofenceNotifyTarget;
+	static bool get hasMovementNotifyTarget => _hasMovementNotifyTarget;
 	static bool get hasCallMeNotifyTarget => _hasCallMeNotifyTarget;
 	
 	static Future<void> startListeners() async {
@@ -62,13 +67,16 @@ class LocatorSettingsService {
 			_batteryLowAlertEnabled = data['batteryLowAlert'] ?? true;
 			_batteryLowLevel = data['batteryLowLevel'] ?? 20;
 			_geofenceAlertEnabled = data['geofenceAlert'] ?? false;
+			_movementAlertEnabled = data['movementAlert'] ?? false;
 
 			print(
 				"LOCATOR SETTINGS => "
 				"gps=$_gpsOffAlertEnabled "
 				"battery=$_batteryLowAlertEnabled "
 				"level=$_batteryLowLevel "
-				"geo=$_geofenceAlertEnabled",
+				"geo=$_geofenceAlertEnabled"
+				"move=$_movementAlertEnabled",
+				
 			);
 		});
 
@@ -79,6 +87,7 @@ class LocatorSettingsService {
 			bool gps = false;
 			bool battery = false;
 			bool geo = false;
+			bool move = false;
 			bool callMe = false;
 
 			for (final doc in snapshot.docs) {
@@ -87,12 +96,14 @@ class LocatorSettingsService {
 				if (data['gpsOff'] == true) gps = true;
 				if (data['batteryLow'] == true) battery = true;
 				if (data['geofence'] == true) geo = true;
+				if (data['movement'] == true) move = true;
 				if (data['callMe'] == true) callMe = true;
 			}
 
 			_hasGpsOffNotifyTarget = gps;
 			_hasBatteryLowNotifyTarget = battery;
 			_hasGeofenceNotifyTarget = geo;
+			_hasMovementNotifyTarget =move;
 			_hasCallMeNotifyTarget = callMe;
 
 			print(
@@ -100,6 +111,7 @@ class LocatorSettingsService {
 				"gps=$gps "
 				"battery=$battery "
 				"geo=$geo "
+				"move=$move"
 				"callMe=$callMe",
 			);
 		});
@@ -142,6 +154,7 @@ class LocatorSettingsService {
       'batteryLowAlert': data['batteryLowAlert'] ?? true,
       'batteryLowLevel': data['batteryLowLevel'] ?? 20,
       'geofenceAlert': data['geofenceAlert'] ?? false,
+			'movementAlert': data['movementAlert'] ?? false,
     };
   }
 
@@ -151,6 +164,7 @@ class LocatorSettingsService {
       'batteryLowAlert': true,
       'batteryLowLevel': 20,
       'geofenceAlert': false,
+			'movementAlert': false,
     };
   }
 }

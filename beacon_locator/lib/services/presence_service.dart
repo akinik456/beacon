@@ -6,6 +6,7 @@ import 'package:geolocator/geolocator.dart';
 import 'identity_service.dart';
 import 'geofence_service.dart';
 import 'locator_settings_service.dart';
+import 'movement_alert_service.dart';
 
 class PresenceService {
   PresenceService._();
@@ -18,6 +19,7 @@ class PresenceService {
 }) async {
   final groupId = await IdentityService.getGroupId();
   final locatorId = await IdentityService.getLocatorId();
+	print("updateOnline called");
 
   if (groupId == null || locatorId == null) {
     print("BEACON PRESENCE => missing group/locator");
@@ -92,7 +94,7 @@ class PresenceService {
     'movedSinceLastUpdateMeters': movedMeters?.round(),
     'updateCount': ServerValue.increment(1),
   });
-
+print("RTDB updated");
   if (position != null) {
     await GeofenceService.checkPlaces(
       groupId: groupId,
@@ -100,8 +102,13 @@ class PresenceService {
       lat: position.latitude,
       lng: position.longitude,
     );
+		
+		 await MovementAlertService.checkNow(
+			position: position,
+			reason: reason,
+		);
   }
-
+	print("MovementAlertService.checkNow is called ? lat:$position.latitude,lng:$position.longitude");
   print(
     "BEACON PRESENCE => "
     "online updated reason=$reason",

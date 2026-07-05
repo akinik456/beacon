@@ -1,0 +1,81 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function ownsRequesterDoc() {
+      return signedIn()
+        && resource.data.authUid == request.auth.uid;
+    }
+
+    function createsOwnRequesterDoc() {
+      return signedIn()
+        && request.resource.data.authUid == request.auth.uid;
+    }
+
+    match /test/{docId} {
+      allow read, write: if false;
+    }
+
+    match /requesters/{requesterId} {
+      allow create: if signedIn()
+        && request.resource.data.authUid == request.auth.uid;
+
+      allow read: if signedIn();
+
+      allow update: if signedIn()
+        && (
+          resource.data.authUid == request.auth.uid
+          ||
+          !('authUid' in resource.data)
+        );
+
+      allow delete: if signedIn()
+        && resource.data.authUid == request.auth.uid;
+    }
+
+    match /locators/{locatorId} {
+
+      allow create: if signedIn()
+        && request.resource.data.authUid == request.auth.uid;
+
+      allow read: if signedIn();
+
+      allow update: if signedIn()
+        && (
+          resource.data.authUid == request.auth.uid
+          ||
+          !('authUid' in resource.data)
+        );
+
+      allow delete: if signedIn()
+        && resource.data.authUid == request.auth.uid;
+
+      match /pairing_requests/{requestId} {
+        allow read, write: if signedIn();
+      }
+    }
+
+    match /groups/{groupId} {
+      allow read, write: if signedIn();
+
+      match /devices/{deviceId} {
+        allow read: if signedIn();
+
+        allow create: if signedIn()
+          && request.resource.data.authUid == request.auth.uid;
+
+        allow update, delete: if signedIn()
+          && resource.data.authUid == request.auth.uid;
+      }
+
+      match /{document=**} {
+        allow read, write: if signedIn();
+      }
+    }
+  }
+}

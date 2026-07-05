@@ -11,7 +11,7 @@ master olmayan place silebiliyor?
 bildirim ayarları check
 pairing/join timeout
 
-locator izinler kayboldu?
+
 **************************
  
  app cihazdan kaldırılırsa FS den nasıl sileceğiz ?

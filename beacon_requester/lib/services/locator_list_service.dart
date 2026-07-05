@@ -110,7 +110,6 @@ print(
 					...pairData,
 					...presenceData,
 					'movementAlert': settingsData['movementAlert'] ?? true,
-					'movementMeters': settingsData['movementMeters'] ?? 50,
 					'movement': notifyData['movement'] ?? true,
 					'locatorName': locatorName,
 				});

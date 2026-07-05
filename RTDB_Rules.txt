@@ -1,0 +1,35 @@
+{
+  "rules": {
+    "test": {
+      ".read": false,
+      ".write": false
+    },
+
+    "presence": {
+      "auth": {
+        ".read": false,
+        ".write": "auth != null"
+      },
+
+      "groups": {
+        "$groupId": {
+          ".read": "auth != null && root.child('presence/auth/uids/' + auth.uid + '/groupId').val() == $groupId",
+
+          "locators": {
+            "$locatorId": {
+              ".write": "auth != null && root.child('presence/auth/locators/' + $locatorId + '/authUid').val() == auth.uid && root.child('presence/auth/locators/' + $locatorId + '/groupId').val() == $groupId"
+            }
+          },
+
+          "active_watchers": {
+            "$locatorId": {
+              "$requesterId": {
+                ".write": "auth != null && root.child('presence/auth/requesters/' + $requesterId + '/authUid').val() == auth.uid && root.child('presence/auth/requesters/' + $requesterId + '/groupId').val() == $groupId"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

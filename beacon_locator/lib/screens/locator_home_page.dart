@@ -46,6 +46,7 @@ import '../services/locator_name_editor.dart';
 import '../core/widgets/guide_panel.dart';
 import '../core/widgets/app_banner.dart';
 import '../services/theme_service.dart';
+import '../services/rtdb_auth_mapping_service.dart';
 
 
 class LocatorHomePage extends StatefulWidget {
@@ -110,6 +111,11 @@ Future<void> _startLocatorHome() async {
     );
     return;
   }
+	
+	if (hasGroup) 
+	{
+	await RtdbAuthMappingService.syncLocatorAuth();
+	}
 
   await FCMService.initialize();
 

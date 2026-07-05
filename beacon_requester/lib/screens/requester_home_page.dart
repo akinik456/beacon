@@ -53,6 +53,7 @@ import '../core/widgets/dialogs/app_confirm_dialog.dart';
 import '../core/widgets/dialogs/app_info_dialog.dart';
 import '../core/widgets/dialogs/app_input_dialog.dart';
 import '../services/theme_service.dart';
+import '../services/rtdb_auth_mapping_service.dart';
 
 class RequesterHomePage extends StatefulWidget {
   const RequesterHomePage({super.key});
@@ -71,6 +72,7 @@ class _RequesterHomePageState
 	Map<String, dynamic>? _callMeData;
 	List<Map<String, dynamic>> _pendingCallMeQueue = [];
 	Map<String, dynamic>? _alertData;
+	Map<String, dynamic>? _movementAlertData;
 	late Future<Map<String, dynamic>?> _homeDataFuture;
 	
 	String? _groupId;
@@ -94,8 +96,7 @@ class _RequesterHomePageState
 	bool _trialActive = false;
 	bool get _hasFullAccess => _isPremium || _trialActive;
 	int _trialDaysLeft = 0;
-	final Map<String, DateTime> _lastMovementAlert = {};
-	Map<String, dynamic>? _movementAlertData;
+	//final Map<String, DateTime> _lastMovementAlert = {};
 	Timer? _requesterPositionTimer;
 	
 	
@@ -229,6 +230,7 @@ class _RequesterHomePageState
 			print("BEACON SUBSCRIPTION => no group, skip subscription check");
 			return;
 		}
+		await RtdbAuthMappingService.syncRequesterAuth();
 		final isMaster = await GroupService.getLocalIsMaster();
 		_isMaster = isMaster;
 		
@@ -297,7 +299,7 @@ class _RequesterHomePageState
 	Future<void> _loadLocators() async {
 		_groupId = await GroupService.getLocalGroupId();
 		_requesterId = await IdentityService.getRequesterId();
-
+print("loadLocators called");
 		if (_groupId == null || _groupId!.isEmpty) {
 			print("BEACON HOME => no group yet, skip locator load");
 			return;
@@ -419,24 +421,20 @@ Future<void> _updateRequesterPosition() async {
 				final presence =
 						Map<String, dynamic>.from(value as Map);
 
-				final movedMeters =
-						(presence['movedSinceLastUpdateMeters'] as num?)?.toDouble() ?? 0;
+				//final movedMeters = (presence['movedSinceLastUpdateMeters'] as num?)?.toDouble() ?? 0;
 
 				final locator = _locators.firstWhere(
 					(x) => x['locatorId'] == locatorId,
 					orElse: () => {},
 				);
 				
-				final movementNotify =
-						locator['movement'] == true;
+				//final movementNotify = locator['movement'] == true;
 
-				final movementAlert =
-						locator['movementAlert'] == true;
+				//final movementAlert = locator['movementAlert'] == true;
 
-				final movementMeters =
-						(locator['movementMeters'] as num?)?.toDouble() ?? 50;
+				//final movementMeters = (locator['movementMeters'] as num?)?.toDouble() ?? 50;
 
-				if (movementAlert &&
+				/*if (movementAlert &&
 				movementNotify &&
 				movedMeters >= movementMeters) {
 					final now = DateTime.now();
@@ -453,8 +451,7 @@ Future<void> _updateRequesterPosition() async {
 
 						print(
 							"BEACON MOVEMENT ALERT => "
-							"$locatorId moved=${movedMeters.toStringAsFixed(1)}m "
-							"limit=${movementMeters.toStringAsFixed(0)}m",
+							"$locatorId moved=${movedMeters.toStringAsFixed(1)}m ",
 						);
 
 						if (!mounted) return;
@@ -474,7 +471,7 @@ Future<void> _updateRequesterPosition() async {
 							);
 						}
 					}
-				}
+				}*/
 				
 				if (!mounted) return;
 
@@ -483,30 +480,30 @@ Future<void> _updateRequesterPosition() async {
 
 				String address = '';
 
-if (lat != null && lng != null) {
-  address = await AddressHelper.getAddressFromLatLng(
-    lat: lat,
-    lng: lng,
-  );
-}
+				if (lat != null && lng != null) {
+					address = await AddressHelper.getAddressFromLatLng(
+						lat: lat,
+						lng: lng,
+					);
+				}
 
-if (!mounted) return;
+				if (!mounted) return;
 
-setState(() {
-  final index = _locators.indexWhere(
-    (x) => x['locatorId'] == locatorId,
-  );
+				setState(() {
+					final index = _locators.indexWhere(
+						(x) => x['locatorId'] == locatorId,
+					);
 
-  if (index == -1) return;
+					if (index == -1) return;
 
-  _locators[index] = {
-    ..._locators[index],
-    ...presence,
-    'address': address.isEmpty
-        ? l10n.addressNotAvailable
-        : address,
-  };
-});
+					_locators[index] = {
+						..._locators[index],
+						...presence,
+						'address': address.isEmpty
+								? l10n.addressNotAvailable
+								: address,
+					};
+				});
 			});
 		_subscriptions.add(sub);
 	}
@@ -1914,7 +1911,7 @@ Widget build(BuildContext context) {
 																			});
 																		},		
 																	),	
-																	if (_movementAlertData != null)
+																	/*if (_movementAlertData != null)
 																	AlertOverlay(
 																		data: _movementAlertData!,
 																		onDismiss: () {
@@ -1922,7 +1919,7 @@ Widget build(BuildContext context) {
 																				_movementAlertData = null;
 																			});
 																		},
-																	),
+																	),*/
 																	if (!_hasFullAccess && _hasGroup)
 																	SubscriptionExpiredOverlay(
 																		isMaster: _isMaster,

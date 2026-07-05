@@ -30,14 +30,14 @@ class _LocatorNotifyPageState extends State<LocatorNotifyPage> {
   bool gpsOff = false;
   bool batteryLow = false;
   bool geofence = false;
+	bool movement = true;
 
   bool gpsOffEnabledByMaster = false;
   bool batteryLowEnabledByMaster = false;
   bool geofenceEnabledByMaster = false;
+	bool movementEnabledByMaster = true;
 
   bool loading = true;
-	bool movement = true;
-	bool movementEnabledByMaster = true;
 
   @override
   void initState() {
