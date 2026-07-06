@@ -21,6 +21,7 @@ class AddressHelper {
 
     final areaParts = [
       p.subLocality,          // Bademlik
+			p.subAdministrativeArea, // İlçe
       p.locality,             // varsa ilçe/şehir
       p.administrativeArea,   // Ankara
     ];

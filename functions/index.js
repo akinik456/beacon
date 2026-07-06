@@ -264,43 +264,7 @@ exports.onAlertCreated = onDocumentCreated(
 		}
   }
 );
-exports.onRequestLocationCreated = onDocumentCreated(
-  "groups/{groupId}/devices/{requesterId}/request_location/{requestId}",
-  async (event) => {
-    const data = event.data.data();
-
-    const locatorId = data.locatorId;
-
-    if (!locatorId) {
-      console.error("RL ERROR => missing locatorId");
-      return;
-    }
-
-    const topic = `locator_${locatorId}`;
-
-    console.log("RL CREATED", data);
-    console.log("RL FCM TOPIC", topic);
-
-    try {
-      const response = await admin.messaging().send({
-				topic,
-
-				android: {
-					priority: "high",
-				},
-
-				data: {
-					type: "request_location",
-					locatorId,
-				},
-			});
-
-						console.log("RL FCM SENT", topic, response);
-					} catch (error) {
-						console.error("RL FCM ERROR", error);
-					}
-				}
-			);
+		
 exports.onActiveWatchersChanged = onValueWritten(
   "/presence/groups/{groupId}/active_watchers/{locatorId}",
   async (event) => {

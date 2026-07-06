@@ -419,66 +419,68 @@ Future<void> _deletePlace(String placeId, String placeName) async {
 
             const SizedBox(height: 4),
             AppCard(
-  child: Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Row(
-        children: [
-          Icon(
-            Icons.place_rounded,
-            color: AppColors.primary,
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Text(
-              'Places: $_placeCount / 5',
-              style: AppFonts.subtitle,
-            ),
-          ),
-        ],
-      ),
+							child: Column(
+								crossAxisAlignment: CrossAxisAlignment.start,
+								children: [
+									Row(
+										children: [
+											Icon(
+												Icons.place_rounded,
+												color: AppColors.primary,
+											),
+											const SizedBox(width: 8),
+											Expanded(
+												child: Text(
+													'Places: $_placeCount / 5',
+													style: AppFonts.subtitle,
+												),
+											),
+										],
+									),
 
-      if (_places.isNotEmpty) ...[
-        const SizedBox(height: 8),
-        const Divider(),
+									if (_places.isNotEmpty) ...[
+										const SizedBox(height: 8),
+										const Divider(),
 
-        ..._places.map((place) {
-          return ListTile(
-            dense: true,
-            contentPadding: EdgeInsets.zero,
-            leading: Icon(
-              Icons.location_on_outlined,
-              color: AppColors.primary,
-              size: 20,
-            ),
-            title: Text(
-              place['name'],
-              style: AppFonts.body,
-            ),
-            subtitle: Text(
-              place['address'],
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: AppFonts.caption,
-            ),
-            trailing: IconButton(
-              icon: Icon(
-                Icons.delete_outline_rounded,
-                color: AppColors.danger,
-              ),
-              onPressed: () {
-  _deletePlace(
-    place['placeId'],
-    place['name'],
-  );
-},
-            ),
-          );
-        }),
-      ],
-    ],
-  ),
-),
+										..._places.map((place) {
+											return ListTile(
+												dense: true,
+												contentPadding: EdgeInsets.zero,
+												leading: Icon(
+													Icons.location_on_outlined,
+													color: AppColors.primary,
+													size: 20,
+												),
+												title: Text(
+													place['name'],
+													style: AppFonts.body,
+												),
+												subtitle: Text(
+													place['address'],
+													maxLines: 1,
+													overflow: TextOverflow.ellipsis,
+													style: AppFonts.caption,
+												),
+												trailing: widget.isMaster
+														? IconButton(
+																icon: Icon(
+																	Icons.delete_outline_rounded,
+																	color: AppColors.danger,
+																),
+																onPressed: () {
+																	_deletePlace(
+																		place['placeId'],
+																		place['name'],
+																	);
+																},
+															)
+														: null,
+											);
+										}),
+									],
+								],
+							),
+						),
 						if (widget.isMaster) ...[
             const SizedBox(height: 4),
             SizedBox(

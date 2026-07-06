@@ -83,12 +83,18 @@ class JoinRequestCard extends StatelessWidget {
 														},
 													child: Text(
 														l10n.reject,
+														style: AppFonts.button.copyWith(
+                              color: AppColors.danger,
+                            ),
 													),
 												),
 											),
 										const SizedBox(width: 12),	
 										Expanded(
 											child: ElevatedButton(
+												style: ElevatedButton.styleFrom(
+													backgroundColor: AppColors.primary,
+												),
 												onPressed: () async {
 													final currentRequesterId =
 														await IdentityService.getRequesterId();
@@ -200,6 +206,9 @@ class JoinRequestCard extends StatelessWidget {
 												},
 												child: Text(
 												l10n.approve,
+													style: AppFonts.button.copyWith(
+														color: AppColors.background,
+													),
 												),
 											),
 										),

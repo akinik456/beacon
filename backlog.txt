@@ -1,35 +1,36 @@
-firebase_options.dart requester da yok
+-	firebase_options.dart requester da yok
 
-Production Firestore Rules + Anonymous Auth
-FS kurallar 
-RTDB kurallar
- 
-brom not alıyorum test bitince migration ı kaldıracaz. 
+-	Production Firestore Rules + Anonymous Auth
+	FS kurallar  
+	brom not alıyorum test bitince migration ı kaldıracaz. 
 
-master olmayan place silebiliyor?
+-	bildirim ayarları check
 
-bildirim ayarları check
-pairing/join timeout
+-	pairing/join timeout
 
+- app cihazdan kaldırılırsa FS den nasıl sileceğiz ?
 
-**************************
- 
- app cihazdan kaldırılırsa FS den nasıl sileceğiz ?
- 
+- Trial abuse prevention
+
+-	isim girmek neden bu kadar zor
+
+-	alerts metinler
+-	bildirim ikon
+
+- gruptan çıkarılan req hala loc. paired admins de görünüyor
+
 ********
 SMS
+
 Messaging
 
 inApp map
 
-Trial abuse prevention
-
-isim girmek neden bu kadar zor
 
 
-REQUEST LOCATION  artık yok ancak kodlarda var
 
-movement alert locator side ?
+
+
 
 *******
 Purchase Protection
@@ -52,17 +53,7 @@ yerine daha yumuşak:
 Location sharing is managed by your family administrator.eya
 
 To stop sharing, ask your family administrator to remove this device.
-
-
-
-
-alerts metinler
-bildirim ikon
-
-pairing timeout
-
-
-***************
+******************
 
 ekranlarda taşma kontrolü için genel olarak yapabileceğimiz bişey yok mu,her cihazda deneme şansımız olmadığına göre
 

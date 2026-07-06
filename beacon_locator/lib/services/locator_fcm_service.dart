@@ -100,19 +100,6 @@ static int _initAttempt = 0;
 		final type = message.data['type'];
 
 		switch (type) {
-			case 'request_location':
-				print(
-					"BEACON FCM => REQUEST LOCATION received",
-				);
-
-				await SmartPresenceScheduler.boostAndUpdateNow(
-					reason: 'fcm_foreground',
-				);
-
-				print(
-					"BEACON FCM => REQUEST LOCATION completed",
-				);
-				break;
 
 			case 'active_watchers_changed':
 				print(

@@ -34,21 +34,7 @@ import 'services/notification_service.dart';
 		final type = message.data['type'];
 
 		switch (type) {
-			case 'request_location':
-				print(
-					"BEACON FCM BG => REQUEST LOCATION received",
-				);
-
-				await SmartPresenceScheduler
-						.boostAndUpdateNow(
-					reason: 'fcm_background',
-				);
-
-				print(
-					"BEACON FCM BG => REQUEST LOCATION completed",
-				);
-				break;
-
+			
 			case 'active_watchers_changed':
 				print("BEACON FCM BG => ACTIVE WATCHERS changed");
 

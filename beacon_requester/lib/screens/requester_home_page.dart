@@ -31,7 +31,6 @@ import '../services/identity_service.dart';
 import '../services/fcm_service.dart';
 import 'locator_settings_page.dart';
 import '../utils/address_helper.dart';
-import '../services/request_location_service.dart';
 import '../services/active_watcher_service.dart';
 import '../services/join_request_service.dart';
 import 'locator_notify_page.dart';
