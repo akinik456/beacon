@@ -1417,6 +1417,7 @@ Widget _buildGroupHome({
 																			onLanguageChanged: () {
 																				setState(() {});
 																			},
+																			onChanged: _loadLocators,
 																		),
 																		secondChild: const SizedBox.shrink(),
 																	),																		

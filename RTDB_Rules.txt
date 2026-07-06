@@ -17,7 +17,7 @@
 
           "locators": {
             "$locatorId": {
-              ".write": "auth != null && root.child('presence/auth/locators/' + $locatorId + '/authUid').val() == auth.uid && root.child('presence/auth/locators/' + $locatorId + '/groupId').val() == $groupId"
+              ".write": "auth != null && (root.child('presence/auth/locators/' + $locatorId + '/authUid').val() == auth.uid || root.child('presence/auth/uids/' + auth.uid + '/role').val() == 'requester' && root.child('presence/auth/uids/' + auth.uid + '/groupId').val() == $groupId)"
             }
           },
 

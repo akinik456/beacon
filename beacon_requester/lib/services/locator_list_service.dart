@@ -27,9 +27,9 @@ class LocatorListService {
           .collection('devices')
           .doc(requesterId)
           .get();
-print(
-  "BEACON LOCATOR LIST => requesterDoc exists=${requesterDoc.exists}",
-);
+			print(
+				"BEACON LOCATOR LIST => requesterDoc exists=${requesterDoc.exists}",
+			);
       if (!requesterDoc.exists) {
         return [];
       }

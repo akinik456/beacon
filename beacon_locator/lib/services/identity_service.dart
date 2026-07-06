@@ -134,13 +134,34 @@ class IdentityService {
 	static const _groupIdKey = 'group_id';
 
 	static Future<void> setGroupId(String groupId) async {
-		final prefs = await SharedPreferences.getInstance();
-		await prefs.setString(_groupIdKey, groupId);
-	}
+  final prefs = await SharedPreferences.getInstance();
 
-	static Future<String?> getGroupId() async {
-		final prefs = await SharedPreferences.getInstance();
-		return prefs.getString(_groupIdKey);
-	}	
+  await prefs.setString(_groupIdKey, groupId);
+
+  final saved = prefs.getString(_groupIdKey);
+
+  print(
+    "BEACON IDENTITY => setGroupId "
+    "key=$_groupIdKey value=$groupId saved=$saved",
+  );
+}
+
+static Future<String?> getGroupId() async {
+  final prefs = await SharedPreferences.getInstance();
+
+  final value = prefs.getString(_groupIdKey);
+
+  print(
+    "BEACON IDENTITY => getGroupId "
+    "key=$_groupIdKey value=$value",
+  );
+
+  return value;
+}
+
+static Future<void> clearGroupId() async {
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.remove(_groupIdKey);
+}
 	
 }

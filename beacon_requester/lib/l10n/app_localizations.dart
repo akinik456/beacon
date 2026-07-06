@@ -615,6 +615,12 @@ abstract class AppLocalizations {
   /// **'Member'**
   String get member;
 
+  /// No description provided for @members.
+  ///
+  /// In en, this message translates to:
+  /// **'Members'**
+  String get members;
+
   /// No description provided for @memberAlreadyPaired.
   ///
   /// In en, this message translates to:
@@ -974,6 +980,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Remove'**
   String get remove;
+
+  /// No description provided for @removeFromGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove from group'**
+  String get removeFromGroup;
 
   /// No description provided for @removeMember.
   ///

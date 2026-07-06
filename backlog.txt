@@ -19,6 +19,8 @@
 
 - gruptan çıkarılan req hala loc. paired admins de görünüyor
 
+- adres satırı taştı 
+
 ********
 SMS
 

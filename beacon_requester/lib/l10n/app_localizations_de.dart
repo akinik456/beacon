@@ -275,6 +275,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get member => 'Mitglied';
 
   @override
+  String get members => 'Members';
+
+  @override
   String get memberAlreadyPaired => 'Member Already Paired';
 
   @override
@@ -457,6 +460,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get remove => 'Entfernen';
+
+  @override
+  String get removeFromGroup => 'Remove from group';
 
   @override
   String get removeMember => 'Mitglied entfernen';

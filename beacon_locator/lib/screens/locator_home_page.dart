@@ -88,8 +88,35 @@ void initState() {
   });
 }
 Future<void> _startLocatorHome() async {
-  final groupId =
-      await IdentityService.getGroupId();
+  final locatorId = await IdentityService.getLocatorId();
+
+  if (locatorId != null && locatorId.isNotEmpty) {
+    try {
+      final locatorDoc = await FirebaseFirestore.instance
+          .collection('locators')
+          .doc(locatorId)
+          .get();
+
+      final serverGroupId = locatorDoc.data()?['groupId'];
+
+      if (serverGroupId == null ||
+          serverGroupId.toString().trim().isEmpty) {
+        await IdentityService.clearGroupId();
+
+        print(
+          "BEACON LOCATOR HOME => "
+          "server groupId missing, local groupId cleared",
+        );
+      }
+    } catch (e) {
+      print(
+        "BEACON LOCATOR HOME => "
+        "group sync error => $e",
+      );
+    }
+  }
+
+  final groupId = await IdentityService.getGroupId();
 
   final hasGroup =
       groupId != null && groupId.isNotEmpty;
@@ -111,11 +138,10 @@ Future<void> _startLocatorHome() async {
     );
     return;
   }
-	
-	if (hasGroup) 
-	{
-	await RtdbAuthMappingService.syncLocatorAuth();
-	}
+
+  if (hasGroup) {
+    await RtdbAuthMappingService.syncLocatorAuth();
+  }
 
   await FCMService.initialize();
 
@@ -597,7 +623,7 @@ Widget _pairedRequesterCard() {
 			if (requesters.isNotEmpty) {
 				_hadPairedRequester = true;
 			}
-      if (requesters.isEmpty && _hadPairedRequester) {
+      /*if (requesters.isEmpty && _hadPairedRequester) {
 					WidgetsBinding.instance.addPostFrameCallback((_) {
 				unawaited(_clearLocatorGroupIfNoRequester());
 			});
@@ -607,8 +633,15 @@ Widget _pairedRequesterCard() {
             style: AppFonts.subtitle,
           ),
         );
-      }
-
+      }*/
+			if (requesters.isEmpty) {
+				return AppCard(
+					child: Text(
+						l10n.noPairedRequester,
+						style: AppFonts.subtitle,
+					),
+				);
+			}
       return AppCard(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

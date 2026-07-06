@@ -117,9 +117,17 @@ class PairingApprovalService {
   });
 
   if (result == 'approved') {
-    await IdentityService.setGroupId(groupId);
-    print("BEACON APPROVE => SUCCESS => $locatorId");
-  }
+		await IdentityService.setGroupId(groupId);
+
+		final savedGroupId = await IdentityService.getGroupId();
+
+		print(
+			"BEACON APPROVE => SUCCESS "
+			"locator=$locatorId "
+			"group=$groupId "
+			"savedGroup=$savedGroupId",
+		);
+	}
 
   return result;
 }

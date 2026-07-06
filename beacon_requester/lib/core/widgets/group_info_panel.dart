@@ -10,7 +10,7 @@ import 'requester_list_card.dart';
 import '../../services/requester_name_editor.dart';
 import 'app_banner.dart';
 import 'dialogs/app_input_dialog.dart';
-
+import 'locator_list_card.dart';
 
 class GroupInfoPanel  extends StatelessWidget {
   const GroupInfoPanel ({
@@ -24,6 +24,7 @@ class GroupInfoPanel  extends StatelessWidget {
 		required this.langCode,
 		required this.onShowGroupQr,
 		required this.onLanguageChanged,
+		required this.onChanged,
   });
 
   final String groupId;
@@ -35,7 +36,8 @@ class GroupInfoPanel  extends StatelessWidget {
 	final String langCode;
 	final VoidCallback onShowGroupQr;
 	final VoidCallback onLanguageChanged;
-
+	final VoidCallback? onChanged;
+	
   Future<void> _editGroupName({
     required BuildContext context,
     required String currentGroupName,
@@ -177,86 +179,91 @@ class GroupInfoPanel  extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 12),
           child: Column(
 						children: [
-						Row(
-            children: [
-              Expanded(
-                child: Row(
-                  children: [
-                    Flexible(
-                      child: Text(
-                        liveGroupName,
-                        overflow: TextOverflow.ellipsis,
-                        style: AppFonts.title.copyWith(
-                          fontSize: 20,
-                          color: AppColors.textSecondary,
-                        ),
-                      ),
-                    ),
-										if (isMaster) ...[
-                    const SizedBox(width: 6),
-                    InkWell(
-                      borderRadius: BorderRadius.circular(12),
-                      onTap: () {
-                        _editGroupName(
-                          context: context,
-                          currentGroupName: liveGroupName,
-                        );
-                      },
-                      child: Padding(
-                        padding: EdgeInsets.all(4),
-                        child: Icon(
-                          Icons.edit_rounded,
-                          size: 16,
-                          color: AppColors.textSecondary,
-                        ),
-                      ),
-                    ),
-										],
-                  ],
-                ),
-              ),
-              Expanded(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Flexible(
-                      child: Text(
-                        requesterName,
-                        overflow: TextOverflow.ellipsis,
-                        textAlign: TextAlign.right,
-                        style: AppFonts.title.copyWith(
-                          fontSize: 20,
-                          color: AppColors.textSecondary,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 4),
-                    GestureDetector(
-											onTap: () async {
-												final changed =
-														await RequesterNameEditor.edit(context);
-
-												if (changed) {
-													onRequesterNameChanged();
-												}
-											},
-											child: Icon(
-												Icons.edit_rounded,
-												size: 18,
-												color: AppColors.textSecondary,
-											),
+								Row(
+								children: [
+									Expanded(
+										child: Row(
+											children: [
+												Flexible(
+													child: Text(
+														liveGroupName,
+														overflow: TextOverflow.ellipsis,
+														style: AppFonts.title.copyWith(
+															fontSize: 20,
+															color: AppColors.textSecondary,
+														),
+													),
+												),
+												if (isMaster) ...[
+												const SizedBox(width: 6),
+												InkWell(
+													borderRadius: BorderRadius.circular(12),
+													onTap: () {
+														_editGroupName(
+															context: context,
+															currentGroupName: liveGroupName,
+														);
+													},
+													child: Padding(
+														padding: EdgeInsets.all(4),
+														child: Icon(
+															Icons.edit_rounded,
+															size: 16,
+															color: AppColors.textSecondary,
+														),
+													),
+												),
+												],
+											],
 										),
-                  ],
-                ),
-              ),
-            ],
-          ),					
+									),
+									Expanded(
+										child: Row(
+											mainAxisAlignment: MainAxisAlignment.end,
+											children: [
+												Flexible(
+													child: Text(
+														requesterName,
+														overflow: TextOverflow.ellipsis,
+														textAlign: TextAlign.right,
+														style: AppFonts.title.copyWith(
+															fontSize: 20,
+															color: AppColors.textSecondary,
+														),
+													),
+												),
+												const SizedBox(width: 4),
+												GestureDetector(
+													onTap: () async {
+														final changed =
+																await RequesterNameEditor.edit(context);
+
+														if (changed) {
+															onRequesterNameChanged();
+														}
+													},
+													child: Icon(
+														Icons.edit_rounded,
+														size: 18,
+														color: AppColors.textSecondary,
+													),
+												),
+											],
+										),
+									),
+								],
+							),					
 							const SizedBox(height: 8),
 							_buildCodeRow(context),
 							
 							const SizedBox(height: 12),
 							RequesterListCard(
 								groupId: groupId,
+							),
+							LocatorListCard(
+								groupId: groupId,
+								isMaster: isMaster,
+								onChanged: onChanged,
 							),
 						],
 					),

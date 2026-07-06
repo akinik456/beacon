@@ -161,13 +161,7 @@ class RequesterListCard extends StatelessWidget {
                   ),
                 )
               else
-                IconButton(
-                  constraints: const BoxConstraints(
-                    minWidth: 30,
-                    minHeight: 30,
-                  ),
-                  padding: EdgeInsets.zero,
-                  visualDensity: VisualDensity.compact,
+                TextButton.icon(
                   onPressed: () async {
                     final groupRef = FirebaseFirestore.instance
                         .collection('groups')
@@ -193,11 +187,23 @@ class RequesterListCard extends StatelessWidget {
                       "BEACON REQUESTER REMOVED => $requesterId",
                     );
                   },
+									style: TextButton.styleFrom(
+										padding: const EdgeInsets.symmetric(horizontal: 6),
+										minimumSize: const Size(0, 30),
+										tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+									),
                   icon: Icon(
                     Icons.person_remove_rounded,
                     color: AppColors.danger,
                     size: 18,
                   ),
+									label: Text(
+										l10n.removeFromGroup,
+										style: AppFonts.caption.copyWith(
+											color: AppColors.danger,
+											fontWeight: FontWeight.w600,
+										),
+									),
                 ),
             ],
           ),

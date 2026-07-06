@@ -23,6 +23,7 @@ class PresenceService {
 
   if (groupId == null || locatorId == null) {
     print("BEACON PRESENCE => missing group/locator");
+		print("BEACON LOCAL IDS => group=$groupId locator=$locatorId");
     return;
   }
 

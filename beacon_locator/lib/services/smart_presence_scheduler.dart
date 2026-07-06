@@ -14,7 +14,7 @@ class SmartPresenceScheduler {
   static bool _isUpdating = false;
 
   static const _fastPeriod =
-      Duration(seconds: 10);//?*?60);
+      Duration(seconds: 60);
 
   static const _slowPeriod =
       Duration(hours: 1);

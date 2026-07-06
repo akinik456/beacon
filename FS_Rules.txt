@@ -16,6 +16,14 @@ service cloud.firestore {
       return signedIn()
         && request.resource.data.authUid == request.auth.uid;
     }
+    
+    function isMasterOfGroup(groupId) {
+      let masterRequesterId =
+        get(/databases/$(database)/documents/groups/$(groupId)).data.masterRequesterId;
+
+      return signedIn()
+        && get(/databases/$(database)/documents/groups/$(groupId)/devices/$(masterRequesterId)).data.authUid == request.auth.uid;
+    }
 
     match /test/{docId} {
       allow read, write: if false;
@@ -50,8 +58,14 @@ service cloud.firestore {
           resource.data.authUid == request.auth.uid
           ||
           !('authUid' in resource.data)
+          ||
+          (
+            isMasterOfGroup(resource.data.groupId)
+            && request.resource.data.diff(resource.data).changedKeys()
+              .hasOnly(['groupId', 'updatedAt'])
+            && !('groupId' in request.resource.data)
+          )
         );
-
       allow delete: if signedIn()
         && resource.data.authUid == request.auth.uid;
 

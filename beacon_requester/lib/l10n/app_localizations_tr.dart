@@ -275,6 +275,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get member => 'Üye';
 
   @override
+  String get members => 'Üyeler';
+
+  @override
   String get memberAlreadyPaired => 'Bu üye zaten listede.';
 
   @override
@@ -457,6 +460,9 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get remove => 'Sil';
+
+  @override
+  String get removeFromGroup => 'Gruptan çıkar';
 
   @override
   String get removeMember => 'Üyeyi Kaldır';
