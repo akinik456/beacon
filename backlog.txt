@@ -1,4 +1,6 @@
--	firebase_options.dart requester da yok
+adb logcat | findstr LYNRA_SERVICE
+Foreground service destroyed
+**************
 
 -	Production Firestore Rules + Anonymous Auth
 	FS kurallar  
@@ -6,18 +8,12 @@
 
 -	bildirim ayarları check
 
--	pairing/join timeout
-
 - app cihazdan kaldırılırsa FS den nasıl sileceğiz ?
 
 - Trial abuse prevention
 
 -	isim girmek neden bu kadar zor
 
--	alerts metinler
--	bildirim ikon
-
-- _updateRequesterPosition 30 sec. smart peryot yapmak lazım her iki tarafta da
 
 ********
 SMS

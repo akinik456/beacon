@@ -15,6 +15,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../core/theme/app_colors.dart';
 import '../core/theme/app_fonts.dart';
@@ -138,8 +139,15 @@ Future<void> _startLocatorHome() async {
   await FCMService.initialize();
 
   _startNativePresenceIfAllowed();
+	
+	await cleanupInvalidPairedRequesters();
 
   LocatorSettingsService.startListeners();
+	
+	final prefs = await SharedPreferences.getInstance();
+	ActiveWatcherService.setLangCode(
+		prefs.getString('languageCode') ?? 'en',
+	);
 
   ActiveWatcherService.startUiOnly();
 
@@ -221,6 +229,78 @@ Future<void> _startNativePresenceIfAllowed() async {
       _showMissingPermissionsDialog();
     }
   }
+	
+	static Future<void> cleanupInvalidPairedRequesters() async {
+  final groupId = await IdentityService.getGroupId();
+  final locatorId = await IdentityService.getLocatorId();
+
+  if (groupId == null || locatorId == null) {
+    print("BEACON CLEANUP => missing group/locator");
+    return;
+  }
+
+  final locatorDeviceRef = FirebaseFirestore.instance
+      .collection('groups')
+      .doc(groupId)
+      .collection('devices')
+      .doc(locatorId);
+
+  final locatorDeviceSnap = await locatorDeviceRef.get();
+  final locatorDeviceData = locatorDeviceSnap.data();
+
+  if (locatorDeviceData == null) {
+    print("BEACON CLEANUP => locator device doc not found");
+    return;
+  }
+
+  final pairedRequesters = Map<String, dynamic>.from(
+    locatorDeviceData['pairedRequesters'] ?? {},
+  );
+
+  if (pairedRequesters.isEmpty) {
+    print("BEACON CLEANUP => no paired requesters");
+    return;
+  }
+
+  final batch = FirebaseFirestore.instance.batch();
+  int removedCount = 0;
+
+  for (final requesterId in pairedRequesters.keys) {
+    final requesterDeviceRef = FirebaseFirestore.instance
+        .collection('groups')
+        .doc(groupId)
+        .collection('devices')
+        .doc(requesterId);
+
+    final requesterDeviceSnap = await requesterDeviceRef.get();
+    final requesterData = requesterDeviceSnap.data();
+
+    final isValidRequester =
+        requesterDeviceSnap.exists &&
+        requesterData?['active'] == true &&
+        requesterData?['role'] == 'requester';
+
+    if (!isValidRequester) {
+      batch.update(locatorDeviceRef, {
+        'pairedRequesters.$requesterId': FieldValue.delete(),
+        'updatedAt': FieldValue.serverTimestamp(),
+      });
+
+      removedCount++;
+    }
+  }
+
+  if (removedCount == 0) {
+    print("BEACON CLEANUP => paired requesters valid");
+    return;
+  }
+
+  await batch.commit();
+
+  print(
+    "BEACON CLEANUP => removed invalid paired requesters count=$removedCount",
+  );
+}
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {

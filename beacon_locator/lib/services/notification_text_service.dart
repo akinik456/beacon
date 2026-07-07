@@ -8,18 +8,16 @@ class NotificationTextService {
     return prefs.getString('languageCode') ?? 'en';
   }
 
-  static Future<String> beingWatched() async {
-    final langCode = await _langCode();
-
-    switch (langCode) {
-      case 'tr':
-        return 'İzleniyorsun';
-      case 'es':
-        return 'Te están observando';
-      default:
-        return 'Being watched';
-    }
-  }
+  static String beingWatched(String langCode) {
+		switch (langCode) {
+			case 'tr':
+				return 'İzleniyorsun';
+			case 'es':
+				return 'Te están observando';
+			default:
+				return 'Being watched';
+		}
+	}
 
   static Future<String> watchingLocation({
     required List<String> names,

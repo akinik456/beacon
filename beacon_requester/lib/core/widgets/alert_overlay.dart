@@ -13,6 +13,34 @@ class AlertOverlay extends StatelessWidget {
     required this.data,
     required this.onDismiss,
   });
+	
+	String _localizedAlertType(
+		BuildContext context,
+		String alertType,
+	) {
+		final l10n = AppLocalizations.of(context)!;
+
+		switch (alertType) {
+			case 'gps_off':
+				return l10n.alertGpsOff;
+
+			case 'battery_low':
+				return l10n.alertBatteryLow;
+
+			case 'place_enter':
+				return l10n.alertPlaceEnter;
+
+			case 'place_exit':
+				return l10n.alertPlaceExit;
+
+			case 'movement':
+				return l10n.alertMovement;
+
+			default:
+				return alertType;
+		}
+	}
+	
 
 	
   @override
@@ -47,10 +75,10 @@ class AlertOverlay extends StatelessWidget {
                 const SizedBox(height: 18),
 
                 Text(
-                  alertType.toString().toUpperCase(),
-                  style: AppFonts.title,
-                  textAlign: TextAlign.center,
-                ),
+									_localizedAlertType(context, alertType),
+									style: AppFonts.title,
+									textAlign: TextAlign.center,
+								),
 
                 const SizedBox(height: 12),
 

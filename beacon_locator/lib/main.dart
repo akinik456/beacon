@@ -88,6 +88,10 @@ import 'services/native_presence_service.dart';
 
 		SmartPresenceScheduler.start();
 		LocatorSettingsService.startListeners();
+		final prefs = await SharedPreferences.getInstance();
+		ActiveWatcherService.setLangCode(
+			prefs.getString('languageCode') ?? 'en',
+		);
 		await ActiveWatcherService.start();
 		await PresenceService.startConnectionWatcher();
 		MotionService.start();

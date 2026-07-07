@@ -11,6 +11,12 @@ class ActiveWatcherService {
   ActiveWatcherService._();
 
   static StreamSubscription<DatabaseEvent>? _sub;
+	
+	static String _langCode = 'en';
+
+	static void setLangCode(String langCode) {
+		_langCode = langCode;
+	}
 
   static final ValueNotifier<List<Map<String, dynamic>>>
       activeWatchers = ValueNotifier([]);
@@ -143,6 +149,7 @@ class ActiveWatcherService {
 
     await NotificationService.showActiveWatchers(
       names: names,
+			langCode: _langCode,
     );
   }
 

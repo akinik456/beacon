@@ -30,6 +30,21 @@ class AppLocalizationsTr extends AppLocalizations {
   String get adminName => 'Yönetici İsmi';
 
   @override
+  String get alertBatteryLow => 'Pil Düşük';
+
+  @override
+  String get alertGpsOff => 'GPS Kapalı';
+
+  @override
+  String get alertMovement => 'Hareket Algılandı';
+
+  @override
+  String get alertPlaceEnter => 'Bölgeye Girdi';
+
+  @override
+  String get alertPlaceExit => 'Bölgeden Çıktı';
+
+  @override
   String get alerts => 'ALARMLAR';
 
   @override

@@ -68,41 +68,42 @@ class NotificationService {
   }
 
   static Future<void> showActiveWatchers({
-  required List<String> names,
-}) async {
-  if (names.isEmpty) {
-    await cancelActiveWatchers();
-    return;
-  }
+		required List<String> names,
+		required String langCode,
+	}) async {
+		if (names.isEmpty) {
+			await cancelActiveWatchers();
+			return;
+		}
 
-  final title =
-      await NotificationTextService.beingWatched();
+		final title =
+				await NotificationTextService.beingWatched(langCode);
 
-  final body =
-      await NotificationTextService.watchingLocation(
-    names: names,
-  );
+		final body =
+				await NotificationTextService.watchingLocation(
+			names: names,
+		);
 
-  await _plugin.show(
-    _activeWatchersNotificationId,
-    title,
-    body,
-    const NotificationDetails(
-      android: AndroidNotificationDetails(
-        _activeWatchersChannelId,
-        'Being watched',
-        channelDescription:
-            'Active watcher notifications',
-        importance: Importance.low,
-        priority: Priority.low,
-        ongoing: true,
-        autoCancel: false,
-        onlyAlertOnce: true,
-        showWhen: false,
-      ),
-    ),
-  );
-}
+		await _plugin.show(
+			_activeWatchersNotificationId,
+			title,
+			body,
+			const NotificationDetails(
+				android: AndroidNotificationDetails(
+					_activeWatchersChannelId,
+					'Being watched',
+					channelDescription:
+							'Active watcher notifications',
+					importance: Importance.low,
+					priority: Priority.low,
+					ongoing: true,
+					autoCancel: false,
+					onlyAlertOnce: true,
+					showWhen: false,
+				),
+			),
+		);
+	}
 
   static Future<void> cancelActiveWatchers() async {
     await _plugin.cancel(_activeWatchersNotificationId);

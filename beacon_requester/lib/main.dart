@@ -2,6 +2,7 @@
 // Aa147852
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -19,11 +20,97 @@ import 'services/identity_service.dart';
 import 'services/group_service.dart';
 import 'services/notification_service.dart';
 
+String _localizedAlertType(String alertType, String langCode) {
+  switch (langCode) {
+    case 'tr':
+      switch (alertType) {
+        case 'gps_off':
+          return 'GPS Kapalı';
+        case 'battery_low':
+          return 'Pil Düşük';
+        case 'place_enter':
+          return 'Bölgeye Girdi';
+        case 'place_exit':
+          return 'Bölgeden Çıktı';
+        case 'movement':
+          return 'Hareket Algılandı';
+      }
+      break;
+
+    case 'es':
+      switch (alertType) {
+        case 'gps_off':
+          return 'GPS desactivado';
+        case 'battery_low':
+          return 'Batería baja';
+        case 'place_enter':
+          return 'Entró en la zona';
+        case 'place_exit':
+          return 'Salió de la zona';
+        case 'movement':
+          return 'Movimiento detectado';
+      }
+      break;
+  }
+
+  switch (alertType) {
+    case 'gps_off':
+      return 'GPS Off';
+    case 'battery_low':
+      return 'Battery Low';
+    case 'place_enter':
+      return 'Place Entered';
+    case 'place_exit':
+      return 'Place Exited';
+    case 'movement':
+      return 'Movement Detected';
+    default:
+      return alertType;
+  }
+}
+
+String _localizedAlertTitle(String langCode) {
+  switch (langCode) {
+    case 'tr':
+      return 'LynraFamily Uyarısı';
+    case 'es':
+      return 'Alerta de LynraFamily';
+    default:
+      return 'LynraFamily Alert';
+  }
+}
+
+@pragma('vm:entry-point')
+Future<void> firebaseMessagingBackgroundHandler(
+  RemoteMessage message,
+) async {
+  await Firebase.initializeApp();
+  await NotificationService.initialize();
+
+  final data = message.data;
+
+  if (data['type'] != 'alert') return;
+
+  final prefs = await SharedPreferences.getInstance();
+  final langCode = prefs.getString('languageCode') ?? 'en';
+
+  final locatorName = data['locatorName'] ?? 'Member';
+  final alertType = data['alertType'] ?? '';
+
+  await NotificationService.showAlert(
+    title: _localizedAlertTitle(langCode),
+    body: '$locatorName: ${_localizedAlertType(alertType, langCode)}',
+  );
+}
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 	
   await Firebase.initializeApp();
 	//AuthService.startAuthListener();
+	
+	FirebaseMessaging.onBackgroundMessage(
+		firebaseMessagingBackgroundHandler,
+	);
 
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 

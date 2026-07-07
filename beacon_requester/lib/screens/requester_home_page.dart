@@ -233,7 +233,7 @@ class _RequesterHomePageState
 		final isMaster = await GroupService.getLocalIsMaster();
 		_isMaster = isMaster;
 		
-		
+		await cleanupInvalidPairedLocators();
 		
 
 		await _initTrial();
@@ -397,7 +397,77 @@ print("_updateRequesterPosition is called");
     _myLng = position.longitude;
   });
 }	
-	
+static Future<void> cleanupInvalidPairedLocators() async {
+  final groupId = await GroupService.getLocalGroupId();
+  final requesterId = await IdentityService.getRequesterId();
+
+  if (groupId == null || requesterId == null) {
+    print("BEACON CLEANUP REQ => missing group/requester");
+    return;
+  }
+
+  final requesterDeviceRef = FirebaseFirestore.instance
+      .collection('groups')
+      .doc(groupId)
+      .collection('devices')
+      .doc(requesterId);
+
+  final requesterSnap = await requesterDeviceRef.get();
+  final requesterData = requesterSnap.data();
+
+  if (requesterData == null) {
+    print("BEACON CLEANUP REQ => requester device doc not found");
+    return;
+  }
+
+  final pairedLocators = Map<String, dynamic>.from(
+    requesterData['pairedLocators'] ?? {},
+  );
+
+  if (pairedLocators.isEmpty) {
+    print("BEACON CLEANUP REQ => no paired locators");
+    return;
+  }
+
+  final batch = FirebaseFirestore.instance.batch();
+  int removedCount = 0;
+
+  for (final locatorId in pairedLocators.keys) {
+    final locatorDeviceRef = FirebaseFirestore.instance
+        .collection('groups')
+        .doc(groupId)
+        .collection('devices')
+        .doc(locatorId);
+
+    final locatorSnap = await locatorDeviceRef.get();
+    final locatorData = locatorSnap.data();
+
+    final isValidLocator =
+        locatorSnap.exists &&
+        locatorData?['active'] == true &&
+        locatorData?['role'] == 'locator';
+
+    if (!isValidLocator) {
+      batch.update(requesterDeviceRef, {
+        'pairedLocators.$locatorId': FieldValue.delete(),
+        'updatedAt': FieldValue.serverTimestamp(),
+      });
+
+      removedCount++;
+    }
+  }
+
+  if (removedCount == 0) {
+    print("BEACON CLEANUP REQ => paired locators valid");
+    return;
+  }
+
+  await batch.commit();
+
+  print(
+    "BEACON CLEANUP REQ => removed invalid paired locators count=$removedCount",
+  );
+}
 	
 	void _listenLocatorPresence(String locatorId) {
 	final l10n = AppLocalizations.of(context)!;
@@ -451,12 +521,19 @@ print("_updateRequesterPosition is called");
 
 					if (index == -1) return;
 
+					final oldAddress =
+					_locators[index]['address'] as String? ?? '';
+
+					final finalAddress = address.isNotEmpty
+							? address
+							: oldAddress.isNotEmpty
+									? oldAddress
+									: l10n.addressNotAvailable;
+
 					_locators[index] = {
 						..._locators[index],
 						...presence,
-						'address': address.isEmpty
-								? l10n.addressNotAvailable
-								: address,
+						'address': finalAddress,
 					};
 				});
 				_updateRequesterPositionIfNeeded();

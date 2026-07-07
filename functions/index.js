@@ -216,7 +216,7 @@ exports.onAlertCreated = onDocumentCreated(
     console.log("ALERT CREATED", data);
     console.log("ALERT FCM TOPIC", topic);
 
-				try {
+			try {
 			let text = messages.en;
 
 			try {
@@ -233,30 +233,20 @@ exports.onAlertCreated = onDocumentCreated(
 			}
 
 			const response = await admin.messaging().send({
-				topic,
+			topic,
 
-				notification: {
-					title: text.alertTitle,
-					body: `${locatorName}: ${alertType}`,
-				},
+			android: {
+				priority: "high",
+			},
 
-				android: {
-					priority: "high",
-					notification: {
-						channelId: "call_me",
-						priority: "max",
-						defaultSound: true,
-					},
-				},
-
-				data: {
-					type: "alert",
-					alertId,
-					alertType,
-					locatorName,
-					locatorCode,
-				},
-			});
+			data: {
+				type: "alert",
+				alertId,
+				alertType,
+				locatorName,
+				locatorCode,
+			},
+		});
 
 			console.log("ALERT FCM SENT", topic, response);
 		} catch (error) {

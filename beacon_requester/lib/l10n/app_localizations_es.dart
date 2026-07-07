@@ -30,6 +30,21 @@ class AppLocalizationsEs extends AppLocalizations {
   String get adminName => 'Nombre del administrador';
 
   @override
+  String get alertBatteryLow => 'Batería baja';
+
+  @override
+  String get alertGpsOff => 'GPS desactivado';
+
+  @override
+  String get alertMovement => 'Movimiento detectado';
+
+  @override
+  String get alertPlaceEnter => 'Entró en la zona';
+
+  @override
+  String get alertPlaceExit => 'Salió de la zona';
+
+  @override
   String get alerts => 'ALERTAS';
 
   @override
