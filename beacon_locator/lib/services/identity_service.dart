@@ -159,9 +159,23 @@ static Future<String?> getGroupId() async {
   return value;
 }
 
-static Future<void> clearGroupId() async {
-  final prefs = await SharedPreferences.getInstance();
-  await prefs.remove(_groupIdKey);
-}
+	static Future<void> clearGroupId({
+		String reason = 'unknown',
+	}) async {
+		final prefs = await SharedPreferences.getInstance();
+
+		final before = prefs.getString(_groupIdKey);
+
+		await prefs.remove(_groupIdKey);
+
+		final after = prefs.getString(_groupIdKey);
+
+		print(
+			"BEACON IDENTITY => clearGroupId "
+			"reason=$reason "
+			"before=$before "
+			"after=$after",
+		);
+	}
 	
 }

@@ -57,6 +57,24 @@ class AppLocalizationsEs extends AppLocalizations {
   String get askEverybody => 'Pedir a todos que me llamen';
 
   @override
+  String get atThisLocationNow => 'Aquí desde hace: Hace un momento';
+
+  @override
+  String atThisLocationMinutes(Object minutes) {
+    return 'Aquí desde hace: $minutes min';
+  }
+
+  @override
+  String atThisLocationHours(Object hours) {
+    return 'Aquí desde hace: $hours h';
+  }
+
+  @override
+  String atThisLocationHoursMinutes(Object hours, Object minutes) {
+    return 'Aquí desde hace: $hours h $minutes min';
+  }
+
+  @override
   String get autoStart => 'Inicio automático';
 
   @override
@@ -227,6 +245,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get language => 'Idioma';
 
   @override
+  String get lastKnownLocation => 'Última ubicación';
+
+  @override
   String get later => 'MÁS TARDE';
 
   @override
@@ -276,6 +297,9 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get member => 'Miembro';
+
+  @override
+  String get members => 'Miembros';
 
   @override
   String get memberAlreadyPaired => 'Este miembro ya está vinculado.';
@@ -372,6 +396,24 @@ class AppLocalizationsEs extends AppLocalizations {
   String get notifyPlaces => 'Notificar cuando un miembro entre o salga de lugares';
 
   @override
+  String get offlineNow => 'Hace un momento';
+
+  @override
+  String offlineMinutes(Object minutes) {
+    return '$minutes min';
+  }
+
+  @override
+  String offlineHours(Object hours) {
+    return '$hours h';
+  }
+
+  @override
+  String offlineHoursMinutes(Object hours, Object minutes) {
+    return '$hours h $minutes min';
+  }
+
+  @override
   String get ok => 'Aceptar';
 
   @override
@@ -460,6 +502,9 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get remove => 'Eliminar';
+
+  @override
+  String get removeFromGroup => 'Eliminar del grupo';
 
   @override
   String get removeMember => 'Eliminar miembro';

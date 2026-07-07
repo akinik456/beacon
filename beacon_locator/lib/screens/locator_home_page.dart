@@ -99,15 +99,7 @@ Future<void> _startLocatorHome() async {
 
       final serverGroupId = locatorDoc.data()?['groupId'];
 
-      if (serverGroupId == null ||
-          serverGroupId.toString().trim().isEmpty) {
-        await IdentityService.clearGroupId();
-
-        print(
-          "BEACON LOCATOR HOME => "
-          "server groupId missing, local groupId cleared",
-        );
-      }
+      await _syncLocalGroupWithServer();
     } catch (e) {
       print(
         "BEACON LOCATOR HOME => "
@@ -381,6 +373,37 @@ Future<void> _clearLocatorGroupIfNoRequester() async {
     print("LOCATOR SYNC => clear groupId failed => $e");
   } finally {
     _clearingGroupAfterUnpair = false;
+  }
+}
+
+Future<void> _syncLocalGroupWithServer() async {
+  final locatorId = await IdentityService.getLocatorId();
+
+  if (locatorId == null || locatorId.isEmpty) return;
+
+  final locatorDoc = await FirebaseFirestore.instance
+      .collection('locators')
+      .doc(locatorId)
+      .get();
+
+  final serverGroupId = locatorDoc.data()?['groupId'];
+
+  if (serverGroupId == null ||
+      serverGroupId.toString().trim().isEmpty) {
+    await IdentityService.clearGroupId(
+      reason: 'locator_home_server_group_missing',
+    );
+
+    if (!mounted) return;
+
+    setState(() {
+      _hasGroup = false;
+    });
+
+    print(
+      "BEACON LOCATOR HOME => "
+      "server groupId missing, local groupId cleared",
+    );
   }
 }
 Future<Map<String, String>> _loadLocatorCodeData() async {

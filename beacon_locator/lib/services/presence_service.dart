@@ -84,17 +84,23 @@ class PresenceService {
     return;
   }
 
-  await _db.child(path).update({
-    'status': 'online',
-    'lastSeen': ServerValue.timestamp,
-    'battery': batteryLevel,
-    'gpsEnabled': gpsEnabled,
-    'lat': position?.latitude,
-    'lng': position?.longitude,
-    'accuracy': position?.accuracy,
-    'movedSinceLastUpdateMeters': movedMeters?.round(),
-    'updateCount': ServerValue.increment(1),
-  });
+  final updateData = {
+		'status': 'online',
+		'lastSeen': ServerValue.timestamp,
+		'battery': batteryLevel,
+		'gpsEnabled': gpsEnabled,
+		'lat': position?.latitude,
+		'lng': position?.longitude,
+		'accuracy': position?.accuracy,
+		'movedSinceLastUpdateMeters': movedMeters?.round(),
+		'updateCount': ServerValue.increment(1),
+	};
+
+	if (movedMeters == null || movedMeters >= 25) {
+		updateData['stationarySince'] = ServerValue.timestamp;
+	}
+
+	await _db.child(path).update(updateData);
 print("RTDB updated");
   if (position != null) {
     await GeofenceService.checkPlaces(
@@ -148,13 +154,15 @@ print("BEACON PRESENCE => startConnectionWatcher called");
     if (!connected) return;
 
     await locatorRef.onDisconnect().update({
-      'status': 'offline',
-      'lastSeen': ServerValue.timestamp,
-    });
+			'status': 'offline',
+			'lastSeen': ServerValue.timestamp,
+			'offlineSince': ServerValue.timestamp,
+		});
 
     await locatorRef.update({
       'status': 'online',
       'lastSeen': ServerValue.timestamp,
+			'offlineSince': null,
     });
 
     print("BEACON PRESENCE => onDisconnect armed");

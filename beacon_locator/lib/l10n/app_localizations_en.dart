@@ -57,6 +57,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get askEverybody => 'Ask Everybody To Call Me';
 
   @override
+  String get atThisLocationNow => 'At this location: just now';
+
+  @override
+  String atThisLocationMinutes(Object minutes) {
+    return 'At this location: $minutes min';
+  }
+
+  @override
+  String atThisLocationHours(Object hours) {
+    return 'At this location: $hours h';
+  }
+
+  @override
+  String atThisLocationHoursMinutes(Object hours, Object minutes) {
+    return 'At this location: $hours h $minutes min';
+  }
+
+  @override
   String get autoStart => 'Auto-Start';
 
   @override
@@ -227,6 +245,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get language => 'Language';
 
   @override
+  String get lastKnownLocation => 'Last known location';
+
+  @override
   String get later => 'LATER';
 
   @override
@@ -276,6 +297,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get member => 'Member';
+
+  @override
+  String get members => 'Members';
 
   @override
   String get memberAlreadyPaired => 'Member Already Paired';
@@ -372,6 +396,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notifyPlaces => 'Notify when member enters or leaves places';
 
   @override
+  String get offlineNow => 'Just now';
+
+  @override
+  String offlineMinutes(Object minutes) {
+    return '$minutes min';
+  }
+
+  @override
+  String offlineHours(Object hours) {
+    return '$hours h';
+  }
+
+  @override
+  String offlineHoursMinutes(Object hours, Object minutes) {
+    return '$hours h $minutes min';
+  }
+
+  @override
   String get ok => 'OK';
 
   @override
@@ -460,6 +502,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get remove => 'Remove';
+
+  @override
+  String get removeFromGroup => 'Remove from group';
 
   @override
   String get removeMember => 'Remove Member';

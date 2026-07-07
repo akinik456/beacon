@@ -57,6 +57,24 @@ class AppLocalizationsTr extends AppLocalizations {
   String get askEverybody => 'Herkese \'Beni Ara\' İsteği Gönder';
 
   @override
+  String get atThisLocationNow => 'Bu konumda: Az önce';
+
+  @override
+  String atThisLocationMinutes(Object minutes) {
+    return 'Bu konumda: $minutes dk';
+  }
+
+  @override
+  String atThisLocationHours(Object hours) {
+    return 'Bu konumda: $hours sa';
+  }
+
+  @override
+  String atThisLocationHoursMinutes(Object hours, Object minutes) {
+    return 'Bu konumda: $hours sa $minutes dk';
+  }
+
+  @override
   String get autoStart => 'Otomatik Başlatma';
 
   @override
@@ -227,6 +245,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get language => 'Dil';
 
   @override
+  String get lastKnownLocation => 'Son bilinen konum';
+
+  @override
   String get later => 'DAHA SONRA';
 
   @override
@@ -276,6 +297,9 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get member => 'Üye';
+
+  @override
+  String get members => 'Üyeler';
 
   @override
   String get memberAlreadyPaired => 'Bu üye zaten listede.';
@@ -372,6 +396,24 @@ class AppLocalizationsTr extends AppLocalizations {
   String get notifyPlaces => 'Üye belirlenen yerlere girdiğinde veya ayrıldığında bildir';
 
   @override
+  String get offlineNow => 'Az önce';
+
+  @override
+  String offlineMinutes(Object minutes) {
+    return '$minutes dk';
+  }
+
+  @override
+  String offlineHours(Object hours) {
+    return '$hours sa';
+  }
+
+  @override
+  String offlineHoursMinutes(Object hours, Object minutes) {
+    return '$hours sa $minutes dk';
+  }
+
+  @override
   String get ok => 'Tamam';
 
   @override
@@ -460,6 +502,9 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get remove => 'Sil';
+
+  @override
+  String get removeFromGroup => 'Gruptan çıkar';
 
   @override
   String get removeMember => 'Üyeyi Kaldır';
