@@ -27,90 +27,94 @@ class GroupInfoPanel extends StatelessWidget {
   final VoidCallback onLanguageChanged;
 
   Widget _buildCodeRow(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+		final l10n = AppLocalizations.of(context)!;
 
-    return Row(
-      children: [
-        const SizedBox(width: 8),
-        InkWell(
-          borderRadius: BorderRadius.circular(16),
-          onTap: onShowLocatorQr,
-          child: Row(
-            children: [
-              Stack(
-                alignment: Alignment.bottomRight,
-                children: [
-                  Icon(
-                    Icons.qr_code_scanner_rounded,
-                    color: AppColors.accent,
-                    size: 24,
-                  ),
-                ],
-              ),
-              Icon(
-                Icons.zoom_in,
-                size: 32,
-                color: AppColors.accent,
-              ),
-              const SizedBox(width: 6),
-              Text(
-                l10n.memberCode,
-                style: AppFonts.button.copyWith(
-                  color: AppColors.textSecondary,
-                ),
-              ),
-              const SizedBox(width: 6),
-              Text(
-                locatorCode,
-                style: AppFonts.subtitle.copyWith(
-                  color: AppColors.textSecondary,
-                  letterSpacing: 2,
-                ),
-              ),
-            ],
-          ),
-        ),
-        const Spacer(),
-        TextButton.icon(
-          onPressed: () async {
-            await Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => const LanguageSelectPage(),
-              ),
-            );
+		return Row(
+			children: [
+				const SizedBox(width: 8),
 
-            if (!context.mounted) return;
+				Expanded(
+					child: InkWell(
+						borderRadius: BorderRadius.circular(16),
+						onTap: onShowLocatorQr,
+						child: Row(
+							mainAxisSize: MainAxisSize.min,
+							children: [
+								Icon(
+									Icons.qr_code_scanner_rounded,
+									color: AppColors.accent,
+									size: 24,
+								),
+								Icon(
+									Icons.zoom_in,
+									size: 28,
+									color: AppColors.accent,
+								),
+								const SizedBox(width: 6),
+								Flexible(
+									child: Text(
+										l10n.memberCode,
+										style: AppFonts.button.copyWith(
+											color: AppColors.textSecondary,
+										),
+										overflow: TextOverflow.ellipsis,
+									),
+								),
+								const SizedBox(width: 6),
+								Flexible(
+									child: Text(
+										locatorCode,
+										style: AppFonts.subtitle.copyWith(
+											color: AppColors.textSecondary,
+											letterSpacing: 2,
+										),
+										overflow: TextOverflow.ellipsis,
+									),
+								),
+							],
+						),
+					),
+				),
 
-            onLanguageChanged();
-          },
-          icon: Icon(
-            Icons.language_rounded,
-            size: 18,
-            color: AppColors.accent,
-          ),
-          label: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                langCode,
-                style: AppFonts.caption.copyWith(
-                  color: AppColors.accent,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              Icon(
-                Icons.arrow_drop_down,
-                size: 18,
-                color: AppColors.accent,
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
+				TextButton.icon(
+					onPressed: () async {
+						await Navigator.push(
+							context,
+							MaterialPageRoute(
+								builder: (_) => const LanguageSelectPage(),
+							),
+						);
 
+						if (!context.mounted) return;
+
+						onLanguageChanged();
+					},
+					icon: Icon(
+						Icons.language_rounded,
+						size: 18,
+						color: AppColors.accent,
+					),
+					label: Row(
+						mainAxisSize: MainAxisSize.min,
+						children: [
+							Text(
+								langCode,
+								style: AppFonts.caption.copyWith(
+									color: AppColors.accent,
+									fontWeight: FontWeight.w600,
+								),
+							),
+							Icon(
+								Icons.arrow_drop_down,
+								size: 18,
+								color: AppColors.accent,
+							),
+						],
+					),
+				),
+			],
+		);
+	}
   @override
   Widget build(BuildContext context) {
     return Padding(

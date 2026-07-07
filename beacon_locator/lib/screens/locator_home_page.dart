@@ -1073,64 +1073,64 @@ final l10n = AppLocalizations.of(context)!;
 																		width: double.infinity,
 																		child: Stack(
 																			alignment: Alignment.centerLeft,																
-																children: [
-																	Text(
-																		l10n.titleMember,
-																		style: AppFonts.title.copyWith(
-																			fontSize: 24,
-																			color: AppColors.primary,
-																		),
-																	),
-																	Positioned(
-																		right: 30,
-																		child: IconButton(
-																			onPressed: () async {
-																				final next = !_isDarkTheme;
+																				children: [
+																					Text(
+																						l10n.titleMember,
+																						style: AppFonts.title.copyWith(
+																							fontSize: 24,
+																							color: AppColors.primary,
+																						),
+																					),
+																					Positioned(
+																						right: 30,
+																						child: IconButton(
+																							onPressed: () async {
+																								final next = !_isDarkTheme;
 
-																				await ThemeService.setDarkTheme(next);
+																								await ThemeService.setDarkTheme(next);
 
-																				AppColors.isDark = next;
-																				_applySystemBars();
-																				if (!mounted) return;
+																								AppColors.isDark = next;
+																								_applySystemBars();
+																								if (!mounted) return;
 
-																				setState(() {
-																					_isDarkTheme = next;
-																				});
-																			},
-																			icon: Icon(
-																				_isDarkTheme
-																						? Icons.light_mode_rounded
-																						: Icons.dark_mode_rounded,
-																				color: AppColors.primary,
-																				size: 22,
+																								setState(() {
+																									_isDarkTheme = next;
+																								});
+																							},
+																							icon: Icon(
+																								_isDarkTheme
+																										? Icons.light_mode_rounded
+																										: Icons.dark_mode_rounded,
+																								color: AppColors.primary,
+																								size: 22,
+																							),
+																						),
+																					),
+																					Positioned(
+																						right: 0,
+																						child: IconButton(
+																							onPressed: () {
+																								setState(() {
+																									_showGuide = !_showGuide;
+																								});
+																							},
+																							icon: Icon(
+																								_showGuide
+																										? Icons.keyboard_arrow_up_rounded
+																										: Icons.help_outline_rounded,
+																								color: AppColors.primary,
+																								size: 22,
+																							),
+																						),
+																					),																	
+																				],
 																			),
-																		),
-																	),
-																	Positioned(
-																		right: 0,
-																		child: IconButton(
-																			onPressed: () {
-																				setState(() {
-																					_showGuide = !_showGuide;
-																				});
-																			},
-																			icon: Icon(
-																				_showGuide
-																						? Icons.keyboard_arrow_up_rounded
-																						: Icons.help_outline_rounded,
-																				color: AppColors.primary,
-																				size: 22,
-																			),
-																		),
-																	),																	
-																],
+																		),													
+																	],
+																),
 															),
-														),													
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
+														],
+													),
 													AnimatedCrossFade(
 														duration: const Duration(milliseconds: 250),
 														crossFadeState: _showGuide
@@ -1229,38 +1229,42 @@ final l10n = AppLocalizations.of(context)!;
 							padding: const EdgeInsets.symmetric(horizontal: 12),
 							child: Row(
 								children: [
-									InkWell(
-										onTap: () {
-											openFeedbackMenu();
-										},
-										borderRadius: BorderRadius.circular(20),
-										child: Padding(
-											padding: const EdgeInsets.symmetric(
-												horizontal: 4,
-												vertical: 2,
-											),
-											child: Row(
-												children: [
-													Icon(
-														Icons.chat_bubble_outline_rounded,
-														size: 18,
-														color: AppColors.primary,
+									Expanded(
+										child: Align(
+											alignment: Alignment.centerLeft,
+											child: InkWell(
+												onTap: () {
+													openFeedbackMenu();
+												},
+												borderRadius: BorderRadius.circular(20),
+												child: Padding(
+													padding: const EdgeInsets.symmetric(
+														horizontal: 4,
+														vertical: 2,
 													),
-													const SizedBox(width: 4),
-													Text(
-														l10n.feedback,
-														style: TextStyle(
-															color: AppColors.primary,
-															fontSize: 14,
-															fontWeight: FontWeight.w500,
-														),
+													child: Row(
+														mainAxisSize: MainAxisSize.min,
+														children: [
+															Icon(
+																Icons.chat_bubble_outline_rounded,
+																size: 18,
+																color: AppColors.primary,
+															),
+															const SizedBox(width: 4),
+															Text(
+																l10n.feedback,
+																style: TextStyle(
+																	color: AppColors.primary,
+																	fontSize: 14,
+																	fontWeight: FontWeight.w500,
+																),
+															),
+														],
 													),
-												],
+												),
 											),
 										),
 									),
-
-									const Spacer(),
 
 									Text(
 										"${l10n.version} $_appVersion",
@@ -1270,43 +1274,51 @@ final l10n = AppLocalizations.of(context)!;
 											fontWeight: FontWeight.w500,
 										),
 									),
+									Expanded(
+										child: Align(
+											alignment: Alignment.centerRight,
+											child: FittedBox(
+												fit: BoxFit.scaleDown,
+												child: InkWell(
+													onTap: () async {
+														final Uri url = Uri.parse(
+															'https://play.google.com/store/apps/developer?id=Lynra',
+														);
 
-									const Spacer(),
-
-									InkWell(
-										onTap: () async {
-											final Uri url = Uri.parse(
-												'https://play.google.com/store/apps/developer?id=Lynra',
-											);
-
-											await launchUrl(
-												url,
-												mode: LaunchMode.externalApplication,
-											);
-										},
-										borderRadius: BorderRadius.circular(20),
-										child: Padding(
-											padding: const EdgeInsets.symmetric(
-												horizontal: 4,
-												vertical: 2,
-											),
-											child: Row(
-												children: [
-													Icon(
-														Icons.apps_rounded,
-														size: 18,
-														color: AppColors.primary,
-													),
-													const SizedBox(width: 4),
-													Text(
-														l10n.otherApps,
-														style: TextStyle(
-															color: AppColors.primary,
-															fontSize: 		14,
-															fontWeight: FontWeight.w500,
+														await launchUrl(
+															url,
+															mode: LaunchMode.externalApplication,
+														);
+													},
+													borderRadius: BorderRadius.circular(20),
+													child: Padding(
+														padding: const EdgeInsets.symmetric(
+															horizontal: 2,
+															vertical: 2,
+														),
+														child: Row(
+															mainAxisSize: MainAxisSize.min,
+															children: [
+																Icon(
+																	Icons.apps_rounded,
+																	size: 17,
+																	color: AppColors.primary,
+																),
+																const SizedBox(width: 3),
+																Text(
+																	l10n.otherApps,
+																	maxLines: 1,
+																	overflow: TextOverflow.ellipsis,
+																	style: TextStyle(
+																		color: AppColors.primary,
+																		fontSize: 13,
+																		fontWeight: FontWeight.w500,
+																	),
+																),
+															],
 														),
 													),
-												],
+												),
 											),
 										),
 									),
