@@ -17,9 +17,7 @@
 -	alerts metinler
 -	bildirim ikon
 
-- gruptan çıkarılan req hala loc. paired admins de görünüyor
-
-- adres satırı taştı 
+- _updateRequesterPosition 30 sec. smart peryot yapmak lazım her iki tarafta da
 
 ********
 SMS

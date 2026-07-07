@@ -18,6 +18,7 @@ import 'services/motion_service.dart';
 import 'services/locator_settings_service.dart';
 import 'services/presence_service.dart';
 import 'services/notification_service.dart';
+import 'services/native_presence_service.dart';
 
 	@pragma('vm:entry-point')
 	Future<void> firebaseMessagingBackgroundHandler(
@@ -71,6 +72,15 @@ import 'services/notification_service.dart';
 		WidgetsFlutterBinding.ensureInitialized();
 
 		await Firebase.initializeApp();
+		
+		final ids = await NativePresenceService.getPresenceIds();
+
+		if (ids != null) {
+			PresenceService.setServiceIds(
+				groupId: ids['groupId']!,
+				locatorId: ids['locatorId']!,
+			);
+		}
 
 		print(
 			"LYNRA_DART => locatorPresenceServiceMain",

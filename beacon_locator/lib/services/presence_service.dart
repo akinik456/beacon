@@ -13,13 +13,24 @@ class PresenceService {
 
   static final _db = FirebaseDatabase.instance.ref();
 	static StreamSubscription<DatabaseEvent>? _connectedSub;
+	static String? _serviceGroupId;
+	static String? _serviceLocatorId;
 
  static Future<void> updateOnline({
   String reason = 'unknown',
 }) async {
-  final groupId = await IdentityService.getGroupId();
-  final locatorId = await IdentityService.getLocatorId();
-	print("updateOnline called");
+
+print(
+  "BEACON PRESENCE => "
+  "cachedGroup=$_serviceGroupId "
+  "cachedLocator=$_serviceLocatorId",
+);
+  final groupId =
+    _serviceGroupId ?? await IdentityService.getGroupId();
+
+	final locatorId =
+			_serviceLocatorId ?? await IdentityService.getLocatorId();
+		print("updateOnline called");
 
   if (groupId == null || locatorId == null) {
     print("BEACON PRESENCE => missing group/locator");
@@ -122,7 +133,18 @@ print("RTDB updated");
   );
 }
 
+static void setServiceIds({
+  required String groupId,
+  required String locatorId,
+}) {
+  _serviceGroupId = groupId;
+  _serviceLocatorId = locatorId;
 
+  print(
+    "BEACON PRESENCE => service ids set "
+    "group=$groupId locator=$locatorId",
+  );
+}
 static Future<void> startConnectionWatcher() async {
 print("BEACON PRESENCE => startConnectionWatcher called");
   final groupId = await IdentityService.getGroupId();

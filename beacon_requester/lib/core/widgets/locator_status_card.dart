@@ -22,6 +22,8 @@ class LocatorStatusCard extends StatelessWidget {
 
 	final bool gpsEnabled;
 	final String lastSeenText;
+	final int? stationarySince;
+	final int? offlineSince;
 	
 	final String distanceText;
 	final VoidCallback onOpenMaps;
@@ -45,11 +47,70 @@ class LocatorStatusCard extends StatelessWidget {
 		required this.onNotificationSettings,
 		required this.onSettings,
 		required this.onRemove,
+		required this.stationarySince,
+		required this.offlineSince,
 	});
+	
+	String _locationDurationText(
+		BuildContext context,
+		int? stationarySince,
+	) {
+		if (stationarySince == null) return '';
 
+		final l10n = AppLocalizations.of(context)!;
+
+		final diff = DateTime.now().difference(
+			DateTime.fromMillisecondsSinceEpoch(stationarySince),
+		);
+
+		if (diff.inMinutes < 1) return l10n.atThisLocationNow;
+		if (diff.inHours < 1) {
+			return l10n.atThisLocationMinutes(diff.inMinutes);
+		}
+
+		final hours = diff.inHours;
+		final minutes = diff.inMinutes % 60;
+
+		if (minutes == 0) {
+			return l10n.atThisLocationHours(hours);
+		}
+
+		return l10n.atThisLocationHoursMinutes(hours, minutes);
+	}
+
+	String _offlineDurationText(
+		BuildContext context,
+		int? offlineSince,
+	) {
+		if (offlineSince == null) return '';
+
+		final l10n = AppLocalizations.of(context)!;
+
+		final diff = DateTime.now().difference(
+			DateTime.fromMillisecondsSinceEpoch(offlineSince),
+		);
+
+		if (diff.inMinutes < 1) return l10n.offlineNow;
+		if (diff.inHours < 1) {
+			return l10n.offlineMinutes(diff.inMinutes);
+		}
+
+		final hours = diff.inHours;
+		final minutes = diff.inMinutes % 60;
+
+		if (minutes == 0) {
+			return l10n.offlineHours(hours);
+		}
+
+		return l10n.offlineHoursMinutes(hours, minutes);
+	}
+	
   @override
 	Widget build(BuildContext context) {
 	final l10n = AppLocalizations.of(context)!;
+	final stationaryText = _locationDurationText(context,stationarySince);
+	final offlineText = _offlineDurationText(context,offlineSince);
+	
   return GestureDetector(
     child: AppCard(
 			borderColor: status == 'online'
@@ -108,10 +169,16 @@ class LocatorStatusCard extends StatelessWidget {
 									),
 								),
 							),
-
-							const SizedBox(width: 12),
+							if (status != 'online' && offlineText.isNotEmpty)
+								Text(
+									offlineText,
+									style: AppFonts.caption.copyWith(
+										color: AppColors.danger,
+									),
+								),
+							const SizedBox(width: 24),
 							SizedBox(
-							width: 110,
+							width: 90,
 							child: 
 							OutlinedButton.icon(
 								onPressed: locatorId.isEmpty
@@ -156,73 +223,113 @@ class LocatorStatusCard extends StatelessWidget {
 						children: [
 							 Icon(
 								battery >= 90
-										? Icons.battery_full_rounded
-										: battery >= 70
-												? Icons.battery_6_bar_rounded
-												: battery >= 50
-														? Icons.battery_4_bar_rounded
-														: battery >= 20
-																? Icons.battery_2_bar_rounded
-																: Icons.battery_alert_rounded,
-								size: 18,
-								color: battery < 20
-										? AppColors.danger
-										: AppColors.accent,
-							),
+									? Icons.battery_full_rounded
+									: battery >= 70
+											? Icons.battery_6_bar_rounded
+											: battery >= 50
+													? Icons.battery_4_bar_rounded
+													: battery >= 20
+															? Icons.battery_2_bar_rounded
+															: Icons.battery_alert_rounded,
+										size: 18,
+										color: battery < 20
+												? AppColors.danger
+												: AppColors.accent,
+									),
 
-							const SizedBox(width: 4),
+									const SizedBox(width: 4),
 
-							Text(
-								'$battery%',
-								style: AppFonts.caption.copyWith(
-									color: battery < 20
-											? AppColors.danger
-											: AppColors.accent,
-								),
-							),
+									Text(
+										'$battery%',
+										style: AppFonts.caption.copyWith(
+											color: battery < 20
+													? AppColors.danger
+													: AppColors.accent,
+										),
+									),
 							
-							const SizedBox(width: 32),
-							Icon(
-								gpsEnabled
-										? Icons.gps_fixed_rounded
-										: Icons.gps_off_rounded,
-								size: 18,
-								color: gpsEnabled
-									? AppColors.accent
-									: AppColors.danger,
-							),
-							const SizedBox(width: 4),
-							Text(
-								gpsEnabled ? 'GPS ON' : 'GPS OFF',
-								style: AppFonts.caption.copyWith(
-									color: gpsEnabled
+									const SizedBox(width: 32),
+									Icon(
+										gpsEnabled
+												? Icons.gps_fixed_rounded
+												: Icons.gps_off_rounded,
+										size: 18,
+										color: gpsEnabled
 											? AppColors.accent
 											: AppColors.danger,
-								),
-							),							
-						],
-					),
-					const SizedBox(height: 8),
-					Row(
+									),
+									const SizedBox(width: 4),
+									Text(
+										gpsEnabled ? 'GPS ON' : 'GPS OFF',
+										style: AppFonts.caption.copyWith(
+											color: gpsEnabled
+													? AppColors.accent
+													: AppColors.danger,
+										),
+									),	
+
+									
+								],
+							),
+					Column(
+						crossAxisAlignment: CrossAxisAlignment.start,
 						children: [
-							const SizedBox(width: 4),
-							Text(
-								addressText,
-								style: AppFonts.body,
-								maxLines: 2,
-								overflow: TextOverflow.ellipsis,
+							Row(
+								crossAxisAlignment: CrossAxisAlignment.start,
+								children: [
+									const SizedBox(width: 4),
+
+									Expanded(
+										child: Text(
+											addressText,
+											style: AppFonts.body,
+											maxLines: 2,
+											overflow: TextOverflow.ellipsis,
+										),
+									),
+
+									const SizedBox(width: 8),
+
+									Icon(
+										Icons.near_me_rounded,
+										size: 18,
+										color: AppColors.accent,
+									),
+
+									const SizedBox(width: 4),
+
+									Text(
+										distanceText,
+										style: AppFonts.caption,
+									),
+								],
 							),
-							const SizedBox(width: 22),
-							Icon(
-								Icons.near_me_rounded,
-								size: 18,
-								color: AppColors.accent,
-							),
-							const SizedBox(width: 4),
-							Text(
-								'$distanceText',
-								style: AppFonts.caption,
-							),
+
+							if (status == 'online' && stationaryText.isNotEmpty) ...[
+								const SizedBox(height: 4),
+								Padding(
+									padding: const EdgeInsets.only(left: 4),
+									child: Text(
+										stationaryText,
+										style: AppFonts.caption.copyWith(
+											color: AppColors.textPrimary,
+										),
+									),
+								),
+							],
+
+							if (status == 'offline') ...[
+								const SizedBox(height: 4),
+								Padding(
+									padding: const EdgeInsets.only(left: 4),
+									child: Text(
+										l10n.lastKnownLocation,
+										style: AppFonts.caption.copyWith(
+											color: AppColors.textPrimary,
+										),
+									),
+								),
+							],
 						],
 					),
 					const SizedBox(height: 8),

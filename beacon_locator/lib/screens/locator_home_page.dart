@@ -191,8 +191,22 @@ Future<void> _startNativePresenceIfAllowed() async {
     return;
   }
 
-  await NativePresenceService.start();
-}	
+  final groupId = await IdentityService.getGroupId();
+  final locatorId = await IdentityService.getLocatorId();
+
+  if (groupId == null || locatorId == null) {
+    print(
+      "BEACON NATIVE SERVICE => missing ids, skip start "
+      "group=$groupId locator=$locatorId",
+    );
+    return;
+  }
+
+  await NativePresenceService.start(
+    groupId: groupId,
+    locatorId: locatorId,
+  );
+}
 
   Future<void> _checkPermissionsAndWarn() async {
     final result = await LocatorPermissionService.hasAllRequiredPermissions();

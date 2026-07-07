@@ -97,7 +97,7 @@ class _RequesterHomePageState
 	int _trialDaysLeft = 0;
 	//final Map<String, DateTime> _lastMovementAlert = {};
 	Timer? _requesterPositionTimer;
-	
+	DateTime? _lastRequesterLocationUpdate;
 	
 		@override
 	void initState() {
@@ -334,7 +334,6 @@ print("loadLocators called");
 	
 	Future<void> _addActiveWatchers() async {
 		if (_groupId == null) return;
-		_startRequesterPositionTimer();
 		
 		final _requesterName = await IdentityService.getRequesterName();
 		final _requesterCode = await IdentityService.getRequesterCode();
@@ -370,25 +369,27 @@ print("_addActiveWatchers IdentityService.getRequesterName");
 		}
 	}	
 
-void _startRequesterPositionTimer() {
-  _requesterPositionTimer?.cancel();
-
-  _updateRequesterPosition();
-
-  _requesterPositionTimer = Timer.periodic(
-    const Duration(seconds: 30),
-    (_) => _updateRequesterPosition(),
-  );
-}
-
 void _stopRequesterPositionTimer() {
   _requesterPositionTimer?.cancel();
   _requesterPositionTimer = null;
 }
 
+Future<void> _updateRequesterPositionIfNeeded() async {
+  final now = DateTime.now();
+
+  if (_lastRequesterLocationUpdate != null &&
+      now.difference(_lastRequesterLocationUpdate!).inSeconds < 10) {
+    return;
+  }
+
+  _lastRequesterLocationUpdate = now;
+
+  await _updateRequesterPosition();
+}
+
 Future<void> _updateRequesterPosition() async {
   final position = await LocationHelper.getCurrentPosition();
-
+print("_updateRequesterPosition is called");
   if (position == null || !mounted) return;
 
   setState(() {
@@ -426,52 +427,7 @@ Future<void> _updateRequesterPosition() async {
 					(x) => x['locatorId'] == locatorId,
 					orElse: () => {},
 				);
-				
-				//final movementNotify = locator['movement'] == true;
-
-				//final movementAlert = locator['movementAlert'] == true;
-
-				//final movementMeters = (locator['movementMeters'] as num?)?.toDouble() ?? 50;
-
-				/*if (movementAlert &&
-				movementNotify &&
-				movedMeters >= movementMeters) {
-					final now = DateTime.now();
-					final last = _lastMovementAlert[locatorId];
-
-					if (last == null ||
-							now.difference(last) >= const Duration(minutes: 5)) {
-						_lastMovementAlert[locatorId] = now;
-
-						final locatorName =
-								(locator['locatorName'] as String?)?.trim().isNotEmpty == true
-										? locator['locatorName']
-										: 'Member';
-
-						print(
-							"BEACON MOVEMENT ALERT => "
-							"$locatorId moved=${movedMeters.toStringAsFixed(1)}m ",
-						);
-
-						if (!mounted) return;
-
-						if (_appInForeground) {
-							setState(() {
-								_movementAlertData = {
-									'type': 'movement',
-									'locatorName': locatorName,
-									'movedMeters': movedMeters,
-								};
-							});
-						} else {
-							await NotificationService.showMovementAlert(
-								locatorName: locatorName,
-								movedMeters: movedMeters,
-							);
-						}
-					}
-				}*/
-				
+			
 				if (!mounted) return;
 
 				final lat = presence['lat']?.toDouble();
@@ -503,6 +459,7 @@ Future<void> _updateRequesterPosition() async {
 								: address,
 					};
 				});
+				_updateRequesterPositionIfNeeded();
 			});
 		_subscriptions.add(sub);
 	}
@@ -1542,6 +1499,13 @@ Widget _buildGroupHome({
 																							final status = locator['status'] ?? 'offline';
 																							final battery = locator['battery'] ?? 0;
 																							final gpsEnabled = locator['gpsEnabled'] == true;																	
+																							final stationarySince =
+																							locator['stationarySince'] is int
+																								? locator['stationarySince'] as int
+																								: null;
+																							final offlineSince = locator['offlineSince'] is int
+																								? locator['offlineSince'] as int
+																								: null;
 																							final l10n = AppLocalizations.of(context)!;
 																							final lastSeenText = TimeHelper.formatLastSeen(
 																								locator['lastSeen'],
@@ -1628,6 +1592,8 @@ Widget _buildGroupHome({
 																										);
 																									setState(() {});
 																								},
+																								stationarySince: stationarySince,
+																								offlineSince: offlineSince,
 																							);
 																						},
 																					),

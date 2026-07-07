@@ -10,6 +10,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.IBinder
 import android.util.Log
+import io.flutter.plugin.common.MethodChannel
 
 class LocatorPresenceForegroundService : Service() {
 	private var flutterEngine: FlutterEngine? = null
@@ -33,7 +34,15 @@ class LocatorPresenceForegroundService : Service() {
         flags: Int,
         startId: Int,
     ): Int {
+				
+				val groupId = intent?.getStringExtra("groupId")
+				val locatorId = intent?.getStringExtra("locatorId")
 
+				Log.e(
+						"LYNRA_SERVICE",
+						"groupId=$groupId locatorId=$locatorId",
+				)
+		
         Log.e(
             "LYNRA_SERVICE",
             "Foreground service started action=${intent?.action}",
@@ -48,6 +57,22 @@ class LocatorPresenceForegroundService : Service() {
 
 					flutterEngine =
 							FlutterEngine(applicationContext)
+							
+					MethodChannel(
+							flutterEngine!!.dartExecutor.binaryMessenger,
+							"lynra/presence_service",
+					).setMethodCallHandler { call, result ->
+							if (call.method == "getPresenceIds") {
+									result.success(
+											mapOf(
+													"groupId" to groupId,
+													"locatorId" to locatorId,
+											)
+									)
+							} else {
+									result.notImplemented()
+							}
+					}
 
 					val flutterLoader = FlutterLoader()
 

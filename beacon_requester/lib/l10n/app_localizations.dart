@@ -195,6 +195,30 @@ abstract class AppLocalizations {
   /// **'Ask Everybody To Call Me'**
   String get askEverybody;
 
+  /// No description provided for @atThisLocationNow.
+  ///
+  /// In en, this message translates to:
+  /// **'At this location: just now'**
+  String get atThisLocationNow;
+
+  /// No description provided for @atThisLocationMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'At this location: {minutes} min'**
+  String atThisLocationMinutes(Object minutes);
+
+  /// No description provided for @atThisLocationHours.
+  ///
+  /// In en, this message translates to:
+  /// **'At this location: {hours} h'**
+  String atThisLocationHours(Object hours);
+
+  /// No description provided for @atThisLocationHoursMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'At this location: {hours} h {minutes} min'**
+  String atThisLocationHoursMinutes(Object hours, Object minutes);
+
   /// No description provided for @autoStart.
   ///
   /// In en, this message translates to:
@@ -519,6 +543,12 @@ abstract class AppLocalizations {
   /// **'Language'**
   String get language;
 
+  /// No description provided for @lastKnownLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Last known location'**
+  String get lastKnownLocation;
+
   /// No description provided for @later.
   ///
   /// In en, this message translates to:
@@ -554,6 +584,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'LynraFamily uses your location only to calculate the distance between you and your paired members.\n\nYour location is not shared with members or other users.'**
   String get locationPermissionDescription;
+
+  /// No description provided for @locationPermissionDescForLocator.
+  ///
+  /// In en, this message translates to:
+  /// **'LynraFamily Member requires location access so your trusted family can request your location when needed.\n\nBackground location access allows these requests to work even when the app is closed.\n\nYour location is only shared with trusted family members.'**
+  String get locationPermissionDescForLocator;
 
   /// No description provided for @locatorGuide1.
   ///
@@ -800,6 +836,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Notify when member enters or leaves places'**
   String get notifyPlaces;
+
+  /// No description provided for @offlineNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Just now'**
+  String get offlineNow;
+
+  /// No description provided for @offlineMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} min'**
+  String offlineMinutes(Object minutes);
+
+  /// No description provided for @offlineHours.
+  ///
+  /// In en, this message translates to:
+  /// **'{hours} h'**
+  String offlineHours(Object hours);
+
+  /// No description provided for @offlineHoursMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'{hours} h {minutes} min'**
+  String offlineHoursMinutes(Object hours, Object minutes);
 
   /// No description provided for @ok.
   ///

@@ -57,6 +57,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get askEverybody => 'Ask Everybody To Call Me';
 
   @override
+  String get atThisLocationNow => 'At this location: just now';
+
+  @override
+  String atThisLocationMinutes(Object minutes) {
+    return 'At this location: $minutes min';
+  }
+
+  @override
+  String atThisLocationHours(Object hours) {
+    return 'At this location: $hours h';
+  }
+
+  @override
+  String atThisLocationHoursMinutes(Object hours, Object minutes) {
+    return 'At this location: $hours h $minutes min';
+  }
+
+  @override
   String get autoStart => 'Auto-Start';
 
   @override
@@ -227,6 +245,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get language => 'Language';
 
   @override
+  String get lastKnownLocation => 'Last known location';
+
+  @override
   String get later => 'LATER';
 
   @override
@@ -243,6 +264,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get locationPermissionDescription => 'LynraFamily uses your location only to calculate the distance between you and your paired members.\n\nYour location is not shared with members or other users.';
+
+  @override
+  String get locationPermissionDescForLocator => 'LynraFamily Member requires location access so your trusted family can request your location when needed.\n\nBackground location access allows these requests to work even when the app is closed.\n\nYour location is only shared with trusted family members.';
 
   @override
   String get locatorGuide1 => 'To share your location, you must first join a family group.';
@@ -370,6 +394,24 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get notifyPlaces => 'Notify when member enters or leaves places';
+
+  @override
+  String get offlineNow => 'Just now';
+
+  @override
+  String offlineMinutes(Object minutes) {
+    return '$minutes min';
+  }
+
+  @override
+  String offlineHours(Object hours) {
+    return '$hours h';
+  }
+
+  @override
+  String offlineHoursMinutes(Object hours, Object minutes) {
+    return '$hours h $minutes min';
+  }
 
   @override
   String get ok => 'OK';
