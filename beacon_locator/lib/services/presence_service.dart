@@ -8,6 +8,7 @@ import 'geofence_service.dart';
 import 'locator_settings_service.dart';
 import 'movement_alert_service.dart';
 import '../utils/log.dart';
+import 'smart_presence_scheduler.dart';
 
 class PresenceService {
   PresenceService._();
@@ -54,6 +55,24 @@ Log.d(
     } catch (e) {
       Log.e("BEACON PRESENCE => getCurrentPosition failed => $e");
     }
+		double speedKmh = 0;
+
+			if (position != null) {
+				final speedMps = position.speed;
+
+				final speedKmh = speedMps >= 0
+					? speedMps * 3.6
+					: 0.0;
+
+				SmartPresenceScheduler.setSpeedKmh(speedKmh);
+
+				Log.d(
+					"BEACON PRESENCE => "
+					"speed=${speedKmh.toStringAsFixed(1)} km/h",
+				);
+				SmartPresenceScheduler.setSpeedKmh(speedKmh);
+			}
+		
   }
 
   double? movedMeters;
@@ -127,7 +146,10 @@ Log.d("RTDB updated");
 			reason: reason,
 		);
   }
-	Log.d("MovementAlertService.checkNow is called ? lat:$position.latitude,lng:$position.longitude");
+	Log.d(
+		"MovementAlertService.checkNow is called ? "
+		"lat=${position?.latitude},lng=${position?.longitude}",
+	);
   Log.d(
     "BEACON PRESENCE => "
     "online updated reason=$reason",

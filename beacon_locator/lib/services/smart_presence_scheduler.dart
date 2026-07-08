@@ -13,6 +13,9 @@ class SmartPresenceScheduler {
 
   static bool _hasActiveWatcher = false;
   static bool _isUpdating = false;
+	
+	static const _vehiclePeriod =
+    Duration(seconds: 15);
 
   static const _fastPeriod =
       Duration(seconds: 60);
@@ -24,6 +27,12 @@ class SmartPresenceScheduler {
 
   static const _fastWindow =
       Duration(minutes: 2);
+			
+	static double _speedKmh = 0;
+
+	static void setSpeedKmh(double value) {
+		_speedKmh = value;
+	}		
 
   static void start() {
     Log.d("SMART PRESENCE => start");
@@ -85,42 +94,49 @@ class SmartPresenceScheduler {
   }
 
   static void _scheduleNext({
-    required bool immediate,
-    required String reason,
-  }) {
-    _timer?.cancel();
+		required bool immediate,
+		required String reason,
+	}) {
+		_timer?.cancel();
 
-    final now = DateTime.now();
+		final now = DateTime.now();
 
-    final isFast =
-        _hasActiveWatcher ||
-        (_fastUntil != null &&
-            now.isBefore(_fastUntil!));
+		final isFast =
+				_hasActiveWatcher ||
+				(_fastUntil != null && now.isBefore(_fastUntil!));
 
-    final period =
-        isFast ? _fastPeriod : _slowPeriod;
+		Duration period;
 
-    Log.d(
-      "SMART PRESENCE => schedule "
-      "period=${period.inSeconds}s "
-      "reason=$reason",
-    );
+		if (isFast) {
+			if (_hasActiveWatcher && _speedKmh >= 20) {
+				period = _vehiclePeriod;
+			} else {
+				period = _fastPeriod;
+			}
+		} else {
+			period = _slowPeriod;
+		}
 
-    _timer = Timer(
-      immediate ? Duration.zero : period,
-      () async {
-        await _runUpdate(
-          reason: 'timer',
-        );
+		Log.d(
+			"SMART PRESENCE => schedule "
+			"period=${period.inSeconds}s "
+			"reason=$reason",
+		);
 
-        _scheduleNext(
-          immediate: false,
-          reason: 'timer',
-        );
-      },
-    );
-  }
+		_timer = Timer(
+			immediate ? Duration.zero : period,
+			() async {
+				await _runUpdate(
+					reason: 'timer',
+				);
 
+				_scheduleNext(
+					immediate: false,
+					reason: 'timer',
+				);
+			},
+		);
+	}
   static void setActiveWatcher(bool value) {
 		final wasActive = _hasActiveWatcher;
 
