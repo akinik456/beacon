@@ -22,7 +22,7 @@ class PermissionIntroPage extends StatefulWidget {
 
 class _PermissionIntroPageState
     extends State<PermissionIntroPage> {
-
+		bool _isStarting = false;
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -31,7 +31,9 @@ final langCode =
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
-        child: Padding(
+        child: Stack(
+					children: [
+						Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(
             children: [
@@ -223,7 +225,13 @@ final langCode =
                     ],
                   ),
                   child: ElevatedButton(
-                    onPressed: () async {
+                    onPressed: _isStarting
+										? null
+										:() async {
+											setState(() {
+												_isStarting = true;
+											});
+											try {
 											await IdentityService.setRequesterName(l10n.yourname);
 											await IdentityService.createRequesterId();
 											final authUid = await AuthService.ensureSignedIn();
@@ -233,12 +241,19 @@ final langCode =
 
 											if (!context.mounted) return;
 
-											Navigator.pushReplacement(
-												context,
-												MaterialPageRoute(
-													builder: (_) => const RequesterHomePage(),
-												),
-											);
+												Navigator.pushReplacement(
+													context,
+													MaterialPageRoute(
+														builder: (_) => const RequesterHomePage(),
+													),
+												);
+											} finally {
+												if (context.mounted) {
+													setState(() {
+														_isStarting = false;
+													});
+												}
+											}
 										},
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.transparent,
@@ -262,6 +277,19 @@ final langCode =
             ],
           ),
         ),
+				if (_isStarting)
+							Positioned.fill(
+								child: Container(
+									color: Colors.black54,
+									child: Center(
+										child: CircularProgressIndicator(
+											color: AppColors.primary,
+										),
+									),
+								),
+							),
+				],
+				),
       ),
     );
   }
