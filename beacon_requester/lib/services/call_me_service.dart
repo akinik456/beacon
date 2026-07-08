@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:uuid/uuid.dart';
 
 import 'identity_service.dart';
+import '../utils/log.dart';
 
 class CallMeService {
   CallMeService._();
@@ -17,7 +18,7 @@ class CallMeService {
 
     final requesterName =
         await IdentityService.getRequesterName();
-print("createCallMe IdentityService.getRequesterName");
+Log.d("createCallMe IdentityService.getRequesterName");
     final requesterCode =
         await IdentityService.getRequesterCode();
 
@@ -47,7 +48,7 @@ print("createCallMe IdentityService.getRequesterName");
       'createdAt': FieldValue.serverTimestamp(),
     });
 
-    print(
+    Log.d(
       "BEACON CALLME => requester created => $callMeId => $targetLocatorId",
     );
   }

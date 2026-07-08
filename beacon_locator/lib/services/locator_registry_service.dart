@@ -8,6 +8,7 @@ import 'dart:ui';
 
 import 'identity_service.dart';
 import 'firebase_authentication_service.dart';
+import '../utils/log.dart';
 
 class LocatorRegistryService {
   LocatorRegistryService._();
@@ -19,7 +20,7 @@ class LocatorRegistryService {
   static Future<void> registerLocator() async {
 	final packageInfo =
     await PackageInfo.fromPlatform();
-		print(
+		Log.d(
 			"BEACON PACKAGE => "
 			"${packageInfo.version} "
 			"${packageInfo.buildNumber}",
@@ -67,12 +68,12 @@ class LocatorRegistryService {
 						'createdAt': FieldValue.serverTimestamp(),
 					}, SetOptions(merge: true));
 
-      print(
+      Log.d(
         "BEACON LOCATOR REGISTRY => SUCCESS => "
         "$locatorId",
       );
     } catch (e) {
-      print(
+      Log.e(
         "BEACON LOCATOR REGISTRY ERROR => $e",
       );
     }
@@ -82,12 +83,12 @@ static Future<void> ensureLocatorAuthUid() async {
   final authUid = AuthService.uid;
 
   if (locatorId == null || locatorId.isEmpty) {
-    print("BEACON AUTH MIGRATION => locatorId missing");
+    Log.d("BEACON AUTH MIGRATION => locatorId missing");
     return;
   }
 
   if (authUid == null || authUid.isEmpty) {
-    print("BEACON AUTH MIGRATION => authUid missing");
+    Log.d("BEACON AUTH MIGRATION => authUid missing");
     return;
   }
 
@@ -98,7 +99,7 @@ static Future<void> ensureLocatorAuthUid() async {
   final currentAuthUid = doc.data()?['authUid'];
 
   if (currentAuthUid != null && currentAuthUid.toString().isNotEmpty) {
-    print("BEACON AUTH MIGRATION => locator authUid already exists");
+    Log.d("BEACON AUTH MIGRATION => locator authUid already exists");
     return;
   }
 
@@ -106,7 +107,7 @@ static Future<void> ensureLocatorAuthUid() async {
     'authUid': authUid,
   }, SetOptions(merge: true));
 
-  print("BEACON AUTH MIGRATION => locator authUid written");
+  Log.d("BEACON AUTH MIGRATION => locator authUid written");
 }	
 	
 }

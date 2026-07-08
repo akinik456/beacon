@@ -53,6 +53,7 @@ import '../core/widgets/dialogs/app_info_dialog.dart';
 import '../core/widgets/dialogs/app_input_dialog.dart';
 import '../services/theme_service.dart';
 import '../services/rtdb_auth_mapping_service.dart';
+import '../utils/log.dart';
 
 class RequesterHomePage extends StatefulWidget {
   const RequesterHomePage({super.key});
@@ -103,8 +104,8 @@ class _RequesterHomePageState
 	void initState() {
 		WidgetsBinding.instance.addObserver(this);
 		super.initState();
-		print("RequesterHome initState");
-	print("state _hasFullAccess $_hasFullAccess ,_isPremium $_isPremium ,_trialActive $_trialActive"); 
+		Log.d("RequesterHome initState");
+	Log.d("state _hasFullAccess $_hasFullAccess ,_isPremium $_isPremium ,_trialActive $_trialActive"); 
 		_homeDataFuture = HomeDataService.loadHomeData();
 		_loadTheme();
 		unawaited(_startHome());
@@ -123,7 +124,7 @@ class _RequesterHomePageState
 		_purchaseSub =
     InAppPurchase.instance.purchaseStream.listen((purchases) async {
   for (final purchase in purchases) {
-    print(
+    Log.d(
       "BEACON IAP => product=${purchase.productID} "
       "status=${purchase.status}",
     );
@@ -133,7 +134,7 @@ class _RequesterHomePageState
       final purchaseId = purchase.purchaseID;
 
       if (purchaseId == null || purchaseId.isEmpty) {
-        print(
+        Log.d(
           "BEACON IAP => missing purchaseId "
           "${purchase.productID}",
         );
@@ -151,7 +152,7 @@ class _RequesterHomePageState
           });
         }
 
-        print(
+        Log.d(
           "BEACON IAP => purchase processed "
           "${purchase.productID}",
         );
@@ -182,7 +183,7 @@ class _RequesterHomePageState
 	void didChangeAppLifecycleState(
 		AppLifecycleState state,
 	) async {
-		print("BEACON LIFECYCLE => $state");
+		Log.d("BEACON LIFECYCLE => $state");
 
 		if (state == AppLifecycleState.resumed) {
 			await _addActiveWatchers();
@@ -220,13 +221,13 @@ class _RequesterHomePageState
 		);
 	}
 	Future<void> _startHome() async {
-	print("_startHome called");
+	Log.d("_startHome called");
 		await _loadGroupCode();
 
 		final groupId = await GroupService.getLocalGroupId();
 
 		if (groupId == null || groupId.isEmpty) {
-			print("BEACON SUBSCRIPTION => no group, skip subscription check");
+			Log.d("BEACON SUBSCRIPTION => no group, skip subscription check");
 			return;
 		}
 		await RtdbAuthMappingService.syncRequesterAuth();
@@ -237,11 +238,11 @@ class _RequesterHomePageState
 		
 
 		await _initTrial();
-	print("_startHome _initTrial ended");
+	Log.d("_startHome _initTrial ended");
 
 		if (!_hasFullAccess) {
-			print("BEACON SUBSCRIPTION => inactive, skip server listeners");
-			print(DateTime.now());
+			Log.d("BEACON SUBSCRIPTION => inactive, skip server listeners");
+			Log.d(DateTime.now());
 			if (!mounted) return;
 			setState(() {});
 			_hasGroup = true;
@@ -298,9 +299,9 @@ class _RequesterHomePageState
 	Future<void> _loadLocators() async {
 		_groupId = await GroupService.getLocalGroupId();
 		_requesterId = await IdentityService.getRequesterId();
-print("loadLocators called");
+Log.d("loadLocators called");
 		if (_groupId == null || _groupId!.isEmpty) {
-			print("BEACON HOME => no group yet, skip locator load");
+			Log.d("BEACON HOME => no group yet, skip locator load");
 			return;
 		}
 
@@ -310,7 +311,7 @@ print("loadLocators called");
 		_myLat = position?.latitude;
 		_myLng = position?.longitude;
 
-		print(
+		Log.d(
 			"BEACON REQUESTER POS => "
 			"$_myLat, $_myLng",
 		);
@@ -337,7 +338,7 @@ print("loadLocators called");
 		
 		final _requesterName = await IdentityService.getRequesterName();
 		final _requesterCode = await IdentityService.getRequesterCode();
-print("_addActiveWatchers IdentityService.getRequesterName");
+Log.d("_addActiveWatchers IdentityService.getRequesterName");
 
 		for (final locator in _locators) {
 			final locatorId = locator['locatorId'];
@@ -389,7 +390,7 @@ Future<void> _updateRequesterPositionIfNeeded() async {
 
 Future<void> _updateRequesterPosition() async {
   final position = await LocationHelper.getCurrentPosition();
-print("_updateRequesterPosition is called");
+Log.d("_updateRequesterPosition is called");
   if (position == null || !mounted) return;
 
   setState(() {
@@ -402,7 +403,7 @@ static Future<void> cleanupInvalidPairedLocators() async {
   final requesterId = await IdentityService.getRequesterId();
 
   if (groupId == null || requesterId == null) {
-    print("BEACON CLEANUP REQ => missing group/requester");
+    Log.d("BEACON CLEANUP REQ => missing group/requester");
     return;
   }
 
@@ -416,7 +417,7 @@ static Future<void> cleanupInvalidPairedLocators() async {
   final requesterData = requesterSnap.data();
 
   if (requesterData == null) {
-    print("BEACON CLEANUP REQ => requester device doc not found");
+    Log.d("BEACON CLEANUP REQ => requester device doc not found");
     return;
   }
 
@@ -425,7 +426,7 @@ static Future<void> cleanupInvalidPairedLocators() async {
   );
 
   if (pairedLocators.isEmpty) {
-    print("BEACON CLEANUP REQ => no paired locators");
+    Log.d("BEACON CLEANUP REQ => no paired locators");
     return;
   }
 
@@ -458,13 +459,13 @@ static Future<void> cleanupInvalidPairedLocators() async {
   }
 
   if (removedCount == 0) {
-    print("BEACON CLEANUP REQ => paired locators valid");
+    Log.d("BEACON CLEANUP REQ => paired locators valid");
     return;
   }
 
   await batch.commit();
 
-  print(
+  Log.d(
     "BEACON CLEANUP REQ => removed invalid paired locators count=$removedCount",
   );
 }
@@ -481,7 +482,7 @@ static Future<void> cleanupInvalidPairedLocators() async {
 				.listen((event) async {
 				final value = event.snapshot.value;
 
-				print(
+				Log.d(
 					"BEACON PRESENCE UPDATE => "
 					"$locatorId => $value",
 				);
@@ -635,7 +636,7 @@ static Future<void> cleanupInvalidPairedLocators() async {
 					};
 				});
 
-				print("BEACON ALERT => ${change.doc.id} => $data");
+				Log.d("BEACON ALERT => ${change.doc.id} => $data");
 			}
 		});
 
@@ -723,7 +724,7 @@ static Future<void> cleanupInvalidPairedLocators() async {
 	}
 
 Future<void> _buy(String productId) async {
-  print("BEACON IAP => query start productId=$productId");
+  Log.d("BEACON IAP => query start productId=$productId");
 
   final response =
       await InAppPurchase.instance.queryProductDetails({
@@ -731,7 +732,7 @@ Future<void> _buy(String productId) async {
   });
 
   if (response.productDetails.isEmpty) {
-    print(
+    Log.d(
       "BEACON IAP => Product not found "
       "notFound=${response.notFoundIDs}",
     );
@@ -740,7 +741,7 @@ Future<void> _buy(String productId) async {
 
   final product = response.productDetails.first;
 
-  print(
+  Log.d(
     "BEACON IAP => found product "
     "${product.id} ${product.price}",
   );
@@ -765,7 +766,7 @@ Future<void> _buy(String productId) async {
     return;
   }
 
-  print("BEACON IAP => unknown productId=$productId");
+  Log.d("BEACON IAP => unknown productId=$productId");
 }
 	
 Future<void> _initTrial() async {
@@ -775,9 +776,9 @@ Future<void> _initTrial() async {
   if (!mounted) return;
 
   setState(() {
-    _isPremium = info.isPremium; print("_initTrial _isPremium $_isPremium");
-    _trialActive = info.trialActive;print("_initTrial _trialActive $_trialActive");
-    _trialDaysLeft = info.trialDaysLeft;print("_initTrial _trialDaysLeft $_trialDaysLeft");
+    _isPremium = info.isPremium; Log.d("_initTrial _isPremium $_isPremium");
+    _trialActive = info.trialActive;Log.d("_initTrial _trialActive $_trialActive");
+    _trialDaysLeft = info.trialDaysLeft;Log.d("_initTrial _trialDaysLeft $_trialDaysLeft");
   });
 }
 
@@ -985,7 +986,7 @@ Widget _buildPendingHome({
         .snapshots(),
     builder: (context, joinSnapshot) {
       final status = joinSnapshot.data?.data()?['status'];
-			print("JOIN WATCH => status=$status");
+			Log.d("JOIN WATCH => status=$status");
 
       if (status != null && status != 'pending') {
         Future.microtask(() async {

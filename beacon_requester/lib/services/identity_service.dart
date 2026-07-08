@@ -1,6 +1,7 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 import 'code_service.dart';
+import '../utils/log.dart';
 
 class IdentityService {
   IdentityService._();
@@ -13,14 +14,14 @@ class IdentityService {
 		final requesterId = prefs.getString(_requesterIdKey);
 
 		if (requesterId != null && requesterId.isNotEmpty) {
-			print(
+			Log.d(
 				"BEACON IDENTITY => requesterId found => $requesterId",
 			);
 
 			return requesterId;
 		}
 
-		print("BEACON IDENTITY => requesterId not found");
+		Log.d("BEACON IDENTITY => requesterId not found");
 
 		return null;
 	}
@@ -31,7 +32,7 @@ class IdentityService {
 		final existingId = prefs.getString(_requesterIdKey);
 
 		if (existingId != null && existingId.isNotEmpty) {
-			print(
+			Log.d(
 				"BEACON IDENTITY => existing requesterId => "
 				"$existingId",
 			);
@@ -45,7 +46,7 @@ class IdentityService {
 
 		await prefs.setString(_requesterIdKey, newId);
 
-		print(
+		Log.d(
 			"BEACON IDENTITY => new requesterId => $newId",
 		);
 		
@@ -54,7 +55,7 @@ class IdentityService {
 		await prefs.setString(_requesterIdKey, newId);
 		await prefs.setString('requester_code', requesterCode);
 
-		print("BEACON IDENTITY => requesterCode => $requesterCode");
+		Log.d("BEACON IDENTITY => requesterCode => $requesterCode");
 
 		return newId;
 	}
@@ -68,7 +69,7 @@ class IdentityService {
 		if (requesterCode != null &&
 				requesterCode.isNotEmpty) {
 
-			print(
+			Log.d(
 				"BEACON IDENTITY => requesterCode found => "
 				"$requesterCode",
 			);
@@ -76,7 +77,7 @@ class IdentityService {
 			return requesterCode;
 		}
 
-		print("BEACON IDENTITY => requesterCode not found");
+		Log.d("BEACON IDENTITY => requesterCode not found");
 
 		return null;
 	}
@@ -95,7 +96,7 @@ class IdentityService {
 			name.trim(),
 		);
 
-		print(
+		Log.d(
 			"BEACON IDENTITY => requesterName "
 			"saved => $name",
 		);
@@ -111,7 +112,7 @@ class IdentityService {
 		if (requesterName != null &&
 				requesterName.isNotEmpty) {
 
-			print(
+			Log.d(
 				"BEACON IDENTITY => requesterName "
 				"found => $requesterName",
 			);
@@ -119,7 +120,7 @@ class IdentityService {
 			return requesterName;
 		}
 
-		print(
+		Log.d(
 			"BEACON IDENTITY => requesterName "
 			"not found",
 		);

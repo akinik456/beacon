@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'presence_service.dart';
 import 'alert_monitor_service.dart';
+import '../utils/log.dart';
 
 class SmartPresenceScheduler {
   SmartPresenceScheduler._();
@@ -25,7 +26,7 @@ class SmartPresenceScheduler {
       Duration(minutes: 2);
 
   static void start() {
-    print("SMART PRESENCE => start");
+    Log.d("SMART PRESENCE => start");
 
     _scheduleNext(
       immediate: true,
@@ -34,7 +35,7 @@ class SmartPresenceScheduler {
   }
 
   static void stop() {
-    print("SMART PRESENCE => stop");
+    Log.d("SMART PRESENCE => stop");
 
     _timer?.cancel();
     _timer = null;
@@ -43,7 +44,7 @@ class SmartPresenceScheduler {
   static Future<void> boostAndUpdateNow({
     required String reason,
   }) async {
-    print(
+    Log.d(
       "SMART PRESENCE => boost => $reason",
     );
 
@@ -64,7 +65,7 @@ class SmartPresenceScheduler {
     required String reason,
   }) async {
     if (_isUpdating) {
-      print(
+      Log.d(
         "SMART PRESENCE => skip update reason=$reason",
       );
       return;
@@ -99,7 +100,7 @@ class SmartPresenceScheduler {
     final period =
         isFast ? _fastPeriod : _slowPeriod;
 
-    print(
+    Log.d(
       "SMART PRESENCE => schedule "
       "period=${period.inSeconds}s "
       "reason=$reason",
@@ -125,7 +126,7 @@ class SmartPresenceScheduler {
 
 		_hasActiveWatcher = value;
 
-		print(
+		Log.d(
 			"SMART PRESENCE => activeWatcher=$value",
 		);
 

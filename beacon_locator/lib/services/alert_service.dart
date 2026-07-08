@@ -3,6 +3,7 @@ import 'package:uuid/uuid.dart';
 import 'package:battery_plus/battery_plus.dart';
 
 import 'identity_service.dart';
+import '../utils/log.dart';
 
 class AlertService {
   AlertService._();
@@ -14,7 +15,7 @@ class AlertService {
 			type: 'gps_off',
 		);
 
-		print("BEACON ALERT => gps_off sent");
+		Log.d("BEACON ALERT => gps_off sent");
 	}
 	
 	static Future<void> sendBatteryLowAlert({
@@ -27,7 +28,7 @@ class AlertService {
 			},
 		);
 
-		print("BEACON ALERT => battery_low sent");
+		Log.d("BEACON ALERT => battery_low sent");
 	}
 	
 	static Future<void> sendPlaceAlert({
@@ -41,14 +42,14 @@ class AlertService {
 			},
 		);
 
-		print("BEACON ALERT => $type sent => $placeName");
+		Log.d("BEACON ALERT => $type sent => $placeName");
 	}
 
 	static Future<void> sendMovementAlert({
 		required double movedMeters,
 		bool detectedWhileOffline = false,
 	}) async {
-	print("sendMovementAlert is called");
+	Log.d("sendMovementAlert is called");
 		await _sendAlertToPairedRequesters(
 			type: 'movement',
 			extraData: {
@@ -57,7 +58,7 @@ class AlertService {
 			},
 		);
 
-		print(
+		Log.d(
 			"BEACON ALERT => movement sent "
 			"moved=${movedMeters.toStringAsFixed(1)}m "
 			"offline=$detectedWhileOffline",
@@ -75,14 +76,14 @@ class AlertService {
   final locatorCode = await IdentityService.getLocatorCode();
 
   if (groupId == null || locatorId == null) {
-    print("BEACON ALERT => missing group/locator");
+    Log.d("BEACON ALERT => missing group/locator");
     return;
   }
 
   final notifyField = _notifyFieldForType(type);
 
   if (notifyField.isEmpty) {
-    print("BEACON ALERT => unknown notify field for type=$type");
+    Log.d("BEACON ALERT => unknown notify field for type=$type");
     return;
   }
 
@@ -96,7 +97,7 @@ class AlertService {
   final data = locatorDeviceDoc.data();
 
   if (data == null) {
-    print("BEACON ALERT => locator device doc not found");
+    Log.d("BEACON ALERT => locator device doc not found");
     return;
   }
 
@@ -105,7 +106,7 @@ class AlertService {
   );
 
   if (pairedRequesters.isEmpty) {
-    print("BEACON ALERT => no paired requesters");
+    Log.d("BEACON ALERT => no paired requesters");
     return;
   }
 
@@ -124,7 +125,7 @@ class AlertService {
     final notifyData = notifyDoc.data() ?? {};
 
     if (notifyData[notifyField] != true) {
-      print(
+      Log.d(
         "BEACON ALERT => skipped $requesterId "
         "type=$type notifyField=$notifyField",
       );
@@ -156,7 +157,7 @@ class AlertService {
     sentCount++;
   }
 
-  print(
+  Log.d(
     "BEACON ALERT => $type sentCount=$sentCount",
   );
 }

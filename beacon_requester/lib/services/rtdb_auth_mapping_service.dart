@@ -3,6 +3,7 @@ import 'package:firebase_database/firebase_database.dart';
 
 import 'identity_service.dart';
 import 'group_service.dart';
+import '../utils/log.dart';
 
 class RtdbAuthMappingService {
   RtdbAuthMappingService._();
@@ -15,7 +16,7 @@ class RtdbAuthMappingService {
     final groupId = await GroupService.getLocalGroupId();
 
     if (user == null || requesterId == null || groupId == null) {
-      print("BEACON RTDB AUTH => requester mapping skipped");
+      Log.d("BEACON RTDB AUTH => requester mapping skipped");
       return;
     }
 
@@ -33,6 +34,6 @@ class RtdbAuthMappingService {
 			'updatedAt': ServerValue.timestamp,
 		});
 
-    print("BEACON RTDB AUTH => requester mapped");
+    Log.d("BEACON RTDB AUTH => requester mapped");
   }
 }

@@ -1,76 +1,65 @@
-FIRESTORE
-groups/groupid
-groups/groupid/devices
-groups/groupid/devices/locatorId
-groups/groupid/devices/locatorId/notifyRequesters/requesterId
-groups/groupid/devices/locatorId/places/placeid
-groups/groupid/devices/locatorId/settings/config
-
-groups/groupid/devices/requesterId
-
-groups/groupid/alerts
-groups/groupid/alerts/requesterId
-groups/groupid/alerts/requesterId/items
-groups/groupid/alerts/requesterId/items/alertid
-
-groups/groupid/call_me/requesterId/items/callmeid
-groups/groupid/call_me/locatorId/items/callmeid
-
-locators/locatorId/pairing_requests/pairing_requestid
-requesters/requesterId
-
-RTDB
-presence/groups/groupid/active_watchers/locatorId/requesterId
-presence/groups/groupid/locators/locatorId
 
 **************
 
 FIRESTORE
 	groups
-		groupid - (activeLocatorCount,activeRequesterCount,createdAt,groupCode,groupId,groupName,masterRequesterId,maxLocators,maxRequesters,planStatus,trialStartedAt,updatedAt)
+		groupid - (activeLocatorCount,activeRequesterCount,countryCode,createdAt,entitlementUpdatedAt,groupCode,groupId,groupName,masterRequesterId,maxLocators,maxRequesters,planStatus,purchaseOwnerRequesterId,purchaseStatus,trialEndsAt,trialStartedAt,updatedAt)
 			alerts
 				requesterId
 					items
-						alertid - (alertid,battery,createdAt,groupId,locatorCode,locatorId,locatorName,status,targetRequesterId,type:battery_low)
-							
+						alertid - (alertid,createdAt,groupId,locatorCode,locatorId,locatorName,status,targetRequesterId,type:battery_low,gps_off,movement,place_enter,place_exit)
 			call_me
 				requesterId
 					items
 						callmeid - (callmeid,createdAt,groupId,locatorCode,locatorId,locatorName,status,targetRequesterId)
-						
+				locatorId
+					items
+						callmeid - (callmeid,createdAt,groupId,requesterCode,requesterId,requesterName,status,targetlocatorId)
 			devices
 				locatorId - (active,joinedAt,locatorCode,pairedRequesters,role,updatedAt)
 																								              |_requesterid(pairedAt,requesterCode)													
-						
-						requesterId - (batteryLow,callMe,createdAt,geofence,gpsOff,updatedAt)
+					notifyRequesters
+						requesterId - (batteryLow,callMe,createdAt,geofence,gpsOff,movement,updatedAt)
 					settings
-						config - (batteryLowAlert,batteryLowLevel,createdAt,geofenceAlert,gpsOffAlert,updatedAt)
+						config - (batteryLowAlert,batteryLowLevel,geofenceAlert,gpsOffAlert,movementAlert,updatedAt)
+					places
+						placeId - (accuracy,address,createdAt,isActive,lat,lng,name,placeId)
 					
-				requesterId - (active,isMaster,joinedAt,pairedLocators,requesterCode,requesterId,role,updatedAt)
-																								 |_locatorId(locatorCode,locatorName,pairedAt)
+				requesterId - (active,authUid,isMaster,joinedAt,pairedLocators,requesterCode,requesterId,role,updatedAt)
+																								 |_locatorId(locatorCode,pairedAt)
 			join_requests 
-				requestId - (createdAt,requesterCode,requesterId,requesterName,status,updatedAt)
+				requesterId - (authUid,createdAt,requesterCode,requesterName,status,updatedAt)
 																								 
 	locators
-		locatorId	-	(active,createdAt,groupId,locatorCode,locatorName,platform,updatedAt,platform,appVersion,buildNumber,androidVersion,sdkInt,brand,manufacturer,model,device,countryCode)
+		locatorId	-	(active,androidVersion,appVersion,authUid,brand,buildNumber,countryCode,createdAt,device,groupId,locatorCode,locatorName,manufacturer,model,platform,sdkInt,updatedAt)
 			pairing_requests 
 				pairing_requestid - (createdAt,groupId,requesterCode,requesterId,requesterName,status)
 	
 	requesters
-		requesterId	-	(active,createdAt,groupId,platform,requesterCode,requesterName,updatedAt,platform,appVersion,buildNumber,androidVersion,sdkInt,brand,manufacturer,model,device,countryCode)
+		requesterId	-	(active,androidVersion,appVersion,authUid,brand,buildNumber,countryCode,createdAt,device,groupId,manufacturer,model,platform,requesterCode,requesterName,sdkInt,updatedAt,)
 **************	
 
 RTDB
 	presence
+		auth
+			locators
+				locatorId - (authUid,groupid,role,updatedAt)
+			requesters
+				requesterId - (authUid,groupid,role,updatedAt)
+			uids
+				authUid - (deviceId,groupid,role,updatedAt)			
 		groups
 			groupid
 			  active_watchers
 					locatorId
-						requesterId - (active,lastSeen,requesterName,requesterCode)
+						requesterId - (active,lastSeen,requesterCode,requesterName)
 				locators
-					locatorId - (accuracy,battery,gpsEnabled,lastSeen,lat,lng,movedSinceLastUpdateMeters,status,updateCount)
+					locatorId - (accuracy,battery,gpsEnabled,lastSeen,lat,lng,movedSinceLastUpdateMeters,offlineSince,stationarySince,status,updateCount)
 					
 					
 					
-					
-	
+	requesterId de authUid yok	
+	notifyRequesters 	createdAt gereksiz
+	places da 2.placeId var updated yok
+	callmeid - (callmeid 2. gereksiz
+	alertid - (alertid 2. gereksiz

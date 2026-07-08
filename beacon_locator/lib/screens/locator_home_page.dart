@@ -48,6 +48,7 @@ import '../core/widgets/guide_panel.dart';
 import '../core/widgets/app_banner.dart';
 import '../services/theme_service.dart';
 import '../services/rtdb_auth_mapping_service.dart';
+import '../utils/log.dart';
 
 
 class LocatorHomePage extends StatefulWidget {
@@ -102,7 +103,7 @@ Future<void> _startLocatorHome() async {
 
       await _syncLocalGroupWithServer();
     } catch (e) {
-      print(
+      Log.e(
         "BEACON LOCATOR HOME => "
         "group sync error => $e",
       );
@@ -126,7 +127,7 @@ Future<void> _startLocatorHome() async {
   });
 
   if (!hasFullAccess) {
-    print(
+    Log.d(
       "BEACON SUBSCRIPTION => inactive, skip locator services",
     );
     return;
@@ -193,7 +194,7 @@ Future<void> _startNativePresenceIfAllowed() async {
       await Permission.locationAlways.status;
 
   if (!locationAlways.isGranted) {
-    print(
+    Log.d(
       "BEACON NATIVE SERVICE => locationAlways missing, skip start",
     );
     return;
@@ -203,7 +204,7 @@ Future<void> _startNativePresenceIfAllowed() async {
   final locatorId = await IdentityService.getLocatorId();
 
   if (groupId == null || locatorId == null) {
-    print(
+    Log.d(
       "BEACON NATIVE SERVICE => missing ids, skip start "
       "group=$groupId locator=$locatorId",
     );
@@ -235,7 +236,7 @@ Future<void> _startNativePresenceIfAllowed() async {
   final locatorId = await IdentityService.getLocatorId();
 
   if (groupId == null || locatorId == null) {
-    print("BEACON CLEANUP => missing group/locator");
+    Log.d("BEACON CLEANUP => missing group/locator");
     return;
   }
 
@@ -249,7 +250,7 @@ Future<void> _startNativePresenceIfAllowed() async {
   final locatorDeviceData = locatorDeviceSnap.data();
 
   if (locatorDeviceData == null) {
-    print("BEACON CLEANUP => locator device doc not found");
+    Log.d("BEACON CLEANUP => locator device doc not found");
     return;
   }
 
@@ -258,7 +259,7 @@ Future<void> _startNativePresenceIfAllowed() async {
   );
 
   if (pairedRequesters.isEmpty) {
-    print("BEACON CLEANUP => no paired requesters");
+    Log.d("BEACON CLEANUP => no paired requesters");
     return;
   }
 
@@ -291,13 +292,13 @@ Future<void> _startNativePresenceIfAllowed() async {
   }
 
   if (removedCount == 0) {
-    print("BEACON CLEANUP => paired requesters valid");
+    Log.d("BEACON CLEANUP => paired requesters valid");
     return;
   }
 
   await batch.commit();
 
-  print(
+  Log.d(
     "BEACON CLEANUP => removed invalid paired requesters count=$removedCount",
   );
 }
@@ -462,9 +463,9 @@ Future<void> _clearLocatorGroupIfNoRequester() async {
           'updatedAt': FieldValue.serverTimestamp(),
         }, SetOptions(merge: true));
 
-    print("LOCATOR SYNC => groupId cleared because no paired requester");
+    Log.d("LOCATOR SYNC => groupId cleared because no paired requester");
   } catch (e) {
-    print("LOCATOR SYNC => clear groupId failed => $e");
+    Log.e("LOCATOR SYNC => clear groupId failed => $e");
   } finally {
     _clearingGroupAfterUnpair = false;
   }
@@ -494,7 +495,7 @@ Future<void> _syncLocalGroupWithServer() async {
       _hasGroup = false;
     });
 
-    print(
+    Log.d(
       "BEACON LOCATOR HOME => "
       "server groupId missing, local groupId cleared",
     );

@@ -7,6 +7,7 @@ import 'identity_service.dart';
 import 'geofence_service.dart';
 import 'locator_settings_service.dart';
 import 'movement_alert_service.dart';
+import '../utils/log.dart';
 
 class PresenceService {
   PresenceService._();
@@ -20,7 +21,7 @@ class PresenceService {
   String reason = 'unknown',
 }) async {
 
-print(
+Log.d(
   "BEACON PRESENCE => "
   "cachedGroup=$_serviceGroupId "
   "cachedLocator=$_serviceLocatorId",
@@ -30,11 +31,11 @@ print(
 
 	final locatorId =
 			_serviceLocatorId ?? await IdentityService.getLocatorId();
-		print("updateOnline called");
+		Log.d("updateOnline called");
 
   if (groupId == null || locatorId == null) {
-    print("BEACON PRESENCE => missing group/locator");
-		print("BEACON LOCAL IDS => group=$groupId locator=$locatorId");
+    Log.d("BEACON PRESENCE => missing group/locator");
+		Log.d("BEACON LOCAL IDS => group=$groupId locator=$locatorId");
     return;
   }
 
@@ -51,7 +52,7 @@ print(
         desiredAccuracy: LocationAccuracy.high,
       );
     } catch (e) {
-      print("BEACON PRESENCE => getCurrentPosition failed => $e");
+      Log.e("BEACON PRESENCE => getCurrentPosition failed => $e");
     }
   }
 
@@ -73,7 +74,7 @@ print(
           position.longitude,
         );
 
-        print(
+        Log.d(
           "BEACON PRESENCE => "
           "reason=$reason "
           "moved=${movedMeters.toStringAsFixed(1)}m",
@@ -88,7 +89,7 @@ print(
       movedMeters < 25;
 
   if (shouldSkipSmallMove) {
-    print(
+    Log.d(
       "BEACON PRESENCE => "
       "skip reason=$reason moved=${movedMeters.toStringAsFixed(1)}m",
     );
@@ -112,7 +113,7 @@ print(
 	}
 
 	await _db.child(path).update(updateData);
-print("RTDB updated");
+Log.d("RTDB updated");
   if (position != null) {
     await GeofenceService.checkPlaces(
       groupId: groupId,
@@ -126,8 +127,8 @@ print("RTDB updated");
 			reason: reason,
 		);
   }
-	print("MovementAlertService.checkNow is called ? lat:$position.latitude,lng:$position.longitude");
-  print(
+	Log.d("MovementAlertService.checkNow is called ? lat:$position.latitude,lng:$position.longitude");
+  Log.d(
     "BEACON PRESENCE => "
     "online updated reason=$reason",
   );
@@ -140,22 +141,22 @@ static void setServiceIds({
   _serviceGroupId = groupId;
   _serviceLocatorId = locatorId;
 
-  print(
+  Log.d(
     "BEACON PRESENCE => service ids set "
     "group=$groupId locator=$locatorId",
   );
 }
 static Future<void> startConnectionWatcher() async {
-print("BEACON PRESENCE => startConnectionWatcher called");
+Log.d("BEACON PRESENCE => startConnectionWatcher called");
   final groupId = await IdentityService.getGroupId();
   final locatorId = await IdentityService.getLocatorId();
 	
-	print(
+	Log.d(
     "BEACON PRESENCE => watcher ids group=$groupId locator=$locatorId",
   );
 
   if (groupId == null || locatorId == null) {
-    print("BEACON PRESENCE => watcher missing group/locator");
+    Log.d("BEACON PRESENCE => watcher missing group/locator");
     return;
   }
 
@@ -171,7 +172,7 @@ print("BEACON PRESENCE => startConnectionWatcher called");
   _connectedSub = connectedRef.onValue.listen((event) async {
     final connected =
         event.snapshot.value as bool? ?? false;
-	print("BEACON PRESENCE => connected=$connected");
+	Log.d("BEACON PRESENCE => connected=$connected");
 
     if (!connected) return;
 
@@ -187,7 +188,7 @@ print("BEACON PRESENCE => startConnectionWatcher called");
 			'offlineSince': null,
     });
 
-    print("BEACON PRESENCE => onDisconnect armed");
+    Log.d("BEACON PRESENCE => onDisconnect armed");
   });
 }
 }

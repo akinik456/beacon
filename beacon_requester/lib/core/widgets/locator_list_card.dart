@@ -6,6 +6,7 @@ import '../theme/app_colors.dart';
 import '../theme/app_fonts.dart';
 import 'app_card.dart';
 import '../../l10n/app_localizations.dart';
+import '../../utils/log.dart';
 
 class LocatorListCard extends StatelessWidget {
   final String groupId;
@@ -178,10 +179,10 @@ class LocatorListCard extends StatelessWidget {
 																				)
 																				.remove();
 
-																		print(
+																		Log.d(
 																			"BEACON PRESENCE => locator node removed => $locatorId",
 																		);
-																		print(
+																		Log.d(
 																			"BEACON LOCATOR REMOVED FROM GROUP => $locatorId",
 																		);
 																	onChanged?.call();

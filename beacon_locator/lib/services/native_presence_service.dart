@@ -1,4 +1,5 @@
 import 'package:flutter/services.dart';
+import '../utils/log.dart';
 
 class NativePresenceService {
   NativePresenceService._();
@@ -19,12 +20,12 @@ class NativePresenceService {
 				},
 			);
 
-			print(
+			Log.d(
 				"NATIVE PRESENCE => service start requested "
 				"group=$groupId locator=$locatorId",
 			);
 		} catch (e) {
-			print(
+			Log.e(
 				"NATIVE PRESENCE => start failed => $e",
 			);
 		}
@@ -48,7 +49,7 @@ class NativePresenceService {
 				'locatorId': locatorId,
 			};
 		} catch (e) {
-			print("NATIVE PRESENCE => get ids failed => $e");
+			Log.e("NATIVE PRESENCE => get ids failed => $e");
 			return null;
 		}
 	}

@@ -4,6 +4,7 @@ import '../theme/app_colors.dart';
 import '../theme/app_fonts.dart';
 import 'app_card.dart';
 import '../../l10n/app_localizations.dart';
+import '../../utils/log.dart';
 
 
 class SubscriptionExpiredOverlay extends StatelessWidget {
@@ -19,7 +20,7 @@ class SubscriptionExpiredOverlay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 	final l10n = AppLocalizations.of(context)!;
-	print(DateTime.now());
+	Log.d(DateTime.now());
     return Positioned.fill(
       child: Container(
         color: Colors.black.withValues(alpha: 0.65),

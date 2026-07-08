@@ -4,6 +4,7 @@ import 'package:battery_plus/battery_plus.dart';
 import 'alert_service.dart';
 import 'locator_settings_service.dart';
 import 'identity_service.dart';
+import '../utils/log.dart';
 
 class AlertMonitorService {
   AlertMonitorService._();
@@ -28,9 +29,9 @@ class AlertMonitorService {
 		final groupId = await IdentityService.getGroupId();
 		final locatorId = await IdentityService.getLocatorId();	
 		
-		print("groupid:$groupId,locatorId:$locatorId");
+		Log.d("groupid:$groupId,locatorId:$locatorId");
 		
-	print(
+	Log.d(
 		"BEACON ALERT MONITOR => "
 		"gpsOffAlertEnabled=$gpsOffAlertEnabled "
 		"batteryLowAlertEnabled=$batteryLowAlertEnabled "
@@ -40,7 +41,7 @@ class AlertMonitorService {
 			final gpsEnabled =
 					await Geolocator.isLocationServiceEnabled();
 
-			print(
+			Log.d(
 				"BEACON ALERT MONITOR => gpsEnabled=$gpsEnabled",
 			);
 
@@ -52,7 +53,7 @@ class AlertMonitorService {
 
 			_lastGpsEnabled = gpsEnabled;
 		} catch (e) {
-			print(
+			Log.e(
 				"BEACON ALERT MONITOR ERROR => $e",
 			);
 		}
@@ -60,7 +61,7 @@ class AlertMonitorService {
 		final batteryLevel =
     await Battery().batteryLevel;
 
-		print(
+		Log.d(
 			"BEACON ALERT MONITOR => battery=$batteryLevel",
 		);
 

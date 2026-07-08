@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:geolocator/geolocator.dart';
 
 import 'alert_service.dart';
+import '../utils/log.dart';
 
 class GeofenceService {
   GeofenceService._();
@@ -44,7 +45,7 @@ class GeofenceService {
 
         final isInside = distance <= _radiusMeters;
 
-        print(
+        Log.d(
           "BEACON GEO => ${data['name']} "
           "distance=${distance.round()}m "
           "inside=$isInside",
@@ -67,7 +68,7 @@ class GeofenceService {
 						type: 'place_enter',
 						placeName: data['name'] ?? 'Place',
 					);
-					print(
+					Log.d(
 						"BEACON GEO => ENTER => ${data['name']}",
 					);
 				}
@@ -77,14 +78,14 @@ class GeofenceService {
 						type: 'place_exit',
 						placeName: data['name'] ?? 'Place',
 					);
-					print(
+					Log.d(
 						"BEACON GEO => EXIT => ${data['name']}",
 					);
 				}
 				
       }	
     } catch (e) {
-      print("BEACON GEO ERROR => $e");
+      Log.e("BEACON GEO ERROR => $e");
     }
   }
 }

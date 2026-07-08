@@ -6,6 +6,7 @@ import '../theme/app_fonts.dart';
 import 'app_card.dart';
 import '../../l10n/app_localizations.dart';
 import '../../services/identity_service.dart';
+import '../../utils/log.dart';
 
 
 class RequesterListCard extends StatelessWidget {
@@ -183,7 +184,7 @@ class RequesterListCard extends StatelessWidget {
                       });
                     });
 
-                    print(
+                    Log.d(
                       "BEACON REQUESTER REMOVED => $requesterId",
                     );
                   },

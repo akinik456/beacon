@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'code_service.dart';
 import 'identity_service.dart';
 import 'group_service.dart';
+import '../utils/log.dart';
 
 class LocatorPairingService {
   LocatorPairingService._();
@@ -15,7 +16,7 @@ class LocatorPairingService {
       final requesterId = await IdentityService.getRequesterId();
 
       final requesterName = await IdentityService.getRequesterName();
-			print("sendPairingRequest IdentityService.getRequesterName");
+			Log.d("sendPairingRequest IdentityService.getRequesterName");
 
       final requesterCode = await IdentityService.getRequesterCode();
 
@@ -25,7 +26,7 @@ class LocatorPairingService {
           requesterName == null ||
           requesterCode == null ||
           groupId == null) {
-        print("BEACON PAIRING => MISSING REQUESTER DATA");
+        Log.d("BEACON PAIRING => MISSING REQUESTER DATA");
         return null;
       }
 
@@ -34,7 +35,7 @@ class LocatorPairingService {
       String locatorId;
 
       if (CodeService.isValidCode(normalized)) {
-			print("BEACON PAIRING CODE QUERY => $normalized");
+			Log.d("BEACON PAIRING CODE QUERY => $normalized");
         final query = await _firestore
             .collection('locators')
             .where('locatorCode', isEqualTo: normalized)
@@ -42,7 +43,7 @@ class LocatorPairingService {
             .get();
 
         if (query.docs.isEmpty) {
-          print("BEACON PAIRING => LOCATOR NOT FOUND");
+          Log.d("BEACON PAIRING => LOCATOR NOT FOUND");
           return null;
         }
 
@@ -52,7 +53,7 @@ class LocatorPairingService {
       }
 			
 			if (groupId.isEmpty) {
-				print("BEACON PAIRING => GROUP ID MISSING");
+				Log.d("BEACON PAIRING => GROUP ID MISSING");
 				return null;
 			}
 			
@@ -63,7 +64,7 @@ class LocatorPairingService {
 					.doc(requesterId)
 					.get();
 			if (!requesterDoc.exists) {
-				print("BEACON PAIRING => REQUESTER DEVICE DOC MISSING");
+				Log.d("BEACON PAIRING => REQUESTER DEVICE DOC MISSING");
 				return {
 					'error': 'missing_requester_device',
 				};
@@ -138,7 +139,7 @@ class LocatorPairingService {
         'createdAt': FieldValue.serverTimestamp(),
       });
 
-      print(
+      Log.d(
         "BEACON PAIRING => REQUEST SENT "
         "=> locator:$locatorId "
         "request:${requestRef.id}",
@@ -146,7 +147,7 @@ class LocatorPairingService {
 
       return {'locatorId': locatorId, 'requestId': requestRef.id};
     } catch (e) {
-      print("BEACON PAIRING ERROR => $e");
+      Log.e("BEACON PAIRING ERROR => $e");
       return null;
     }
   }

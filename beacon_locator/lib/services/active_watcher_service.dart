@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'identity_service.dart';
 import 'notification_service.dart';
 import 'smart_presence_scheduler.dart';
+import '../utils/log.dart';
 
 class ActiveWatcherService {
   ActiveWatcherService._();
@@ -42,7 +43,7 @@ class ActiveWatcherService {
     final locatorId = await IdentityService.getLocatorId();
 
     if (groupId == null || locatorId == null) {
-      print("BEACON WATCHER => missing group/locator");
+      Log.d("BEACON WATCHER => missing group/locator");
       return;
     }
 
@@ -50,18 +51,18 @@ class ActiveWatcherService {
       "presence/groups/$groupId/active_watchers/$locatorId",
     );
 
-    print(
+    Log.d(
       "BEACON WATCHER => listening "
       "updateScheduler=$updateScheduler",
     );
-		print("groupid:$groupId");
+		Log.d("groupid:$groupId");
 
     _sub = ref.onValue.listen((event) async {
       final watchers = _parseWatchers(event.snapshot.value);
 
       final hasWatcher = watchers.isNotEmpty;
 
-      print(
+      Log.d(
         "BEACON WATCHER => hasWatcher=$hasWatcher "
         "updateScheduler=$updateScheduler",
       );
@@ -83,7 +84,7 @@ class ActiveWatcherService {
     final locatorId = await IdentityService.getLocatorId();
 
     if (groupId == null || locatorId == null) {
-      print(
+      Log.d(
         "BEACON WATCHER => notification skip missing group/locator",
       );
 

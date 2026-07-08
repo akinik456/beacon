@@ -8,6 +8,7 @@ import 'identity_service.dart';
 import 'code_service.dart';
 import 'requester_registry_service.dart';
 import '../services/firebase_authentication_service.dart';
+import '../utils/log.dart';
 
 class GroupService {
   GroupService._();
@@ -95,7 +96,7 @@ class GroupService {
     await prefs.setString(_groupIdKey, groupId);
     await prefs.setString('group_code', groupCode);
 
-    print("BEACON GROUP => CREATE SUCCESS => $groupId");
+    Log.d("BEACON GROUP => CREATE SUCCESS => $groupId");
 
     return groupId;
   }
@@ -113,7 +114,7 @@ class GroupService {
   final requesterCode = await IdentityService.getRequesterCode();
 
   if (requesterId == null) {
-    print("BEACON GROUP => requesterId not found");
+    Log.d("BEACON GROUP => requesterId not found");
     return null;
   }
 
@@ -127,7 +128,7 @@ class GroupService {
       .get();
 
   if (query.docs.isEmpty) {
-    print("BEACON GROUP => group not found");
+    Log.d("BEACON GROUP => group not found");
     return null;
   }
 
@@ -148,7 +149,7 @@ class GroupService {
 			.get();
 
 	if (pendingRequests.docs.isNotEmpty) {
-		print("BEACON GROUP => another join request is already pending");
+		Log.d("BEACON GROUP => another join request is already pending");
 		return null;
 	}
 
@@ -167,7 +168,7 @@ class GroupService {
 	await prefs.setString('group_code', normalizedCode);
 	await prefs.setString('join_status', 'pending');
 
-  print("BEACON GROUP => JOIN REQUEST SENT => $groupId");
+  Log.d("BEACON GROUP => JOIN REQUEST SENT => $groupId");
 
   return groupId;
 }
@@ -177,7 +178,7 @@ class GroupService {
     final groupCode = prefs.getString('group_code');
 
     if (groupCode != null && groupCode.isNotEmpty) {
-      print(
+      Log.d(
         "BEACON GROUP => groupCode found => "
         "$groupCode",
       );
@@ -185,7 +186,7 @@ class GroupService {
       return groupCode;
     }
 
-    print("BEACON GROUP => groupCode not found");
+    Log.d("BEACON GROUP => groupCode not found");
 
     return null;
   }
@@ -203,7 +204,7 @@ static Future<void> addPairedLocatorToRequester({
   if (requesterId == null ||
       groupId == null) {
 
-    print(
+    Log.d(
       "BEACON GROUP => "
       "paired locator update failed",
     );
@@ -242,7 +243,7 @@ static Future<void> addPairedLocatorToRequester({
 
   }, SetOptions(merge: true));
 
-  print(
+  Log.d(
     "BEACON GROUP => "
     "paired locator added => $locatorId",
   );
@@ -261,7 +262,7 @@ static Future<void> addPairedRequesterToLocator({
     await IdentityService.getRequesterCode();
 
   if (requesterId == null || groupId == null) {
-    print(
+    Log.d(
       "BEACON GROUP => "
       "paired requester update failed",
     );
@@ -283,7 +284,7 @@ static Future<void> addPairedRequesterToLocator({
     'updatedAt': FieldValue.serverTimestamp(),
   }, SetOptions(merge: true));
 
-  print(
+  Log.d(
     "BEACON GROUP => "
     "paired requester added => $requesterId",
   );
@@ -295,7 +296,7 @@ static Future<void> ensureLocatorDefaultSettings({
   final groupId = await getLocalGroupId();
 
   if (groupId == null) {
-    print("GROUP SERVICE => groupId missing");
+    Log.d("GROUP SERVICE => groupId missing");
     return;
   }
 
@@ -324,7 +325,7 @@ static Future<void> ensureRequesterNotifySettings({
   final requesterId = await IdentityService.getRequesterId();
 
   if (groupId == null || requesterId == null) {
-    print("GROUP SERVICE => groupId/requesterId missing");
+    Log.d("GROUP SERVICE => groupId/requesterId missing");
     return;
   }
 
@@ -353,7 +354,7 @@ static Future<void> removePairedLocator({
   final requesterId = await IdentityService.getRequesterId();
 
   if (groupId == null || requesterId == null) {
-    print("GROUP SERVICE => remove locator missing ids");
+    Log.d("GROUP SERVICE => remove locator missing ids");
     return;
   }
 
@@ -416,7 +417,7 @@ static Future<void> removePairedLocator({
       .doc(requesterId)
       .delete();
 
-  print("GROUP SERVICE => locator removed => $locatorId");
+  Log.d("GROUP SERVICE => locator removed => $locatorId");
 }
 
 static Future<void> clearLocalGroup() async {

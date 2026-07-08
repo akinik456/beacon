@@ -1,6 +1,8 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 import 'code_service.dart';
+import '../utils/log.dart';
+
 
 class IdentityService {
   IdentityService._();
@@ -13,14 +15,14 @@ class IdentityService {
     final locatorId = prefs.getString(_locatorIdKey);
 
     if (locatorId != null && locatorId.isNotEmpty) {
-      print(
+      Log.d(
         "BEACON IDENTITY => locatorId found => $locatorId",
       );
 
       return locatorId;
     }
 
-    print("BEACON IDENTITY => locatorId not found");
+    Log.d("BEACON IDENTITY => locatorId not found");
 
     return null;
   }
@@ -31,7 +33,7 @@ class IdentityService {
     final existingId = prefs.getString(_locatorIdKey);
 
     if (existingId != null && existingId.isNotEmpty) {
-      print(
+      Log.d(
         "BEACON IDENTITY => existing locatorId => "
         "$existingId",
       );
@@ -45,7 +47,7 @@ class IdentityService {
 
     await prefs.setString(_locatorIdKey, newId);
 
-    print(
+    Log.d(
       "BEACON IDENTITY => new locatorId => $newId",
     );
 
@@ -55,7 +57,7 @@ class IdentityService {
     await prefs.setString(_locatorIdKey, newId);
     await prefs.setString('locator_code', locatorCode);
 
-    print(
+    Log.d(
       "BEACON IDENTITY => locatorCode => "
       "$locatorCode",
     );
@@ -72,7 +74,7 @@ class IdentityService {
     if (locatorCode != null &&
         locatorCode.isNotEmpty) {
 
-      print(
+      Log.d(
         "BEACON IDENTITY => locatorCode found => "
         "$locatorCode",
       );
@@ -80,7 +82,7 @@ class IdentityService {
       return locatorCode;
     }
 
-    print("BEACON IDENTITY => locatorCode not found");
+    Log.d("BEACON IDENTITY => locatorCode not found");
 
     return null;
   }
@@ -99,7 +101,7 @@ class IdentityService {
 			name.trim(),
 		);
 
-		print(
+		Log.d(
 			"BEACON IDENTITY => locatorName "
 			"saved => $name",
 		);
@@ -115,7 +117,7 @@ class IdentityService {
 		if (locatorName != null &&
 				locatorName.isNotEmpty) {
 
-			print(
+			Log.d(
 				"BEACON IDENTITY => locatorName "
 				"found => $locatorName",
 			);
@@ -123,7 +125,7 @@ class IdentityService {
 			return locatorName;
 		}
 
-		print(
+		Log.d(
 			"BEACON IDENTITY => locatorName "
 			"not found",
 		);
@@ -140,7 +142,7 @@ class IdentityService {
 
   final saved = prefs.getString(_groupIdKey);
 
-  print(
+  Log.d(
     "BEACON IDENTITY => setGroupId "
     "key=$_groupIdKey value=$groupId saved=$saved",
   );
@@ -151,7 +153,7 @@ static Future<String?> getGroupId() async {
 
   final value = prefs.getString(_groupIdKey);
 
-  print(
+  Log.d(
     "BEACON IDENTITY => getGroupId "
     "key=$_groupIdKey value=$value",
   );
@@ -170,7 +172,7 @@ static Future<String?> getGroupId() async {
 
 		final after = prefs.getString(_groupIdKey);
 
-		print(
+		Log.d(
 			"BEACON IDENTITY => clearGroupId "
 			"reason=$reason "
 			"before=$before "

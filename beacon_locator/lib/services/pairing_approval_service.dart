@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'identity_service.dart';
 import '../services/active_watcher_service.dart';
+import '../utils/log.dart';
 
 class PairingApprovalService {
   PairingApprovalService._();
@@ -17,7 +18,7 @@ class PairingApprovalService {
 	final locatorCode = await IdentityService.getLocatorCode();
 
   if (locatorId == null || locatorId.isEmpty) {
-    print("BEACON APPROVE ERROR => locatorId not found");
+    Log.d("BEACON APPROVE ERROR => locatorId not found");
     return 'error_locator_not_found';
   }
 
@@ -25,7 +26,7 @@ class PairingApprovalService {
   final requesterId = requestData['requesterId'];
 
   if (groupId == null || requesterId == null) {
-    print("BEACON APPROVE ERROR => invalid request data");
+    Log.d("BEACON APPROVE ERROR => invalid request data");
     return 'invalid_request_data';
   }
 
@@ -121,7 +122,7 @@ class PairingApprovalService {
 
 		final savedGroupId = await IdentityService.getGroupId();
 
-		print(
+		Log.d(
 			"BEACON APPROVE => SUCCESS "
 			"locator=$locatorId "
 			"group=$groupId "

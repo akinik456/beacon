@@ -1,4 +1,6 @@
 import 'package:geolocator/geolocator.dart';
+import 'log.dart';
+
 
 class LocationHelper {
   LocationHelper._();
@@ -9,7 +11,7 @@ static Future<Position?> getCurrentPosition() async {
         await Geolocator.isLocationServiceEnabled();
 
     if (!serviceEnabled) {
-      print("BEACON LOCATION => service disabled");
+      Log.d("BEACON LOCATION => service disabled");
       return null;
     }
 
@@ -22,12 +24,12 @@ static Future<Position?> getCurrentPosition() async {
     }
 
     if (permission == LocationPermission.denied) {
-      print("BEACON LOCATION => permission denied");
+      Log.d("BEACON LOCATION => permission denied");
       return null;
     }
 
     if (permission == LocationPermission.deniedForever) {
-      print("BEACON LOCATION => permission denied forever");
+      Log.d("BEACON LOCATION => permission denied forever");
       return null;
     }
 
@@ -35,7 +37,7 @@ static Future<Position?> getCurrentPosition() async {
       desiredAccuracy: LocationAccuracy.high,
     );
   } catch (e) {
-    print("BEACON LOCATION ERROR => $e");
+    Log.e("BEACON LOCATION ERROR => $e");
     return null;
   }
 }

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'identity_service.dart';
+import '../utils/log.dart';
 
 class PairingRejectService {
   PairingRejectService._();
@@ -16,7 +17,7 @@ class PairingRejectService {
           await IdentityService.getLocatorId();
 
       if (locatorId == null || locatorId.isEmpty) {
-        print(
+        Log.d(
           "BEACON REJECT ERROR => locatorId not found",
         );
         return;
@@ -32,11 +33,11 @@ class PairingRejectService {
         'respondedAt': FieldValue.serverTimestamp(),
       });
 
-      print(
+      Log.d(
         "BEACON REJECT => SUCCESS => $requestId",
       );
     } catch (e) {
-      print(
+      Log.e(
         "BEACON REJECT ERROR => $e",
       );
     }

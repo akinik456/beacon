@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../utils/log.dart';
 
 class PairingResponseService {
   PairingResponseService._();
@@ -32,7 +33,7 @@ class PairingResponseService {
         .doc(requestId)
         .delete();
 
-    print(
+    Log.d(
       "BEACON PAIRING RESPONSE => "
       "REQUEST DELETED => $requestId",
     );

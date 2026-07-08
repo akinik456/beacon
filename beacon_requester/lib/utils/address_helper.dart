@@ -1,4 +1,5 @@
 import 'package:geocoding/geocoding.dart';
+import 'log.dart';
 
 class AddressHelper {
   AddressHelper._();
@@ -52,7 +53,7 @@ class AddressHelper {
 
     return parts.take(4).join(', ');
   } catch (e) {
-    print("BEACON ADDRESS ERROR => $e");
+    Log.e("BEACON ADDRESS ERROR => $e");
     return '';
   }
 }

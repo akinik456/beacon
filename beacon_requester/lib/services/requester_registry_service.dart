@@ -9,6 +9,8 @@ import 'dart:ui';
 import 'identity_service.dart';
 import 'code_service.dart';
 import 'firebase_authentication_service.dart';
+import '../utils/log.dart';
+
 
 class RequesterRegistryService {
   RequesterRegistryService._();
@@ -34,14 +36,14 @@ class RequesterRegistryService {
     final requesterName =
         await IdentityService.getRequesterName();
 
-    print("registerRequester IdentityService.getRequesterName");
+    Log.d("registerRequester IdentityService.getRequesterName");
 
     String? token;
 
     try {
       token = await FirebaseMessaging.instance.getToken();
     } catch (e) {
-      print("BEACON REQUESTER REGISTRY FCM TOKEN ERROR => $e");
+      Log.e("BEACON REQUESTER REGISTRY FCM TOKEN ERROR => $e");
     }
 
     await _firestore.collection('requesters').doc(requesterId).set({
@@ -66,11 +68,11 @@ class RequesterRegistryService {
       'countryCode': countryCode,
     }, SetOptions(merge: true));
 
-    print(
+    Log.d(
       "BEACON REQUESTER REGISTRY => SUCCESS => $requesterId",
     );
   } catch (e) {
-    print(
+    Log.e(
       "BEACON REQUESTER REGISTRY ERROR => $e",
     );
   }
@@ -81,12 +83,12 @@ static Future<void> ensureRequesterAuthUid() async {
   final authUid = AuthService.uid;
 
   if (requesterId == null || requesterId.isEmpty) {
-    print("BEACON AUTH MIGRATION => requesterId missing");
+    Log.d("BEACON AUTH MIGRATION => requesterId missing");
     return;
   }
 
   if (authUid == null || authUid.isEmpty) {
-    print("BEACON AUTH MIGRATION => authUid missing");
+    Log.d("BEACON AUTH MIGRATION => authUid missing");
     return;
   }
 
@@ -97,7 +99,7 @@ static Future<void> ensureRequesterAuthUid() async {
   final currentAuthUid = doc.data()?['authUid'];
 
   if (currentAuthUid != null && currentAuthUid.toString().isNotEmpty) {
-    print("BEACON AUTH MIGRATION => requester authUid already exists");
+    Log.d("BEACON AUTH MIGRATION => requester authUid already exists");
     return;
   }
 
@@ -105,6 +107,6 @@ static Future<void> ensureRequesterAuthUid() async {
     'authUid': authUid,
   }, SetOptions(merge: true));
 
-  print("BEACON AUTH MIGRATION => requester authUid written");
+  Log.d("BEACON AUTH MIGRATION => requester authUid written");
 }
 }

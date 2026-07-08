@@ -7,6 +7,7 @@ import 'requester_home_page.dart';
 import '../services/identity_service.dart';
 import '../services/requester_registry_service.dart';
 import '../l10n/app_localizations.dart';
+import '../utils/log.dart';
 
 
 class CreateGroupPage extends StatefulWidget {
@@ -78,7 +79,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
 										
 										final _requesterName = await IdentityService.getRequesterName();
 										final _requesterCode = await IdentityService.getRequesterCode();
-										print("_CreateGroupPageState IdentityService.getRequesterName");
+										Log.d("_CreateGroupPageState IdentityService.getRequesterName");
 
 										
 										final groupId  =await GroupService.createGroup(

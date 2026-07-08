@@ -9,6 +9,8 @@ import '../../l10n/app_localizations.dart';
 import 'app_banner.dart';
 import '../../services/firebase_authentication_service.dart';
 import '../../services/identity_service.dart';
+import '../../utils/log.dart';
+
 
 class JoinRequestCard extends StatelessWidget {
   final String groupId;
@@ -77,7 +79,7 @@ class JoinRequestCard extends StatelessWidget {
 
 															await doc.reference.delete();
 
-															print(
+															Log.d(
 																"BEACON JOIN REJECTED => ${doc.id}",
 															);
 														},
@@ -102,13 +104,13 @@ class JoinRequestCard extends StatelessWidget {
 
 													final requesterId = doc.id;
 
-													print(
+													Log.d(
 														"BEACON JOIN APPROVE TAP => "
 														"groupId=$groupId requesterId=$requesterId",
 													);
 
 													if (requesterId == null || requesterId.isEmpty) {
-														print("BEACON JOIN APPROVE => missing requesterId");
+														Log.d("BEACON JOIN APPROVE => missing requesterId");
 														return;
 													}
 
@@ -130,7 +132,7 @@ class JoinRequestCard extends StatelessWidget {
 													
 													if (currentRequesterId == null ||
 															currentRequesterId.isEmpty) {
-														print(
+														Log.d(
 															"BEACON JOIN APPROVE => currentRequesterId missing",
 														);
 														return;
@@ -193,7 +195,7 @@ class JoinRequestCard extends StatelessWidget {
 															});
 														});
 
-														print("BEACON JOIN APPROVED => $requesterId");
+														Log.d("BEACON JOIN APPROVED => $requesterId");
 													} catch (e) {
 														if (!context.mounted) return;
 														AppBanner.error(

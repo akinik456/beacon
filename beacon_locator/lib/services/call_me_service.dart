@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:uuid/uuid.dart';
 
 import 'identity_service.dart';
+import '../utils/log.dart';
 
 class CallMeService {
   CallMeService._();
@@ -27,7 +28,7 @@ class CallMeService {
     );
 
     if (!enabled) {
-      print("BEACON CALLME => disabled by requester => $targetRequesterId");
+      Log.d("BEACON CALLME => disabled by requester => $targetRequesterId");
       return;
     }
 
@@ -62,7 +63,7 @@ class CallMeService {
       );
 
       if (!enabled) {
-        print("BEACON CALLME => skipped disabled requester => $requesterId");
+        Log.d("BEACON CALLME => skipped disabled requester => $requesterId");
         continue;
       }
 
@@ -122,6 +123,6 @@ class CallMeService {
       'createdAt': FieldValue.serverTimestamp(),
     });
 
-    print("BEACON CALLME => created => $callMeId => $targetRequesterId");
+    Log.d("BEACON CALLME => created => $callMeId => $targetRequesterId");
   }
 }

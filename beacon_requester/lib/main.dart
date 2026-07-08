@@ -11,6 +11,8 @@ import 'package:beacon_requester/l10n/app_localizations.dart';
 import 'core/theme/app_colors.dart';
 import 'core/theme/app_fonts.dart';
 import 'core/widgets/app_card.dart';
+import 'utils/log.dart';
+
 import 'services/firebase_test_service.dart';
 import 'services/fcm_service.dart';
 import 'services/active_watcher_service.dart';
@@ -144,7 +146,23 @@ class _MyAppState extends State<MyApp> {
     final prefs = await SharedPreferences.getInstance();
     final code = prefs.getString('languageCode');
 
-    if (code == null) return;
+    if (code == null) {
+			final deviceCode =
+					WidgetsBinding.instance.platformDispatcher.locale.languageCode;
+
+			final supported = ['en', 'tr', 'es'];
+
+			final lang =
+					supported.contains(deviceCode) ? deviceCode : 'en';
+
+			await prefs.setString('languageCode', lang);
+
+			setState(() {
+				_locale = Locale(lang);
+			});
+
+			return;
+		}
 
     setState(() {
       _locale = Locale(code);

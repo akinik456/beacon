@@ -4,6 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'group_service.dart';
 import 'identity_service.dart';
+import '../utils/log.dart';
+
 
 class SubscriptionInfo {
   final bool isPremium;
@@ -41,12 +43,12 @@ class SubscriptionService {
 				.collection('requesters')
 				.doc(requesterId)
 				.get();
-		print("SUB => requesterId=$requesterId");
+		Log.d("SUB => requesterId=$requesterId");
 
 		final groupId =
 				requesterDoc.data()?['groupId'] as String?;
 				
-		print("SUB => groupId=$groupId");
+		Log.d("SUB => groupId=$groupId");
 
 		if (groupId == null || groupId.isEmpty) {
 			return const SubscriptionInfo(
@@ -55,7 +57,7 @@ class SubscriptionService {
 				trialDaysLeft: 0,
 			);
 		}
- print("SUB => loading subscription for group=$groupId");   
+ Log.d("SUB => loading subscription for group=$groupId");   
     final doc = await _firestore
         .collection('groups')
         .doc(groupId)
@@ -132,7 +134,7 @@ static Future<void> markExpiredIfNeeded() async {
       await GroupService.getLocalIsMaster();
 
   if (!isMaster) {
-	print("markExpiredIfNeeded isMaster $isMaster");
+	Log.d("markExpiredIfNeeded isMaster $isMaster");
     return;
   }
   final groupId = await GroupService.getLocalGroupId();
@@ -150,14 +152,14 @@ static Future<void> markExpiredIfNeeded() async {
   final planStatus = data['planStatus'];
   final trialEndsAt = data['trialEndsAt'];
 
-  if (purchaseStatus == 'lifetime') {print("markExpiredIfNeeded purchaseStatus $purchaseStatus"); return;}
-  if (planStatus != 'trial') {print("markExpiredIfNeeded planStatus $planStatus"); return;}
-  if (trialEndsAt is! Timestamp) {print("markExpiredIfNeeded trialEndsAt $trialEndsAt"); return;}
+  if (purchaseStatus == 'lifetime') {Log.d("markExpiredIfNeeded purchaseStatus $purchaseStatus"); return;}
+  if (planStatus != 'trial') {Log.d("markExpiredIfNeeded planStatus $planStatus"); return;}
+  if (trialEndsAt is! Timestamp) {Log.d("markExpiredIfNeeded trialEndsAt $trialEndsAt"); return;}
 
   final expired =
       DateTime.now().isAfter(trialEndsAt.toDate());
 			
-	print("markExpiredIfNeeded expired $expired");
+	Log.d("markExpiredIfNeeded expired $expired");
 
   if (!expired) return;
 
@@ -168,7 +170,7 @@ static Future<void> markExpiredIfNeeded() async {
     'planStatus': 'expired',
     'entitlementUpdatedAt': FieldValue.serverTimestamp(),
   });
-print("markExpiredIfNeeded expired signed");
+Log.d("markExpiredIfNeeded expired signed");
 }
 
 static Future<void> addRequesterSlot() async {
@@ -203,7 +205,7 @@ static Future<void> processPurchase({
   final groupId = await GroupService.getLocalGroupId();
 
   if (groupId == null || groupId.isEmpty) {
-    print("BEACON IAP => groupId missing");
+    Log.d("BEACON IAP => groupId missing");
     return;
   }
 
@@ -220,7 +222,7 @@ static Future<void> processPurchase({
     final purchaseDoc = await tx.get(purchaseRef);
 
     if (purchaseDoc.exists) {
-      print(
+      Log.d(
         "BEACON IAP => purchase already processed $purchaseId",
       );
       return;

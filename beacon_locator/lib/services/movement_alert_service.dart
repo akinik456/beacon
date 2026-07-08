@@ -1,6 +1,7 @@
 import 'package:geolocator/geolocator.dart';
 
 import 'alert_service.dart';
+import '../utils/log.dart';
 
 // DEBUG ONLY
 import 'identity_service.dart';
@@ -30,7 +31,7 @@ class MovementAlertService {
     required Position position,
     required String reason,
   }) async {
-	print("MovementAlertService.checkNow");
+	Log.d("MovementAlertService.checkNow");
 	
 /*	// DEBUG ONLY
 final groupId = await IdentityService.getGroupId();
@@ -48,8 +49,8 @@ if (groupId != null && locatorId != null) {
     final lng = data["debugLng"];
 
     if (lat is num && lng is num) {
-	print("latitude:$lat");
-	print("longitude:$lng");
+	Log.d("latitude:$lat");
+	Log.d("longitude:$lng");
       position = Position(
         latitude: lat.toDouble(),
         longitude: lng.toDouble(),
@@ -63,7 +64,7 @@ if (groupId != null && locatorId != null) {
         headingAccuracy: position.headingAccuracy,
       );
 
-      print("BEACON MOVEMENT ALERT => DEBUG POSITION");
+      Log.d("BEACON MOVEMENT ALERT => DEBUG POSITION");
     }
   }
 }*/
@@ -71,7 +72,7 @@ if (groupId != null && locatorId != null) {
     final now = DateTime.now();
 
     if (position.accuracy > _maxAcceptableAccuracy) {
-      print(
+      Log.d(
         "BEACON MOVEMENT ALERT => skip bad accuracy "
         "accuracy=${position.accuracy.toStringAsFixed(1)}",
       );
@@ -83,7 +84,7 @@ if (groupId != null && locatorId != null) {
       _stationaryReference = position;
       _lastPosition = position;
 
-      print("BEACON MOVEMENT ALERT => state=stationary initial reference set");
+      Log.d("BEACON MOVEMENT ALERT => state=stationary initial reference set");
       return;
     }
 
@@ -93,7 +94,7 @@ if (groupId != null && locatorId != null) {
       if (reference == null) {
         _stationaryReference = position;
         _lastPosition = position;
-        print("BEACON MOVEMENT ALERT => stationary reference reset");
+        Log.d("BEACON MOVEMENT ALERT => stationary reference reset");
         return;
       }
 
@@ -104,7 +105,7 @@ if (groupId != null && locatorId != null) {
         position.longitude,
       );
 
-      print(
+      Log.d(
         "BEACON MOVEMENT ALERT => "
         "state=stationary "
         "reason=$reason "
@@ -124,7 +125,7 @@ if (groupId != null && locatorId != null) {
       _lastMeaningfulMoveAt = now;
       _lastPosition = position;
 
-      print("BEACON MOVEMENT ALERT => state=moving alert sent");
+      Log.d("BEACON MOVEMENT ALERT => state=moving alert sent");
       return;
     }
 
@@ -134,7 +135,7 @@ if (groupId != null && locatorId != null) {
       if (lastPosition == null) {
         _lastPosition = position;
         _lastMeaningfulMoveAt = now;
-        print("BEACON MOVEMENT ALERT => moving last position reset");
+        Log.d("BEACON MOVEMENT ALERT => moving last position reset");
         return;
       }
 
@@ -145,7 +146,7 @@ if (groupId != null && locatorId != null) {
         position.longitude,
       );
 
-      print(
+      Log.d(
         "BEACON MOVEMENT ALERT => "
         "state=moving "
         "reason=$reason "
@@ -166,7 +167,7 @@ if (groupId != null && locatorId != null) {
         _stationaryReference = position;
         _lastPosition = position;
 
-        print("BEACON MOVEMENT ALERT => state=stationary new reference set");
+        Log.d("BEACON MOVEMENT ALERT => state=stationary new reference set");
       }
     }
   }

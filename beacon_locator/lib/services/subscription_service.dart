@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'identity_service.dart';
+import '../utils/log.dart';
 
 class SubscriptionService {
   SubscriptionService._();
@@ -29,7 +30,7 @@ class SubscriptionService {
     final planStatus = data['planStatus'];
     final trialEndsAt = data['trialEndsAt'];
 		
-		print("hasFullAccess planStatus$planStatus");
+		Log.d("hasFullAccess planStatus$planStatus");
 
     if (purchaseStatus == 'lifetime') {
       return true;

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'identity_service.dart';
+import '../utils/log.dart';
 
 class HomeDataService {
   HomeDataService._();
@@ -13,7 +14,7 @@ class HomeDataService {
   static const _joinStatusKey = 'join_status';
 
   static Future<Map<String, dynamic>> loadHomeData() async {
-    print("BEACON HOME => loadHomeData");
+    Log.d("BEACON HOME => loadHomeData");
 
     String? requesterId;
     String? requesterName;
@@ -21,12 +22,12 @@ class HomeDataService {
     try {
       requesterId = await IdentityService.getRequesterId();
       requesterName = await IdentityService.getRequesterName();
-	print("homedataservice");
+	Log.d("homedataservice");
       if (requesterId == null ||
           requesterId.isEmpty ||
           requesterName == null ||
           requesterName.isEmpty) {
-        print("BEACON HOME => requester identity missing");
+        Log.d("BEACON HOME => requester identity missing");
 
         return _empty(
           hasIdentity: false,
@@ -46,7 +47,7 @@ class HomeDataService {
       final rootGroupId = requesterRootData['groupId'] as String?;
 
       if (rootGroupId != null && rootGroupId.isNotEmpty) {
-        print("BEACON HOME => root groupId found");
+        Log.d("BEACON HOME => root groupId found");
 
         await prefs.setString(_groupIdKey, rootGroupId);
         await prefs.remove(_pendingGroupIdKey);
@@ -60,7 +61,7 @@ class HomeDataService {
         );
       }
 
-      print("BEACON HOME => root groupId not found");
+      Log.d("BEACON HOME => root groupId not found");
 
       final pendingGroupId = prefs.getString(_pendingGroupIdKey);
 
@@ -82,7 +83,7 @@ class HomeDataService {
         prefs: prefs,
       );
     } catch (e) {
-      print("BEACON HOME LOAD ERROR => $e");
+      Log.e("BEACON HOME LOAD ERROR => $e");
 
       return _empty(
         hasIdentity: requesterId != null &&
@@ -104,7 +105,7 @@ class HomeDataService {
     final groupDoc = await _firestore.collection('groups').doc(groupId).get();
 
     if (!groupDoc.exists) {
-      print("BEACON HOME => approved group not found");
+      Log.d("BEACON HOME => approved group not found");
 
       await _firestore.collection('requesters').doc(requesterId).set({
         'groupId': FieldValue.delete(),
@@ -130,7 +131,7 @@ class HomeDataService {
         .get();
 
     if (!requesterDeviceDoc.exists) {
-      print("BEACON HOME => requester removed from group");
+      Log.d("BEACON HOME => requester removed from group");
 
       await _firestore.collection('requesters').doc(requesterId).set({
         'groupId': FieldValue.delete(),
@@ -175,7 +176,7 @@ class HomeDataService {
         await _firestore.collection('groups').doc(pendingGroupId).get();
 
     if (!groupDoc.exists) {
-      print("BEACON HOME => pending group not found");
+      Log.d("BEACON HOME => pending group not found");
 
       await _clearPendingJoin(prefs);
 
@@ -196,7 +197,7 @@ class HomeDataService {
         .get();
 
     if (!joinRequestDoc.exists) {
-      print("BEACON HOME => pending join request not found");
+      Log.d("BEACON HOME => pending join request not found");
 
       await _clearPendingJoin(prefs);
 
@@ -211,7 +212,7 @@ class HomeDataService {
     final status = joinData['status'] ?? 'pending';
 
     if (status == 'pending') {
-      print("BEACON HOME => requester join pending");
+      Log.d("BEACON HOME => requester join pending");
 
       return {
         'hasIdentity': true,
@@ -227,7 +228,7 @@ class HomeDataService {
     }
 
     if (status == 'approved') {
-      print("BEACON HOME => requester join approved");
+      Log.d("BEACON HOME => requester join approved");
 
       final requesterDeviceDoc = await _firestore
           .collection('groups')
@@ -237,7 +238,7 @@ class HomeDataService {
           .get();
 
       if (!requesterDeviceDoc.exists) {
-        print("BEACON HOME => approved but requester device missing");
+        Log.d("BEACON HOME => approved but requester device missing");
 
         return {
           'hasIdentity': true,
@@ -272,7 +273,7 @@ class HomeDataService {
     }
 
     if (status == 'rejected') {
-      print("BEACON HOME => requester join rejected");
+      Log.d("BEACON HOME => requester join rejected");
 
       await _clearPendingJoin(prefs);
 
@@ -290,7 +291,7 @@ class HomeDataService {
       };
     }
 
-    print("BEACON HOME => unknown join status => $status");
+    Log.d("BEACON HOME => unknown join status => $status");
 
     await _clearPendingJoin(prefs);
 

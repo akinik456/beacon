@@ -19,6 +19,7 @@ import 'services/locator_settings_service.dart';
 import 'services/presence_service.dart';
 import 'services/notification_service.dart';
 import 'services/native_presence_service.dart';
+import 'utils/log.dart';
 
 	@pragma('vm:entry-point')
 	Future<void> firebaseMessagingBackgroundHandler(
@@ -28,7 +29,7 @@ import 'services/native_presence_service.dart';
 
 		await Firebase.initializeApp();
 
-		print(
+		Log.d(
 			"BEACON FCM BG => data => ${message.data}",
 		);
 
@@ -37,14 +38,14 @@ import 'services/native_presence_service.dart';
 		switch (type) {
 			
 			case 'active_watchers_changed':
-				print("BEACON FCM BG => ACTIVE WATCHERS changed");
+				Log.d("BEACON FCM BG => ACTIVE WATCHERS changed");
 
 				await ActiveWatcherService.updateNotificationFromServer();
 
 				break;
 				
 			case 'call_me':
-				print(
+				Log.d(
 					"BEACON FCM BG => CALL ME received",
 				);
 
@@ -61,7 +62,7 @@ import 'services/native_presence_service.dart';
 			
 
 			default:
-				print(
+				Log.d(
 					"BEACON FCM BG => unknown type => $type",
 				);
 		}
@@ -82,7 +83,7 @@ import 'services/native_presence_service.dart';
 			);
 		}
 
-		print(
+		Log.d(
 			"LYNRA_DART => locatorPresenceServiceMain",
 		);
 
@@ -158,7 +159,23 @@ class _MyAppState extends State<MyApp> {
     final prefs = await SharedPreferences.getInstance();
     final code = prefs.getString('languageCode');
 
-    if (code == null) return;
+    if (code == null) {
+			final deviceCode =
+					WidgetsBinding.instance.platformDispatcher.locale.languageCode;
+
+			final supported = ['en', 'tr', 'es'];
+
+			final lang =
+					supported.contains(deviceCode) ? deviceCode : 'en';
+
+			await prefs.setString('languageCode', lang);
+
+			setState(() {
+				_locale = Locale(lang);
+			});
+
+			return;
+		}
 
     setState(() {
       _locale = Locale(code);

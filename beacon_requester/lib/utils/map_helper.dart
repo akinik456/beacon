@@ -1,4 +1,5 @@
 import 'package:url_launcher/url_launcher.dart';
+import 'log.dart';
 
 class MapHelper {
   MapHelper._();
@@ -15,7 +16,7 @@ class MapHelper {
       uri,
       mode: LaunchMode.externalApplication,
     )) {
-      print("BEACON MAP ERROR => could not open maps");
+      Log.d("BEACON MAP ERROR => could not open maps");
     }
   }
 }

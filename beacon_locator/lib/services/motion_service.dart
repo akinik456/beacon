@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:sensors_plus/sensors_plus.dart';
 
 import 'smart_presence_scheduler.dart';
+import '../utils/log.dart';
 
 class MotionService {
   MotionService._();
@@ -16,7 +17,7 @@ class MotionService {
   static double? _lastMagnitude;
 
   static void start() {
-    print("MOTION => started");
+    Log.d("MOTION => started");
 
     _sub?.cancel();
     _sub = null;
@@ -37,7 +38,7 @@ class MotionService {
           );
         },
         onError: (e) {
-          print(
+          Log.d(
             "BEACON MOTION => "
             "user accelerometer error => $e",
           );
@@ -47,7 +48,7 @@ class MotionService {
         cancelOnError: true,
       );
     } catch (e) {
-      print(
+      Log.e(
         "BEACON MOTION => "
         "user accelerometer unavailable => $e",
       );
@@ -57,7 +58,7 @@ class MotionService {
   }
 
   static void _startAccelerometerFallback() {
-    print(
+    Log.d(
       "BEACON MOTION => "
       "starting accelerometer fallback",
     );
@@ -77,7 +78,7 @@ class MotionService {
           );
         },
         onError: (e) {
-          print(
+          Log.d(
             "BEACON MOTION => "
             "accelerometer error => $e",
           );
@@ -85,7 +86,7 @@ class MotionService {
         cancelOnError: false,
       );
     } catch (e) {
-      print(
+      Log.e(
         "BEACON MOTION => "
         "no motion sensor available => $e",
       );
@@ -115,7 +116,7 @@ class MotionService {
       return;
     }
 
-    print(
+    Log.d(
       "MOTION => source=$source "
       "magnitude=$magnitude "
       "delta=$delta",
@@ -129,7 +130,7 @@ class MotionService {
 
     _lastMotion = now;
 
-    print(
+    Log.d(
       "BEACON MOTION => "
       "detected "
       "source=$source "

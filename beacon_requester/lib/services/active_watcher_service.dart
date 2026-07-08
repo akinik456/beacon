@@ -1,6 +1,7 @@
 import 'package:firebase_database/firebase_database.dart';
 
 import 'identity_service.dart';
+import '../utils/log.dart';
 
 class ActiveWatcherService {
   ActiveWatcherService._();
@@ -13,7 +14,7 @@ class ActiveWatcherService {
     required String groupId,
     required String locatorId,
   }) async {
-	print("addWatcher called");
+	Log.d("addWatcher called");
     try {
       final requesterId =
           await IdentityService.getRequesterId();
@@ -29,12 +30,12 @@ class ActiveWatcherService {
         'lastSeen': ServerValue.timestamp,
       });
 
-      print(
+      Log.d(
         "BEACON ACTIVE WATCHER => ADD SUCCESS => "
         "$locatorId / $requesterId",
       );
     } catch (e) {
-      print("BEACON ACTIVE WATCHER ADD ERROR => $e");
+      Log.e("BEACON ACTIVE WATCHER ADD ERROR => $e");
     }
   }
 
@@ -52,12 +53,12 @@ class ActiveWatcherService {
           )
           .remove();
 
-      print(
+      Log.d(
         "BEACON ACTIVE WATCHER => REMOVE SUCCESS => "
         "$locatorId / $requesterId",
       );
     } catch (e) {
-      print("BEACON ACTIVE WATCHER REMOVE ERROR => $e");
+      Log.e("BEACON ACTIVE WATCHER REMOVE ERROR => $e");
     }
   }
 }

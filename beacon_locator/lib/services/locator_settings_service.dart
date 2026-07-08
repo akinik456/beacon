@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'identity_service.dart';
+import '../utils/log.dart';
 
 class LocatorSettingsService {
   LocatorSettingsService._();
@@ -44,7 +45,7 @@ class LocatorSettingsService {
 		final groupId = await IdentityService.getGroupId();
 
 		if (locatorId == null || groupId == null) {
-			print("LOCATOR SETTINGS => missing locatorId/groupId");
+			Log.d("LOCATOR SETTINGS => missing locatorId/groupId");
 			return;
 		}
 
@@ -69,7 +70,7 @@ class LocatorSettingsService {
 			_geofenceAlertEnabled = data['geofenceAlert'] ?? false;
 			_movementAlertEnabled = data['movementAlert'] ?? false;
 
-			print(
+			Log.d(
 				"LOCATOR SETTINGS => "
 				"gps=$_gpsOffAlertEnabled "
 				"battery=$_batteryLowAlertEnabled "
@@ -106,7 +107,7 @@ class LocatorSettingsService {
 			_hasMovementNotifyTarget =move;
 			_hasCallMeNotifyTarget = callMe;
 
-			print(
+			Log.d(
 				"LOCATOR NOTIFY TARGETS => "
 				"gps=$gps "
 				"battery=$battery "

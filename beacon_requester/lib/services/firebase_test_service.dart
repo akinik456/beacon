@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
+import '../utils/log.dart';
 
 class FirebaseTestService {
   FirebaseTestService._();
@@ -15,7 +16,7 @@ class FirebaseTestService {
         'timestamp': FieldValue.serverTimestamp(),
       });
 
-      print("BEACON FIRESTORE TEST => SUCCESS");
+      Log.d("BEACON FIRESTORE TEST => SUCCESS");
 
       // ================= RTDB TEST =================
       await _rtdb.ref('test/requester').set({
@@ -23,9 +24,9 @@ class FirebaseTestService {
         'timestamp': ServerValue.timestamp,
       });
 
-      print("BEACON RTDB TEST => SUCCESS");
+      Log.d("BEACON RTDB TEST => SUCCESS");
     } catch (e) {
-      print("BEACON FIREBASE TEST ERROR => $e");
+      Log.e("BEACON FIREBASE TEST ERROR => $e");
     }
   }
 }
