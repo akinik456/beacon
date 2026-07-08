@@ -136,39 +136,45 @@ class GroupInfoPanel extends StatelessWidget {
 								),
               ),
               Expanded(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Flexible(
-                      child: Text(
-                        locatorName,
-                        overflow: TextOverflow.ellipsis,
-                        textAlign: TextAlign.right,
-                        style: AppFonts.title.copyWith(
-                          fontSize: 20,
-                          color: AppColors.textSecondary,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 4),
-                    GestureDetector(
-                      onTap: () async {
-                        final changed =
-                            await LocatorNameEditor.edit(context);
+								child: InkWell(
+									borderRadius: BorderRadius.circular(12),
+									onTap: () async {
+										final changed = await LocatorNameEditor.edit(context);
 
-                        if (changed) {
-                          onLocatorNameChanged();
-                        }
-                      },
-                      child: Icon(
-                        Icons.edit_rounded,
-                        size: 18,
-                        color: AppColors.textSecondary,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+										if (changed) {
+											onLocatorNameChanged();
+										}
+									},
+									child: Padding(
+										padding: const EdgeInsets.symmetric(
+											horizontal: 6,
+											vertical: 6,
+										),
+										child: Row(
+											mainAxisAlignment: MainAxisAlignment.end,
+											children: [
+												Flexible(
+													child: Text(
+														locatorName,
+														overflow: TextOverflow.ellipsis,
+														textAlign: TextAlign.right,
+														style: AppFonts.title.copyWith(
+															fontSize: 20,
+															color: AppColors.textSecondary,
+														),
+													),
+												),
+												const SizedBox(width: 4),
+												Icon(
+													Icons.edit_rounded,
+													size: 18,
+													color: AppColors.textSecondary,
+												),
+											],
+										),
+									),
+								),
+							),
             ],
           ),
           const SizedBox(height: 8),

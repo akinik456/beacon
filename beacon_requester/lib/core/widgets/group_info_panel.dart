@@ -182,74 +182,87 @@ class GroupInfoPanel  extends StatelessWidget {
 								Row(
 								children: [
 									Expanded(
-										child: Row(
-											children: [
-												Flexible(
-													child: Text(
-														liveGroupName,
-														overflow: TextOverflow.ellipsis,
-														style: AppFonts.title.copyWith(
-															fontSize: 20,
-															color: AppColors.textSecondary,
-														),
-													),
+										child: InkWell(
+											borderRadius: BorderRadius.circular(12),
+											onTap: isMaster
+													? () {
+															_editGroupName(
+																context: context,
+																currentGroupName: liveGroupName,
+															);
+														}
+													: null,
+											child: Padding(
+												padding: const EdgeInsets.symmetric(
+													horizontal: 6,
+													vertical: 6,
 												),
-												if (isMaster) ...[
-												const SizedBox(width: 6),
-												InkWell(
-													borderRadius: BorderRadius.circular(12),
-													onTap: () {
-														_editGroupName(
-															context: context,
-															currentGroupName: liveGroupName,
-														);
-													},
-													child: Padding(
-														padding: EdgeInsets.all(4),
-														child: Icon(
-															Icons.edit_rounded,
-															size: 16,
-															color: AppColors.textSecondary,
+												child: Row(
+													mainAxisSize: MainAxisSize.min,
+													children: [
+														Flexible(
+															child: Text(
+																liveGroupName,
+																overflow: TextOverflow.ellipsis,
+																style: AppFonts.title.copyWith(
+																	fontSize: 20,
+																	color: AppColors.textSecondary,
+																),
+															),
 														),
-													),
+														if (isMaster) ...[
+															const SizedBox(width: 6),
+															Icon(
+																Icons.edit_rounded,
+																size: 16,
+																color: AppColors.textSecondary,
+															),
+														],
+													],
 												),
-												],
-											],
+											),
 										),
 									),
 									Expanded(
-										child: Row(
-											mainAxisAlignment: MainAxisAlignment.end,
-											children: [
-												Flexible(
-													child: Text(
-														requesterName,
-														overflow: TextOverflow.ellipsis,
-														textAlign: TextAlign.right,
-														style: AppFonts.title.copyWith(
-															fontSize: 20,
+										child: InkWell(
+											borderRadius: BorderRadius.circular(12),
+											onTap: () async {
+												final changed =
+														await RequesterNameEditor.edit(context);
+
+												if (changed) {
+													onRequesterNameChanged();
+												}
+											},
+											child: Padding(
+												padding: const EdgeInsets.symmetric(
+													horizontal: 6,
+													vertical: 6,
+												),
+												child: Row(
+													mainAxisAlignment: MainAxisAlignment.end,
+													children: [
+														Flexible(
+															child: Text(
+																requesterName,
+																overflow: TextOverflow.ellipsis,
+																textAlign: TextAlign.right,
+																style: AppFonts.title.copyWith(
+																	fontSize: 20,
+																	color: AppColors.textSecondary,
+																),
+															),
+														),
+														const SizedBox(width: 4),
+														Icon(
+															Icons.edit_rounded,
+															size: 18,
 															color: AppColors.textSecondary,
 														),
-													),
+													],
 												),
-												const SizedBox(width: 4),
-												GestureDetector(
-													onTap: () async {
-														final changed =
-																await RequesterNameEditor.edit(context);
-
-														if (changed) {
-															onRequesterNameChanged();
-														}
-													},
-													child: Icon(
-														Icons.edit_rounded,
-														size: 18,
-														color: AppColors.textSecondary,
-													),
-												),
-											],
-										),
+											),
+										),										
 									),
 								],
 							),					

@@ -58,7 +58,6 @@ RTDB
 					
 					
 					
-	requesterId de authUid yok	
 	notifyRequesters 	createdAt gereksiz
 	places da 2.placeId var updated yok
 	callmeid - (callmeid 2. gereksiz

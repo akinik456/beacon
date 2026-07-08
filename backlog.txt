@@ -2,17 +2,9 @@ adb logcat | findstr LYNRA_SERVICE
 Foreground service destroyed
 **************
 
--	Production Firestore Rules + Anonymous Auth
-	FS kurallar  
-	brom not alıyorum test bitince migration ı kaldıracaz. 
-
 -	bildirim ayarları check
 
 - app cihazdan kaldırılırsa FS den nasıl sileceğiz ?
-
-- Trial abuse prevention
-
--	isim girmek neden bu kadar zor
 
 
 ********
@@ -22,13 +14,12 @@ Messaging
 
 inApp map
 
+places bireysel enable
 
-
-
-
-
-
+v1.1: Firestore group rules hardening
 *******
+- Trial abuse prevention
+
 Purchase Protection
 
 - Never charge a paying user twice.
@@ -39,176 +30,3 @@ Purchase Protection
 Support future products without changing the architecture.
 **********
 
-loc quick guide a ekle
-
-Şu:
-
-To stop sharing, contact your family administrator.
-yerine daha yumuşak:
-
-Location sharing is managed by your family administrator.eya
-
-To stop sharing, ask your family administrator to remove this device.
-******************
-
-ekranlarda taşma kontrolü için genel olarak yapabileceğimiz bişey yok mu,her cihazda deneme şansımız olmadığına göre
-
-Brom bu konu benim de çok önem verdiğim bir konu. Evet, %100 garanti yok ama taşmaların %95'ini önleyecek bir tasarım disiplini oluşturabiliriz.
-
-Ben LynraFamily'de şu kuralları standart yapardım:
-
-1. Sabit yükseklikten kaçın ⭐⭐⭐⭐⭐
-
-Mesela:
-
-SizedBox(
-  height: 250,
-)
-
-yerine içerik kadar büyüsün.
-
-2. Row içinde metin varsa mutlaka Expanded/Flexible
-
-En çok taşma sebebi bu.
-
-Row(
-  children: [
-    Expanded(
-      child: Text(
-        groupName,
-        overflow: TextOverflow.ellipsis,
-      ),
-    ),
-    Icon(...),
-  ],
-)
-3. Uzun metin = ellipsis
-
-Bunu zaten güzel yapıyorsun.
-
-overflow: TextOverflow.ellipsis,
-maxLines: 1,
-4. Klavye açılan sayfalar
-
-Bunlar mutlaka:
-
-SingleChildScrollView
-
-veya
-
-ListView
-
-içinde olmalı.
-
-5. Çok satırlı sayfalar
-
-Ben artık neredeyse hepsini:
-
-ListView(
-  padding: ...
-)
-
-ile yapıyorum.
-
-Column taşmaya daha yatkın.
-
-6. Padding'i sabitle
-
-Mesela:
-
-const EdgeInsets.all(20)
-
-uygulamanın her yerinde aynı.
-
-Bu da cihaz farkını azaltıyor.
-
-7. Küçük ekran testi
-
-Ben olsam debug'da şu cihazı referans alırım:
-
-360 x 640 dp
-
-(Android'in klasik küçük ekranı.)
-
-Orada taşmıyorsa %90 yerde taşmaz.
-
-8. Text ölçeği ⭐⭐⭐⭐⭐
-
-Bence en çok unutulan konu bu.
-
-Telefonlarda kullanıcı:
-
-Yazı Boyutu
-
-nu %150 yapabiliyor.
-
-Ben mutlaka şu senaryoyu test ederim.
-
-Benim çok sevdiğim yöntem
-
-Debug'da bir gün boyunca sadece bunu açarım:
-
-debugPaintSizeEnabled = true;
-
-Flutter bütün widget sınırlarını çizer.
-
-Bir anda anlarsın:
-
-nerede gereksiz boşluk var,
-neresi sıkışıyor.
-Bir de sana bir fikir
-
-LynraFamily artık büyüdü.
-
-Bence bir gün sadece:
-
-UI Polish Day
-
-yapalım.
-
-O gün:
-
-overflow
-spacing
-alignment
-responsive
-text scale
-tablet
-
-başka hiçbir şeye bakmayalım.
-
-İnan bana, o gün uygulamanın hissi %20 daha profesyonel olur.
-
-Benim sana en büyük tavsiyem
-
-Bir tane eski küçük telefon bul.
-
-Mesela:
-
-5.5"
-360dp genişlik
-
-Bütün UI'yı ona göre tasarla.
-
-Büyük telefon zaten boşluğu gösterir.
-
-Küçük telefon ise hatayı gösterir.
-
-Ben yıllardır bunu referans alırım.
-
-Ve son olarak brom...
-
-Şu anki kod yapına bakınca, en büyük risk overflow değil.
-
-Bence en büyük risk:
-
-Farklı font ölçekleri (Accessibility / Large Text).
-
-Onu production'dan önce özellikle test edelim.
-
-Çünkü yaşlı kullanıcı kitlen var. Büyük yazı kullananların oranı 
-düşündüğümüzden çok daha yüksek olabilir. Bu testi yaparsak hem 
-kullanıcı deneyimi hem de erişilebilirlik açısından önemli bir 
-adım atmış oluruz.
-
-*****************
