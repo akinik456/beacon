@@ -98,8 +98,17 @@ Future<void> firebaseMessagingBackgroundHandler(
 
   final locatorName = data['locatorName'] ?? 'Member';
   final alertType = data['alertType'] ?? '';
-
-  await NotificationService.showAlert(
+	
+	final placeName =
+    (data['placeName'] ?? '').toString().trim();
+	final body =
+    (alertType == 'place_enter' ||
+     alertType == 'place_exit') &&
+    placeName.isNotEmpty
+        ? '$locatorName • ${placeName.toUpperCase()}: ${_localizedAlertType(alertType, langCode)}'
+        : '$locatorName: ${_localizedAlertType(alertType, langCode)}';
+  
+	await NotificationService.showAlert(
     title: _localizedAlertTitle(langCode),
     body: '$locatorName: ${_localizedAlertType(alertType, langCode)}',
   );

@@ -4,7 +4,7 @@ Foreground service destroyed
 
 -	bildirim&settings ayarları check
 
-- status kart da adres yerine place name
+
 
 
 

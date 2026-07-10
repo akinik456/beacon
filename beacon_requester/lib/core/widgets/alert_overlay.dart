@@ -54,6 +54,13 @@ class AlertOverlay extends StatelessWidget {
 
     final alertType =
         data['type'] ?? 'alert';
+				
+		final placeName =
+    (data['placeName'] ?? '').toString().trim();
+
+		final isPlaceAlert =
+				alertType == 'place_enter' ||
+				alertType == 'place_exit';
 
     return Positioned.fill(
       child: Material(
@@ -79,6 +86,18 @@ class AlertOverlay extends StatelessWidget {
 									style: AppFonts.title,
 									textAlign: TextAlign.center,
 								),
+								
+								if (isPlaceAlert && placeName.isNotEmpty) ...[
+									const SizedBox(height: 8),
+									Text(
+										placeName.toUpperCase(),
+										style: AppFonts.subtitle.copyWith(
+											color: AppColors.textPrimary,
+											fontWeight: FontWeight.w700,
+										),
+										textAlign: TextAlign.center,
+									),
+								],
 
                 const SizedBox(height: 12),
 

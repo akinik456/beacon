@@ -190,7 +190,7 @@ class _LocatorStatusCardState
 											),
 
 											TextSpan(
-												text: ' - $widget.locatorCode',
+												text: ' - ${widget.locatorCode}',
 												style: AppFonts.subtitle.copyWith(
 													color: AppColors.textSecondary,
 													fontSize:12,

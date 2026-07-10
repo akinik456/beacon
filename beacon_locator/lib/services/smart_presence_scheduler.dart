@@ -33,6 +33,9 @@ class SmartPresenceScheduler {
 	static void setSpeedKmh(double value) {
 		_speedKmh = value;
 	}		
+	
+	static bool get hasActiveWatcher =>
+    _hasActiveWatcher;
 
   static void start() {
     Log.d("SMART PRESENCE => start");
