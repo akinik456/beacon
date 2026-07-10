@@ -1,0 +1,15 @@
+- presence de movement alert de acuuracy check eklendi
+
+- adres yerine place name gösteriliyor;
+locator:
+geofence_service.dart dosyası tamamen değişti.
+presence updatede checkPlaces çağrısı ve yeri değişti.
+requester:
+
+requester_home_page.dart
+LocatorStatusCard  çağrısı değişti;geoInside,geoPlaceName
+
+locator_status_card.dart
+LocatorStatusCard StatefulWidget yapıldı,adres gösterme değişti
+
+

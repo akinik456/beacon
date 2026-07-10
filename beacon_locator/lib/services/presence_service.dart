@@ -55,6 +55,15 @@ Log.d(
     } catch (e) {
       Log.e("BEACON PRESENCE => getCurrentPosition failed => $e");
     }
+		
+		if (position != null && position.accuracy > 50) {
+			Log.d(
+				"BEACON PRESENCE => "
+				"skip inaccurate position "
+				"accuracy=${position.accuracy.toStringAsFixed(1)}m",
+			);
+			return;
+		}
 		double speedKmh = 0;
 
 			if (position != null) {
@@ -70,7 +79,6 @@ Log.d(
 					"BEACON PRESENCE => "
 					"speed=${speedKmh.toStringAsFixed(1)} km/h",
 				);
-				SmartPresenceScheduler.setSpeedKmh(speedKmh);
 			}
 		
   }
@@ -107,14 +115,20 @@ Log.d(
       movedMeters != null &&
       movedMeters < 25;
 
-  if (shouldSkipSmallMove) {
+  /*?*?if (shouldSkipSmallMove) {
     Log.d(
       "BEACON PRESENCE => "
       "skip reason=$reason moved=${movedMeters.toStringAsFixed(1)}m",
     );
     return;
-  }
-
+  }*/
+if (position != null) {
+final placeData  = await GeofenceService.checkPlaces(
+  groupId: groupId,
+  locatorId: locatorId,
+  lat: position.latitude,
+  lng: position.longitude,
+);
   final updateData = {
 		'status': 'online',
 		'lastSeen': ServerValue.timestamp,
@@ -125,6 +139,7 @@ Log.d(
 		'accuracy': position?.accuracy,
 		'movedSinceLastUpdateMeters': movedMeters?.round(),
 		'updateCount': ServerValue.increment(1),
+		...placeData ,
 	};
 
 	if (movedMeters == null || movedMeters >= 25) {
@@ -133,13 +148,7 @@ Log.d(
 
 	await _db.child(path).update(updateData);
 Log.d("RTDB updated");
-  if (position != null) {
-    await GeofenceService.checkPlaces(
-      groupId: groupId,
-      locatorId: locatorId,
-      lat: position.latitude,
-      lng: position.longitude,
-    );
+  
 		
 		 await MovementAlertService.checkNow(
 			position: position,

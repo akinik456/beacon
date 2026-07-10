@@ -2,9 +2,10 @@ adb logcat | findstr LYNRA_SERVICE
 Foreground service destroyed
 **************
 
--	bildirim ayarları check
+-	bildirim&settings ayarları check
 
-- app cihazdan kaldırılırsa FS den nasıl sileceğiz ?
+- status kart da adres yerine place name
+
 
 
 ********
@@ -17,6 +18,8 @@ inApp map
 places bireysel enable
 
 v1.1: Firestore group rules hardening
+- app cihazdan kaldırılırsa FS den nasıl sileceğiz ?
+
 *******
 - Trial abuse prevention
 

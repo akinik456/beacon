@@ -104,6 +104,13 @@ if (groupId != null && locatorId != null) {
         position.latitude,
         position.longitude,
       );
+			
+			final effectiveAccuracy = position.accuracy * 2;
+
+			final isReliableMove =
+					movedFromReference != null &&
+					movedFromReference >= 50 &&
+					movedFromReference > effectiveAccuracy;
 
       Log.d(
         "BEACON MOVEMENT ALERT => "
@@ -115,6 +122,8 @@ if (groupId != null && locatorId != null) {
       if (movedFromReference < _movementStartMeters) {
         return;
       }
+			
+			if(!isReliableMove ) return;
 
       await AlertService.sendMovementAlert(
         movedMeters: movedFromReference,

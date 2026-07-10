@@ -8,14 +8,19 @@ class GeofenceService {
   GeofenceService._();
 
   static const double _radiusMeters = 100;
-	static final Map<String, bool> _lastInsideState = {};
-	
-  static Future<void> checkPlaces({
+
+  static final Map<String, bool> _lastInsideState = {};
+
+  static Future<Map<String, dynamic>> checkPlaces({
     required String groupId,
     required String locatorId,
     required double lat,
     required double lng,
   }) async {
+    bool geoInside = false;
+    String? currentPlaceId;
+    String? currentPlaceName;
+
     try {
       final placesSnapshot = await FirebaseFirestore.instance
           .collection('groups')
@@ -36,6 +41,10 @@ class GeofenceService {
           continue;
         }
 
+        final placeId = doc.id;
+        final placeName =
+            (data['name'] ?? 'Place').toString();
+
         final distance = Geolocator.distanceBetween(
           lat,
           lng,
@@ -43,49 +52,68 @@ class GeofenceService {
           placeLng,
         );
 
-        final isInside = distance <= _radiusMeters;
+        final isInside =
+            distance <= _radiusMeters;
 
         Log.d(
-          "BEACON GEO => ${data['name']} "
+          "BEACON GEO => $placeName "
           "distance=${distance.round()}m "
           "inside=$isInside",
         );
-				
-				
-				final placeId = doc.id;
 
-				final previousInside =
-						_lastInsideState[placeId];
+        if (isInside && !geoInside) {
+          geoInside = true;
+          currentPlaceId = placeId;
+          currentPlaceName = placeName;
+        }
 
-				_lastInsideState[placeId] = isInside;
+        final previousInside =
+            _lastInsideState[placeId];
 
-				if (previousInside == null) {
-					continue;
-				}
+        _lastInsideState[placeId] = isInside;
 
-				if (!previousInside && isInside) {
-					await AlertService.sendPlaceAlert(
-						type: 'place_enter',
-						placeName: data['name'] ?? 'Place',
-					);
-					Log.d(
-						"BEACON GEO => ENTER => ${data['name']}",
-					);
-				}
+        if (previousInside == null) {
+          continue;
+        }
 
-				if (previousInside && !isInside) {
-					await AlertService.sendPlaceAlert(
-						type: 'place_exit',
-						placeName: data['name'] ?? 'Place',
-					);
-					Log.d(
-						"BEACON GEO => EXIT => ${data['name']}",
-					);
-				}
-				
-      }	
+        if (!previousInside && isInside) {
+          await AlertService.sendPlaceAlert(
+            type: 'place_enter',
+            placeName: placeName,
+          );
+
+          Log.d(
+            "BEACON GEO => ENTER => $placeName",
+          );
+        }
+
+        if (previousInside && !isInside) {
+          await AlertService.sendPlaceAlert(
+            type: 'place_exit',
+            placeName: placeName,
+          );
+
+          Log.d(
+            "BEACON GEO => EXIT => $placeName",
+          );
+        }
+      }
+
+      return {
+        'geoInside': geoInside,
+        'geoPlaceId': currentPlaceId,
+        'geoPlaceName': currentPlaceName,
+      };
     } catch (e) {
-      Log.e("BEACON GEO ERROR => $e");
+      Log.e(
+        "BEACON GEO ERROR => $e",
+      );
+
+      return {
+        'geoInside': false,
+        'geoPlaceId': null,
+        'geoPlaceName': null,
+      };
     }
   }
 }
