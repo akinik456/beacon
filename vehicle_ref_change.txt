@@ -1,25 +1,35 @@
-- presence de movement alert de acuracy check eklendi
 
-- adres yerine place name gösteriliyor;
-	locator:
-	geofence_service.dart dosyası tamamen değişti.
-	presence updatede checkPlaces çağrısı ve yeri değişti.
+- Req. master işareti
+	if (_isMaster)
+	TextSpan(
+		text: '  M*',//' Ⓜ',
+		style: AppFonts.title.copyWith(
+			fontSize: 14, // biraz daha küçük
+			color: AppColors.primary,
+		),
+	),
+*******
+- locator, presence	
+final batteryChanged =
+    _lastBatteryLevel == null ||
+    (batteryLevel - _lastBatteryLevel!).abs() >= 5;
 
-	requester:
-
-	requester_home_page.dart
-	LocatorStatusCard  çağrısı değişti;geoInside,geoPlaceName
-
-	locator_status_card.dart
-	LocatorStatusCard StatefulWidget yapıldı,adres gösterme değişti
-
-- overlay ve bildirim de placename göstermek
-
-	alert_overlay.dart
-	placeName,isPlaceAlert ve alert text değişti
-
-	main
-	firebaseMessagingBackgroundHandler değişti
+  final deviceStatusChanged =
+			batteryChanged ||
+			_lastGpsEnabled != gpsEnabled;
+*******			
+- geoinside true ise placename yanında mesafe gösteriliyor
+	geofence_service
+	currentPlaceDistanceMeters,geoPlaceDistanceMeters eklendi
 	
-- presence updateonline da değişiklikler.
-
+	requester:
+	LocatorStatusCard çağrısından önce 
+	final placeName =
+		geoInside && geoPlaceName.isNotEmpty
+				? geoPlaceDistanceMeters != null
+						? '${geoPlaceName.toUpperCase()} • ${geoPlaceDistanceMeters} m'
+						: geoPlaceName.toUpperCase()
+				: '';																		
+	içinde 
+	placeName: placeName,
+*******

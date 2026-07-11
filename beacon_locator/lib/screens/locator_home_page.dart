@@ -74,6 +74,7 @@ class _LocatorHomePageState extends State<LocatorHomePage>
 	bool _clearingGroupAfterUnpair = false;
 	bool _hadPairedRequester = false;
 	
+		
  @override
 void initState() {
   super.initState();
@@ -1112,7 +1113,7 @@ Widget _activeWatchersCard() {
   );
 }	
 
-  @override
+ @override
 Widget build(BuildContext context) {
 final l10n = AppLocalizations.of(context)!;
   return Scaffold(

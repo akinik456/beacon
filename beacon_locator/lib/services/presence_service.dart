@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:battery_plus/battery_plus.dart';
 import 'package:geolocator/geolocator.dart';
@@ -10,9 +12,10 @@ import 'movement_alert_service.dart';
 import '../utils/log.dart';
 import 'smart_presence_scheduler.dart';
 
+
 class PresenceService {
   PresenceService._();
-
+			
   static final _db = FirebaseDatabase.instance.ref();
 	static StreamSubscription<DatabaseEvent>? _connectedSub;
 	static String? _serviceGroupId;
@@ -21,7 +24,10 @@ class PresenceService {
 	static double? _lastLng;
 	static int? _lastBatteryLevel;
 	static bool? _lastGpsEnabled;
+	static VoidCallback? onPresenceUpdated;
 	
+	
+		
 static Future<void> updateOnline({
   String reason = 'unknown',
 }) async {
@@ -47,10 +53,14 @@ static Future<void> updateOnline({
 
   final gpsEnabled =
       await Geolocator.isLocationServiceEnabled();
+			
+	final batteryChanged =
+    _lastBatteryLevel == null ||
+    (batteryLevel - _lastBatteryLevel!).abs() >= 5;
 
   final deviceStatusChanged =
-      _lastBatteryLevel != batteryLevel ||
-      _lastGpsEnabled != gpsEnabled;
+			batteryChanged ||
+			_lastGpsEnabled != gpsEnabled;
 
   Position? position;
 
@@ -122,7 +132,7 @@ static Future<void> updateOnline({
       movedMeters != null &&
       movedMeters < 25;
 
-  // Hareket yok, pil/GPS de değişmedi:
+ /*?*? // Hareket yok, pil/GPS de değişmedi:
   // ne alert kontrolüne ne de RTDB write'a gerek var.
   if (shouldSkipSmallMove &&
       !deviceStatusChanged) {
@@ -133,7 +143,7 @@ static Future<void> updateOnline({
       "moved=${movedMeters?.toStringAsFixed(1)}m",
     );
     return;
-  }
+  }*/
 
   // Hareket yok ama pil veya GPS durumu değişti:
   // yalnızca status alanlarını güncelle.

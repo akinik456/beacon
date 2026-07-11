@@ -49,6 +49,7 @@
 "connectAMember": 										"Bir üyeye bağlan",
 "createNewGroup": 										"Yeni grup oluştur",
 "createOrJoin": 											"Yeni bir grup oluşturun veya mevcut bir gruba katılın.",
+"currentLocation": 										"Mevcut Konum",
 "daysAgo": 														"{count} gün önce",
 "delete": 														"Sil",
 "deletePlaceConfirmation": 						"Bu yeri silmek istiyor musunuz?",

@@ -141,11 +141,47 @@ abstract class AppLocalizations {
   /// **'Admin Name'**
   String get adminName;
 
+  /// No description provided for @alertBatteryLow.
+  ///
+  /// In en, this message translates to:
+  /// **'Battery Low'**
+  String get alertBatteryLow;
+
+  /// No description provided for @alertGpsOff.
+  ///
+  /// In en, this message translates to:
+  /// **'GPS Off'**
+  String get alertGpsOff;
+
+  /// No description provided for @alertMovement.
+  ///
+  /// In en, this message translates to:
+  /// **'Movement Detected'**
+  String get alertMovement;
+
+  /// No description provided for @alertPlaceEnter.
+  ///
+  /// In en, this message translates to:
+  /// **'Place Entered'**
+  String get alertPlaceEnter;
+
+  /// No description provided for @alertPlaceExit.
+  ///
+  /// In en, this message translates to:
+  /// **'Place Exited'**
+  String get alertPlaceExit;
+
   /// No description provided for @alerts.
   ///
   /// In en, this message translates to:
   /// **'ALERTS'**
   String get alerts;
+
+  /// No description provided for @alertTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'LynraFamily Alert'**
+  String get alertTitle;
 
   /// No description provided for @allPermissionsGranted.
   ///
@@ -344,6 +380,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Create a new group or join an existing group'**
   String get createOrJoin;
+
+  /// No description provided for @currentLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Current Location'**
+  String get currentLocation;
 
   /// No description provided for @daysAgo.
   ///

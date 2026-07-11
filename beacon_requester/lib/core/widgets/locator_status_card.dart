@@ -2,11 +2,10 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'app_card.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_fonts.dart';
-import 'app_card.dart';
 import 'app_banner.dart';
+import 'app_card.dart';
 
 import '../../services/call_me_service.dart';
 import '../../l10n/app_localizations.dart';

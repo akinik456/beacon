@@ -20,7 +20,8 @@ class GeofenceService {
     bool geoInside = false;
     String? currentPlaceId;
     String? currentPlaceName;
-
+		double? currentPlaceDistanceMeters;
+		
     try {
       final placesSnapshot = await FirebaseFirestore.instance
           .collection('groups')
@@ -65,6 +66,7 @@ class GeofenceService {
           geoInside = true;
           currentPlaceId = placeId;
           currentPlaceName = placeName;
+					currentPlaceDistanceMeters = distance;
         }
 
         final previousInside =
@@ -103,6 +105,7 @@ class GeofenceService {
         'geoInside': geoInside,
         'geoPlaceId': currentPlaceId,
         'geoPlaceName': currentPlaceName,
+				'geoPlaceDistanceMeters': currentPlaceDistanceMeters?.round(),
       };
     } catch (e) {
       Log.e(

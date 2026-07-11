@@ -4,8 +4,11 @@ Foreground service destroyed
 
 -	bildirim&settings ayarları check
 
-
-
+- geo bildirim de place name kontrol et
+- grupdan req çıkarırken onay istenmiyor
+- create/join ekranında isim girmek hala zor
+- locator default settings?
+- dark mod back oku
 
 
 ********

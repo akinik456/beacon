@@ -30,7 +30,25 @@ class AppLocalizationsEn extends AppLocalizations {
   String get adminName => 'Admin Name';
 
   @override
+  String get alertBatteryLow => 'Battery Low';
+
+  @override
+  String get alertGpsOff => 'GPS Off';
+
+  @override
+  String get alertMovement => 'Movement Detected';
+
+  @override
+  String get alertPlaceEnter => 'Place Entered';
+
+  @override
+  String get alertPlaceExit => 'Place Exited';
+
+  @override
   String get alerts => 'ALERTS';
+
+  @override
+  String get alertTitle => 'LynraFamily Alert';
 
   @override
   String get allPermissionsGranted => 'All Permissions Granted';
@@ -136,6 +154,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get createOrJoin => 'Create a new group or join an existing group';
+
+  @override
+  String get currentLocation => 'Current Location';
 
   @override
   String daysAgo(Object count) {

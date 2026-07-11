@@ -49,6 +49,7 @@
 "connectAMember": 										"Connect A Member",
 "createNewGroup": 										"Create a new group",
 "createOrJoin": 											"Create a new group or join an existing group",
+"currentLocation": 										"Current Location",
 "daysAgo": 														"{count} days ago",
 "delete": 														"Delete",
 "deletePlaceConfirmation": 						"Delete this place?",
