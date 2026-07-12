@@ -15,9 +15,22 @@ class IdentityService {
     final locatorId = prefs.getString(_locatorIdKey);
 
     if (locatorId != null && locatorId.isNotEmpty) {
-      Log.d(
+      /*Log.d(
         "BEACON IDENTITY => locatorId found => $locatorId",
-      );
+      );*/
+			
+		final callerLines = StackTrace.current
+				.toString()
+				.split('\n')
+				.skip(1)
+				.take(6)
+				.join('\n');
+
+		Log.d(
+			"BEACON IDENTITY => getLocatorId "
+			"locatorId=$locatorId\n"
+			"$callerLines",
+		);
 
       return locatorId;
     }
@@ -153,10 +166,23 @@ static Future<String?> getGroupId() async {
 
   final value = prefs.getString(_groupIdKey);
 
-  Log.d(
+ /* Log.d(
     "BEACON IDENTITY => getGroupId "
     "key=$_groupIdKey value=$value",
-  );
+  );*/
+	
+	final callerLines = StackTrace.current
+    .toString()
+    .split('\n')
+    .skip(1)
+    .take(6)
+    .join('\n');
+
+Log.d(
+  "BEACON IDENTITY => getGroupId "
+  "key=$_groupIdKey value=$value\n"
+  "$callerLines",
+);
 
   return value;
 }

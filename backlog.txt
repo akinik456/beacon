@@ -2,6 +2,8 @@ adb logcat | findstr LYNRA_SERVICE
 Foreground service destroyed
 **************
 
+CALLME KISAYOL 
+
 -	bildirim&settings ayarları check
 
 - geo bildirim de place name kontrol et

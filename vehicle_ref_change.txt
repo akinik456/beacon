@@ -105,3 +105,12 @@
 		eklendi , tüm appBar: a ekle ayrıca locator de tek bir yerde var oraya da ekle
 		
 ****************
+
+-	locator adres kartı eklendi (feat(locator): add local presence cache and current location card)
+
+****************
+	IdentityService.getGroupId çok sık çağrılıyor idi şunlar eklendi;
+	Stream<List<Map<String, String>>>? _pairedRequesterStream;
+	late Future<Map<String, String>> _locatorCodeDataFuture;
+****************
+
