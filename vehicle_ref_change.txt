@@ -1,23 +1,82 @@
-- req master değilse gruptan çıkar görünmez.
-	group_info_panel
-	RequesterListCard(
-		groupId: groupId,
-		isMaster: isMaster,
-	),
+
+-	requester isim girme alanı genişletildi	
+	requester_home_page 1094
 	
-	requester_list_card
-		final bool isMaster;
-		required this.isMaster,
-		
-		else if (isMaster) ...160
-		
-***********
-remove grup için confirm eklendi		
-requester_list_card .. 164
-locator_list_card .. 132
-"thisadmin":													"This Admin will be removed from group.",
-"thismemberfromgroup":								"This Member will be removed from group.",
-"thisadmin":													"Bu yönetici gruptan çıkarılacaktır.",
-"thismemberfromgroup":								"Bu üye gruptan çıkarılacaktır.",
-"thisadmin":													"Este administrador será eliminado del grupo.",
-"thismemberfromgroup":								"Este miembro será eliminado del grupo.",
+	 /*Flexible(
+				child: Text(
+					requesterName,
+					overflow: TextOverflow.ellipsis,
+					textAlign: TextAlign.right,
+					style: AppFonts.title.copyWith(
+						fontSize: 20,
+						color: AppColors.textSecondary,
+					),
+				),
+			),
+			const SizedBox(width: 4),
+			GestureDetector(
+				onTap: () async {
+					final changed =
+							await RequesterNameEditor.edit(context);
+
+					if (changed && mounted) {
+						setState(() {
+							_homeDataFuture =
+									HomeDataService.loadHomeData();
+						});
+					}
+				},
+				child: Icon(
+					Icons.edit_rounded,
+					size: 18,
+					color: AppColors.textSecondary,
+				),
+			),*/ 
+			
+			yerine
+			
+			Expanded(
+				child: InkWell(
+					borderRadius: BorderRadius.circular(12),
+					onTap: () async {
+						final changed =
+								await RequesterNameEditor.edit(context);
+
+						if (changed && mounted) {
+									setState(() {
+										_homeDataFuture =
+												HomeDataService.loadHomeData();
+									});
+								}
+					},
+					child: Padding(
+						padding: const EdgeInsets.symmetric(
+							horizontal: 6,
+							vertical: 6,
+						),
+						child: Row(
+							mainAxisAlignment: MainAxisAlignment.end,
+							children: [
+								Flexible(
+									child: Text(
+										requesterName,
+										overflow: TextOverflow.ellipsis,
+										textAlign: TextAlign.right,
+										style: AppFonts.title.copyWith(
+											fontSize: 20,
+											color: AppColors.textSecondary,
+										),
+									),
+								),
+								const SizedBox(width: 4),
+								Icon(
+									Icons.edit_rounded,
+									size: 18,
+									color: AppColors.textSecondary,
+								),
+							],
+						),
+					),
+				),										
+			),
+****************

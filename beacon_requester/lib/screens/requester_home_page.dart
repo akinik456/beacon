@@ -1091,40 +1091,49 @@ Widget _buildPendingHome({
                       ),
                     ),
                   ),
+												Expanded(
+													child: InkWell(
+														borderRadius: BorderRadius.circular(12),
+														onTap: () async {
+															final changed =
+																	await RequesterNameEditor.edit(context);
 
-                  Expanded(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Flexible(
-                          child: Text(
-                            requesterName,
-                            overflow: TextOverflow.ellipsis,
-                            textAlign: TextAlign.right,
-                            style: AppFonts.title.copyWith(
-                              fontSize: 20,
-                              color: AppColors.textSecondary,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 4),
-                        GestureDetector(
-													onTap: () async {
-														final changed =
-																await RequesterNameEditor.edit(context);
-
-														if (changed && mounted) {
-															setState(() {
-																_homeDataFuture =
-																		HomeDataService.loadHomeData();
-															});
-														}
-													},
-													child: Icon(
-														Icons.edit_rounded,
-														size: 18,
-														color: AppColors.textSecondary,
-													),
+															if (changed && mounted) {
+																		setState(() {
+																			_homeDataFuture =
+																					HomeDataService.loadHomeData();
+																		});
+																	}
+														},
+														child: Padding(
+															padding: const EdgeInsets.symmetric(
+																horizontal: 6,
+																vertical: 6,
+															),
+															child: Row(
+																mainAxisAlignment: MainAxisAlignment.end,
+																children: [
+																	Flexible(
+																		child: Text(
+																			requesterName,
+																			overflow: TextOverflow.ellipsis,
+																			textAlign: TextAlign.right,
+																			style: AppFonts.title.copyWith(
+																				fontSize: 20,
+																				color: AppColors.textSecondary,
+																			),
+																		),
+																	),
+																	const SizedBox(width: 4),
+																	Icon(
+																		Icons.edit_rounded,
+																		size: 18,
+																		color: AppColors.textSecondary,
+																	),
+																],
+															),
+														),
+													),										
 												),
                       ],
                     ),
