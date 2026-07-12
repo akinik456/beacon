@@ -48,6 +48,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get alerts => 'WARNUNGEN';
 
   @override
+  String get alertTitle => 'LynraFamily Alert';
+
+  @override
   String get allPermissionsGranted => 'Alle Berechtigungen erteilt';
 
   @override
@@ -151,6 +154,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get createOrJoin => 'Neue Gruppe erstellen oder bestehender Gruppe beitreten';
+
+  @override
+  String get currentLocation => 'Current Location';
 
   @override
   String daysAgo(Object count) {
@@ -602,7 +608,13 @@ class AppLocalizationsDe extends AppLocalizations {
   String get systemPermissions => 'SYSTEMBERECHTIGUNGEN';
 
   @override
+  String get thisadmin => 'This Admin will be removed from group.';
+
+  @override
   String get thismember => 'Dieses Mitglied wird aus Ihrer gekoppelten Liste entfernt.';
+
+  @override
+  String get thismemberfromgroup => 'This Member will be removed from group.';
 
   @override
   String get title => 'LynraFamily';

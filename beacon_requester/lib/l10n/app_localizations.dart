@@ -177,6 +177,12 @@ abstract class AppLocalizations {
   /// **'ALERTS'**
   String get alerts;
 
+  /// No description provided for @alertTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'LynraFamily Alert'**
+  String get alertTitle;
+
   /// No description provided for @allPermissionsGranted.
   ///
   /// In en, this message translates to:
@@ -374,6 +380,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Create a new group or join an existing group'**
   String get createOrJoin;
+
+  /// No description provided for @currentLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Current Location'**
+  String get currentLocation;
 
   /// No description provided for @daysAgo.
   ///
@@ -1233,11 +1245,23 @@ abstract class AppLocalizations {
   /// **'SYSTEM PERMISSIONS'**
   String get systemPermissions;
 
+  /// No description provided for @thisadmin.
+  ///
+  /// In en, this message translates to:
+  /// **'This Admin will be removed from group.'**
+  String get thisadmin;
+
   /// No description provided for @thismember.
   ///
   /// In en, this message translates to:
   /// **'This Member will be removed from your paired list.'**
   String get thismember;
+
+  /// No description provided for @thismemberfromgroup.
+  ///
+  /// In en, this message translates to:
+  /// **'This Member will be removed from group.'**
+  String get thismemberfromgroup;
 
   /// No description provided for @title.
   ///

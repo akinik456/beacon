@@ -7,6 +7,7 @@ import '../theme/app_fonts.dart';
 import 'app_card.dart';
 import '../../l10n/app_localizations.dart';
 import '../../utils/log.dart';
+import 'dialogs/app_confirm_dialog.dart';
 
 class LocatorListCard extends StatelessWidget {
   final String groupId;
@@ -128,6 +129,16 @@ class LocatorListCard extends StatelessWidget {
 															if (isMaster)
 																	TextButton.icon(
 																	onPressed: () async {
+																		final result = await AppConfirmDialog.show(
+																			context: context,
+																			title: l10n.removeFromGroup,
+																			message: l10n.thismemberfromgroup,
+																			confirmText: l10n.remove,
+																			cancelText: l10n.cancel,
+																			confirmColor: AppColors.danger,
+																		);
+																		if (result != true) return;
+																	
 																		final groupRef = FirebaseFirestore.instance
 																				.collection('groups')
 																				.doc(groupId);

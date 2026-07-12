@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:battery_plus/battery_plus.dart';
 import 'package:geolocator/geolocator.dart';
@@ -24,9 +22,7 @@ class PresenceService {
 	static double? _lastLng;
 	static int? _lastBatteryLevel;
 	static bool? _lastGpsEnabled;
-	static VoidCallback? onPresenceUpdated;
-	
-	
+		
 		
 static Future<void> updateOnline({
   String reason = 'unknown',

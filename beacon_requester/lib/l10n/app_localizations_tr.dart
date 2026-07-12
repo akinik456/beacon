@@ -48,6 +48,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get alerts => 'ALARMLAR';
 
   @override
+  String get alertTitle => 'LynraFamily Uyarısı';
+
+  @override
   String get allPermissionsGranted => 'Tüm İzinler Verildi';
 
   @override
@@ -151,6 +154,9 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get createOrJoin => 'Yeni bir grup oluşturun veya mevcut bir gruba katılın.';
+
+  @override
+  String get currentLocation => 'Mevcut Konum';
 
   @override
   String daysAgo(Object count) {
@@ -602,7 +608,13 @@ class AppLocalizationsTr extends AppLocalizations {
   String get systemPermissions => 'SİSTEM İZİNLERİ';
 
   @override
+  String get thisadmin => 'Bu yönetici gruptan çıkarılacaktır.';
+
+  @override
   String get thismember => 'Bu üye listenizden kaldırılacaktır.';
+
+  @override
+  String get thismemberfromgroup => 'Bu üye gruptan çıkarılacaktır.';
 
   @override
   String get title => 'LynraFamily';

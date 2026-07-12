@@ -272,6 +272,7 @@ class GroupInfoPanel  extends StatelessWidget {
 							const SizedBox(height: 12),
 							RequesterListCard(
 								groupId: groupId,
+								isMaster: isMaster,
 							),
 							LocatorListCard(
 								groupId: groupId,

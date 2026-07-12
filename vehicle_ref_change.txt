@@ -1,35 +1,23 @@
-
-- Req. master işareti
-	if (_isMaster)
-	TextSpan(
-		text: '  M*',//' Ⓜ',
-		style: AppFonts.title.copyWith(
-			fontSize: 14, // biraz daha küçük
-			color: AppColors.primary,
-		),
+- req master değilse gruptan çıkar görünmez.
+	group_info_panel
+	RequesterListCard(
+		groupId: groupId,
+		isMaster: isMaster,
 	),
-*******
-- locator, presence	
-final batteryChanged =
-    _lastBatteryLevel == null ||
-    (batteryLevel - _lastBatteryLevel!).abs() >= 5;
-
-  final deviceStatusChanged =
-			batteryChanged ||
-			_lastGpsEnabled != gpsEnabled;
-*******			
-- geoinside true ise placename yanında mesafe gösteriliyor
-	geofence_service
-	currentPlaceDistanceMeters,geoPlaceDistanceMeters eklendi
 	
-	requester:
-	LocatorStatusCard çağrısından önce 
-	final placeName =
-		geoInside && geoPlaceName.isNotEmpty
-				? geoPlaceDistanceMeters != null
-						? '${geoPlaceName.toUpperCase()} • ${geoPlaceDistanceMeters} m'
-						: geoPlaceName.toUpperCase()
-				: '';																		
-	içinde 
-	placeName: placeName,
-*******
+	requester_list_card
+		final bool isMaster;
+		required this.isMaster,
+		
+		else if (isMaster) ...160
+		
+***********
+remove grup için confirm eklendi		
+requester_list_card .. 164
+locator_list_card .. 132
+"thisadmin":													"This Admin will be removed from group.",
+"thismemberfromgroup":								"This Member will be removed from group.",
+"thisadmin":													"Bu yönetici gruptan çıkarılacaktır.",
+"thismemberfromgroup":								"Bu üye gruptan çıkarılacaktır.",
+"thisadmin":													"Este administrador será eliminado del grupo.",
+"thismemberfromgroup":								"Este miembro será eliminado del grupo.",
