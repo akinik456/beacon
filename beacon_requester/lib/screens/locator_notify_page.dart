@@ -135,6 +135,9 @@ class _LocatorNotifyPageState extends State<LocatorNotifyPage> {
         backgroundColor: AppColors.background,
         surfaceTintColor: AppColors.background,
         elevation: 0,
+				iconTheme: IconThemeData(
+					color: AppColors.primary,
+				),
         title: Text(
           l10n.memberNotifications,
           style: AppFonts.title.copyWith(

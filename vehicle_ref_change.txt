@@ -80,3 +80,28 @@
 				),										
 			),
 ****************
+-	requester dark modda title da back tuşu görünmüyor idi
+	appBar bu şekilde düzeltildi;
+	
+		appBar: AppBar(
+			centerTitle: true,
+			backgroundColor: AppColors.background,
+			surfaceTintColor: AppColors.background,
+			elevation: 0,
+			iconTheme: IconThemeData(
+				color: AppColors.primary,
+			),
+			title: Text(
+				l10n.addMember,          
+				style: AppFonts.title.copyWith(
+				color: AppColors.primary,
+				),
+			),
+		),
+		
+		iconTheme: IconThemeData(
+			color: AppColors.primary,
+		),
+		eklendi , tüm appBar: a ekle ayrıca locator de tek bir yerde var oraya da ekle
+		
+****************

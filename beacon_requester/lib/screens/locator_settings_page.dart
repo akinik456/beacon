@@ -274,6 +274,9 @@ Future<void> _deletePlace(String placeId, String placeName) async {
         backgroundColor: AppColors.background,
         surfaceTintColor: AppColors.background,
         elevation: 0,
+				iconTheme: IconThemeData(
+					color: AppColors.primary,
+				),
         title: Text(
           l10n.memberSettings,
           style: AppFonts.title.copyWith(color: AppColors.primary),

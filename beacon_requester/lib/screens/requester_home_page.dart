@@ -1091,6 +1091,11 @@ Widget _buildPendingHome({
                       ),
                     ),
                   ),
+
+                  Expanded(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [                      
 												Expanded(
 													child: InkWell(
 														borderRadius: BorderRadius.circular(12),

@@ -77,6 +77,9 @@ class _LanguageSelectPageState
         backgroundColor: AppColors.background,
         surfaceTintColor: AppColors.background,
         elevation: 0,
+				iconTheme: IconThemeData(
+					color: AppColors.primary,
+				),
         title: Text(
 						l10n.language,						
 						style: AppFonts.subtitle.copyWith(
