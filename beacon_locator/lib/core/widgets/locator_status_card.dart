@@ -221,55 +221,48 @@ class _LocatorCurrentLocationCardState
           const SizedBox(height: 14),
 
           GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: widget.geoInside
-                ? _showAddressTemporarily
-                : null,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Icon(
-                  Icons.location_on_rounded,
-                  size: 22,
-                  color: widget.geoInside
-                      ? AppColors.primary
-                      : AppColors.accent,
-                ),
+						behavior: HitTestBehavior.opaque,
+						onTap: widget.geoInside
+								? _showAddressTemporarily
+								: null,
+						child: Row(
+							crossAxisAlignment: CrossAxisAlignment.start,
+							children: [
+							if (widget.geoInside) ...[
+								Padding(
+									padding: const EdgeInsets.only(top: 5),
+									child: Icon(
+										_showRealAddress
+												? Icons.location_on_rounded
+												: Icons.touch_app_rounded,
+										size: 20,
+										color: AppColors.textSecondary,
+									),
+								),
+								],
+								const SizedBox(width: 6),
 
-                const SizedBox(width: 8),
-
-                Flexible(
-                  child: Text(
-                    _displayAddressText,
-                    style: AppFonts.body.copyWith(
-                      fontWeight: widget.geoInside
-                          ? FontWeight.w700
-                          : FontWeight.normal,
-                      color: widget.geoInside
-                          ? AppColors.primary
-                          : AppColors.textPrimary,
-                      fontSize: widget.geoInside
-                          ? 20
-                          : 16,
-                    ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-
-                if (widget.geoInside) ...[
-                  const SizedBox(width: 6),
-                  Icon(
-                    _showRealAddress
-                        ? Icons.location_on_rounded
-                        : Icons.touch_app_rounded,
-                    size: 20,
-                    color: AppColors.textSecondary,
-                  ),
-                ],
-              ],
-            ),
-          ),
+								Expanded(
+									child: Text(
+										_displayAddressText,
+										style: AppFonts.body.copyWith(
+											fontWeight: widget.geoInside
+													? FontWeight.w700
+													: FontWeight.normal,
+											color: widget.geoInside
+													? AppColors.primary
+													: AppColors.textPrimary,
+											fontSize: widget.geoInside
+													? 20
+													: 16,
+										),
+										maxLines: 2,
+										overflow: TextOverflow.ellipsis,
+									),
+								),
+							],
+						),
+					),
 
           if (isOnline &&
               stationaryText.isNotEmpty) ...[

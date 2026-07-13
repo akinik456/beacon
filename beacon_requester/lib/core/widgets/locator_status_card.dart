@@ -341,12 +341,15 @@ class _LocatorStatusCardState
 												crossAxisAlignment: CrossAxisAlignment.start,
 												children: [
 													if (widget.geoInside) ...[
-														Icon(
-															_showRealAddress
-																	? Icons.location_on_rounded
-																	: Icons.touch_app_rounded,
-															size: 20,
-															color: AppColors.textSecondary,
+														Padding(
+															padding: const EdgeInsets.only(top: 3),
+															child: Icon(
+																_showRealAddress
+																		? Icons.location_on_rounded
+																		: Icons.touch_app_rounded,
+																size: 20,
+																color: AppColors.textSecondary,
+															),
 														),
 														const SizedBox(width: 6),
 													],
