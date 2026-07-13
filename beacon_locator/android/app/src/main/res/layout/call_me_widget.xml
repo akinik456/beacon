@@ -6,6 +6,7 @@
     android:gravity="center"
     android:orientation="vertical"
     android:padding="12dp"
+		android:id="@+id/widgetRoot"
     android:background="@drawable/call_me_widget_background">
 
     <ImageView
