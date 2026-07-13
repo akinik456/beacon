@@ -790,17 +790,6 @@ Widget _pairedRequesterCard() {
 			if (requesters.isNotEmpty) {
 				_hadPairedRequester = true;
 			}
-      /*if (requesters.isEmpty && _hadPairedRequester) {
-					WidgetsBinding.instance.addPostFrameCallback((_) {
-				unawaited(_clearLocatorGroupIfNoRequester());
-			});
-        return AppCard(
-          child: Text(
-            l10n.noPairedRequester,
-            style: AppFonts.subtitle,
-          ),
-        );
-      }*/
 			if (requesters.isEmpty) {
 				return AppCard(
 					child: Text(
@@ -1024,6 +1013,14 @@ Widget _pairedRequesterCard() {
 															);
 
 															await _startLocatorHome();
+
+															if (!mounted) return;
+
+															setState(() {
+																_pairedRequesterStream =
+																		_watchPairedRequesterData().asBroadcastStream();
+															});
+
 															await SmartPresenceScheduler.boostAndUpdateNow(
 																reason: 'pairing_approved',
 															);
@@ -1408,7 +1405,9 @@ final l10n = AppLocalizations.of(context)!;
 															locatorCode: locatorCode,
 															langCode: langCode,
 															onLocatorNameChanged: () {
-																setState(() {});
+																setState(() {
+																	_locatorCodeDataFuture = _loadLocatorCodeData();
+																});
 															},
 															onShowLocatorQr: () {
 																_showLocatorQrDialog(

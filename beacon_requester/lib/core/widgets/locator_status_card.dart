@@ -340,7 +340,18 @@ class _LocatorStatusCardState
 											child: Row(
 												crossAxisAlignment: CrossAxisAlignment.start,
 												children: [
-													Flexible(
+													if (widget.geoInside) ...[
+														Icon(
+															_showRealAddress
+																	? Icons.location_on_rounded
+																	: Icons.touch_app_rounded,
+															size: 20,
+															color: AppColors.textSecondary,
+														),
+														const SizedBox(width: 6),
+													],
+
+													Expanded(
 														child: Text(
 															displayAddressText,
 															style: AppFonts.body.copyWith(
@@ -358,17 +369,6 @@ class _LocatorStatusCardState
 															overflow: TextOverflow.ellipsis,
 														),
 													),
-
-													if (widget.geoInside) ...[
-														const SizedBox(width: 6),
-														Icon(
-															_showRealAddress
-																	? Icons.location_on_rounded
-																	: Icons.touch_app_rounded,
-															size: 20,
-															color: AppColors.textSecondary,
-														),
-													],
 												],
 											),
 										),

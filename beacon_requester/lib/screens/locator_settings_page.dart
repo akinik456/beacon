@@ -191,6 +191,7 @@ Future<void> _loadPlaces() async {
 		return AppInputDialog.show(
 			context: context,
 			title: l10n.placeName,
+			initialText: l10n.placeNameHint,
 			hintText: l10n.placeNameHint,
 			confirmText: l10n.save,
 			cancelText: l10n.cancel,

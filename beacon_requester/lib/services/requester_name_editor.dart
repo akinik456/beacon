@@ -14,16 +14,13 @@ class RequesterNameEditor {
     final l10n = AppLocalizations.of(context)!;
 
     final currentName =
-        await IdentityService.getRequesterName();
-
-    final controller = TextEditingController(
-      text: currentName ?? '',
-    );
+        await IdentityService.getRequesterName() ?? '';
 
     final newName = await AppInputDialog.show(
 			context: context,
 			title: l10n.enteryourname,
-			hintText: l10n.requesterName,
+			initialText: currentName,
+			hintText: currentName,
 			confirmText: l10n.sva,
 			cancelText: l10n.cancel,
 			autofocus: true,

@@ -9,10 +9,10 @@ class AppInputDialog {
   static Future<String?> show({
     required BuildContext context,
     required String title,
+		String initialText = '',
     required String hintText,
     required String confirmText,
     required String cancelText,
-    String? initialValue,
     int maxLength = 20,
     bool autofocus = true,
     TextCapitalization textCapitalization =
@@ -21,9 +21,11 @@ class AppInputDialog {
         TextInputAction.done,
   }) {
     final controller = TextEditingController(
-      text: initialValue,
+      text: initialText,
     );
-
+		controller.selection = TextSelection.fromPosition(
+			TextPosition(offset: controller.text.length),
+		);
     return showDialog<String>(
       context: context,
       builder: (dialogContext) {

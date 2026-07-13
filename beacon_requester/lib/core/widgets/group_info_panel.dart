@@ -44,14 +44,12 @@ class GroupInfoPanel  extends StatelessWidget {
   }) async {
     final l10n = AppLocalizations.of(context)!;
 
-    final controller = TextEditingController(
-      text: currentGroupName,
-    );
 
     final newName = await AppInputDialog.show(
 			context: context,
 			title: l10n.groupName,
-			hintText: l10n.groupName,
+			initialText: currentGroupName,
+			hintText: currentGroupName,
 			confirmText: l10n.sva,
 			cancelText: l10n.cancel,
 			maxLength: 20,

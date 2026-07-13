@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 
 import '../theme/app_colors.dart';
 import '../theme/app_fonts.dart';
@@ -181,66 +182,41 @@ class _LocatorCurrentLocationCardState
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              /*Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 4,
-                ),
-                decoration: BoxDecoration(
-                  color: isOnline
-                      ? Colors.green.withValues(alpha: 0.15)
-                      : Colors.red.withValues(alpha: 0.15),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Text(
-                  widget.status.toUpperCase(),
-                  style: AppFonts.caption.copyWith(
-                    color: isOnline
-                        ? AppColors.accent
-                        : AppColors.danger,
-                  ),
-                ),
-              ),
+          FutureBuilder<bool>(
+						future: Geolocator.isLocationServiceEnabled(),
+						builder: (context, snapshot) {
+							final gpsEnabled = snapshot.data ?? false;
 
-              if (!isOnline &&
-                  offlineText.isNotEmpty) ...[
-                const SizedBox(width: 8),
-                Text(
-                  offlineText,
-                  style: AppFonts.caption.copyWith(
-                    color: AppColors.danger,
-                  ),
-                ),
-              ],*/
+							return Row(
+								children: [
+									const Spacer(),
 
-              const Spacer(),
+									Icon(
+										gpsEnabled
+												? Icons.gps_fixed_rounded
+												: Icons.gps_off_rounded,
+										size: 18,
+										color: gpsEnabled
+												? AppColors.accent
+												: AppColors.danger,
+									),
 
-              Icon(
-                widget.gpsEnabled
-                    ? Icons.gps_fixed_rounded
-                    : Icons.gps_off_rounded,
-                size: 18,
-                color: widget.gpsEnabled
-                    ? AppColors.accent
-                    : AppColors.danger,
-              ),
+									const SizedBox(width: 4),
 
-              const SizedBox(width: 4),
-
-              Text(
-                widget.gpsEnabled
-                    ? 'GPS ON'
-                    : 'GPS OFF',
-                style: AppFonts.caption.copyWith(
-                  color: widget.gpsEnabled
-                      ? AppColors.accent
-                      : AppColors.danger,
-                ),
-              ),
-            ],
-          ),
+									Text(
+										gpsEnabled
+												? 'GPS ON'
+												: 'GPS OFF',
+										style: AppFonts.caption.copyWith(
+											color: gpsEnabled
+													? AppColors.accent
+													: AppColors.danger,
+										),
+									),
+								],
+							);
+						},
+					),
 
           const SizedBox(height: 14),
 
