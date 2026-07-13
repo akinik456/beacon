@@ -14,7 +14,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Ask to Call Me"
+            android:text="@string/call_me_widget_config_title"
             android:textStyle="bold"
             android:textSize="22sp" />
 
@@ -22,7 +22,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:text="Choose target"
+            android:text="@string/call_me_widget_choose_target"
             android:textSize="14sp" />
 
         <RadioGroup
@@ -37,7 +37,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:text="Save" />
+            android:text="@string/call_me_widget_save" />
 
     </LinearLayout>
 

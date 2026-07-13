@@ -118,12 +118,16 @@ class CallMeWidgetConfigActivity : Activity() {
                 container.removeAllViews()
 
                 val askEverybodyRadio =
-                    RadioButton(this).apply {
-                        text = "Ask Everybody"
-                        textSize = 18f
-                        tag = "ALL"
-                        isChecked = true
-                    }
+									RadioButton(this).apply {
+											id = android.view.View.generateViewId()
+
+											text = getString(
+													R.string.call_me_widget_ask_everybody,
+											)
+											textSize = 18f
+											tag = "ALL"
+											isChecked = true
+									}
 
                 container.addView(
                     askEverybodyRadio,
@@ -157,19 +161,20 @@ class CallMeWidgetConfigActivity : Activity() {
                             ?: ""
 
                     val radioButton =
-                        RadioButton(this).apply {
-                            text =
-                                "$requesterName " +
-                                "($requesterCode)"
+												RadioButton(this).apply {
 
-                            tag = Pair(
-                                requesterId,
-                                requesterName,
-                            )
+														id = android.view.View.generateViewId()
 
-                            textSize = 18f
-                        }
+														text =
+																"$requesterName ($requesterCode)"
 
+														tag = Pair(
+																requesterId,
+																requesterName,
+														)
+
+														textSize = 18f
+												}
                     container.addView(
                         radioButton,
                     )

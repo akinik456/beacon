@@ -5,4 +5,10 @@
     <string name="presence_service_channel_name">LynraFamily Member Servisi</string>
     <string name="presence_service_notification_title">LynraFamily Member aktif</string>
     <string name="presence_service_notification_body">Güvenilir aile konum isteklerine yanıt vermeye hazır.</string>
+		<string name="call_me_widget_title">Beni Ara</string>
+		<string name="call_me_widget_config_title">Beni Ara</string>
+		<string name="call_me_widget_choose_target">Hedef Seç</string>
+		<string name="call_me_widget_ask_everybody">Herkes</string>
+		<string name="call_me_widget_save">Kaydet</string>
+		<string name="call_me_widget_unknown_target">Bilinmiyor</string>
 </resources>

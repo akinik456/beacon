@@ -3,4 +3,10 @@
     <string name="presence_service_channel_name">Servicio de LynraFamily Member</string>
     <string name="presence_service_notification_title">LynraFamily Member está activo</string>
     <string name="presence_service_notification_body">Listo para responder a solicitudes de ubicación de familiares de confianza.</string>
+		<string name="call_me_widget_title">Llámame</string>
+		<string name="call_me_widget_config_title">Llámame</string>
+		<string name="call_me_widget_choose_target">Elegir destino</string>
+		<string name="call_me_widget_ask_everybody">Todos</string>
+		<string name="call_me_widget_save">Guardar</string>
+		<string name="call_me_widget_unknown_target">Desconocido</string>
 </resources>

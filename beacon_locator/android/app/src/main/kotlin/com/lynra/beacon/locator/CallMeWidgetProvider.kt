@@ -79,13 +79,61 @@ class CallMeWidgetProvider : AppWidgetProvider() {
 							"CLICK widget=$widgetId",
 					)
 					
-					CallMeWidgetService.send(
+					showSuccessFeedback(
 							context,
 							widgetId,
 					)
 
-					// Bir sonraki adımda gerçek Call Me burada çalışacak.
+					CallMeWidgetService.send(
+							context,
+							widgetId,
+					)
+	
+					restoreWidget(
+							context,
+							widgetId,
+					)
 			}
+		}
+		
+		private fun showSuccessFeedback(
+				context: Context,
+				appWidgetId: Int,
+		) {
+				val views = RemoteViews(
+						context.packageName,
+						R.layout.call_me_widget,
+				)
+
+				views.setImageViewResource(
+						R.id.callMeWidgetIcon,
+						android.R.drawable.presence_online,
+				)
+
+				AppWidgetManager
+						.getInstance(context)
+						.updateAppWidget(
+								appWidgetId,
+								views,
+						)
+		}
+		
+		private fun restoreWidget(
+				context: Context,
+				appWidgetId: Int,
+		) {
+				android.os.Handler(
+						android.os.Looper.getMainLooper(),
+				).postDelayed(
+						{
+								updateWidget(
+										context,
+										AppWidgetManager.getInstance(context),
+										appWidgetId,
+								)
+						},
+						2000L,
+				)
 		}
 		
 		companion object {
@@ -99,6 +147,12 @@ class CallMeWidgetProvider : AppWidgetProvider() {
 								context.packageName,
 								R.layout.call_me_widget,
 						)
+						
+						views.setImageViewResource(
+								R.id.callMeWidgetIcon,
+								android.R.drawable.ic_menu_call,
+						)
+
 						val intent = Intent(
 								context,
 								CallMeWidgetProvider::class.java,
@@ -143,7 +197,10 @@ class CallMeWidgetProvider : AppWidgetProvider() {
 								if (askEverybody) {
 										"Ask Everybody"
 								} else {
-										requesterName ?: "Unknown"
+										requesterName
+											?: context.getString(
+													R.string.call_me_widget_unknown_target,
+											)
 								}
 
 						views.setTextViewText(

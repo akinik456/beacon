@@ -7,4 +7,10 @@
     <string name="presence_service_notification_body">Ready to respond to trusted family location requests.</string>
 		<string name="call_me_widget_title">Call Me</string>
 		<string name="call_me_widget_select_target">Tap to configure</string>
+		<string name="call_me_widget_config_title">Call Me</string>
+		<string name="call_me_widget_choose_target">Choose target</string>
+		<string name="call_me_widget_ask_everybody">Everybody</string>
+		<string name="call_me_widget_save">Save</string>
+		<string name="call_me_widget_unknown_target">Unknown</string>
+		
 </resources>

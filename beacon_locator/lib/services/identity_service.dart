@@ -88,7 +88,7 @@ class IdentityService {
   }
 	
 	static const _locatorNameKey =
-			'requester_name';
+			'locator_name';
 
 	static Future<void> setLocatorName(
 		String name,
