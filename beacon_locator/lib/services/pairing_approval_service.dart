@@ -24,6 +24,7 @@ class PairingApprovalService {
 
   final groupId = requestData['groupId'];
   final requesterId = requestData['requesterId'];
+	final requesterName = requestData['requesterName'];
 
   if (groupId == null || requesterId == null) {
     Log.d("BEACON APPROVE ERROR => invalid request data");
@@ -97,6 +98,7 @@ class PairingApprovalService {
         requesterId: {
           'requesterCode':
               requestData['requesterCode'] ?? '------',
+					'requesterName': requesterName,
           'pairedAt': FieldValue.serverTimestamp(),
         },
       },

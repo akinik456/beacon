@@ -17,7 +17,7 @@ FIRESTORE
 						callmeid - (callmeid,createdAt,groupId,requesterCode,requesterId,requesterName,status,targetlocatorId)
 			devices
 				locatorId - (active,joinedAt,locatorCode,pairedRequesters,role,updatedAt)
-																								              |_requesterid(pairedAt,requesterCode)													
+																								              |_requesterid(requesterCode,requesterName,pairedAt)													
 					notifyRequesters
 						requesterId - (batteryLow,callMe,createdAt,geofence,gpsOff,movement,updatedAt)
 					settings
