@@ -80,7 +80,6 @@ class GpsAnalysisService {
 		}
 		
 		// Accuracy riski
-		//?*?if (position != null) {
 			if (input.accuracy > 35) {
 				gpsRiskScore += 3;
 				gpsRiskReasons.add('accuracy_high');
@@ -91,7 +90,6 @@ class GpsAnalysisService {
 				gpsRiskScore += 1;
 				gpsRiskReasons.add('accuracy_low');
 			}
-		//}
 
 		// Mesafe riski
 		if (moved != null) {
@@ -157,22 +155,22 @@ class GpsAnalysisService {
 	
 	GpsDecision decision;
 
-	if (gpsRiskScore >= 6) {
-		decision = GpsDecision.suspicious;
-	} else if (gpsRiskScore >= 3) {
-		decision = GpsDecision.verify;
-	} else {
-		decision = GpsDecision.safe;
-	}
+		if (gpsRiskScore >= 6) {
+			decision = GpsDecision.suspicious;
+		} else if (gpsRiskScore >= 3) {
+			decision = GpsDecision.verify;
+		} else {
+			decision = GpsDecision.safe;
+		}
 
-	return GpsAnalysisResult(
-		score: gpsRiskScore,
-		decision: decision,
-		reasons: gpsRiskReasons,
-		calculatedSpeedKmh: calculatedSpeedKmh,
-		speedDifferenceKmh: speedDifferenceKmh,
-		speedJumpKmh: speedJumpKmh,
-	);
+		return GpsAnalysisResult(
+			score: gpsRiskScore,
+			decision: decision,
+			reasons: gpsRiskReasons,
+			calculatedSpeedKmh: calculatedSpeedKmh,
+			speedDifferenceKmh: speedDifferenceKmh,
+			speedJumpKmh: speedJumpKmh,
+		);
 	}
 	
 	

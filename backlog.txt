@@ -17,6 +17,8 @@ gps alert neden tekrarladı
 
 dilek tel pil izni
 
+placename yanında 0 ?
+
 ********
 SMS
 
@@ -43,95 +45,4 @@ Support future products without changing the architecture.
 **********
 
 
-1️⃣ Tasarım ⭐⭐⭐⭐⭐
-
-Şu an widget çalışıyor.
-
-Şimdi güzel görünmeli.
-
-ikon
-spacing
-yazı boyutu
-Material You
-light/dark
-2️⃣ Localization ⭐⭐⭐⭐⭐
-
-Şu an büyük ihtimalle:
-
-Ask Everybody
-Ask to Call Me
-Save
-
-hardcoded.
-
-Bunları native strings.xml'e taşıyalım.
-
-values
-values-tr
-values-es
-3️⃣ Toast ⭐⭐⭐⭐☆
-✓ Call request sent
-
-veya
-
-✓ Sent to Abdullah
-4️⃣ Loading ⭐⭐⭐⭐☆
-
-Bastıktan sonra
-
-Sending...
-
-1 saniye.
-
-5️⃣ Widget refresh ⭐⭐⭐⭐☆
-
-Requester adı değişirse
-
-↓
-
-Widget da güncellensin.
-
-6️⃣ Icon polish ⭐⭐⭐⭐☆
-
-Widget iconunu biraz daha premium yapabiliriz.
-
-7️⃣ Material You ⭐⭐⭐☆☆
-
-Android 12+
-
-Adaptive color.
-
-Benim favorim
-
-😄
-
-Hiç düşünmeden
-
-Widget tasarımı
-
-Çünkü kod bitti.
-
-Artık insanlar görecek.
-
-İlk izlenim burada oluşacak.
-
-🍻 Brom...
-
-Şunu da söyleyeyim.
-
-Ben bu widget'ın Play Store screenshot'ına girecek seviyeye gelmesini istiyorum.
-
-Çünkü piyasada aile takip uygulamalarının çoğunda:
-
-uygulamayı aç
-
-butona bas
-
-bizde ise:
-
-Ana ekrandan tek dokunuş.
-
-Bu gerçekten güçlü bir fark.
-
-Bence bundan sonra "mühendislik" değil, "ürün geliştirme" modundayız. İşin en keyifli kısmı şimdi başlıyor. 😄💪
 

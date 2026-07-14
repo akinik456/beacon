@@ -1,36 +1,3 @@
-import 'dart:async';
-import 'package:firebase_database/firebase_database.dart';
-import 'package:battery_plus/battery_plus.dart';
-import 'package:geolocator/geolocator.dart';
-
-import 'identity_service.dart';
-import 'geofence_service.dart';
-import 'locator_settings_service.dart';
-import 'movement_alert_service.dart';
-import '../utils/log.dart';
-import 'smart_presence_scheduler.dart';
-import 'presence_cache_service.dart';
-import 'motion_service.dart';
-import 'gps_analysis_service.dart';
-
-
-
-class PresenceService {
-  PresenceService._();
-			
-  static final _db = FirebaseDatabase.instance.ref();
-	static StreamSubscription<DatabaseEvent>? _connectedSub;
-	static String? _serviceGroupId;
-	static String? _serviceLocatorId;
-	static double? _lastLat;
-	static double? _lastLng;
-	static int? _lastBatteryLevel;
-	static bool? _lastGpsEnabled;
-	
-	static double? lastSpeedKmh;
-	static DateTime? _lastAcceptedLocationTime;
-		
-		
 	static Future<void> updateOnline({
 		String reason = 'unknown',
 	}) async {
@@ -89,6 +56,7 @@ class PresenceService {
       speedKmh = 0;
     }*/
   }
+  SmartPresenceScheduler.setSpeedKmh(speedKmh,);
 
   double? movedMeters;
 
@@ -110,6 +78,11 @@ class PresenceService {
 		}	
 
 		final motionRecent = MotionService.wasRecentlyMoving();
+			
+		const debugForceVerify = true;
+		final analysisAccuracy = debugForceVerify
+    ? 36.0
+    : position.accuracy;	
 			
 		final analysis = GpsAnalysisService.analyze(
 			input: GpsAnalysisInput(
@@ -223,9 +196,7 @@ class PresenceService {
 							}
 						}
 					}
-				}	
-				
-		SmartPresenceScheduler.setSpeedKmh(speedKmh,);
+				}		
 		
 Log.d(
   "BEACON_GPS => "
@@ -403,7 +374,7 @@ Log.d(
 	
 	final Map<String, dynamic> cacheData = {
 		'status': 'online',
-		'battery': batteryLevel,
+		'battery': 'battery',
 		'gpsEnabled': gpsEnabled,
 		'lat': position.latitude,
 		'lng': position.longitude,
@@ -426,114 +397,10 @@ Log.d(
   _lastLat = position.latitude;
   _lastLng = position.longitude;
 	lastSpeedKmh = speedKmh;
-	_lastAcceptedLocationTime = position.timestamp;
+	_lastAcceptedLocationTime = DateTime.now();
 
   Log.d(
     "BEACON PRESENCE => "
     "online updated reason=$reason",
   );
-}
-
-static Future<Position?> _getConfirmationPosition({
-  required DateTime firstTimestamp,
-}) async {
-  try {
-    final stream = Geolocator.getPositionStream(
-      locationSettings: const LocationSettings(
-        accuracy: LocationAccuracy.best,
-        distanceFilter: 0,
-      ),
-    );
-
-    return await stream
-    .firstWhere((newPosition) {
-      final isFresh =
-          newPosition.timestamp.isAfter(firstTimestamp);
-
-      Log.d(
-        "BEACON_GPS_STREAM => "
-        "first=$firstTimestamp "
-        "candidate=${newPosition.timestamp} "
-        "isFresh=$isFresh",
-      );
-
-      return isFresh;
-    })
-    .timeout(
-      const Duration(seconds: 20),
-    );
-  } on TimeoutException {
-    Log.d(
-      "BEACON_GPS_VERIFY => "
-      "fresh confirmation timeout",
-    );
-
-    return null;
-  } catch (e) {
-    Log.e(
-      "BEACON_GPS_VERIFY => "
-      "confirmation stream failed => $e",
-    );
-
-    return null;
-  }
-}
-
-static void setServiceIds({
-  required String groupId,
-  required String locatorId,
-}) {
-  _serviceGroupId = groupId;
-  _serviceLocatorId = locatorId;
-
-  Log.d(
-    "BEACON PRESENCE => service ids set "
-    "group=$groupId locator=$locatorId",
-  );
-}
-static Future<void> startConnectionWatcher() async {
-Log.d("BEACON PRESENCE => startConnectionWatcher called");
-  final groupId = await IdentityService.getGroupId();
-  final locatorId = await IdentityService.getLocatorId();
-	
-	Log.d(
-    "BEACON PRESENCE => watcher ids group=$groupId locator=$locatorId",
-  );
-
-  if (groupId == null || locatorId == null) {
-    Log.d("BEACON PRESENCE => watcher missing group/locator");
-    return;
-  }
-
-  final locatorRef = _db.child(
-    "presence/groups/$groupId/locators/$locatorId",
-  );
-
-  final connectedRef =
-      FirebaseDatabase.instance.ref(".info/connected");
-
-  await _connectedSub?.cancel();
-
-  _connectedSub = connectedRef.onValue.listen((event) async {
-    final connected =
-        event.snapshot.value as bool? ?? false;
-	Log.d("BEACON PRESENCE => connected=$connected");
-
-    if (!connected) return;
-
-    await locatorRef.onDisconnect().update({
-			'status': 'offline',
-			'lastSeen': ServerValue.timestamp,
-			'offlineSince': ServerValue.timestamp,
-		});
-		
-    await locatorRef.update({
-      'status': 'online',
-      'lastSeen': ServerValue.timestamp,
-			'offlineSince': null,
-    });
-
-    Log.d("BEACON PRESENCE => onDisconnect armed");
-  });
-}
 }
