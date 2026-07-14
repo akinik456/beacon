@@ -175,48 +175,58 @@ class _LocatorCurrentLocationCardState
     );
 
     return AppCard(
-      /*borderColor: isOnline
-          ? AppColors.accent.withValues(alpha: 0.70)
-          : AppColors.danger.withValues(alpha: 0.70),
-      borderWidth: 3,*/
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+  child: Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Row(
         children: [
+          Icon(
+            Icons.location_on_rounded,
+            size: 20,
+            color: AppColors.primary,
+          ),
+          const SizedBox(width: 6),
+          Text(
+            l10n.currentLocation,
+            style: AppFonts.subtitle.copyWith(
+              color: AppColors.textPrimary,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+
+          const Spacer(),
+
           FutureBuilder<bool>(
-						future: Geolocator.isLocationServiceEnabled(),
-						builder: (context, snapshot) {
-							final gpsEnabled = snapshot.data ?? false;
+            future: Geolocator.isLocationServiceEnabled(),
+            builder: (context, snapshot) {
+              final gpsEnabled = snapshot.data ?? false;
 
-							return Row(
-								children: [
-									const Spacer(),
-
-									Icon(
-										gpsEnabled
-												? Icons.gps_fixed_rounded
-												: Icons.gps_off_rounded,
-										size: 18,
-										color: gpsEnabled
-												? AppColors.accent
-												: AppColors.danger,
-									),
-
-									const SizedBox(width: 4),
-
-									Text(
-										gpsEnabled
-												? 'GPS ON'
-												: 'GPS OFF',
-										style: AppFonts.caption.copyWith(
-											color: gpsEnabled
-													? AppColors.accent
-													: AppColors.danger,
-										),
-									),
-								],
-							);
-						},
-					),
+              return Row(
+                children: [
+                  Icon(
+                    gpsEnabled
+                        ? Icons.gps_fixed_rounded
+                        : Icons.gps_off_rounded,
+                    size: 18,
+                    color: gpsEnabled
+                        ? AppColors.accent
+                        : AppColors.danger,
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    gpsEnabled ? 'GPS ON' : 'GPS OFF',
+                    style: AppFonts.caption.copyWith(
+                      color: gpsEnabled
+                          ? AppColors.accent
+                          : AppColors.danger,
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+        ],
+      ),
 
           const SizedBox(height: 14),
 

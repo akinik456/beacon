@@ -1,12 +1,12 @@
 adb logcat | findstr LYNRA_SERVICE
 Foreground service destroyed
 **************
-loc status kart değişikliği -> locator
 -	bildirim&settings ayarları check
 
 - geo bildirim de place name kontrol et
 - locator default settings?
 - place i haritadan seçmek
+- locator de mevcut konum title status kart içine alalım? 
 
 
 ********

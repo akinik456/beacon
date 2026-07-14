@@ -1205,30 +1205,6 @@ Widget _currentLocationCard() {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      Padding(
-        padding: const EdgeInsets.only(
-          left: 4,
-          bottom: 8,
-        ),
-        child: Row(
-          children: [
-            Icon(
-              Icons.location_on_rounded,
-              size: 20,
-              color: AppColors.primary,
-            ),
-            const SizedBox(width: 6),
-            Text(
-              l10n.currentLocation,
-              style: AppFonts.subtitle.copyWith(
-                color: AppColors.textPrimary,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-          ],
-        ),
-      ),
-
       LocatorCurrentLocationCard(
         status: status,
         gpsEnabled: gpsEnabled,
