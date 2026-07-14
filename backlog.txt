@@ -6,8 +6,14 @@ Foreground service destroyed
 - geo bildirim de place name kontrol et
 - locator default settings?
 - place i haritadan seçmek
-- locator de mevcut konum title status kart içine alalım? 
 
+FutureBuilder<bool>(
+            future: Geolocator.isLocationServiceEnabled(),
+            builder: (context, snapshot) {
+              final gpsEnabled = snapshot.data ?? false;
+gps off ile başlıyor hoş değil
+
+gps alert neden tekrarladı
 
 ********
 SMS

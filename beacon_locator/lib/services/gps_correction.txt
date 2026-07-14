@@ -1,0 +1,425 @@
+motion_service.dart
+
+import 'dart:async';
+import 'dart:math';
+
+import 'package:sensors_plus/sensors_plus.dart';
+
+import 'smart_presence_scheduler.dart';
+import '../utils/log.dart';
+
+class MotionService {
+  MotionService._();
+
+  static StreamSubscription? _sub;
+
+  static DateTime _lastMotion =
+      DateTime.fromMillisecondsSinceEpoch(0);
+
+  static double? _lastMagnitude;
+
+  static void start() {
+    Log.d("MOTION => started");
+
+    _sub?.cancel();
+    _sub = null;
+    _lastMagnitude = null;
+
+    _startUserAccelerometer();
+  }
+
+  static void _startUserAccelerometer() {
+    try {
+      _sub = userAccelerometerEventStream().listen(
+        (event) {
+          _processMotion(
+            x: event.x,
+            y: event.y,
+            z: event.z,
+            source: 'user_accelerometer',
+          );
+        },
+        onError: (e) {
+          Log.d(
+            "BEACON MOTION => "
+            "user accelerometer error => $e",
+          );
+
+          _startAccelerometerFallback();
+        },
+        cancelOnError: true,
+      );
+    } catch (e) {
+      Log.e(
+        "BEACON MOTION => "
+        "user accelerometer unavailable => $e",
+      );
+
+      _startAccelerometerFallback();
+    }
+  }
+
+  static void _startAccelerometerFallback() {
+    Log.d(
+      "BEACON MOTION => "
+      "starting accelerometer fallback",
+    );
+
+    _sub?.cancel();
+    _sub = null;
+    _lastMagnitude = null;
+
+    try {
+      _sub = accelerometerEventStream().listen(
+        (event) {
+          _processMotion(
+            x: event.x,
+            y: event.y,
+            z: event.z,
+            source: 'accelerometer',
+          );
+        },
+        onError: (e) {
+          Log.d(
+            "BEACON MOTION => "
+            "accelerometer error => $e",
+          );
+        },
+        cancelOnError: false,
+      );
+    } catch (e) {
+      Log.e(
+        "BEACON MOTION => "
+        "no motion sensor available => $e",
+      );
+    }
+  }
+
+  static void _processMotion({
+    required double x,
+    required double y,
+    required double z,
+    required String source,
+  }) {
+    final magnitude = sqrt(
+      x * x + y * y + z * z,
+    );
+
+    final last = _lastMagnitude;
+    _lastMagnitude = magnitude;
+
+    if (last == null) {
+      return;
+    }
+
+    final delta = (magnitude - last).abs();
+
+    if (delta < 2.0) {
+      return;
+    }
+
+    Log.d(
+      "MOTION => source=$source "
+      "magnitude=$magnitude "
+      "delta=$delta",
+    );
+
+    final now = DateTime.now();
+
+    if (now.difference(_lastMotion).inSeconds < 10) {
+      return;
+    }
+
+    _lastMotion = now;
+
+    Log.d(
+      "BEACON MOTION => "
+      "detected "
+      "source=$source "
+      "mag=$magnitude",
+    );
+
+    SmartPresenceScheduler.boostAndUpdateNow(
+      reason: 'motion',
+    );
+  }
+
+  static void stop() {
+    _sub?.cancel();
+    _sub = null;
+  }
+}
+
+*****************
+presence_service.dart
+static Future<void> updateOnline({
+  String reason = 'unknown',
+}) async {
+  final groupId =
+      _serviceGroupId ?? await IdentityService.getGroupId();
+
+  final locatorId =
+      _serviceLocatorId ?? await IdentityService.getLocatorId();
+
+  if (groupId == null || locatorId == null) {
+    Log.d(
+      "BEACON PRESENCE => "
+      "missing group/locator",
+    );
+    return;
+  }
+
+  final path =
+      "presence/groups/$groupId/locators/$locatorId";
+
+  final batteryLevel =
+      await Battery().batteryLevel;
+
+  final gpsEnabled =
+      await Geolocator.isLocationServiceEnabled();
+			
+	final batteryChanged =
+    _lastBatteryLevel == null ||
+    (batteryLevel - _lastBatteryLevel!).abs() >= 5;
+
+  final deviceStatusChanged =
+			batteryChanged ||
+			_lastGpsEnabled != gpsEnabled;
+
+  Position? position;
+
+  if (gpsEnabled) {
+    try {
+      position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+    } catch (e) {
+      Log.e(
+        "BEACON PRESENCE => "
+        "getCurrentPosition failed => $e",
+      );
+    }
+  }
+
+  // Hatalı GPS konumunu hareket/konum hesabında kullanma.
+  // Ancak pil veya GPS durumu değiştiyse aşağıda yine yazılabilir.
+  if (position != null &&
+      position.accuracy > 50) {
+    Log.d(
+      "BEACON PRESENCE => "
+      "ignore inaccurate position "
+      "accuracy=${position.accuracy.toStringAsFixed(1)}m",
+    );
+
+    position = null;
+  }
+
+  double speedKmh = 0;
+
+  if (position != null) {
+    final speedMps = position.speed;
+
+    speedKmh = speedMps >= 0
+        ? speedMps * 3.6
+        : 0;
+
+    if (speedKmh < 3) {
+      speedKmh = 0;
+    }
+  }
+
+  SmartPresenceScheduler.setSpeedKmh(
+    speedKmh,
+  );
+
+  double? movedMeters;
+
+  if (position != null &&
+      _lastLat != null &&
+      _lastLng != null) {
+    movedMeters = Geolocator.distanceBetween(
+      _lastLat!,
+      _lastLng!,
+      position.latitude,
+      position.longitude,
+    );
+
+    Log.d(
+      "BEACON PRESENCE => "
+      "reason=$reason "
+      "moved=${movedMeters.toStringAsFixed(1)}m",
+    );
+  }
+
+  final shouldSkipSmallMove =
+      (reason == 'timer' || reason == 'motion') &&
+      movedMeters != null &&
+      movedMeters < 25;
+
+ /*?*? // Hareket yok, pil/GPS de değişmedi:
+  // ne alert kontrolüne ne de RTDB write'a gerek var.
+  if (shouldSkipSmallMove &&
+      !deviceStatusChanged) {
+    Log.d(
+      "BEACON PRESENCE => "
+      "skip small move "
+      "reason=$reason "
+      "moved=${movedMeters?.toStringAsFixed(1)}m",
+    );
+    return;
+  }*/
+
+  // Hareket yok ama pil veya GPS durumu değişti:
+  // yalnızca status alanlarını güncelle.
+  if (shouldSkipSmallMove &&
+      deviceStatusChanged) {
+    await _db.child(path).update({
+      'status': 'online',
+      'lastSeen': ServerValue.timestamp,
+      'battery': batteryLevel,
+      'gpsEnabled': gpsEnabled,
+      'updateCount': ServerValue.increment(1),
+    });
+		
+		await PresenceCacheService.save({
+			'status': 'online',
+			'battery': batteryLevel,
+			'gpsEnabled': gpsEnabled,
+		});		
+
+    _lastBatteryLevel = batteryLevel;
+    _lastGpsEnabled = gpsEnabled;
+
+    Log.d(
+      "BEACON PRESENCE => "
+      "device status updated without location",
+    );
+
+    return;
+  }
+
+  // Geçerli konum yoksa yalnızca değişen cihaz durumu yazılabilir.
+  if (position == null) {
+    if (!deviceStatusChanged) {
+      Log.d(
+        "BEACON PRESENCE => "
+        "no valid position and no status change",
+      );
+      return;
+    }
+
+    await _db.child(path).update({
+      'status': 'online',
+      'lastSeen': ServerValue.timestamp,
+      'battery': batteryLevel,
+      'gpsEnabled': gpsEnabled,
+      'updateCount': ServerValue.increment(1),
+    });
+		
+		await PresenceCacheService.save({
+			'status': 'online',
+			'battery': batteryLevel,
+			'gpsEnabled': gpsEnabled,
+		});
+
+    _lastBatteryLevel = batteryLevel;
+    _lastGpsEnabled = gpsEnabled;
+
+    Log.d(
+      "BEACON PRESENCE => "
+      "device status updated without valid position",
+    );
+
+    return;
+  }
+
+  // Buraya geldiysek geçerli ve anlamlı bir konum hareketi var.
+  final placeData =
+      await GeofenceService.checkPlaces(
+    groupId: groupId,
+    locatorId: locatorId,
+    lat: position.latitude,
+    lng: position.longitude,
+  );
+
+  await MovementAlertService.checkNow(
+    position: position,
+    reason: reason,
+  );
+
+  // Motion alert ve geofence kontrolleri çalıştı.
+  // Aktif izleyen yoksa sırf motion nedeniyle presence konumu yazma.
+  if (reason == 'motion' &&
+      !SmartPresenceScheduler.hasActiveWatcher) {
+    if (deviceStatusChanged) {
+      await _db.child(path).update({
+        'status': 'online',
+        'lastSeen': ServerValue.timestamp,
+        'battery': batteryLevel,
+        'gpsEnabled': gpsEnabled,
+        'updateCount': ServerValue.increment(1),
+      });
+			
+			await PresenceCacheService.save({
+				'status': 'online',
+				'battery': batteryLevel,
+				'gpsEnabled': gpsEnabled,
+			});
+
+      _lastBatteryLevel = batteryLevel;
+      _lastGpsEnabled = gpsEnabled;
+    }
+
+    Log.d(
+      "BEACON PRESENCE => "
+      "skip location write, "
+      "motion without active watcher",
+    );
+
+    return;
+  }
+
+  final Map<String, dynamic> updateData = {
+    'status': 'online',
+    'lastSeen': ServerValue.timestamp,
+    'battery': batteryLevel,
+    'gpsEnabled': gpsEnabled,
+    'lat': position.latitude,
+    'lng': position.longitude,
+    'accuracy': position.accuracy,
+    'movedSinceLastUpdateMeters':
+        movedMeters?.round(),
+    'updateCount': ServerValue.increment(1),
+    ...placeData,
+  };
+	
+	final Map<String, dynamic> cacheData = {
+		'status': 'online',
+		'battery': 'battery',
+		'gpsEnabled': gpsEnabled,
+		'lat': position.latitude,
+		'lng': position.longitude,
+		...placeData,
+		'stationarySince': updateData['stationarySince'],
+		'offlineSince': null,
+	};
+
+  if (movedMeters == null ||
+      movedMeters >= 25) {
+    updateData['stationarySince'] =
+        ServerValue.timestamp;
+  }
+
+  await _db.child(path).update(updateData,);
+	await PresenceCacheService.save(cacheData);
+
+  _lastBatteryLevel = batteryLevel;
+  _lastGpsEnabled = gpsEnabled;
+  _lastLat = position.latitude;
+  _lastLng = position.longitude;
+
+  Log.d(
+    "BEACON PRESENCE => "
+    "online updated reason=$reason",
+  );
+}
