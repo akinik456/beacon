@@ -11,6 +11,8 @@ import '../utils/log.dart';
 import 'smart_presence_scheduler.dart';
 import 'presence_cache_service.dart';
 import 'motion_service.dart';
+import 'gps_analysis_service.dart';
+
 
 
 class PresenceService {
@@ -25,7 +27,7 @@ class PresenceService {
 	static int? _lastBatteryLevel;
 	static bool? _lastGpsEnabled;
 	
-	static double? _lastSpeedKmh;
+	static double? lastSpeedKmh;
 	static DateTime? _lastAcceptedLocationTime;
 		
 		
@@ -128,144 +130,69 @@ static Future<void> updateOnline({
 					.difference(_lastAcceptedLocationTime!)
 					.inMilliseconds /
 					1000.0;
-		}
-		
-		double? calculatedSpeedKmh;
+		}	
 
-		if (movedMeters != null &&
-				elapsedSeconds != null &&
-				elapsedSeconds > 0) {
-			calculatedSpeedKmh =
-					(movedMeters / elapsedSeconds) * 3.6;
-		}
-		
-		double? speedJumpKmh;
-
-		if (_lastSpeedKmh != null) {
-			speedJumpKmh =
-					(speedKmh - _lastSpeedKmh!).abs();
-		}
-		
 		final motionRecent =
 			MotionService.wasRecentlyMoving();
 			
-		double? speedDifferenceKmh;
-
-		if (calculatedSpeedKmh != null) {
-			speedDifferenceKmh =
-					(calculatedSpeedKmh - speedKmh).abs();
-		}
+		final analysis = GpsAnalysisService.analyze(
+			input: GpsAnalysisInput(
+				accuracy: position.accuracy,
+				movedMeters: movedMeters,
+				elapsedSeconds: elapsedSeconds,
+				reportedSpeedKmh: speedKmh,
+				lastSpeedKmh: lastSpeedKmh,
+				motionRecent: motionRecent,
+			),
+		);
 
 		
-		int gpsRiskScore = 0;
-		final List<String> gpsRiskReasons = [];
+		if (analysis.decision == GpsDecision.verify) {
+			final confirmation =
+					await _getConfirmationPosition();
 
-		// Accuracy riski
-		if (position != null) {
-			if (position.accuracy > 35) {
-				gpsRiskScore += 3;
-				gpsRiskReasons.add('accuracy_high');
-			} else if (position.accuracy > 20) {
-				gpsRiskScore += 2;
-				gpsRiskReasons.add('accuracy_medium');
-			} else if (position.accuracy > 10) {
-				gpsRiskScore += 1;
-				gpsRiskReasons.add('accuracy_low');
-			}
-		}
+			if (confirmation != null) {
+				final verifyDistance =
+						Geolocator.distanceBetween(
+							position.latitude,
+							position.longitude,
+							confirmation.latitude,
+							confirmation.longitude,
+						);
 
-		// Mesafe riski
-		if (movedMeters != null) {
-			if (movedMeters >= 100) {
-				gpsRiskScore += 3;
-				gpsRiskReasons.add('distance_100');
-			} else if (movedMeters >= 50) {
-				gpsRiskScore += 2;
-				gpsRiskReasons.add('distance_50');
-			} else if (movedMeters >= 25) {
-				gpsRiskScore += 1;
-				gpsRiskReasons.add('distance_25');
-			}
-		}
-
-		// Koordinatlardan hesaplanan hız riski
-		if (calculatedSpeedKmh != null) {
-			if (calculatedSpeedKmh >= 60) {
-				gpsRiskScore += 3;
-				gpsRiskReasons.add('calculated_speed_60');
-			} else if (calculatedSpeedKmh >= 30) {
-				gpsRiskScore += 2;
-				gpsRiskReasons.add('calculated_speed_30');
-			} else if (calculatedSpeedKmh >= 10) {
-				gpsRiskScore += 1;
-				gpsRiskReasons.add('calculated_speed_10');
+				Log.d(
+					"BEACON_GPS_VERIFY => "
+					"firstAccuracy=${position.accuracy.toStringAsFixed(1)}m "
+					"secondAccuracy=${confirmation.accuracy.toStringAsFixed(1)}m "
+					"distance=${verifyDistance.toStringAsFixed(1)}m",
+				);
 			}
 		}
 		
-		if (speedJumpKmh != null) {
-			if (speedJumpKmh >= 40) {
-				gpsRiskScore += 4;
-				gpsRiskReasons.add('speed_jump_40');
-			} else if (speedJumpKmh >= 20) {
-				gpsRiskScore += 2;
-				gpsRiskReasons.add('speed_jump_20');
-			} else if (speedJumpKmh >= 10) {
-				gpsRiskScore += 1;
-				gpsRiskReasons.add('speed_jump_10');
-			}
-		}
-		
-		if (!motionRecent &&
-				movedMeters != null &&
-				movedMeters >= 50) {
-			gpsRiskScore += 3;
-			gpsRiskReasons.add('no_motion');
-		}
-		
-		if (speedDifferenceKmh != null) {
-			if (speedDifferenceKmh >= 50) {
-				gpsRiskScore += 3;
-				gpsRiskReasons.add('speed_difference_50');
-			} else if (speedDifferenceKmh >= 25) {
-				gpsRiskScore += 2;
-				gpsRiskReasons.add('speed_difference_25');
-			} else if (speedDifferenceKmh >= 10) {
-				gpsRiskScore += 1;
-				gpsRiskReasons.add('speed_difference_10');
-			}
-		}
-		
-		final String gpsDecision;
-
-		if (gpsRiskScore >= 6) {
-			gpsDecision = 'SUSPICIOUS';
-		} else if (gpsRiskScore >= 3) {
-			gpsDecision = 'VERIFY';
-		} else {
-			gpsDecision = 'SAFE';
-		}
 		
 Log.d(
   "BEACON_GPS => "
   "reason=$reason "
-  "accuracy=${position?.accuracy.toStringAsFixed(1)}m "
+  "accuracy=${position.accuracy.toStringAsFixed(1)}m "
   "moved=${movedMeters?.toStringAsFixed(1)}m "
   "elapsed=${elapsedSeconds?.toStringAsFixed(1)}s "
-	"motionRecent=$motionRecent ",
+  "motionRecent=$motionRecent",
 );
+
 Log.d(
   "BEACON_GPS => "
-  "lastSpeed=${_lastSpeedKmh?.toStringAsFixed(1)}kmh "
+  "lastSpeed=${lastSpeedKmh?.toStringAsFixed(1)}kmh "
   "reportedSpeed=${speedKmh.toStringAsFixed(1)}kmh "
-  "calculatedSpeed=${calculatedSpeedKmh?.toStringAsFixed(1)}kmh "
-	"speedDifference=${speedDifferenceKmh?.toStringAsFixed(1)}kmh "
-	"speedJump=${speedJumpKmh?.toStringAsFixed(1)}kmh ",
+  "calculatedSpeed=${analysis.calculatedSpeedKmh?.toStringAsFixed(1)}kmh "
+  "speedDifference=${analysis.speedDifferenceKmh?.toStringAsFixed(1)}kmh "
+  "speedJump=${analysis.speedJumpKmh?.toStringAsFixed(1)}kmh",
 );
+
 Log.d(
   "BEACON_GPS_SCORE => "
-  "score=$gpsRiskScore "
-  "decision=$gpsDecision "
-  "reasons=${gpsRiskReasons.isEmpty ? 'none' : gpsRiskReasons.join(',')}",
+  "score=${analysis.score} "
+  "decision=${analysis.decision.name} "
+  "reasons=${analysis.reasons.isEmpty ? 'none' : analysis.reasons.join(',')}",
 );
     
 		
@@ -442,7 +369,7 @@ Log.d(
   _lastGpsEnabled = gpsEnabled;
   _lastLat = position.latitude;
   _lastLng = position.longitude;
-	_lastSpeedKmh = speedKmh;
+	lastSpeedKmh = speedKmh;
 	_lastAcceptedLocationTime = DateTime.now();
 
   Log.d(
