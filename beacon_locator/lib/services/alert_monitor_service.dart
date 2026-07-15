@@ -120,9 +120,6 @@ class AlertMonitorService {
 				"BEACON ALERT MONITOR => "
 				"battery_low sent flag reset",
 			);
-		}
-		
-  }
-	
-	
+		}		
+  }	
 }

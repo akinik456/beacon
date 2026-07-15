@@ -12,10 +12,6 @@ dilek tel pil izni
 
 placename yanında 0 ?
 
-FS de alert var ise aynısı oluşturulmasın ?
-
-alerts her restart da yeniden oluşuyor
-
 ********
 SMS
 

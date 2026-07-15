@@ -1,24 +1,2 @@
 
--presence de gps sapmaları için yeni algoritma eklendi
 
-*******
-- geofence bildiriminde place name gösterilmiyor idi
-
-	index.js placename eklendi
-	
-requester
-main
-	firebaseMessagingBackgroundHandler sonunda body düzeltildi
-	
-******
-locator
-	locator_status_card.dart
-	
-	final gpsEnabled = snapshot.data ?? true;
-	
-*******
-locator alerts gönderirken sent flags sharedprefs e taşındı, 
-fs de çoklu doc oluşturma engellendi
-alerts monitor,service ve geoservice değişti
-
-*******
