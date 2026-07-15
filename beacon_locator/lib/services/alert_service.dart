@@ -131,6 +131,50 @@ class AlertService {
       );
       continue;
     }
+		
+		if (type != 'call_me') {
+			Query<Map<String, dynamic>> duplicateQuery = _firestore
+					.collection('groups')
+					.doc(groupId)
+					.collection('alerts')
+					.doc(requesterId)
+					.collection('items')
+					.where('locatorId', isEqualTo: locatorId)
+					.where('type', isEqualTo: type)
+					.where('status', isEqualTo: 'pending')
+					.limit(1);
+
+			if (type == 'place_enter' || type == 'place_exit') {
+				duplicateQuery = duplicateQuery.where(
+					'placeName',
+					isEqualTo: extraData['placeName'],
+				);
+			}
+
+			final duplicateSnapshot =
+					await duplicateQuery.get();
+
+			String alertId;
+
+			if (type != 'call_me' &&
+					duplicateSnapshot.docs.isNotEmpty) {
+				final existingDoc =
+						duplicateSnapshot.docs.first;
+
+				alertId = existingDoc.id;
+
+				await existingDoc.reference.delete();
+
+				Log.d(
+					"BEACON ALERT => existing alert deleted "
+					"requester=$requesterId "
+					"type=$type "
+					"alertId=$alertId",
+				);
+			} else {
+				alertId = const Uuid().v4();
+			}
+		}
 
     final alertId = const Uuid().v4();
 

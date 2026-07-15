@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'alert_service.dart';
 import '../utils/log.dart';
@@ -9,7 +10,6 @@ class GeofenceService {
 
   static const double _radiusMeters = 100;
 
-  static final Map<String, bool> _lastInsideState = {};
 
   static Future<Map<String, dynamic>> checkPlaces({
     required String groupId,
@@ -17,6 +17,7 @@ class GeofenceService {
     required double lat,
     required double lng,
   }) async {
+		final prefs = await SharedPreferences.getInstance();
     bool geoInside = false;
     String? currentPlaceId;
     String? currentPlaceName;
@@ -69,10 +70,16 @@ class GeofenceService {
 					currentPlaceDistanceMeters = distance;
         }
 
-        final previousInside =
-            _lastInsideState[placeId];
+        final stateKey =
+						'geofence_inside_${groupId}_${locatorId}_$placeId';
 
-        _lastInsideState[placeId] = isInside;
+				final previousInside =
+						prefs.getBool(stateKey);
+
+				await prefs.setBool(
+					stateKey,
+					isInside,
+				);
 
         if (previousInside == null) {
           continue;

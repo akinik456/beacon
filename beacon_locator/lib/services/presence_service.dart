@@ -75,7 +75,7 @@ class PresenceService {
       "accuracy=${position.accuracy.toStringAsFixed(1)}m",
     );
     position = null;
-  }*/
+  }?*?*/
 
   double speedKmh = 0;
 
@@ -84,10 +84,9 @@ class PresenceService {
     speedKmh = speedMps >= 0
         ? speedMps * 3.6
         : 0;
-    /* masabası test icin gerekli?
 		if (speedKmh < 3) { 
       speedKmh = 0;
-    }*/
+    }//?*?
   }
 
   double? movedMeters;
@@ -263,7 +262,6 @@ Log.d(
       movedMeters != null &&
       movedMeters < 25;
 
-  /* masabası test icin gerekli?
 	// Hareket yok, pil/GPS de değişmedi:
   // ne alert kontrolüne ne de RTDB write'a gerek var.
   if (shouldSkipSmallMove &&
@@ -275,7 +273,7 @@ Log.d(
       "moved=${movedMeters?.toStringAsFixed(1)}m",
     );
     return;
-  }*/
+  }//?*?
 
   // Hareket yok ama pil veya GPS durumu değişti:
   // yalnızca status alanlarını güncelle.

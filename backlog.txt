@@ -6,17 +6,15 @@ Foreground service destroyed
 - geo bildirim de place name kontrol et
 - locator default settings?
 - place i haritadan seçmek
-
-FutureBuilder<bool>(
-            future: Geolocator.isLocationServiceEnabled(),
-            builder: (context, snapshot) {
-              final gpsEnabled = snapshot.data ?? false;
 							
-gps off ile başlıyor hoş değil
 
 dilek tel pil izni
 
 placename yanında 0 ?
+
+FS de alert var ise aynısı oluşturulmasın ?
+
+alerts her restart da yeniden oluşuyor
 
 ********
 SMS

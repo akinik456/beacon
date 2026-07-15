@@ -199,7 +199,7 @@ class _LocatorCurrentLocationCardState
           FutureBuilder<bool>(
             future: Geolocator.isLocationServiceEnabled(),
             builder: (context, snapshot) {
-              final gpsEnabled = snapshot.data ?? false;
+              final gpsEnabled = snapshot.data ?? true;
 
               return Row(
                 children: [

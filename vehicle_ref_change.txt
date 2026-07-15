@@ -9,3 +9,11 @@
 requester
 main
 	firebaseMessagingBackgroundHandler sonunda body düzeltildi
+	
+******
+locator
+	locator_status_card.dart
+	
+	final gpsEnabled = snapshot.data ?? true;
+	
+*******

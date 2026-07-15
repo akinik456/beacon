@@ -33,42 +33,6 @@ class MovementAlertService {
   }) async {
 	Log.d("MovementAlertService.checkNow");
 	
-/*	// DEBUG ONLY
-final groupId = await IdentityService.getGroupId();
-final locatorId = await IdentityService.getLocatorId();
-
-if (groupId != null && locatorId != null) {
-  final snap = await FirebaseDatabase.instance
-      .ref("presence/groups/$groupId/locators/$locatorId")
-      .get();
-
-  final data = snap.value;
-
-  if (data is Map) {
-    final lat = data["debugLat"];
-    final lng = data["debugLng"];
-
-    if (lat is num && lng is num) {
-	Log.d("latitude:$lat");
-	Log.d("longitude:$lng");
-      position = Position(
-        latitude: lat.toDouble(),
-        longitude: lng.toDouble(),
-        timestamp: DateTime.now(),
-        accuracy: position.accuracy,
-        altitude: position.altitude,
-        heading: position.heading,
-        speed: position.speed,
-        speedAccuracy: position.speedAccuracy,
-        altitudeAccuracy: position.altitudeAccuracy,
-        headingAccuracy: position.headingAccuracy,
-      );
-
-      Log.d("BEACON MOVEMENT ALERT => DEBUG POSITION");
-    }
-  }
-}*/
-	
     final now = DateTime.now();
 
     if (position.accuracy > _maxAcceptableAccuracy) {
