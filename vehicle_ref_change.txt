@@ -17,3 +17,8 @@ locator
 	final gpsEnabled = snapshot.data ?? true;
 	
 *******
+locator alerts gönderirken sent flags sharedprefs e taşındı, 
+fs de çoklu doc oluşturma engellendi
+alerts monitor,service ve geoservice değişti
+
+*******

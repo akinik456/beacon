@@ -592,7 +592,7 @@ static Future<void> cleanupInvalidPairedLocators() async {
 								_pendingCallMeQueue.add(item);
 							}
 
-							_callMeData ??= item;
+							_callMeData = item;
 						});
 					}
 				});
@@ -1953,7 +1953,7 @@ Widget build(BuildContext context) {
 																);
 
 																_callMeData = _pendingCallMeQueue.isNotEmpty
-																		? _pendingCallMeQueue.first
+																		? _pendingCallMeQueue.last
 																		: null;
 																			});
 																		},
