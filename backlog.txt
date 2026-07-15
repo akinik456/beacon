@@ -11,9 +11,8 @@ FutureBuilder<bool>(
             future: Geolocator.isLocationServiceEnabled(),
             builder: (context, snapshot) {
               final gpsEnabled = snapshot.data ?? false;
+							
 gps off ile başlıyor hoş değil
-
-gps alert neden tekrarladı
 
 dilek tel pil izni
 

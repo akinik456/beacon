@@ -108,10 +108,10 @@ Future<void> firebaseMessagingBackgroundHandler(
         ? '$locatorName • ${placeName.toUpperCase()}: ${_localizedAlertType(alertType, langCode)}'
         : '$locatorName: ${_localizedAlertType(alertType, langCode)}';
   
-	await NotificationService.showAlert(
-    title: _localizedAlertTitle(langCode),
-    body: '$locatorName: ${_localizedAlertType(alertType, langCode)}',
-  );
+		await NotificationService.showAlert(
+		title: _localizedAlertTitle(langCode),
+		body: body,
+	);
 }
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

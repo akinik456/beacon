@@ -1,0 +1,11 @@
+
+-presence de gps sapmaları için yeni algoritma eklendi
+
+*******
+- geofence bildiriminde place name gösterilmiyor idi
+
+	index.js placename eklendi
+	
+requester
+main
+	firebaseMessagingBackgroundHandler sonunda body düzeltildi

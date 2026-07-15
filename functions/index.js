@@ -210,6 +210,7 @@ exports.onAlertCreated = onDocumentCreated(
     const locatorName = data.locatorName || "Locator";
     const locatorCode = data.locatorCode || "";
     const alertType = data.type || "alert";
+		const placeName = data.placeName || "";
 
     const topic = `requester_${requesterId}`;
 
@@ -245,6 +246,7 @@ exports.onAlertCreated = onDocumentCreated(
 				alertType,
 				locatorName,
 				locatorCode,
+				placeName,
 			},
 		});
 
