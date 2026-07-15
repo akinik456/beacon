@@ -59,8 +59,7 @@ import 'utils/log.dart';
 				}
 
 				break;
-			
-
+				
 			default:
 				Log.d(
 					"BEACON FCM BG => unknown type => $type",
