@@ -123,7 +123,8 @@ class PresenceService {
 		
 		var finalAnalysis = analysis;
 		
-		if (analysis.decision == GpsDecision.verify) {		
+		if (analysis.decision == GpsDecision.verify ||
+    analysis.decision == GpsDecision.suspicious) {		
 			final firstPosition = position;
 			final firstMovedMeters = movedMeters;
 				
@@ -222,7 +223,71 @@ class PresenceService {
 							}
 						}
 					}
-				}	
+				}
+		if (analysis.decision == GpsDecision.suspicious &&
+				finalAnalysis.decision != GpsDecision.safe) {
+				
+			try {
+  final rejectedRef = _db
+      .child('gps_diagnostics')
+      .child(groupId)
+      .child(locatorId)
+      .child('rejected')
+      .push();
+
+  await rejectedRef.set({
+    'createdAt': ServerValue.timestamp,
+    'reason': reason,
+
+    'score': analysis.score,
+    'decision': analysis.decision.name,
+    'reasons': analysis.reasons,
+
+    'lat': position.latitude,
+    'lng': position.longitude,
+    'accuracy': position.accuracy,
+
+    'movedMeters': movedMeters,
+    'elapsedSeconds': elapsedSeconds,
+
+    'reportedSpeedKmh': speedKmh,
+    'calculatedSpeedKmh':
+        analysis.calculatedSpeedKmh,
+    'speedDifferenceKmh':
+        analysis.speedDifferenceKmh,
+    'speedJumpKmh':
+        analysis.speedJumpKmh,
+
+    'motionRecent': motionRecent,
+
+    'positionTimestamp':
+        position.timestamp.millisecondsSinceEpoch,
+  });
+
+  Log.d(
+    "BEACON_GPS_REJECTED => "
+    "diagnostic saved "
+    "score=${analysis.score} "
+    "moved=${movedMeters?.toStringAsFixed(1)}m",
+  );
+} catch (e) {
+  Log.e(
+    "BEACON_GPS_REJECTED => "
+    "diagnostic save failed => $e",
+  );
+}
+
+Log.d(
+  "BEACON_GPS => suspicious fix rejected "
+  "score=${analysis.score} "
+  "reason=$reason",
+);
+
+return;	
+				
+
+		}
+				
 				
 		SmartPresenceScheduler.setSpeedKmh(speedKmh,);
 		
