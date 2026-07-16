@@ -51,6 +51,26 @@ class NotificationService {
 		);
 	}
 	
+	static Future<void> showCallMe({
+		required String title,
+		required String body,
+	}) async {
+		await _plugin.show(
+			DateTime.now().millisecondsSinceEpoch ~/ 1000,
+			title,
+			body,
+			const NotificationDetails(
+				android: AndroidNotificationDetails(
+					'call_me',
+					'Call Me',
+					channelDescription: 'Call me notifications',
+					importance: Importance.max,
+					priority: Priority.high,
+				),
+			),
+		);
+	}
+	
 	static Future<void> showAlert({
 		required String title,
 		required String body,

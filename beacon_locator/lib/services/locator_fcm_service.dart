@@ -5,6 +5,9 @@ import 'identity_service.dart';
 import 'smart_presence_scheduler.dart';
 import 'active_watcher_service.dart';
 import '../utils/log.dart';
+import '../utils/time_helper.dart';
+import 'notification_service.dart';
+
 
 class FCMService {
   FCMService._();
@@ -92,16 +95,16 @@ static int _initAttempt = 0;
   }
 		
 		
-		// ================= FOREGROUND LISTENER =================
+	// ================= FOREGROUND LISTENER =================
 
 	FirebaseMessaging.onMessage.listen((message) async {
 		Log.d("BEACON FCM => foreground message");
 		Log.d("BEACON FCM => data => ${message.data}");
 
-		final type = message.data['type'];
+		final data = message.data;
+		final type = data['type'];
 
 		switch (type) {
-
 			case 'active_watchers_changed':
 				Log.d(
 					"BEACON FCM => ACTIVE WATCHERS changed",
@@ -113,6 +116,36 @@ static int _initAttempt = 0;
 					"BEACON FCM => ACTIVE WATCHERS updated",
 				);
 				break;
+
+			case 'call_me':
+				final createdAtMillis = int.tryParse(
+					data['createdAt'] ?? '',
+				);
+
+				final timeText = TimeHelper.formatDateTime(
+					createdAtMillis,
+				);
+
+				final title = data['title'] ?? 'Call Me';
+
+				final messageBody =
+						data['body'] ?? 'Someone wants you to call.';
+
+				final body = timeText.isNotEmpty
+						? '$messageBody\n$timeText'
+						: messageBody;
+
+				await NotificationService.showCallMe(
+					title: title,
+					body: body,
+				);
+
+				break;
+
+			default:
+				Log.d(
+					"BEACON FCM => unknown foreground type => $type",
+				);
 		}
 	});
 	

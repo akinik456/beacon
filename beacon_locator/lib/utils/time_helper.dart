@@ -1,4 +1,6 @@
 import '../l10n/app_localizations.dart';
+import 'package:intl/intl.dart';
+
 
 class TimeHelper {
   TimeHelper._();
@@ -43,4 +45,15 @@ class TimeHelper {
 
     return l10n.daysAgo(days);
   }
+	
+		static String formatDateTime(
+		int? timestamp,
+	) {
+		if (timestamp == null) return '';
+
+		final dt = DateTime.fromMillisecondsSinceEpoch(timestamp).toLocal();
+
+		return DateFormat('dd.MM.yyyy HH:mm').format(dt);
+	}
+
 }

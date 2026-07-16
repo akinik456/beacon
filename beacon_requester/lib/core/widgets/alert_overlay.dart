@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../theme/app_colors.dart';
 import '../theme/app_fonts.dart';
 import 'app_card.dart';
 import '../../l10n/app_localizations.dart';
+import '../../utils/time_helper.dart';
 
 class AlertOverlay extends StatelessWidget {
   final Map<String, dynamic> data;
@@ -61,6 +63,14 @@ class AlertOverlay extends StatelessWidget {
 		final isPlaceAlert =
 				alertType == 'place_enter' ||
 				alertType == 'place_exit';
+				
+		final createdAt =
+    data['createdAt'] as Timestamp?;
+
+		final timeText =
+			TimeHelper.formatDateTime(
+				createdAt?.millisecondsSinceEpoch,
+			);
 
     return Positioned.fill(
       child: Material(
@@ -86,6 +96,14 @@ class AlertOverlay extends StatelessWidget {
 									style: AppFonts.title,
 									textAlign: TextAlign.center,
 								),
+								
+								Text(
+									timeText,
+									style: AppFonts.caption.copyWith(
+										color: AppColors.textSecondary,
+									),
+								),
+								const SizedBox(height: 8),
 								
 								if (isPlaceAlert && placeName.isNotEmpty) ...[
 									const SizedBox(height: 8),

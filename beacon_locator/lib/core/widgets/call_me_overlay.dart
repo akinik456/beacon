@@ -29,9 +29,8 @@ Widget build(BuildContext context) {
   final createdAt =
       data['createdAt'] as Timestamp?;
 
-  final timeText = TimeHelper.formatLastSeen(
+  final timeText = TimeHelper.formatDateTime(
     createdAt?.millisecondsSinceEpoch,
-    l10n,
   );
 
   return Material(

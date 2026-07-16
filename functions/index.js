@@ -95,6 +95,9 @@ exports.onCallMeCreated = onDocumentCreated(
   "groups/{groupId}/call_me/{targetId}/items/{callMeId}",
   async (event) => {
     const data = event.data.data();
+		
+		const createdAtMillis =
+				data.createdAt?.toMillis?.() ?? Date.now();
 
     const targetId = event.params.targetId;
     const callMeId = event.params.callMeId;
@@ -109,6 +112,7 @@ exports.onCallMeCreated = onDocumentCreated(
     let payload = {
       type: "call_me",
       callMeId,
+			createdAt: createdAtMillis.toString(),
     };
 
     if (isRequesterToLocator) {
@@ -118,7 +122,8 @@ exports.onCallMeCreated = onDocumentCreated(
         data.requesterCode || "";
 
       topic = `locator_${targetId}`;
-
+			
+			
       payload = {
         ...payload,
         requesterName,
@@ -131,8 +136,8 @@ exports.onCallMeCreated = onDocumentCreated(
         data.locatorCode || "";
 
       topic = `requester_${targetId}`;
-
-      payload = {
+			
+			payload = {
         ...payload,
         locatorName,
         locatorCode,
@@ -176,22 +181,16 @@ exports.onCallMeCreated = onDocumentCreated(
 			const response = await admin.messaging().send({
 				topic,
 
-				notification: {
-					title: notificationTitle,
-					body: notificationBody,
-				},
-
 				android: {
-					priority: "high",
-					notification: {
-						channelId: "call_me",
-						priority: "max",
-						defaultSound: true,
-					},
-				},
+				priority: "high",
+			},
 
-				data: payload,
-			});
+			data: {
+				...payload,
+				title: notificationTitle,
+				body: notificationBody,
+			},
+		});
 
 			console.log("CALL ME FCM SENT", topic, response);
 		} catch (error) {
@@ -203,6 +202,9 @@ exports.onAlertCreated = onDocumentCreated(
   "groups/{groupId}/alerts/{requesterId}/items/{alertId}",
   async (event) => {
     const data = event.data.data();
+		
+		const createdAtMillis =
+			data.createdAt?.toMillis?.() ?? Date.now();
 
     const requesterId = event.params.requesterId;
     const alertId = event.params.alertId;
@@ -247,6 +249,7 @@ exports.onAlertCreated = onDocumentCreated(
 				locatorName,
 				locatorCode,
 				placeName,
+				createdAt: createdAtMillis.toString(),
 			},
 		});
 

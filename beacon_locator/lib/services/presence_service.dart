@@ -260,7 +260,7 @@ Log.d(
   final shouldSkipSmallMove =
       (reason == 'timer' || reason == 'motion') &&
       movedMeters != null &&
-      movedMeters < 25;
+      movedMeters < 2; // ?*?< 25;
 
 	// Hareket yok, pil/GPS de değişmedi:
   // ne alert kontrolüne ne de RTDB write'a gerek var.

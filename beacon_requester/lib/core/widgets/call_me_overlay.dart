@@ -26,8 +26,8 @@ class CallMeOverlay extends StatelessWidget {
     data['createdAt'] as Timestamp?;
 
 	final timeText =
-    TimeHelper.formatLastSeen(
-      createdAt?.millisecondsSinceEpoch,l10n
+    TimeHelper.formatDateTime(
+      createdAt?.millisecondsSinceEpoch,
     );
 
   return Positioned.fill(
@@ -47,7 +47,7 @@ class CallMeOverlay extends StatelessWidget {
               const SizedBox(height: 18),
 
               Text(
-                '$locatorName',
+                locatorName,
                 style: AppFonts.title,
                 textAlign: TextAlign.center,
               ),

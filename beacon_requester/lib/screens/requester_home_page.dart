@@ -1519,8 +1519,9 @@ Widget _buildGroupHome({
 																							),
 																							const SizedBox(width: 8),
 																							Text(
-																								'${pairedLocators.length} '
-																								'${pairedLocators.length == 1 ? l10n.pairedMember : l10n.pairedMembers}',
+																							pairedLocators.length == 1
+																									? l10n.pairedMember
+																									: '${l10n.pairedMembers} (${pairedLocators.length})',
 																								style: AppFonts.subtitle.copyWith(
 																									color: AppColors.primary,
 																									fontWeight: FontWeight.w600,

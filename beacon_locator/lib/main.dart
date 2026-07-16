@@ -20,6 +20,7 @@ import 'services/presence_service.dart';
 import 'services/notification_service.dart';
 import 'services/native_presence_service.dart';
 import 'utils/log.dart';
+import 'utils/time_helper.dart';
 
 	@pragma('vm:entry-point')
 	Future<void> firebaseMessagingBackgroundHandler(
@@ -49,15 +50,44 @@ import 'utils/log.dart';
 					"BEACON FCM BG => CALL ME received",
 				);
 
-				if (message.notification == null) {
-					await NotificationService.showCallMe(
-						requesterName:
-								message.data['requesterName'] ?? 'Requester',
-						requesterCode:
-								message.data['requesterCode'] ?? '',
-					);
-				}
+				final prefs = await SharedPreferences.getInstance();
+				final langCode =
+						prefs.getString('languageCode') ?? 'en';
 
+				final requesterName =
+						message.data['requesterName'] ?? 'Requester';
+
+				final requesterCode =
+						message.data['requesterCode'] ?? '';
+
+				final createdAtMillis = int.tryParse(
+					message.data['createdAt'] ?? '',
+				);
+
+				final timeText = TimeHelper.formatDateTime(
+					createdAtMillis,
+				);
+
+				final title = message.data['title'] ??
+						switch (langCode) {
+							'tr' => 'Beni Ara',
+							'es' => 'Llámame',
+							_ => 'Call Me',
+						};
+
+				final messageBody = message.data['body'] ??
+						switch (langCode) {
+							'tr' => '$requesterName aramanı istiyor.',
+							'es' => '$requesterName quiere que lo llames.',
+							_ => '$requesterName wants you to call.',
+						};
+
+				await NotificationService.showCallMe(
+					title: title,
+					body: timeText.isNotEmpty
+							? '$messageBody\n$timeText'
+							: messageBody,
+				);
 				break;
 				
 			default:

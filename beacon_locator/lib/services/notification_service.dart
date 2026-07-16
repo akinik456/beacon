@@ -48,24 +48,24 @@ class NotificationService {
   }
 
   static Future<void> showCallMe({
-    required String requesterName,
-    required String requesterCode,
-  }) async {
-    await _plugin.show(
-      _callMeNotificationId,
-      'Call Me',
-      '$requesterName - $requesterCode wants you to call.',
-      const NotificationDetails(
-        android: AndroidNotificationDetails(
-          _callMeChannelId,
-          'Call Me',
-          channelDescription: 'Call me notifications',
-          importance: Importance.max,
-          priority: Priority.high,
-        ),
-      ),
-    );
-  }
+		required String title,
+		required String body,
+	}) async {
+		await _plugin.show(
+			_callMeNotificationId,
+			title,
+			body,
+			const NotificationDetails(
+				android: AndroidNotificationDetails(
+					_callMeChannelId,
+					'Call Me',
+					channelDescription: 'Call me notifications',
+					importance: Importance.max,
+					priority: Priority.high,
+				),
+			),
+		);
+	}
 
   static Future<void> showActiveWatchers({
 		required List<String> names,

@@ -10,7 +10,9 @@ Foreground service destroyed
 
 dilek tel pil izni
 
-placename yanında 0 ?
+tüm alerts de timestamp
+
+req widget
 
 ********
 SMS
