@@ -22,6 +22,8 @@ AppLogService genişletilip requester a da eklenmeli
 
 vehicle tarafında address rtdb ye kayıt alanı eklendi.family de değerlendir bu konuyu
 
+index getCountryCodeForTarget? US
+
 ********
 SMS
 

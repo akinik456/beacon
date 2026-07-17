@@ -67,8 +67,8 @@ class LocatorSettingsService {
 			_gpsOffAlertEnabled = data['gpsOffAlert'] ?? true;
 			_batteryLowAlertEnabled = data['batteryLowAlert'] ?? true;
 			_batteryLowLevel = data['batteryLowLevel'] ?? 20;
-			_geofenceAlertEnabled = data['geofenceAlert'] ?? false;
-			_movementAlertEnabled = data['movementAlert'] ?? false;
+			_geofenceAlertEnabled = data['geofenceAlert'] ?? true;
+			_movementAlertEnabled = data['movementAlert'] ?? true;
 
 			Log.d(
 				"LOCATOR SETTINGS => "
@@ -154,8 +154,8 @@ class LocatorSettingsService {
       'gpsOffAlert': data['gpsOffAlert'] ?? true,
       'batteryLowAlert': data['batteryLowAlert'] ?? true,
       'batteryLowLevel': data['batteryLowLevel'] ?? 20,
-      'geofenceAlert': data['geofenceAlert'] ?? false,
-			'movementAlert': data['movementAlert'] ?? false,
+      'geofenceAlert': data['geofenceAlert'] ?? true,
+			'movementAlert': data['movementAlert'] ?? true,
     };
   }
 
@@ -164,8 +164,8 @@ class LocatorSettingsService {
       'gpsOffAlert': true,
       'batteryLowAlert': true,
       'batteryLowLevel': 20,
-      'geofenceAlert': false,
-			'movementAlert': false,
+      'geofenceAlert': true,
+			'movementAlert': true,
     };
   }
 }

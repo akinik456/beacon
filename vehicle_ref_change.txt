@@ -1,14 +1,13 @@
-- bildirim ve overlay de date&time eklendi
+- +bildirim ve overlay de date&time eklendi
 index,main,fcm,notification services ,time_helper
 
-- vehicle tarafında address rtdb ye kayıt alanı eklendi.family de değerlendir bu konuyu
+- +getAddressFromLatLng değişti loc,req
 
-- getAddressFromLatLng değişti loc,req
-
-- movement.check değişti
+- +movement.check değişti
 
 - presence services değişti ,AppLogService eklendi
 
-- requesterde movement alert onDismiss değişti
+- +requesterde movement alert onDismiss değişti
 
-- geofence,movement settings,notify default enable yapıldı
+- +geofence,movement settings,notify default enable yapıldı
+

@@ -129,9 +129,7 @@ Future<void> firebaseMessagingBackgroundHandler(
 		return;
 	}
 
-	if (type != 'alert') return;
-	
-	
+	if (type != 'alert') return;	
 
   if (data['type'] != 'alert') return;
 
