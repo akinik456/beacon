@@ -14,6 +14,14 @@ tüm alerts de timestamp
 
 req widget
 
+dilek tel. movement ve place alert on idi,off olmuş ayrıca off olmasına rağmen bildirim geldi
+
+isim sonradan değişti ama bildirim ve overlay de üye kalıyor
+
+AppLogService genişletilip requester a da eklenmeli
+
+vehicle tarafında address rtdb ye kayıt alanı eklendi.family de değerlendir bu konuyu
+
 ********
 SMS
 
@@ -25,6 +33,8 @@ places bireysel enable
 
 v1.1: Firestore group rules hardening
 - app cihazdan kaldırılırsa FS den nasıl sileceğiz ?
+
+movement alert bildirim date&time
 
 *******
 - Trial abuse prevention

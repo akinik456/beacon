@@ -24,6 +24,7 @@ class MovementAlertService {
 
   static Position? _stationaryReference;
   static Position? _lastPosition;
+	static Position? _movementCandidate;
 
   static DateTime? _lastMeaningfulMoveAt;
 
@@ -84,22 +85,68 @@ class MovementAlertService {
       );
 
       if (movedFromReference < _movementStartMeters) {
-        return;
-      }
-			
-			if(!isReliableMove ) return;
+				_movementCandidate = null;
+				return;
+			}
 
-      await AlertService.sendMovementAlert(
-        movedMeters: movedFromReference,
-        detectedWhileOffline: false,
-      );
+			if (!isReliableMove) {
+				_movementCandidate = null;
+				return;
+			}
 
-      _state = _MovementState.moving;
-      _lastMeaningfulMoveAt = now;
-      _lastPosition = position;
+			final candidate = _movementCandidate;
 
-      Log.d("BEACON MOVEMENT ALERT => state=moving alert sent");
-      return;
+			if (candidate == null) {
+				_movementCandidate = position;
+
+				Log.d(
+					"BEACON MOVEMENT ALERT => "
+					"movement candidate set "
+					"movedFromRef=${movedFromReference.toStringAsFixed(1)}m",
+				);
+
+				return;
+			}
+
+			final distanceFromCandidate = Geolocator.distanceBetween(
+				candidate.latitude,
+				candidate.longitude,
+				position.latitude,
+				position.longitude,
+			);
+
+			final candidateConfirmed =
+					distanceFromCandidate <= 25 &&
+					movedFromReference >= _movementStartMeters;
+
+			if (!candidateConfirmed) {
+				_movementCandidate = position;
+
+				Log.d(
+					"BEACON MOVEMENT ALERT => "
+					"movement candidate replaced "
+					"distanceFromCandidate=${distanceFromCandidate.toStringAsFixed(1)}m",
+				);
+
+				return;
+			}
+
+			await AlertService.sendMovementAlert(
+				movedMeters: movedFromReference,
+				detectedWhileOffline: false,
+			);
+
+			_movementCandidate = null;
+			_state = _MovementState.moving;
+			_lastMeaningfulMoveAt = now;
+			_lastPosition = position;
+
+			Log.d(
+				"BEACON MOVEMENT ALERT => "
+				"state=moving confirmed alert sent",
+			);
+
+			return;
     }
 
     if (_state == _MovementState.moving) {

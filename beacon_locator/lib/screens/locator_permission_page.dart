@@ -6,6 +6,7 @@ import '../core/widgets/app_card.dart';
 import '../services/locator_permission_service.dart';
 import '../l10n/app_localizations.dart';
 
+import '../services/app_log_service.dart';
 
 class LocatorPermissionPage extends StatefulWidget {
 		const LocatorPermissionPage({super.key});
@@ -306,6 +307,17 @@ Widget build(BuildContext context) {
                 );
               },
             ),
+const SizedBox(height: 10),
+
+_PermissionItem(
+	icon: Icons.notifications_active_rounded,
+	title: l10n.notifications,
+	subtitle: l10n.importantFor,
+	granted: notificationGranted,
+	onTap: () async {
+		await AppLogService.shareLog();
+	},
+),
 
             const SizedBox(height: 24),
 

@@ -1966,7 +1966,6 @@ Widget build(BuildContext context) {
 																			final alertDocId = _alertData!['alertDocId'];
 																			final groupId = _alertData!['groupId'];
 																			final requesterId = _alertData!['targetRequesterId'];
-
 																			await FirebaseFirestore.instance
 																				.collection('groups')
 																				.doc(groupId)
@@ -1975,23 +1974,33 @@ Widget build(BuildContext context) {
 																				.collection('items')
 																				.doc(alertDocId)
 																				.delete();
-
 																			if (!mounted) return;
-
 																			setState(() {
 																				_alertData = null;
 																			});
-																		},		
+																		},																				
 																	),	
-																	/*if (_movementAlertData != null)
+																	if (_movementAlertData != null)
 																	AlertOverlay(
-																		data: _movementAlertData!,
-																		onDismiss: () {
+																		data: _movementAlertData!,																		
+																		onDismiss: () async {
+																			final movementalertDocId = _alertData!['movementalertDocId'];
+																			final groupId = _alertData!['groupId'];
+																			final requesterId = _alertData!['targetRequesterId'];
+																			await FirebaseFirestore.instance
+																				.collection('groups')
+																				.doc(groupId)
+																				.collection('alerts')
+																				.doc(requesterId)
+																				.collection('items')
+																				.doc(movementalertDocId)
+																				.delete();
+																			if (!mounted) return;
 																			setState(() {
-																				_movementAlertData = null;
+																				_alertData = null;
 																			});
-																		},
-																	),*/
+																		},																		
+																	),
 																	if (!_hasFullAccess && _hasGroup)
 																	SubscriptionExpiredOverlay(
 																		isMaster: _isMaster,

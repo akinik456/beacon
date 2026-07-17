@@ -53,6 +53,7 @@ import '../services/presence_cache_service.dart';
 import '../utils/map_helper.dart';
 import '../utils/address_helper.dart';
 import '../core/widgets/locator_status_card.dart';
+import '../services/app_log_service.dart';
 
 
 class LocatorHomePage extends StatefulWidget {
@@ -91,6 +92,7 @@ void initState() {
 	_locatorCodeDataFuture = _loadLocatorCodeData();
 	_loadTheme();
 	//MotionService.start();
+	
   unawaited(_startLocatorHome());
 
   unawaited(_loadVersion());
@@ -170,7 +172,20 @@ Future<void> _startLocatorHome() async {
   ActiveWatcherService.startUiOnly();
 
   _listenCallMe();
+	
+		await AppLogService.log(
+		type: AppLogType.presence,
+		source: 'MAIN',
+		text: 'Application started',
+	);
+
+	print(await AppLogService.getFilePath());
+	
+	await AppLogService.startSession(
+		source: "MAIN",
+	);
 }
+		
   @override
   void dispose() {
 		LocatorSettingsService.stopListeners();
@@ -194,7 +209,7 @@ Future<void> _startLocatorHome() async {
 				lng != null &&
 				(lat != _lastUiLat || lng != _lastUiLng)) {
 
-			_currentAddress =
+			_currentAddress = 
 					await AddressHelper.getAddressFromLatLng(
 				lat: lat,
 				lng: lng,

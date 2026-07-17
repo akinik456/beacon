@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math' as math;
 import 'package:firebase_database/firebase_database.dart';
 import 'package:battery_plus/battery_plus.dart';
 import 'package:geolocator/geolocator.dart';
@@ -160,7 +159,6 @@ await AppLogService.log(
 		);
 		
 		var finalAnalysis = analysis;
-		var confirmationAccepted = false;
 		
 		if (analysis.decision == GpsDecision.verify ||
     analysis.decision == GpsDecision.suspicious) {		
@@ -283,54 +281,16 @@ await AppLogService.log(
 	"secondMoved=${confirmationMovedMeters?.toStringAsFixed(1)}m",
 );	
 
-							final confirmationDistanceLimit = math.max(
-								50.0,
-								firstPosition.accuracy + confirmation.accuracy,
-							);
-
-							final confirmationMatches =
-									firstToSecondDistance <= confirmationDistanceLimit;
-
-							if (confirmationMatches) {
+							if (secondAnalysis.decision == GpsDecision.safe) {
 								position = confirmation;
 								movedMeters = confirmationMovedMeters;
 								speedKmh = confirmationSpeedKmh;
 								finalAnalysis = secondAnalysis;
-								confirmationAccepted = true;
-
-								Log.d(
-									"BEACON_GPS_VERIFY => confirmed "
-									"distance=${firstToSecondDistance.toStringAsFixed(1)}m "
-									"limit=${confirmationDistanceLimit.toStringAsFixed(1)}m",
-								);
-
-								await AppLogService.log(
-									type: AppLogType.gps,
-									text:
-											"BEACON_GPS_VERIFY => confirmed "
-											"distance=${firstToSecondDistance.toStringAsFixed(1)}m "
-											"limit=${confirmationDistanceLimit.toStringAsFixed(1)}m",
-								);
-							} else {
-								Log.d(
-									"BEACON_GPS_VERIFY => confirmation mismatch "
-									"distance=${firstToSecondDistance.toStringAsFixed(1)}m "
-									"limit=${confirmationDistanceLimit.toStringAsFixed(1)}m",
-								);
-
-								await AppLogService.log(
-									type: AppLogType.gps,
-									text:
-											"BEACON_GPS_VERIFY => confirmation mismatch "
-											"distance=${firstToSecondDistance.toStringAsFixed(1)}m "
-											"limit=${confirmationDistanceLimit.toStringAsFixed(1)}m",
-								);
 							}
 						}
 					}
 				}
 		if (analysis.decision == GpsDecision.suspicious &&
-				!confirmationAccepted &&
 				finalAnalysis.decision != GpsDecision.safe) {
 				
 			try {

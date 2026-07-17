@@ -34,8 +34,8 @@ class LocatorSettingsPage extends StatefulWidget {
 class _LocatorSettingsPageState extends State<LocatorSettingsPage> {
   bool gpsOffAlert = true;
   bool batteryLowAlert = true;
-  bool geofenceAlert = false;
-	bool movementAlert = false;
+  bool geofenceAlert = true;
+	bool movementAlert = true;
 
   int batteryLowLevel = 20;
   int _placeCount = 0;
@@ -180,8 +180,8 @@ Future<void> _loadPlaces() async {
       gpsOffAlert = settings['gpsOffAlert'] ?? true;
       batteryLowAlert = settings['batteryLowAlert'] ?? true;
       batteryLowLevel = settings['batteryLowLevel'] ?? 20;
-      geofenceAlert = settings['geofenceAlert'] ?? false;			
-			movementAlert = settings['movementAlert'] ?? false;
+      geofenceAlert = settings['geofenceAlert'] ?? true;			
+			movementAlert = settings['movementAlert'] ?? true;
 			
     });
   }
