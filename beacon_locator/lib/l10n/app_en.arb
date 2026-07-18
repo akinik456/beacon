@@ -170,6 +170,7 @@
 "receiveGPSalerts":										"Receive GPS off alerts",
 "receivelowbattery":									"Receive low battery alerts",
 "receiveMovement": 										"Receive movement alerts",
+"refreshMyLocation":									"Refresh My Location",
 "reject":															"Reject",
 "rejected":														"REJECTED",
 "remove":															"Remove",

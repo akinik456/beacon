@@ -516,6 +516,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get receiveMovement => 'Receive movement alerts';
 
   @override
+  String get refreshMyLocation => 'Refresh My Location';
+
+  @override
   String get reject => 'Reject';
 
   @override
@@ -608,7 +611,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get systemPermissions => 'SYSTEM PERMISSIONS';
 
   @override
+  String get thisadmin => 'This Admin will be removed from group.';
+
+  @override
   String get thismember => 'This Member will be removed from your paired list.';
+
+  @override
+  String get thismemberfromgroup => 'This Member will be removed from group.';
 
   @override
   String get title => 'LynraFamily';

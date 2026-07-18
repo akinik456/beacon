@@ -55,6 +55,9 @@ class GpsAnalysisService {
 	final moved = input.movedMeters;
 	final elapsed = input.elapsedSeconds;
 	final lastSpeed = input.lastSpeedKmh;
+	
+	final reportedSpeedReliable =
+    input.reportedSpeedKmh >= 1.0;
 
 	if (moved != null &&
 			elapsed != null &&
@@ -118,20 +121,21 @@ class GpsAnalysisService {
 				gpsRiskReasons.add('calculated_speed_10');
 			}
 		}
-		
-		if (speedJumpKmh != null) {
-			if (speedJumpKmh >= 40) {
-				gpsRiskScore += 4;
-				gpsRiskReasons.add('speed_jump_40');
-			} else if (speedJumpKmh >= 20) {
-				gpsRiskScore += 2;
-				gpsRiskReasons.add('speed_jump_20');
-			} else if (speedJumpKmh >= 10) {
-				gpsRiskScore += 1;
-				gpsRiskReasons.add('speed_jump_10');
+		if (reportedSpeedReliable) 
+		{
+			if (speedJumpKmh != null) {
+				if (speedJumpKmh >= 40) {
+					gpsRiskScore += 4;
+					gpsRiskReasons.add('speed_jump_40');
+				} else if (speedJumpKmh >= 20) {
+					gpsRiskScore += 2;
+					gpsRiskReasons.add('speed_jump_20');
+				} else if (speedJumpKmh >= 10) {
+					gpsRiskScore += 1;
+					gpsRiskReasons.add('speed_jump_10');
+				}
 			}
 		}
-		
 		if (!input.motionRecent &&
 				moved != null &&
 				moved >= 50) {
@@ -139,16 +143,18 @@ class GpsAnalysisService {
 			gpsRiskReasons.add('no_motion');
 		}
 		
-		if (speedDifferenceKmh != null) {
-			if (speedDifferenceKmh >= 50) {
-				gpsRiskScore += 3;
-				gpsRiskReasons.add('speed_difference_50');
-			} else if (speedDifferenceKmh >= 25) {
-				gpsRiskScore += 2;
-				gpsRiskReasons.add('speed_difference_25');
-			} else if (speedDifferenceKmh >= 10) {
-				gpsRiskScore += 1;
-				gpsRiskReasons.add('speed_difference_10');
+		if (reportedSpeedReliable) {
+			if (speedDifferenceKmh != null) {
+				if (speedDifferenceKmh >= 50) {
+					gpsRiskScore += 3;
+					gpsRiskReasons.add('speed_difference_50');
+				} else if (speedDifferenceKmh >= 25) {
+					gpsRiskScore += 2;
+					gpsRiskReasons.add('speed_difference_25');
+				} else if (speedDifferenceKmh >= 10) {
+					gpsRiskScore += 1;
+					gpsRiskReasons.add('speed_difference_10');
+				}
 			}
 		}
 	

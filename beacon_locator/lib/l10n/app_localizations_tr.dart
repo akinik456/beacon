@@ -516,6 +516,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get receiveMovement => 'Hareket uyarılarını al';
 
   @override
+  String get refreshMyLocation => 'Konumu Güncelle';
+
+  @override
   String get reject => 'Reddet';
 
   @override
@@ -608,7 +611,13 @@ class AppLocalizationsTr extends AppLocalizations {
   String get systemPermissions => 'SİSTEM İZİNLERİ';
 
   @override
+  String get thisadmin => 'Bu yönetici gruptan çıkarılacaktır.';
+
+  @override
   String get thismember => 'Bu üye listenizden kaldırılacaktır.';
+
+  @override
+  String get thismemberfromgroup => 'Bu üye gruptan çıkarılacaktır.';
 
   @override
   String get title => 'LynraFamily';

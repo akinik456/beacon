@@ -170,6 +170,7 @@
 "receiveGPSalerts":										"GPS kapalı uyarılarını alın",
 "receivelowbattery":									"Pil seviyesi düşük uyarısı alın",
 "receiveMovement": 										"Hareket uyarılarını al",
+"refreshMyLocation":									"Konumu Güncelle",
 "reject":															"Reddet",
 "rejected":														"REDDEDİLDİ",
 "remove":															"Sil",
