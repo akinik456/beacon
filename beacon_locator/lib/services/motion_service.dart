@@ -137,7 +137,7 @@ class MotionService {
       "mag=$magnitude",
     );
 
-    SmartPresenceScheduler.boostAndUpdateNow(
+    SmartPresenceScheduler.boostOnly(
       reason: 'motion',
     );
   }

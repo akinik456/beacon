@@ -1,13 +1,17 @@
+
+
+- presence services değişti ,AppLogService eklendi
+
+- locator de loc. status karta refreshmylocation butonu eklendi,
+presence de araçla hareket için iyileştirme yapıldı
+
+- +requesterde movement alert onDismiss değişti
+
+- +geofence,movement settings,notify default enable yapıldı
+
 - +bildirim ve overlay de date&time eklendi
 index,main,fcm,notification services ,time_helper
 
 - +getAddressFromLatLng değişti loc,req
 
 - +movement.check değişti
-
-- presence services değişti ,AppLogService eklendi
-
-- +requesterde movement alert onDismiss değişti
-
-- +geofence,movement settings,notify default enable yapıldı
-

@@ -10,20 +10,16 @@ Foreground service destroyed
 
 dilek tel pil izni
 
-tüm alerts de timestamp
-
-req widget
-
-dilek tel. movement ve place alert on idi,off olmuş ayrıca off olmasına rağmen bildirim geldi
-
-isim sonradan değişti ama bildirim ve overlay de üye kalıyor
-
 AppLogService genişletilip requester a da eklenmeli
-
-vehicle tarafında address rtdb ye kayıt alanı eklendi.family de değerlendir bu konuyu
 
 index getCountryCodeForTarget? US
 
+beni ara bildirimi silinmiyor
+
+active watcher varsa bile skip small mov. çalışıyor ve yazmıyor rtdb ye? 
+battery +/-5 kontrol et
+
+yaml versions?
 ********
 SMS
 
@@ -53,3 +49,21 @@ Support future products without changing the architecture.
 
 
 
+Burada araç gerçekten gidiyor. GPS hızı da 12 km/h diyor. Calculated speed 16.6 km/h. Bunlar birbirini doğruluyor aslında. Buna rağmen suspicious oluyor.
+
+Sonraki ölçüm ise hemen normale dönüyor:
+
+score=3
+decision=verify
+
+Ben olsam şu an başka hiçbir şeye dokunmam.
+
+Sadece bunu not alırım:
+
+reportedSpeed güvenilir ve calculatedSpeed ona yakınsa, speedJump cezası biraz fazla agresif olabilir.
+
+Ama bunu hemen değiştirmezdim.
+
+Çünkü bu logda sistem genel olarak doğru davranıyor. Önce birkaç farklı sürüş (şehir içi, dur-kalk, sabit hız, park halinde) daha görelim.
+
+Bence ilk kez loglara bakınca "evet, sistem toparlanıyor" hissini aldım. Bu iyi bir işaret. 💪
