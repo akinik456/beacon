@@ -5,6 +5,7 @@ import 'package:firebase_database/firebase_database.dart';
 
 import '../utils/log.dart';
 import '../utils/address_helper.dart';
+import '../utils/marker_helper.dart';
 import '../core/theme/app_colors.dart';
 
 
@@ -60,21 +61,7 @@ class _LiveTrackingMapPageState
 _selectedLocatorId = widget.locatorId;
 _selectedLocatorName = widget.locatorName;
 _selectedAddress = widget.address;
-		_markers.add(
-			Marker(
-				markerId: MarkerId(widget.locatorId),
-				position: LatLng(
-					widget.latitude,
-					widget.longitude,
-				),
-				icon: BitmapDescriptor.defaultMarkerWithHue(
-					BitmapDescriptor.hueAzure,
-				),
-				infoWindow: InfoWindow(
-					title: widget.locatorName,
-				),
-			),
-		);
+
 	_address = widget.address;
 	_listenPresence();
 	}
@@ -111,6 +98,66 @@ String _getLocatorName(String locatorId) {
 
 			if (_showAllMembers) {
   final all = Map<String, dynamic>.from(value);
+
+  await _updateAllMemberMarkers(all);
+
+  return;
+} else {
+      final lat = (value['lat'] as num?)?.toDouble();
+      final lng = (value['lng'] as num?)?.toDouble();
+
+      Log.d('LIVE MAP => lat=$lat lng=$lng');
+
+      if (lat == null || lng == null || !mounted) return;
+
+      final position = LatLng(lat, lng);
+			
+			
+			final resolvedAddress  = await AddressHelper.getAddressFromLatLng(
+				lat: lat,
+				lng: lng,
+			);
+				final markerIcon = await MarkerHelper.createMarker(
+			title: widget.locatorName,
+			selected: true,
+		);
+		
+		if (!mounted) return;
+
+			setState(() {
+				_address = resolvedAddress;
+
+				_markers.removeWhere(
+					(m) => m.markerId.value == widget.locatorId,
+				);
+				
+
+				_markers.add(
+					Marker(
+						markerId: MarkerId(widget.locatorId),
+						position: position,
+						icon: markerIcon,
+					),
+				);
+			});
+			if (_followMarker && !_showAllMembers) {
+				await _mapController?.animateCamera(
+					CameraUpdate.newLatLng(position),
+				);
+			}
+      Log.d('LIVE MAP => marker updated: $position');
+			}
+			
+    },
+    onError: (error) {
+      Log.d('LIVE MAP => RTDB ERROR: $error');
+    },
+  );
+}
+
+Future<void> _updateAllMemberMarkers(
+  Map<String, dynamic> all,
+) async {
   final markers = <Marker>{};
 
   for (final entry in all.entries) {
@@ -130,16 +177,16 @@ String _getLocatorName(String locatorId) {
     final locatorName =
         widget.locatorNames[locatorId] ?? 'Member';
 
+    final markerIcon = await MarkerHelper.createMarker(
+      title: locatorName,
+      selected: locatorId == _selectedLocatorId,
+    );
+
     markers.add(
       Marker(
         markerId: MarkerId(locatorId),
         position: position,
-        icon: BitmapDescriptor.defaultMarkerWithHue(
-          BitmapDescriptor.hueAzure,
-        ),
-        infoWindow: InfoWindow(
-          title: locatorName,
-        ),
+        icon: markerIcon,
         onTap: () async {
           final resolvedAddress =
               await AddressHelper.getAddressFromLatLng(
@@ -149,11 +196,11 @@ String _getLocatorName(String locatorId) {
 
           if (!mounted) return;
 
-          setState(() {
-            _selectedLocatorId = locatorId;
-            _selectedLocatorName = locatorName;
-            _selectedAddress = resolvedAddress;
-          });
+          _selectedLocatorId = locatorId;
+          _selectedLocatorName = locatorName;
+          _selectedAddress = resolvedAddress;
+
+          await _updateAllMemberMarkers(all);
         },
       ),
     );
@@ -166,57 +213,6 @@ String _getLocatorName(String locatorId) {
       ..clear()
       ..addAll(markers);
   });
-
-  return;
-} else {
-      final lat = (value['lat'] as num?)?.toDouble();
-      final lng = (value['lng'] as num?)?.toDouble();
-
-      Log.d('LIVE MAP => lat=$lat lng=$lng');
-
-      if (lat == null || lng == null || !mounted) return;
-
-      final position = LatLng(lat, lng);
-			
-			
-			final resolvedAddress  = await AddressHelper.getAddressFromLatLng(
-				lat: lat,
-				lng: lng,
-			);
-
-			setState(() {
-				_address = resolvedAddress;
-
-				_markers.removeWhere(
-					(m) => m.markerId.value == widget.locatorId,
-				);
-
-				_markers.add(
-					Marker(
-						markerId: MarkerId(widget.locatorId),
-						position: position,
-						icon: BitmapDescriptor.defaultMarkerWithHue(
-							BitmapDescriptor.hueAzure,
-						),
-						infoWindow: InfoWindow(
-							title: widget.locatorName,
-						),
-					),
-				);
-			});
-			if (_followMarker && !_showAllMembers) {
-				await _mapController?.animateCamera(
-					CameraUpdate.newLatLng(position),
-				);
-			}
-      Log.d('LIVE MAP => marker updated: $position');
-			}
-			
-    },
-    onError: (error) {
-      Log.d('LIVE MAP => RTDB ERROR: $error');
-    },
-  );
 }
 			
 

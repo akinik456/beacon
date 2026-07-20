@@ -50,6 +50,9 @@ flutter_launcher_icons:
 flutter:
   uses-material-design: true
   generate: true
+
+  assets:
+    - assets/images/
   
 flutter_native_splash:
   color: "#091220"
