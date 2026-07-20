@@ -603,6 +603,12 @@ abstract class AppLocalizations {
   /// **'Lifetime access'**
   String get lifeTimeAccess;
 
+  /// No description provided for @liveTrack.
+  ///
+  /// In en, this message translates to:
+  /// **'Live Track'**
+  String get liveTrack;
+
   /// No description provided for @locationAccess.
   ///
   /// In en, this message translates to:
@@ -1064,6 +1070,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Receive movement alerts'**
   String get receiveMovement;
+
+  /// No description provided for @refreshMyLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh My Location'**
+  String get refreshMyLocation;
 
   /// No description provided for @reject.
   ///

@@ -1,4 +1,5 @@
-
+- motion sürekli presence tetiklememesi için  
+SmartPresenceScheduler.boostOnly eklendi
 
 - presence services değişti ,AppLogService eklendi
 

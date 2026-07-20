@@ -93,6 +93,7 @@
 "lastKnownLocation":									"Last known location",
 "later":															"LATER",
 "lifeTimeAccess":											"Lifetime access",
+"liveTrack":													"Live Track",
 "locationAccess":											"Location Access",
 "locationAlwaysDescription": 					"Set to \"Allow all the time\" for tracking",
 "locationPermissionTitle": 						"Location permission",

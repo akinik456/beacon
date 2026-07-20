@@ -1,5 +1,7 @@
 // keytool -genkey -v -keystore upload-keystore.jks -keyalg RSA -keysize 2048 -validity 10000 -alias upload
 // Aa147852
+// AIzaSyBaSptuRV2acoQhrARt36IcplrX5VSt9Sw
+// AIzaSyD-T5KlKpC7JBgqARvtsMVU5Fqwv7g4O0Y
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';

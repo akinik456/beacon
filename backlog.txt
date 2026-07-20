@@ -20,6 +20,10 @@ active watcher varsa bile skip small mov. çalışıyor ve yazmıyor rtdb ye?
 battery +/-5 kontrol et
 
 yaml versions?
+
+master üye sil yaptıktan sonra loc eski master omayan req ile paired görünüyor listede
+
+araç takipte locator rtdb ye adres yazıyor( sonradan eklendi) pahalıymış? 
 ********
 SMS
 
