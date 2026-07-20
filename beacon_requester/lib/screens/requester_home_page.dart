@@ -1592,7 +1592,11 @@ Widget _buildGroupHome({
 																							final status = locator['status'] ?? 'offline';
 																							final battery = locator['battery'] ?? 0;
 																							final gpsEnabled = locator['gpsEnabled'] == true;																	
-																																														
+																							final locatorNames = <String, String>{
+																								for (final item in _locators)
+																									(item['locatorId'] ?? '') as String:
+																											(item['locatorName'] ?? 'Member') as String,
+																							};																							
 																							
 																							final stationarySince =
 																							locator['stationarySince'] is int
@@ -1651,6 +1655,7 @@ Widget _buildGroupHome({
 																												latitude: lat,
 																												longitude: lng,
 																												address: locator['address'] ?? l10n.addressNotAvailable,
+																												locatorNames: locatorNames,
 																											),
 																										),
 																									);

@@ -23,7 +23,13 @@ yaml versions?
 
 master üye sil yaptıktan sonra loc eski master omayan req ile paired görünüyor listede
 
-araç takipte locator rtdb ye adres yazıyor( sonradan eklendi) pahalıymış? 
+araç takipte locator rtdb ye adres yazıyor( sonradan eklendi) pahalıymış?
+
+internet kapalı ise fcm gereksiz zorluyor
+
+bekleyen pairing request kilitliyor muhtemelen join de öyle
+
+pil ikonu kırmızı iken ful , değiş 
 ********
 SMS
 

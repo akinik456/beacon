@@ -15,6 +15,7 @@ class LiveTrackingMapPage extends StatefulWidget {
   final double latitude;
   final double longitude;
 	final String address;
+	final Map<String, String> locatorNames;
 
   const LiveTrackingMapPage({
     super.key,
@@ -24,6 +25,7 @@ class LiveTrackingMapPage extends StatefulWidget {
     required this.latitude,
     required this.longitude,
     required this.address,
+		required this.locatorNames,
   });
 
   @override
@@ -35,12 +37,16 @@ class _LiveTrackingMapPageState
     extends State<LiveTrackingMapPage> {
 
   GoogleMapController? _controller;
-	Marker? _marker;
+	final Set<Marker> _markers = {};
 	StreamSubscription<DatabaseEvent>? _presenceSubscription;
 	GoogleMapController? _mapController;
 	bool _followMarker = true;
 	String _address = '';
 	MapType _mapType = MapType.normal;
+	bool _showAllMembers = false;
+	String? _selectedLocatorId;
+	String _selectedLocatorName = '';
+	String _selectedAddress = '';
 	
   static const CameraPosition _initialPosition =
       CameraPosition(
@@ -51,18 +57,22 @@ class _LiveTrackingMapPageState
 		@override
 	void initState() {
 		super.initState();
-
-		_marker = Marker(
-			markerId: const MarkerId("locator"),
-			position: LatLng(
-				widget.latitude,
-				widget.longitude,
-			),
-			icon: BitmapDescriptor.defaultMarkerWithHue(
-				BitmapDescriptor.hueAzure,
-			),
-			infoWindow: InfoWindow(
-				title: widget.locatorName,
+_selectedLocatorId = widget.locatorId;
+_selectedLocatorName = widget.locatorName;
+_selectedAddress = widget.address;
+		_markers.add(
+			Marker(
+				markerId: MarkerId(widget.locatorId),
+				position: LatLng(
+					widget.latitude,
+					widget.longitude,
+				),
+				icon: BitmapDescriptor.defaultMarkerWithHue(
+					BitmapDescriptor.hueAzure,
+				),
+				infoWindow: InfoWindow(
+					title: widget.locatorName,
+				),
 			),
 		);
 	_address = widget.address;
@@ -75,12 +85,15 @@ class _LiveTrackingMapPageState
 		_controller?.dispose();
 		super.dispose();
 	}
-
+String _getLocatorName(String locatorId) {
+  return widget.locatorNames[locatorId] ?? locatorId;
+}
 			
 	void _listenPresence() {
-  final path =
-      'presence/groups/${widget.groupId}/locators/${widget.locatorId}';
-
+  final path = _showAllMembers
+    ? 'presence/groups/${widget.groupId}/locators'
+    : 'presence/groups/${widget.groupId}/locators/${widget.locatorId}';
+		
   Log.d('LIVE MAP => listening: $path');
 
   final ref = FirebaseDatabase.instance.ref(path);
@@ -90,13 +103,72 @@ class _LiveTrackingMapPageState
       Log.d(
         'LIVE MAP => event value: ${event.snapshot.value}',
       );
-
-      final value = event.snapshot.value;
+			final value = event.snapshot.value;
       if (value is! Map) {
         Log.d('LIVE MAP => value is not Map');
         return;
       }
 
+			if (_showAllMembers) {
+  final all = Map<String, dynamic>.from(value);
+  final markers = <Marker>{};
+
+  for (final entry in all.entries) {
+    final locatorId = entry.key;
+
+    final data = Map<String, dynamic>.from(
+      entry.value as Map,
+    );
+
+    final lat = (data['lat'] as num?)?.toDouble();
+    final lng = (data['lng'] as num?)?.toDouble();
+
+    if (lat == null || lng == null) continue;
+
+    final position = LatLng(lat, lng);
+
+    final locatorName =
+        widget.locatorNames[locatorId] ?? 'Member';
+
+    markers.add(
+      Marker(
+        markerId: MarkerId(locatorId),
+        position: position,
+        icon: BitmapDescriptor.defaultMarkerWithHue(
+          BitmapDescriptor.hueAzure,
+        ),
+        infoWindow: InfoWindow(
+          title: locatorName,
+        ),
+        onTap: () async {
+          final resolvedAddress =
+              await AddressHelper.getAddressFromLatLng(
+            lat: lat,
+            lng: lng,
+          );
+
+          if (!mounted) return;
+
+          setState(() {
+            _selectedLocatorId = locatorId;
+            _selectedLocatorName = locatorName;
+            _selectedAddress = resolvedAddress;
+          });
+        },
+      ),
+    );
+  }
+
+  if (!mounted) return;
+
+  setState(() {
+    _markers
+      ..clear()
+      ..addAll(markers);
+  });
+
+  return;
+} else {
       final lat = (value['lat'] as num?)?.toDouble();
       final lng = (value['lng'] as num?)?.toDouble();
 
@@ -113,21 +185,33 @@ class _LiveTrackingMapPageState
 			);
 
 			setState(() {
-				_address = resolvedAddress ;
+				_address = resolvedAddress;
 
-				_marker = Marker(
-					markerId: const MarkerId("locator"),
-					position: position,
-					icon: BitmapDescriptor.defaultMarkerWithHue(
-						BitmapDescriptor.hueAzure,
-					),
-					infoWindow: InfoWindow(
-						title: widget.locatorName,
+				_markers.removeWhere(
+					(m) => m.markerId.value == widget.locatorId,
+				);
+
+				_markers.add(
+					Marker(
+						markerId: MarkerId(widget.locatorId),
+						position: position,
+						icon: BitmapDescriptor.defaultMarkerWithHue(
+							BitmapDescriptor.hueAzure,
+						),
+						infoWindow: InfoWindow(
+							title: widget.locatorName,
+						),
 					),
 				);
 			});
-
+			if (_followMarker && !_showAllMembers) {
+				await _mapController?.animateCamera(
+					CameraUpdate.newLatLng(position),
+				);
+			}
       Log.d('LIVE MAP => marker updated: $position');
+			}
+			
     },
     onError: (error) {
       Log.d('LIVE MAP => RTDB ERROR: $error');
@@ -153,9 +237,7 @@ class _LiveTrackingMapPageState
 							),
 							zoom: 16,
 						),
-						markers: {
-							if (_marker != null) _marker!,
-						},
+						markers: _markers,
 						myLocationEnabled: true,
 						myLocationButtonEnabled: true,
 						zoomControlsEnabled: true,
@@ -165,39 +247,68 @@ class _LiveTrackingMapPageState
 					),
 					
 					Positioned(
-  left: 16,
-  bottom: 90,
-  child: FloatingActionButton.small(
-  heroTag: "map_type",
-  backgroundColor: AppColors.primary,
-  onPressed: () {
-    setState(() {
-      _mapType = _mapType == MapType.normal
-          ? MapType.satellite
-          : MapType.normal;
-    });
-  },
-  child: Icon(
-    _mapType == MapType.normal
-        ? Icons.satellite_alt
-        : Icons.map,
-  ),
-),
-),
-
+						left: 16,
+						bottom: 130,
+						child: FloatingActionButton.small(
+						heroTag: "map_type",
+						backgroundColor: AppColors.primary,
+						onPressed: () {
+							setState(() {
+								_mapType = _mapType == MapType.normal
+										? MapType.satellite
+										: MapType.normal;
+							});
+						},
+						child: Icon(
+							_mapType == MapType.normal
+									? Icons.satellite_alt
+									: Icons.map,
+						),
+					),
+					),
 					Positioned(
 						left: 16,
-						bottom: 24,
+						bottom: 80,
+						child: FloatingActionButton.small(
+							heroTag: "all_members",
+							onPressed: () async {
+								await _presenceSubscription?.cancel();
+
+								setState(() {
+									_showAllMembers = !_showAllMembers;
+
+									if (_showAllMembers) {
+										_followMarker = false;
+									} else {
+										_markers.clear();
+									}
+								});
+
+								_listenPresence();
+							},
+							backgroundColor: AppColors.primary,
+							child: Icon(
+								_showAllMembers
+										? Icons.person_pin_circle_rounded
+										: Icons.groups_rounded,
+							),
+						),
+					),
+					Positioned(
+						left: 16,
+						bottom: 30,
 						child: FloatingActionButton.small(
 							onPressed: () async {
 								setState(() {
 									_followMarker = !_followMarker;
 								});
 
-								if (_followMarker && _marker != null) {
+								if (_followMarker && _markers.isNotEmpty) {
+									final firstMarker = _markers.first;
+
 									await _mapController?.animateCamera(
 										CameraUpdate.newLatLng(
-											_marker!.position,
+											firstMarker.position,
 										),
 									);
 								}
@@ -209,15 +320,14 @@ class _LiveTrackingMapPageState
 							),
 						),
 					),
-					
 					Positioned(
-  bottom: 16,
-  left: 0,
-  right: 0,
-  child: Center(
-    child: SizedBox(
-      width: 260,
-      child: Container(
+						bottom: 16,
+						left: 0,
+						right: 0,
+						child: Center(
+							child: SizedBox(
+								width: 260,
+								child: Container(
 							padding: const EdgeInsets.all(16),
 							decoration: BoxDecoration(
 								color: Colors.black.withOpacity(0.75),
@@ -237,7 +347,7 @@ class _LiveTrackingMapPageState
 											const SizedBox(width: 8),
 											Expanded(
 												child: Text(
-													widget.locatorName,
+													_selectedLocatorName,
 													style: const TextStyle(
 														fontSize: 16,
 														fontWeight: FontWeight.w700,
@@ -259,7 +369,7 @@ class _LiveTrackingMapPageState
 											const SizedBox(width: 8),
 											Expanded(
 												child: Text(
-													_address,
+													_selectedAddress,
 													maxLines: 2,
 													overflow: TextOverflow.ellipsis,
 													style: const TextStyle(
