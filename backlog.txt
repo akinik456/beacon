@@ -29,7 +29,9 @@ internet kapalı ise fcm gereksiz zorluyor
 
 bekleyen pairing request kilitliyor muhtemelen join de öyle
 
-pil ikonu kırmızı iken ful , değiş 
+pil ikonu kırmızı iken ful , değiş
+
+activeRequesterCount fazla arttı 
 ********
 SMS
 

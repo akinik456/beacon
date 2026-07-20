@@ -126,7 +126,7 @@ String _getLocatorName(String locatorId) {
 
 			setState(() {
 				_address = resolvedAddress;
-
+				_selectedAddress = resolvedAddress;
 				_markers.removeWhere(
 					(m) => m.markerId.value == widget.locatorId,
 				);
@@ -176,11 +176,24 @@ Future<void> _updateAllMemberMarkers(
 
     final locatorName =
         widget.locatorNames[locatorId] ?? 'Member';
+				
+		if (locatorId == _selectedLocatorId) {
+			final resolvedAddress =
+					await AddressHelper.getAddressFromLatLng(
+				lat: lat,
+				lng: lng,
+			);
+
+			_selectedLocatorName = locatorName;
+			_selectedAddress = resolvedAddress;
+		}
 
     final markerIcon = await MarkerHelper.createMarker(
       title: locatorName,
       selected: locatorId == _selectedLocatorId,
     );
+		
+		
 
     markers.add(
       Marker(

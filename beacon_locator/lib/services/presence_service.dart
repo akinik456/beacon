@@ -37,6 +37,8 @@ class PresenceService {
 		String reason = 'unknown',
 	}) async {
 	
+Log.d(
+      "BEACON PRESENCE => STARTED");	
 await AppLogService.log(
 type: AppLogType.presence,
 text: "updateOnline started reason=$reason",
@@ -105,7 +107,6 @@ await AppLogService.log(
 
   // Hatalı GPS konumunu hareket/konum hesabında kullanma.
   // Ancak pil veya GPS durumu değiştiyse aşağıda yine yazılabilir.
-  /* position.accuracy > 50 kontrol aktif olmalı mı?
 	if (position != null && position.accuracy > 50) {
     Log.d(
       "BEACON PRESENCE => "
@@ -113,7 +114,7 @@ await AppLogService.log(
       "accuracy=${position.accuracy.toStringAsFixed(1)}m",
     );
     position = null;
-  }?*?*/
+  }//?*?
 
   double speedKmh = 0;
 
@@ -468,7 +469,7 @@ await AppLogService.log(
   final shouldSkipSmallMove =
       (reason == 'timer' || reason == 'motion') &&
       movedMeters != null &&
-      movedMeters < 2; // ?*?< 25;
+      movedMeters < 25;
 
 	// Hareket yok, pil/GPS de değişmedi:
   // ne alert kontrolüne ne de RTDB write'a gerek var.

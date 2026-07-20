@@ -76,19 +76,20 @@ class SmartPresenceScheduler {
 	static void boostOnly({
 		required String reason,
 	}) {
-		Log.d(
-			"SMART PRESENCE => boost only => $reason",
-		);
+		final wasFast =
+				_fastUntil != null &&
+				DateTime.now().isBefore(_fastUntil!);
 
 		_fastUntil =
 				DateTime.now().add(_fastWindow);
 
-		_scheduleNext(
-			immediate: false,
-			reason: reason,
-		);
+		if (!wasFast) {
+			_scheduleNext(
+				immediate: false,
+				reason: reason,
+			);
+		}
 	}
-
   static Future<void> _runUpdate({
     required String reason,
   }) async {
