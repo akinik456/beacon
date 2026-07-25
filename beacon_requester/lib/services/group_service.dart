@@ -141,16 +141,38 @@ class GroupService {
       .collection('join_requests')
       .doc(requesterId);
 
-  final pendingRequests = await _firestore
-			.collection('groups')
-			.doc(groupId)
-			.collection('join_requests')
-			.limit(1)
-			.get();
+  final existingRequest = await joinRequestRef.get();
 
-	if (pendingRequests.docs.isNotEmpty) {
-		Log.d("BEACON GROUP => another join request is already pending");
-		return null;
+	if (existingRequest.exists) {
+		final data = existingRequest.data();
+		final status = data?['status'];
+
+		if (status == 'pending') {
+			final prefs =
+					await SharedPreferences.getInstance();
+
+			await prefs.setString(
+				'pending_group_id',
+				groupId,
+			);
+
+			await prefs.setString(
+				'group_code',
+				normalizedCode,
+			);
+
+			await prefs.setString(
+				'join_status',
+				'pending',
+			);
+
+			Log.d(
+				"BEACON GROUP => "
+				"existing pending join request restored",
+			);
+
+			return groupId;
+		}
 	}
 
   await joinRequestRef.set({

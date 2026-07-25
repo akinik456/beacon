@@ -1,3 +1,7 @@
+- add locator page de manuel kod girerken taşma oluyordu body değişti
+
+- pairing request/approve akışı değişti
+
 - locator de isim default üye idi isim yapıldı
 l10n.member-> l10n.name permission_intro_page,locator_home_page
 
