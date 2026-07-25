@@ -170,8 +170,6 @@ class JoinRequestCard extends StatelessWidget {
 															}
 															tx.set(requesterRef, {
 																'requesterCode': joinData['requesterCode'],
-																'requesterName': joinData['requesterName'],
-																'name': joinData['requesterName'],
 																'role': 'requester',
 																'isMaster': false,
 																'active': true,
@@ -184,10 +182,6 @@ class JoinRequestCard extends StatelessWidget {
 																'activeRequesterCount': FieldValue.increment(1),
 																'updatedAt': FieldValue.serverTimestamp(),
 															});
-															/*tx.set(requesterRefroot, {
-																'groupId': groupId,
-																'updatedAt': FieldValue.serverTimestamp(),
-															}, SetOptions(merge: true));*/
 															tx.update(joinRequestRef, {
 																'status': 'approved',
 																'approvedAt': FieldValue.serverTimestamp(),

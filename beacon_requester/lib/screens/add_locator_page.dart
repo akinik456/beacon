@@ -11,7 +11,8 @@ import '../services/pairing_response_service.dart';
 import '../services/group_service.dart';
 import '../l10n/app_localizations.dart';
 import '../core/widgets/app_banner.dart';
-
+import '../services/pending_pairing_service.dart';
+import '../services/pending_pairing_manager.dart';
 
 class AddLocatorPage extends StatefulWidget {
   const AddLocatorPage({
@@ -55,7 +56,72 @@ class _AddLocatorPageState extends State<AddLocatorPage> {
       codeCtrl.text = code;
     }
   }
+	Future<void> _listenPairingResponse({
+			required String locatorId,
+			required String requestId,
+		}) async {
+	StreamSubscription? pairingSub;
+		pairingSub = PairingResponseService
+				.watchPairingResponse(
+					locatorId: locatorId,
+					requestId: requestId,
+				)
+				.listen((snapshot) async {
+			final data = snapshot.data();
 
+			if (data == null) return;
+
+			final status = data['status'] ?? 'pending';
+
+			if (status == 'pending') return;
+
+			await pairingSub?.cancel();
+
+			if (!context.mounted) return;
+final l10n = AppLocalizations.of(context)!;
+			if (status == 'approved') {
+				await GroupService.addPairedLocatorToRequester(
+					locatorId: locatorId,
+				);
+
+				await GroupService.addPairedRequesterToLocator(
+					locatorId: locatorId,
+				);
+
+				await GroupService.ensureLocatorDefaultSettings(
+					locatorId: locatorId,
+				);
+
+				await GroupService.ensureRequesterNotifySettings(
+					locatorId: locatorId,
+				);
+
+				await PairingResponseService.deletePairingRequest(
+					locatorId: locatorId,
+					requestId: requestId,
+				);
+
+				if (!context.mounted) return;
+				AppBanner.success(
+					context,
+					l10n.memberpaired, 
+				);
+				Navigator.pop(context, true);
+				return;
+			}
+
+			await PairingResponseService.deletePairingRequest(
+				locatorId: locatorId,
+				requestId: requestId,
+			);
+
+			if (!context.mounted) return;
+			AppBanner.error(
+				context,
+				l10n.pairingRejected,
+			);
+		});
+	}
   @override
   Widget build(BuildContext context) {
 	final l10n = AppLocalizations.of(context)!;
@@ -76,8 +142,11 @@ class _AddLocatorPageState extends State<AddLocatorPage> {
 					),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
+      body: SafeArea(
+			child: SingleChildScrollView(
+				padding: const EdgeInsets.all(20),
+				keyboardDismissBehavior:
+						ScrollViewKeyboardDismissBehavior.onDrag,
         child: Column(
           children: [
             AppCard(
@@ -156,7 +225,7 @@ class _AddLocatorPageState extends State<AddLocatorPage> {
               ),
             ),
 
-            const Spacer(),
+            const SizedBox(height: 32),
 
             SizedBox(
               width: double.infinity,
@@ -202,72 +271,12 @@ class _AddLocatorPageState extends State<AddLocatorPage> {
 									}
 									final locatorId = result['locatorId']!;
 									final requestId = result['requestId']!;
+									await PendingPairingService.save(
+										locatorId: locatorId,
+										requestId: requestId,
+									);
 									if (!context.mounted) return;
-										AppBanner.info(
-										context,
-										l10n.waitingForLocator,
-										);										
-										StreamSubscription? pairingSub;
-										pairingSub = PairingResponseService
-												.watchPairingResponse(
-													locatorId: locatorId,
-													requestId: requestId,
-												)
-												.listen((snapshot) async {
-											final data = snapshot.data();
-
-											if (data == null) return;
-
-											final status = data['status'] ?? 'pending';
-
-											if (status == 'pending') return;
-
-											await pairingSub?.cancel();
-
-											if (!context.mounted) return;
-
-											if (status == 'approved') {
-												await GroupService.addPairedLocatorToRequester(
-													locatorId: locatorId,
-												);
-
-												await GroupService.addPairedRequesterToLocator(
-													locatorId: locatorId,
-												);
-
-												await GroupService.ensureLocatorDefaultSettings(
-													locatorId: locatorId,
-												);
-
-												await GroupService.ensureRequesterNotifySettings(
-													locatorId: locatorId,
-												);
-
-												await PairingResponseService.deletePairingRequest(
-													locatorId: locatorId,
-													requestId: requestId,
-												);
-
-												if (!context.mounted) return;
-												AppBanner.success(
-													context,
-													l10n.memberpaired,
-												);
-												Navigator.pop(context, true);
-												return;
-											}
-
-											await PairingResponseService.deletePairingRequest(
-												locatorId: locatorId,
-												requestId: requestId,
-											);
-
-											if (!context.mounted) return;
-											AppBanner.error(
-												context,
-												l10n.pairingRejected,
-											);
-										});
+									Navigator.pop(context, true);									
 									}
 									: null,
 									style: ElevatedButton.styleFrom(
@@ -290,6 +299,7 @@ class _AddLocatorPageState extends State<AddLocatorPage> {
             ),
           ],
         ),
+				),
       ),
     );
   }

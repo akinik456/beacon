@@ -18,7 +18,7 @@ class SmartPresenceScheduler {
     Duration(seconds: 15);
 
   static const _fastPeriod =
-      Duration(seconds: 60);
+      Duration(seconds: 30);
 
   static const _slowPeriod =
       Duration(hours: 1);
@@ -128,13 +128,15 @@ class SmartPresenceScheduler {
 		Duration period;
 
 		if (isFast) {
-			if (_hasActiveWatcher && _speedKmh >= 20) {
+			if (_hasActiveWatcher && _speedKmh >= 6) {
 				period = _vehiclePeriod;
 			} else {
 				period = _fastPeriod;
+Log.d("BEACON_SCHEDULE => period = _fastPeriod");			
 			}
 		} else {
 			period = _slowPeriod;
+Log.d("BEACON_SCHEDULE => period = _slowPeriod");			
 		}
 
 		Log.d(

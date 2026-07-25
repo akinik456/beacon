@@ -55,6 +55,9 @@ import '../services/theme_service.dart';
 import '../services/rtdb_auth_mapping_service.dart';
 import '../utils/log.dart';
 import 'live_tracking_map_page.dart';
+import '../services/pending_pairing_manager.dart';
+import '../services/pending_pairing_service.dart';
+import '../services/pairing_response_service.dart';
 
 
 class RequesterHomePage extends StatefulWidget {
@@ -253,6 +256,28 @@ class _RequesterHomePageState
 
 		await _loadLocators();
 		await FCMService.initialize();
+		
+		await PendingPairingManager.start(
+			onApproved: () async {
+				await _loadLocators();
+
+				if (!mounted) return;
+
+				AppBanner.success(
+					context,
+					AppLocalizations.of(context)!.memberpaired,
+				);
+			},
+			onRejected: () async {
+				if (!mounted) return;
+
+				AppBanner.error(
+					context,
+					AppLocalizations.of(context)!.pairingRejected,
+				);
+			},
+		);
+		
 	}
 	
 		Future<void> _loadVersion() async {
@@ -656,8 +681,6 @@ static Future<void> cleanupInvalidPairedLocators() async {
 					prefs.getString('group_code') ?? '------';
 		});
 	}
-
-	
 	
   void _showGroupQrDialog({
 		required BuildContext context,
@@ -1501,11 +1524,32 @@ Widget _buildGroupHome({
 																					);
 
 																					if (changed == true && context.mounted) {
-																						Navigator.pushReplacement(
+																						await PendingPairingManager.start(
+																							onApproved: () async {
+																								await _loadLocators();
+
+																								if (!mounted) return;
+
+																								AppBanner.success(
+																									context,
+																									AppLocalizations.of(context)!.memberpaired,
+																								);
+																							},
+																							onRejected: () async {
+																								if (!mounted) return;
+
+																								AppBanner.error(
+																									context,
+																									AppLocalizations.of(context)!.pairingRejected,
+																								);
+																							},
+																						);
+
+																						if (!context.mounted) return;
+
+																						AppBanner.info(
 																							context,
-																							MaterialPageRoute(
-																								builder: (_) => const RequesterHomePage(),
-																							),
+																							AppLocalizations.of(context)!.waitingForLocator,
 																						);
 																					}
 																				},
@@ -2058,7 +2102,7 @@ final l10n = AppLocalizations.of(context)!;
                 onTap: () async {
 									Navigator.pop(context);
 									final Uri url = Uri.parse(// ?*?
-										"https://play.google.com/store/apps/details?id=com.akinik.findlostgadget.app&pli=1",
+										"https://play.google.com/store/apps/details?id=com.lynra.beacon.requester",
 									);
 									await launchUrl(
 										url,

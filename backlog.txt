@@ -14,24 +14,39 @@ AppLogService genişletilip requester a da eklenmeli
 
 index getCountryCodeForTarget? US
 
-beni ara bildirimi silinmiyor
+beni ara bildirimi sağa kaydırarak silinmiyor
 
 active watcher varsa bile skip small mov. çalışıyor ve yazmıyor rtdb ye? 
 battery +/-5 kontrol et
 
 yaml versions?
 
-master üye sil yaptıktan sonra loc eski master omayan req ile paired görünüyor listede
+master üye sil yaptıktan sonra loc eski master olmayan req ile paired görünüyor listede
 
-araç takipte locator rtdb ye adres yazıyor( sonradan eklendi) pahalıymış?
+araç takipte locator rtdb ye adres yazıyor( sonradan eklendi) pahalıymış - adres sorgulama?
 
 internet kapalı ise fcm gereksiz zorluyor
 
 bekleyen pairing request kilitliyor muhtemelen join de öyle
 
-pil ikonu kırmızı iken ful , değiş
-
 activeRequesterCount fazla arttı 
+
+locator widget notu
+
+app linki , other apps check
+******************
+
+Bu ayar gelecekte aynı sorunu yaşama ihtimalini ciddi şekilde azaltır.
+Ancak senin uygulamanda asıl önemli olan kimlik (requesterId, locatorId, groupId) ile Firebase authUid arasındaki ilişki.
+
+Bu yüzden uzun vadede açılışta küçük bir doğrulama yapıp:
+
+Local requesterId var mı?
+Firestore'daki authUid mevcut Firebase uid ile aynı mı?
+
+değilse kimliği yeniden oluşturmak, sistemi tamamen dayanıklı hale getirir.
+
+Şimdilik ise bu manifest değişikliğini kesinlikle yapalım. Bu, yayın için doğru bir adım. 💪
 ********
 SMS
 
@@ -61,21 +76,3 @@ Support future products without changing the architecture.
 
 
 
-Burada araç gerçekten gidiyor. GPS hızı da 12 km/h diyor. Calculated speed 16.6 km/h. Bunlar birbirini doğruluyor aslında. Buna rağmen suspicious oluyor.
-
-Sonraki ölçüm ise hemen normale dönüyor:
-
-score=3
-decision=verify
-
-Ben olsam şu an başka hiçbir şeye dokunmam.
-
-Sadece bunu not alırım:
-
-reportedSpeed güvenilir ve calculatedSpeed ona yakınsa, speedJump cezası biraz fazla agresif olabilir.
-
-Ama bunu hemen değiştirmezdim.
-
-Çünkü bu logda sistem genel olarak doğru davranıyor. Önce birkaç farklı sürüş (şehir içi, dur-kalk, sabit hız, park halinde) daha görelim.
-
-Bence ilk kez loglara bakınca "evet, sistem toparlanıyor" hissini aldım. Bu iyi bir işaret. 💪

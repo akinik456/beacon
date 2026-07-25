@@ -2,6 +2,7 @@ import 'package:geolocator/geolocator.dart';
 
 import 'alert_service.dart';
 import '../utils/log.dart';
+import 'app_log_service.dart';
 
 // DEBUG ONLY
 import 'identity_service.dart';
@@ -24,7 +25,6 @@ class MovementAlertService {
 
   static Position? _stationaryReference;
   static Position? _lastPosition;
-	static Position? _movementCandidate;
 
   static DateTime? _lastMeaningfulMoveAt;
 
@@ -32,26 +32,62 @@ class MovementAlertService {
     required Position position,
     required String reason,
   }) async {
-	Log.d("MovementAlertService.checkNow");
-	
+    Log.d(
+      "BEACON_MOVEMENT_ALERT => checkNow",
+    );
+
+    await AppLogService.log(
+      type: AppLogType.gps,
+      text: "BEACON_MOVEMENT_ALERT => checkNow",
+    );
+
     final now = DateTime.now();
 
     if (position.accuracy > _maxAcceptableAccuracy) {
       Log.d(
-        "BEACON MOVEMENT ALERT => skip bad accuracy "
+        "BEACON_MOVEMENT_ALERT => "
+        "skip bad accuracy, "
         "accuracy=${position.accuracy.toStringAsFixed(1)}",
       );
+
+      await AppLogService.log(
+        type: AppLogType.gps,
+        text:
+            "BEACON_MOVEMENT_ALERT => "
+            "skip bad accuracy, "
+            "accuracy=${position.accuracy.toStringAsFixed(1)}",
+      );
+
       return;
     }
+
+    // ============================================================
+    // INITIAL STATE
+    // ============================================================
 
     if (_state == _MovementState.unknown) {
       _state = _MovementState.stationary;
       _stationaryReference = position;
       _lastPosition = position;
 
-      Log.d("BEACON MOVEMENT ALERT => state=stationary initial reference set");
+      Log.d(
+        "BEACON_MOVEMENT_ALERT => "
+        "state=stationary initial reference set",
+      );
+
+      await AppLogService.log(
+        type: AppLogType.gps,
+        text:
+            "BEACON_MOVEMENT_ALERT => "
+            "state=stationary initial reference set",
+      );
+
       return;
     }
+
+    // ============================================================
+    // STATIONARY STATE
+    // ============================================================
 
     if (_state == _MovementState.stationary) {
       final reference = _stationaryReference;
@@ -59,7 +95,19 @@ class MovementAlertService {
       if (reference == null) {
         _stationaryReference = position;
         _lastPosition = position;
-        Log.d("BEACON MOVEMENT ALERT => stationary reference reset");
+
+        Log.d(
+          "BEACON_MOVEMENT_ALERT => "
+          "stationary reference reset",
+        );
+
+        await AppLogService.log(
+          type: AppLogType.gps,
+          text:
+              "BEACON_MOVEMENT_ALERT => "
+              "stationary reference reset",
+        );
+
         return;
       }
 
@@ -69,85 +117,92 @@ class MovementAlertService {
         position.latitude,
         position.longitude,
       );
-			
-			final effectiveAccuracy = position.accuracy * 2;
 
-			final isReliableMove =
-					movedFromReference != null &&
-					movedFromReference >= 50 &&
-					movedFromReference > effectiveAccuracy;
+      final effectiveAccuracy = position.accuracy * 2;
 
       Log.d(
-        "BEACON MOVEMENT ALERT => "
+        "BEACON_MOVEMENT_ALERT => "
+        "effectiveAccuracy=${effectiveAccuracy.toStringAsFixed(1)}m",
+      );
+
+      await AppLogService.log(
+        type: AppLogType.gps,
+        text:
+            "BEACON_MOVEMENT_ALERT => "
+            "effectiveAccuracy=${effectiveAccuracy.toStringAsFixed(1)}m",
+      );
+
+      final isReliableMove =
+          movedFromReference >= _movementStartMeters &&
+          movedFromReference > effectiveAccuracy;
+
+      Log.d(
+        "BEACON_MOVEMENT_ALERT => "
         "state=stationary "
         "reason=$reason "
         "movedFromRef=${movedFromReference.toStringAsFixed(1)}m",
       );
 
+      await AppLogService.log(
+        type: AppLogType.gps,
+        text:
+            "BEACON_MOVEMENT_ALERT => "
+            "state=stationary "
+            "reason=$reason "
+            "movedFromRef=${movedFromReference.toStringAsFixed(1)}m",
+      );
+
       if (movedFromReference < _movementStartMeters) {
-				_movementCandidate = null;
-				return;
-			}
+        return;
+      }
 
-			if (!isReliableMove) {
-				_movementCandidate = null;
-				return;
-			}
+      Log.d(
+        "BEACON_MOVEMENT_ALERT => "
+        "isReliableMove=$isReliableMove",
+      );
 
-			final candidate = _movementCandidate;
+      await AppLogService.log(
+        type: AppLogType.gps,
+        text:
+            "BEACON_MOVEMENT_ALERT => "
+            "isReliableMove=$isReliableMove",
+      );
 
-			if (candidate == null) {
-				_movementCandidate = position;
+      if (!isReliableMove) {
+        return;
+      }
 
-				Log.d(
-					"BEACON MOVEMENT ALERT => "
-					"movement candidate set "
-					"movedFromRef=${movedFromReference.toStringAsFixed(1)}m",
-				);
+      // Referans noktasından 50 metre veya daha fazla uzaklaşıldı
+      // ve ölçüm accuracy değerine göre güvenilir.
+      // Candidate doğrulaması beklenmeden alarm gönderilir.
 
-				return;
-			}
+      await AlertService.sendMovementAlert(
+        movedMeters: movedFromReference,
+        detectedWhileOffline: false,
+      );
 
-			final distanceFromCandidate = Geolocator.distanceBetween(
-				candidate.latitude,
-				candidate.longitude,
-				position.latitude,
-				position.longitude,
-			);
+      _state = _MovementState.moving;
+      _lastMeaningfulMoveAt = now;
+      _lastPosition = position;
 
-			final candidateConfirmed =
-					distanceFromCandidate <= 25 &&
-					movedFromReference >= _movementStartMeters;
+      Log.d(
+        "BEACON_MOVEMENT_ALERT => "
+        "state=moving reliable movement alert sent",
+      );
 
-			if (!candidateConfirmed) {
-				_movementCandidate = position;
+      await AppLogService.log(
+        type: AppLogType.gps,
+        text:
+            "BEACON_MOVEMENT_ALERT => "
+            "state=moving reliable movement alert sent",
+      );
 
-				Log.d(
-					"BEACON MOVEMENT ALERT => "
-					"movement candidate replaced "
-					"distanceFromCandidate=${distanceFromCandidate.toStringAsFixed(1)}m",
-				);
-
-				return;
-			}
-
-			await AlertService.sendMovementAlert(
-				movedMeters: movedFromReference,
-				detectedWhileOffline: false,
-			);
-
-			_movementCandidate = null;
-			_state = _MovementState.moving;
-			_lastMeaningfulMoveAt = now;
-			_lastPosition = position;
-
-			Log.d(
-				"BEACON MOVEMENT ALERT => "
-				"state=moving confirmed alert sent",
-			);
-
-			return;
+      return;
     }
+
+    // ============================================================
+    // MOVING STATE
+    // ============================================================
 
     if (_state == _MovementState.moving) {
       final lastPosition = _lastPosition;
@@ -155,7 +210,19 @@ class MovementAlertService {
       if (lastPosition == null) {
         _lastPosition = position;
         _lastMeaningfulMoveAt = now;
-        Log.d("BEACON MOVEMENT ALERT => moving last position reset");
+
+        Log.d(
+          "BEACON_MOVEMENT_ALERT => "
+          "moving last position reset",
+        );
+
+        await AppLogService.log(
+          type: AppLogType.gps,
+          text:
+              "BEACON_MOVEMENT_ALERT => "
+              "moving last position reset",
+        );
+
         return;
       }
 
@@ -167,10 +234,19 @@ class MovementAlertService {
       );
 
       Log.d(
-        "BEACON MOVEMENT ALERT => "
+        "BEACON_MOVEMENT_ALERT => "
         "state=moving "
         "reason=$reason "
         "movedFromLast=${movedFromLast.toStringAsFixed(1)}m",
+      );
+
+      await AppLogService.log(
+        type: AppLogType.gps,
+        text:
+            "BEACON_MOVEMENT_ALERT => "
+            "state=moving "
+            "reason=$reason "
+            "movedFromLast=${movedFromLast.toStringAsFixed(1)}m",
       );
 
       if (movedFromLast >= _movementStartMeters) {
@@ -187,7 +263,17 @@ class MovementAlertService {
         _stationaryReference = position;
         _lastPosition = position;
 
-        Log.d("BEACON MOVEMENT ALERT => state=stationary new reference set");
+        Log.d(
+          "BEACON_MOVEMENT_ALERT => "
+          "state=stationary new reference set",
+        );
+
+        await AppLogService.log(
+          type: AppLogType.gps,
+          text:
+              "BEACON_MOVEMENT_ALERT => "
+              "state=stationary new reference set",
+        );
       }
     }
   }

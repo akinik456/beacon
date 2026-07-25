@@ -17,7 +17,7 @@ class MotionService {
   static double? _lastMagnitude;
 
   static void start() {
-    Log.d("MOTION => started");
+    Log.d("BEACON_MOTION => started");
 
     _sub?.cancel();
     _sub = null;
@@ -39,7 +39,7 @@ class MotionService {
         },
         onError: (e) {
           Log.d(
-            "BEACON MOTION => "
+            "BEACON_MOTION => "
             "user accelerometer error => $e",
           );
 
@@ -49,7 +49,7 @@ class MotionService {
       );
     } catch (e) {
       Log.e(
-        "BEACON MOTION => "
+        "BEACON_MOTION => "
         "user accelerometer unavailable => $e",
       );
 
@@ -59,7 +59,7 @@ class MotionService {
 
   static void _startAccelerometerFallback() {
     Log.d(
-      "BEACON MOTION => "
+      "BEACON_MOTION => "
       "starting accelerometer fallback",
     );
 
@@ -79,7 +79,7 @@ class MotionService {
         },
         onError: (e) {
           Log.d(
-            "BEACON MOTION => "
+            "BEACON_MOTION => "
             "accelerometer error => $e",
           );
         },
@@ -87,7 +87,7 @@ class MotionService {
       );
     } catch (e) {
       Log.e(
-        "BEACON MOTION => "
+        "BEACON_MOTION => "
         "no motion sensor available => $e",
       );
     }
@@ -131,7 +131,7 @@ class MotionService {
     _lastMotion = now;
 
     Log.d(
-      "BEACON MOTION => "
+      "BEACON_MOTION => "
       "detected "
       "source=$source "
       "mag=$magnitude",

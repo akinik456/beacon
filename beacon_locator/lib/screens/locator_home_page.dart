@@ -55,7 +55,7 @@ import '../utils/map_helper.dart';
 import '../utils/address_helper.dart';
 import '../core/widgets/locator_status_card.dart';
 import '../services/app_log_service.dart';
-
+import '../services/presence_service.dart';
 
 class LocatorHomePage extends StatefulWidget {
   const LocatorHomePage({super.key});
@@ -1065,7 +1065,10 @@ Widget _pairedRequesterCard() {
 																		_watchPairedRequesterData().asBroadcastStream();
 															});
 
-															await SmartPresenceScheduler.boostAndUpdateNow(
+															/*await SmartPresenceScheduler.boostAndUpdateNow(
+																reason: 'pairing_approved',
+															);*/
+															await PresenceService.updateOnline(
 																reason: 'pairing_approved',
 															);
 														}
@@ -1285,7 +1288,7 @@ final l10n = AppLocalizations.of(context)!;
  					final l10n = AppLocalizations.of(context)!;
            final locatorId = snapshot.data?['locatorId'] ?? '';
             final locatorCode = snapshot.data?['locatorCode'] ?? '------';
-            final locatorName = snapshot.data?['locatorName'] ?? l10n.member;
+            final locatorName = snapshot.data?['locatorName'] ?? l10n.name;
 						final groupId = snapshot.data?['groupId'] ?? '';
 						final groupName = snapshot.data?['groupName'] ?? '';
 						final langCode =
@@ -1631,7 +1634,7 @@ final l10n = AppLocalizations.of(context)!;
                 onTap: () async {
 									Navigator.pop(context);
 									final Uri url = Uri.parse(// ?*?
-										"https://play.google.com/store/apps/details?id=com.akinik.findlostgadget.app&pli=1",
+										"https://play.google.com/store/apps/details?id=com.lynra.beacon.locator",
 									);
 									await launchUrl(
 										url,

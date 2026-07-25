@@ -5,36 +5,22 @@ import '../theme/app_colors.dart';
 import '../theme/app_fonts.dart';
 import 'app_card.dart';
 import '../../l10n/app_localizations.dart';
-import '../../services/identity_service.dart';
 import '../../utils/log.dart';
 import 'dialogs/app_confirm_dialog.dart';
 
-
 class RequesterListCard extends StatelessWidget {
   final String groupId;
-	final bool isMaster;
-	
+  final bool isMaster;
+
   const RequesterListCard({
     super.key,
     required this.groupId,
-		required this.isMaster,
+    required this.isMaster,
   });
 
   @override
   Widget build(BuildContext context) {
-	final l10n = AppLocalizations.of(context)!;
-	
-	
-    return FutureBuilder<Map<String, String?>>(
-  future: () async {
-    return {
-      'id': await IdentityService.getRequesterId(),
-      'name': await IdentityService.getRequesterName(),
-    };
-  }(),
-  builder: (context, mySnapshot) {
-    final myRequesterId = mySnapshot.data?['id'];
-    final myRequesterName = mySnapshot.data?['name'];
+    final l10n = AppLocalizations.of(context)!;
 
     return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
       stream: FirebaseFirestore.instance
@@ -61,10 +47,13 @@ class RequesterListCard extends StatelessWidget {
           if (aMaster && !bMaster) return -1;
           if (!aMaster && bMaster) return 1;
 
-          final aName =
-              (aData['name'] ?? '').toString().toLowerCase();
-          final bName =
-              (bData['name'] ?? '').toString().toLowerCase();
+          final aName = (aData['requesterName'] ?? '')
+              .toString()
+              .toLowerCase();
+
+          final bName = (bData['requesterName'] ?? '')
+              .toString()
+              .toLowerCase();
 
           return aName.compareTo(bName);
         });
@@ -76,7 +65,7 @@ class RequesterListCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-								  '${l10n.requesters} ${docs.length}',
+                  '${l10n.requesters} ${docs.length}',
                   style: AppFonts.subtitle.copyWith(
                     color: AppColors.primary,
                   ),
@@ -85,149 +74,148 @@ class RequesterListCard extends StatelessWidget {
                 const SizedBox(height: 2),
 
                 ...docs.map((doc) {
-									final data = doc.data();
-									final requesterId = doc.id;
+                  final data = doc.data();
+                  final requesterId = doc.id;
 
-									final isMasterMember = data['isMaster'] == true;
+                  final isMasterMember =
+                      data['isMaster'] == true;
 
-									return FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-										future: FirebaseFirestore.instance
-												.collection('requesters')
-												.doc(requesterId)
-												.get(),
-										builder: (context, rootSnapshot) {
-											final rootData = rootSnapshot.data?.data() ?? {};
+                  return FutureBuilder<
+                      DocumentSnapshot<Map<String, dynamic>>>(
+                    future: FirebaseFirestore.instance
+                        .collection('requesters')
+                        .doc(requesterId)
+                        .get(),
+                    builder: (context, rootSnapshot) {
+                      final rootData =
+                          rootSnapshot.data?.data() ?? {};
 
-											final name = rootData['name'] ??
-													rootData['requesterName'] ??
-													data['requesterName'] ??
-													'Requester';
+                      final name = rootData['requesterName'] ?? 'Requester';
 
-											final code = rootData['requesterCode'] ??
-													data['requesterCode'] ??
-													'';
+                      final code =
+												rootData['requesterCode'] ??
+												data['requesterCode'] ??
+												'';
 
-											return Padding(
-												padding: const EdgeInsets.only(bottom: 0),
-												child: SizedBox(
-													height: 30,
-													child: Row(
-														children: [
-															Icon(
-																isMasterMember
-																		? Icons.workspace_premium_rounded
-																		: Icons.person_rounded,
-																color: AppColors.primary,
-																size: 18,
-															),
+                      return SizedBox(
+                        height: 30,
+                        child: Row(
+                          children: [
+                            Icon(
+                              isMasterMember
+                                  ? Icons.workspace_premium_rounded
+                                  : Icons.person_rounded,
+                              color: AppColors.primary,
+                              size: 18,
+                            ),
 
-															const SizedBox(width: 6),
+                            const SizedBox(width: 6),
 
-															Expanded(
-																
-																child: RichText(
-																	overflow: TextOverflow.ellipsis,
-																	text: TextSpan(
-																		children: [
-																			TextSpan(
-																				text: '$name',
-																				style: AppFonts.subtitle.copyWith(
-																					color: AppColors.textPrimary,
-																					fontWeight: FontWeight.w700
-																				),
-																			),
+                            Expanded(
+                              child: RichText(
+                                overflow: TextOverflow.ellipsis,
+                                text: TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text: '$name',
+                                      style: AppFonts.subtitle.copyWith(
+                                        color: AppColors.textPrimary,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
+                                    TextSpan(
+                                      text: ' - $code',
+                                      style: AppFonts.subtitle.copyWith(
+                                        color: AppColors.textSecondary,
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
 
-																			TextSpan(
-																				text: ' - $code',
-																				style: AppFonts.subtitle.copyWith(
-																					color: AppColors.textSecondary,
-																					fontSize:12,
-																				),
-																			),
-																		],
-																	),
-																),
-																
-															),
+                            if (isMasterMember)
+                              Text(
+                                l10n.master,
+                                style: AppFonts.caption.copyWith(
+                                  color: AppColors.primary,
+                                  height: 1.0,
+                                ),
+                              )
+                            else if (isMaster)
+                              TextButton.icon(
+                                onPressed: () async {
+                                  final result =
+                                      await AppConfirmDialog.show(
+                                    context: context,
+                                    title: l10n.removeFromGroup,
+                                    message: l10n.thisadmin,
+                                    confirmText: l10n.remove,
+                                    cancelText: l10n.cancel,
+                                    confirmColor: AppColors.danger,
+                                  );
 
-															if (isMasterMember)
-																Text(
-																	l10n.master,
-																	style: AppFonts.caption.copyWith(
-																		color: AppColors.primary,
-																		height: 1.0,
-																	),
-																)
-															else if (isMaster)
-																TextButton.icon(
-																	onPressed: () async {
-																		final result = await AppConfirmDialog.show(
-																			context: context,
-																			title: l10n.removeFromGroup,
-																			message: l10n.thisadmin,
-																			confirmText: l10n.remove,
-																			cancelText: l10n.cancel,
-																			confirmColor: AppColors.danger,
-																		);
-																		if (result != true) return;
-																	
-																		final groupRef = FirebaseFirestore.instance
-																				.collection('groups')
-																				.doc(groupId);
+                                  if (result != true) return;
 
-																		final requesterRef = groupRef
-																				.collection('devices')
-																				.doc(requesterId);
+                                  final groupRef =
+                                      FirebaseFirestore.instance
+                                          .collection('groups')
+                                          .doc(groupId);
 
-																		await FirebaseFirestore.instance
-																				.runTransaction((tx) async {
-																			tx.delete(requesterRef);
+                                  final requesterRef = groupRef
+                                      .collection('devices')
+                                      .doc(requesterId);
 
-																			tx.update(groupRef, {
-																				'activeRequesterCount':
-																						FieldValue.increment(-1),
-																				'updatedAt':
-																						FieldValue.serverTimestamp(),
-																			});
-																		});
+                                  await FirebaseFirestore.instance
+                                      .runTransaction((tx) async {
+                                    tx.delete(requesterRef);
 
-																		Log.d(
-																			"BEACON REQUESTER REMOVED => $requesterId",
-																		);
-																	},
-																	style: TextButton.styleFrom(
-																		padding: const EdgeInsets.symmetric(horizontal: 6),
-																		minimumSize: const Size(0, 30),
-																		tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-																	),
-																	icon: Icon(
-																		Icons.person_remove_rounded,
-																		color: AppColors.danger,
-																		size: 18,
-																	),
-																	label: Text(
-																		l10n.removeFromGroup,
-																		style: AppFonts.caption.copyWith(
-																			color: AppColors.danger,
-																			fontWeight: FontWeight.w600,
-																		),
-																	),
-																),
-														],
-													),
-												),
-											);
-										},
-									);
-								}),
+                                    tx.update(groupRef, {
+                                      'activeRequesterCount':
+                                          FieldValue.increment(-1),
+                                      'updatedAt':
+                                          FieldValue.serverTimestamp(),
+                                    });
+                                  });
+
+                                  Log.d(
+                                    'BEACON REQUESTER REMOVED => '
+                                    '$requesterId',
+                                  );
+                                },
+                                style: TextButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 6,
+                                  ),
+                                  minimumSize: const Size(0, 30),
+                                  tapTargetSize:
+                                      MaterialTapTargetSize.shrinkWrap,
+                                ),
+                                icon: Icon(
+                                  Icons.person_remove_rounded,
+                                  color: AppColors.danger,
+                                  size: 18,
+                                ),
+                                label: Text(
+                                  l10n.removeFromGroup,
+                                  style: AppFonts.caption.copyWith(
+                                    color: AppColors.danger,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
+                      );
+                    },
+                  );
+                }),
               ],
             ),
           ),
         );
       },
     );
-		},
-);
-		
   }
 }

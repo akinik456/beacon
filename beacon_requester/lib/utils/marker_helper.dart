@@ -35,8 +35,8 @@ class MarkerHelper {
         text: title,
         style: TextStyle(
   color: selected
-      ? const Color(0xFF22D3EE) // Seçili
-      : Color(0xFFF59E0B),           // Normal
+      ? const Color(0xFF000000) // Seçili
+      : Color(0xFF22D3EE),      // Normal
   fontSize: 18,
   fontWeight: FontWeight.w700,
   

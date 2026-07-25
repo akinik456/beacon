@@ -48,7 +48,6 @@ class RequesterNameEditor {
 				.doc(requesterId)
 				.set({
 			'requesterId': requesterId,
-			'name': newName,
 			'requesterName': newName,
 			'updatedAt': FieldValue.serverTimestamp(),
 		}, SetOptions(merge: true));

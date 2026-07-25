@@ -54,7 +54,6 @@ class RequesterRegistryService {
       'platform': Platform.operatingSystem,
       'requesterCode': requesterCode,
       'requesterName': requesterName,
-      'name': requesterName,
 
       'appVersion': packageInfo.version,
       'buildNumber': packageInfo.buildNumber,

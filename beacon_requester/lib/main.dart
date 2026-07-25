@@ -1,5 +1,5 @@
 // keytool -genkey -v -keystore upload-keystore.jks -keyalg RSA -keysize 2048 -validity 10000 -alias upload
-// Aa147852
+// Aa147852:keystore password
 // AIzaSyBaSptuRV2acoQhrARt36IcplrX5VSt9Sw
 // AIzaSyD-T5KlKpC7JBgqARvtsMVU5Fqwv7g4O0Y
 import 'package:flutter/material.dart';

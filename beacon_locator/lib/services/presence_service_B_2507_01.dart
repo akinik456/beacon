@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math' as math;
 import 'package:firebase_database/firebase_database.dart';
 import 'package:battery_plus/battery_plus.dart';
 import 'package:geolocator/geolocator.dart';
@@ -12,7 +13,7 @@ import 'smart_presence_scheduler.dart';
 import 'presence_cache_service.dart';
 import 'motion_service.dart';
 import 'gps_analysis_service.dart';
-import '../services/app_log_service.dart';
+import 'app_log_service.dart';
 
 
 
@@ -36,6 +37,7 @@ class PresenceService {
 		String reason = 'unknown',
 	}) async {
 	
+Log.d("BEACON_PRESENCE => STARTED");	
 await AppLogService.log(
 type: AppLogType.presence,
 text: "updateOnline started reason=$reason",
@@ -43,10 +45,17 @@ text: "updateOnline started reason=$reason",
   final groupId = _serviceGroupId ?? await IdentityService.getGroupId();
   final locatorId = _serviceLocatorId ?? await IdentityService.getLocatorId();
   if (groupId == null || locatorId == null) {
-    Log.d(
-      "BEACON PRESENCE => "
-      "missing group/locator",
+    await AppLogService.log(
+      type: AppLogType.warning,
+      text:
+          "updateOnline stopped: missing group/locator "
+          "groupId=$groupId locatorId=$locatorId",
     );
+
+    /*Log.d(
+      "BEACON_PRESENCE => "
+      "missing group/locator",
+    );*/
     return;
   }
 
@@ -84,23 +93,28 @@ await AppLogService.log(
   text: "getCurrentPosition failed: $e ",
 );
       Log.e(
-        "BEACON PRESENCE => "
+        "BEACON_PRESENCE => "
         "getCurrentPosition failed => $e",
       );
     }
+  } else {
+	Log.d("BEACON_PRESENCE => GPS disabled, position request skipped");
+    await AppLogService.log(
+      type: AppLogType.gps,
+      text: "GPS disabled, position request skipped",
+    );
   }
-
+if (position != null){Log.d("BEACON_PRESENCE => position:$position,accuracy:${position.accuracy},speed:${position.speed}");}
   // Hatalı GPS konumunu hareket/konum hesabında kullanma.
   // Ancak pil veya GPS durumu değiştiyse aşağıda yine yazılabilir.
-  /* position.accuracy > 50 kontrol aktif olmalı mı?
 	if (position != null && position.accuracy > 50) {
     Log.d(
-      "BEACON PRESENCE => "
+      "BEACON_PRESENCE => "
       "ignore inaccurate position "
       "accuracy=${position.accuracy.toStringAsFixed(1)}m",
     );
     position = null;
-  }?*?*/
+  }//?*?
 
   double speedKmh = 0;
 
@@ -115,7 +129,7 @@ await AppLogService.log(
   }
 
   double? movedMeters;
-
+Log.d("BEACON_PRESENCE =>_lastLat:$_lastLat,_lastLng:$_lastLng"); 
   if (position != null && _lastLat != null && _lastLng != null) {
     movedMeters = Geolocator.distanceBetween(
       _lastLat!,
@@ -134,7 +148,9 @@ await AppLogService.log(
 		}	
 
 		final motionRecent = MotionService.wasRecentlyMoving();
-			
+		
+		
+Log.d("BEACON_PRESENCE => GpsAnalysisService.analyze first time called position:$position"	);
 		final analysis = GpsAnalysisService.analyze(
 			input: GpsAnalysisInput(
 				accuracy: position.accuracy,
@@ -145,11 +161,14 @@ await AppLogService.log(
 				motionRecent: motionRecent,
 			),
 		);
+Log.d("BEACON_PRESENCE => analysis.decision:${analysis.decision.name},score:${analysis.score},reasons:${analysis.reasons}");
 		
 		var finalAnalysis = analysis;
+		var confirmationAccepted = false;
 		
 		if (analysis.decision == GpsDecision.verify ||
-    analysis.decision == GpsDecision.suspicious) {		
+    analysis.decision == GpsDecision.suspicious) {	
+Log.d("BEACON_PRESENCE => second analysis started");		
 			final firstPosition = position;
 			final firstMovedMeters = movedMeters;
 				
@@ -158,20 +177,31 @@ await AppLogService.log(
 					firstTimestamp: firstPosition.timestamp,
 				);
 				if (confirmation == null) {
-					Log.d(
+					/*Log.d(
 						"BEACON_GPS_VERIFY => "
 						"confirmation unavailable",
-					);
+					);*/
+await AppLogService.log(
+  type: AppLogType.gps,
+  text: "BEACON_GPS_VERIFY => confirmation unavailable",
+);					
 				} else {
 				final isNewFix =
 								confirmation.timestamp.isAfter(firstPosition.timestamp);
 				if (!isNewFix) {
-					Log.d(
+					/*Log.d(
 								"BEACON_GPS_VERIFY => "
 								"cached confirmation ignored "
 								"firstTime=${firstPosition.timestamp} "
 								"secondTime=${confirmation.timestamp}",
-							);
+							);*/
+await AppLogService.log(
+  type: AppLogType.gps,
+	text: "BEACON_GPS_VERIFY => "
+  "cached confirmation ignored "
+	"firstTime=${firstPosition.timestamp}"
+	"secondTime=${confirmation.timestamp}",	
+);	
 				} else {
 							final double? secondElapsedSeconds =
 									_lastAcceptedLocationTime != null
@@ -221,35 +251,148 @@ await AppLogService.log(
 								confirmation.longitude,
 							);
 
-							Log.d(
+							/*Log.d(
 								"BEACON_GPS_VERIFY => "
 								"firstTime=${firstPosition.timestamp} "
 								"secondTime=${confirmation.timestamp} "
 								"firstToSecond=${firstToSecondDistance.toStringAsFixed(1)}m",
-							);
+							);*/
+await AppLogService.log(
+  type: AppLogType.gps,
+  text: "BEACON_GPS_VERIFY => "
+  "firstTime=${firstPosition.timestamp} "
+	"secondTime=${confirmation.timestamp} "
+	"firstToSecond=${firstToSecondDistance.toStringAsFixed(1)}m",
+);	
 
-							Log.d(
+							/*Log.d(
 								"BEACON_GPS_VERIFY => "
 								"first=${analysis.decision.name}:${analysis.score} "
 								"second=${secondAnalysis.decision.name}:${secondAnalysis.score}",
-							);
-
-							Log.d(
+							);*/
+await AppLogService.log(
+  type: AppLogType.gps,
+  text: "BEACON_GPS_VERIFY => "
+	"first=${analysis.decision.name}:${analysis.score} "
+	"second=${secondAnalysis.decision.name}:${secondAnalysis.score}",
+);	
+							/*Log.d(
 								"BEACON_GPS_VERIFY => "
 								"firstMoved=${firstMovedMeters?.toStringAsFixed(1)}m "
 								"secondMoved=${confirmationMovedMeters?.toStringAsFixed(1)}m",
-							);
+							);*/
+await AppLogService.log(
+  type: AppLogType.gps,
+  text: "BEACON_GPS_VERIFY => "
+	"firstMoved=${firstMovedMeters?.toStringAsFixed(1)}m "
+	"secondMoved=${confirmationMovedMeters?.toStringAsFixed(1)}m",
+);	
 
-							if (secondAnalysis.decision == GpsDecision.safe) {
-								position = confirmation;
-								movedMeters = confirmationMovedMeters;
-								speedKmh = confirmationSpeedKmh;
-								finalAnalysis = secondAnalysis;
+							/*final confirmationDistanceLimit = math.max(
+								50.0,
+								firstPosition.accuracy + confirmation.accuracy,
+							);*/
+
+							final firstTime = firstPosition.timestamp;
+final confirmationTime = confirmation.timestamp;
+
+final confirmationElapsedSeconds = math.max(
+  0.0,
+  confirmationTime.difference(firstTime).inMilliseconds / 1000.0,
+);
+
+final firstSpeedMps = math.max(
+  0.0,
+  firstPosition.speed,
+);
+
+final confirmationSpeedMps = math.max(
+  0.0,
+  confirmation.speed,
+);
+
+final movementSpeedMps = math.max(
+  firstSpeedMps,
+  confirmationSpeedMps,
+);
+
+// İki GPS ölçümü alınırken cihazın gerçekten ilerleyebileceği mesafe.
+final expectedTravelMeters =
+    movementSpeedMps * confirmationElapsedSeconds;
+
+// GPS accuracy payı + gerçek hareket payı.
+// 1.5 katsayısı hız/süre ölçümündeki küçük sapmalara tolerans verir.
+final confirmationDistanceLimit = math.max(
+  50.0,
+  firstPosition.accuracy +
+      confirmation.accuracy +
+      (expectedTravelMeters * 1.5),
+);
+
+final confirmationMatches =
+    firstToSecondDistance <= confirmationDistanceLimit;
+
+Log.d(
+  "BEACON_GPS_VERIFY => "
+  "elapsed=${confirmationElapsedSeconds.toStringAsFixed(1)}s "
+  "speed=${(movementSpeedMps * 3.6).toStringAsFixed(1)}kmh "
+  "expectedTravel=${expectedTravelMeters.toStringAsFixed(1)}m "
+  "distance=${firstToSecondDistance.toStringAsFixed(1)}m "
+  "limit=${confirmationDistanceLimit.toStringAsFixed(1)}m",
+);
+
+await AppLogService.log(
+  type: AppLogType.gps,
+  text:
+      "BEACON_GPS_VERIFY => "
+      "elapsed=${confirmationElapsedSeconds.toStringAsFixed(1)}s "
+      "speed=${(movementSpeedMps * 3.6).toStringAsFixed(1)}kmh "
+      "expectedTravel=${expectedTravelMeters.toStringAsFixed(1)}m "
+      "distance=${firstToSecondDistance.toStringAsFixed(1)}m "
+      "limit=${confirmationDistanceLimit.toStringAsFixed(1)}m",
+);
+
+if (confirmationMatches) {
+  position = confirmation;
+  movedMeters = confirmationMovedMeters;
+  speedKmh = confirmationSpeedKmh;
+  finalAnalysis = secondAnalysis;
+  confirmationAccepted = true;
+
+
+								/*Log.d(
+									"BEACON_GPS_VERIFY => confirmed "
+									"distance=${firstToSecondDistance.toStringAsFixed(1)}m "
+									"limit=${confirmationDistanceLimit.toStringAsFixed(1)}m",
+								);*/
+
+								await AppLogService.log(
+									type: AppLogType.gps,
+									text:
+											"BEACON_GPS_VERIFY => confirmed "
+											"distance=${firstToSecondDistance.toStringAsFixed(1)}m "
+											"limit=${confirmationDistanceLimit.toStringAsFixed(1)}m",
+								);
+							} else {
+								/*Log.d(
+									"BEACON_GPS_VERIFY => confirmation mismatch "
+									"distance=${firstToSecondDistance.toStringAsFixed(1)}m "
+									"limit=${confirmationDistanceLimit.toStringAsFixed(1)}m",
+								);*/
+
+								await AppLogService.log(
+									type: AppLogType.gps,
+									text:
+											"BEACON_GPS_VERIFY => confirmation mismatch "
+											"distance=${firstToSecondDistance.toStringAsFixed(1)}m "
+											"limit=${confirmationDistanceLimit.toStringAsFixed(1)}m",
+								);
 							}
 						}
 					}
 				}
 		if (analysis.decision == GpsDecision.suspicious &&
+				!confirmationAccepted &&
 				finalAnalysis.decision != GpsDecision.safe) {
 				
 			try {
@@ -289,12 +432,20 @@ await AppLogService.log(
         position.timestamp.millisecondsSinceEpoch,
   });
 
-  Log.d(
+  /*Log.d(
     "BEACON_GPS_REJECTED => "
     "diagnostic saved "
     "score=${analysis.score} "
     "moved=${movedMeters?.toStringAsFixed(1)}m",
-  );
+  );*/
+await AppLogService.log(
+  type: AppLogType.gps,
+  text: "BEACON_GPS_REJECTED => "
+	"diagnostic saved "
+	"score=${analysis.score} "
+	"moved=${movedMeters?.toStringAsFixed(1)}m",
+);	
+	
 } catch (e) {
   Log.e(
     "BEACON_GPS_REJECTED => "
@@ -302,11 +453,17 @@ await AppLogService.log(
   );
 }
 
-Log.d(
+/*Log.d(
   "BEACON_GPS => suspicious fix rejected "
   "score=${analysis.score} "
   "reason=$reason",
-);
+);*/
+await AppLogService.log(
+  type: AppLogType.gps,
+  text: "BEACON_GPS_REJECTED => suspicious fix rejected  "
+	"score=${analysis.score} "
+	"reason=$reason",
+);	
 
 return;	
 				
@@ -316,52 +473,87 @@ return;
 				
 		SmartPresenceScheduler.setSpeedKmh(speedKmh,);
 		
-Log.d(
+/*Log.d(
   "BEACON_GPS => "
   "reason=$reason "
   "accuracy=${position.accuracy.toStringAsFixed(1)}m "
   "moved=${movedMeters?.toStringAsFixed(1)}m "
   "elapsed=${elapsedSeconds?.toStringAsFixed(1)}s "
   "motionRecent=$motionRecent",
-);
+);*/
 
-Log.d(
+/*Log.d(
   "BEACON_GPS => "
   "lastSpeed=${lastSpeedKmh?.toStringAsFixed(1)}kmh "
   "reportedSpeed=${speedKmh.toStringAsFixed(1)}kmh "
   "calculatedSpeed=${finalAnalysis.calculatedSpeedKmh?.toStringAsFixed(1)}kmh "
   "speedDifference=${finalAnalysis.speedDifferenceKmh?.toStringAsFixed(1)}kmh "
   "speedJump=${finalAnalysis.speedJumpKmh?.toStringAsFixed(1)}kmh",
-);
-Log.d(
+);*/
+/*Log.d(
   "BEACON_GPS_SCORE => "
   "score=${finalAnalysis.score} "
   "decision=${finalAnalysis.decision.name} "
   "reasons=${finalAnalysis.reasons.isEmpty ? 'none' : finalAnalysis.reasons.join(',')}",
-);    
+);*/  
 		
-		Log.d(
-      "BEACON PRESENCE => "
+		/*Log.d(
+      "BEACON_PRESENCE => "
       "reason=$reason "
       "moved=${movedMeters != null ? movedMeters.toStringAsFixed(1) : '-'}m",
-    );
+    );*/
+		
+await AppLogService.log(
+  type: AppLogType.gps,
+  text: "BEACON_GPS =>"
+  "reason=$reason "
+  "accuracy=${position.accuracy.toStringAsFixed(1)}m "
+  "moved=${movedMeters?.toStringAsFixed(1)}m "
+  "elapsed=${elapsedSeconds?.toStringAsFixed(1)}s "
+  "motionRecent=$motionRecent"
+  "lastSpeed=${lastSpeedKmh?.toStringAsFixed(1)}kmh "
+  "reportedSpeed=${speedKmh.toStringAsFixed(1)}kmh "
+  "calculatedSpeed=${finalAnalysis.calculatedSpeedKmh?.toStringAsFixed(1)}kmh "
+  "speedDifference=${finalAnalysis.speedDifferenceKmh?.toStringAsFixed(1)}kmh "
+  "speedJump=${finalAnalysis.speedJumpKmh?.toStringAsFixed(1)}kmh"
+  "score=${finalAnalysis.score} "
+  "decision=${finalAnalysis.decision.name} "
+  "reasons=${finalAnalysis.reasons.isEmpty ? 'none' : finalAnalysis.reasons.join(',')}"
+  "BEACON_PRESENCE => "
+  "reason=$reason "
+  "moved=${movedMeters != null ? movedMeters.toStringAsFixed(1) : '-'}m",
+	
+);	
+
   }
 
   final shouldSkipSmallMove =
       (reason == 'timer' || reason == 'motion') &&
       movedMeters != null &&
-      movedMeters < 2; // ?*?< 25;
+      movedMeters  < 25;
 
 	// Hareket yok, pil/GPS de değişmedi:
   // ne alert kontrolüne ne de RTDB write'a gerek var.
+Log.d("BEACON_PRESENCE => movedMeters:$movedMeters,shouldSkipSmallMove:$shouldSkipSmallMove,deviceStatusChanged:$deviceStatusChanged");
+
   if (shouldSkipSmallMove &&
       !deviceStatusChanged) {
-    Log.d(
-      "BEACON PRESENCE => "
+			Log.d("BEACON_PRESENCE => Presence skipped: small move");
+    await AppLogService.log(
+      type: AppLogType.presence,
+      text:
+          "Presence skipped: small move "
+          "reason=$reason "
+          "moved=${movedMeters?.toStringAsFixed(1)}m "
+          "deviceStatusChanged=false",
+    );
+
+    /*Log.d(
+      "BEACON_PRESENCE => "
       "skip small move "
       "reason=$reason "
       "moved=${movedMeters?.toStringAsFixed(1)}m",
-    );
+    );*/
     return;
   }//?*?
 
@@ -369,6 +561,16 @@ Log.d(
   // yalnızca status alanlarını güncelle.
   if (shouldSkipSmallMove &&
       deviceStatusChanged) {
+Log.d("BEACON_PRESENCE => SkipSmallMove but deviceStatusChanged");
+
+    await AppLogService.log(
+      type: AppLogType.rtdb,
+      text:
+          "RTDB status-only write started "
+          "reason=$reason path=$path "
+          "battery=$batteryLevel gpsEnabled=$gpsEnabled",
+    );
+
     await _db.child(path).update({
       'status': 'online',
       'lastSeen': ServerValue.timestamp,
@@ -386,23 +588,47 @@ Log.d(
     _lastBatteryLevel = batteryLevel;
     _lastGpsEnabled = gpsEnabled;
 
-    Log.d(
-      "BEACON PRESENCE => "
-      "device status updated without location",
+    await AppLogService.log(
+      type: AppLogType.rtdb,
+      text:
+          "RTDB status-only write success "
+          "reason=$reason path=$path",
     );
+
+    /*Log.d(
+      "BEACON_PRESENCE => "
+      "device status updated without location",
+    );*/
 
     return;
   }
 
   // Geçerli konum yoksa yalnızca değişen cihaz durumu yazılabilir.
   if (position == null) {
+	Log.d("BEACON_PRESENCE => position == null ,movedMeters:$movedMeters");
     if (!deviceStatusChanged) {
-      Log.d(
-        "BEACON PRESENCE => "
-        "no valid position and no status change",
+      await AppLogService.log(
+        type: AppLogType.presence,
+        text:
+            "Presence stopped: no valid position "
+            "and no device status change reason=$reason",
       );
+
+      /*Log.d(
+        "BEACON_PRESENCE => "
+        "no valid position and no status change",
+      );*/
+		Log.d("BEACON_PRESENCE => position == null ,movedMeters:$movedMeters return");
       return;
     }
+
+    await AppLogService.log(
+      type: AppLogType.rtdb,
+      text:
+          "RTDB status-only write started: no valid position "
+          "reason=$reason path=$path "
+          "battery=$batteryLevel gpsEnabled=$gpsEnabled",
+    );
 
     await _db.child(path).update({
       'status': 'online',
@@ -421,10 +647,17 @@ Log.d(
     _lastBatteryLevel = batteryLevel;
     _lastGpsEnabled = gpsEnabled;
 
-    Log.d(
-      "BEACON PRESENCE => "
-      "device status updated without valid position",
+    await AppLogService.log(
+      type: AppLogType.rtdb,
+      text:
+          "RTDB status-only write success: no valid position "
+          "reason=$reason path=$path",
     );
+
+    /*Log.d(
+      "BEACON_PRESENCE => "
+      "device status updated without valid position",
+    );*/
 
     return;
   }
@@ -466,11 +699,19 @@ Log.d(
       _lastGpsEnabled = gpsEnabled;
     }
 
-    Log.d(
-      "BEACON PRESENCE => "
+    await AppLogService.log(
+      type: AppLogType.presence,
+      text:
+          "Presence location write skipped: "
+          "motion without active watcher "
+          "deviceStatusChanged=$deviceStatusChanged",
+    );
+
+    /*Log.d(
+      "BEACON_PRESENCE => "
       "skip location write, "
       "motion without active watcher",
-    );
+    );*/
 
     return;
   }
@@ -506,8 +747,37 @@ Log.d(
         ServerValue.timestamp;
   }
 
-  await _db.child(path).update(updateData,);
-	await PresenceCacheService.save(cacheData);
+  await AppLogService.log(
+    type: AppLogType.rtdb,
+    text:
+        "RTDB presence write started "
+        "reason=$reason path=$path "
+        "lat=${position.latitude} "
+        "lng=${position.longitude} "
+        "accuracy=${position.accuracy.toStringAsFixed(1)}m "
+        "moved=${movedMeters?.toStringAsFixed(1)}m",
+  );
+
+  try {
+    await _db.child(path).update(updateData);
+    await PresenceCacheService.save(cacheData);
+
+    await AppLogService.log(
+      type: AppLogType.rtdb,
+      text:
+          "RTDB presence write success "
+          "reason=$reason path=$path",
+    );
+  } catch (e) {
+    await AppLogService.log(
+      type: AppLogType.error,
+      text:
+          "RTDB presence write failed "
+          "reason=$reason path=$path error=$e",
+    );
+
+    rethrow;
+  }
 
   _lastBatteryLevel = batteryLevel;
   _lastGpsEnabled = gpsEnabled;
@@ -516,10 +786,10 @@ Log.d(
 	lastSpeedKmh = speedKmh;
 	_lastAcceptedLocationTime = position.timestamp;
 
-  Log.d(
-    "BEACON PRESENCE => "
+  /*Log.d(
+    "BEACON_PRESENCE => "
     "online updated reason=$reason",
-  );
+  );*/
 }
 
 static Future<Position?> _getConfirmationPosition({
@@ -538,12 +808,12 @@ static Future<Position?> _getConfirmationPosition({
       final isFresh =
           newPosition.timestamp.isAfter(firstTimestamp);
 
-      Log.d(
+      /*Log.d(
         "BEACON_GPS_STREAM => "
         "first=$firstTimestamp "
         "candidate=${newPosition.timestamp} "
         "isFresh=$isFresh",
-      );
+      );*/
 
       return isFresh;
     })
@@ -551,10 +821,10 @@ static Future<Position?> _getConfirmationPosition({
       const Duration(seconds: 20),
     );
   } on TimeoutException {
-    Log.d(
+    /*Log.d(
       "BEACON_GPS_VERIFY => "
       "fresh confirmation timeout",
-    );
+    );*/
 
     return null;
   } catch (e) {
@@ -574,22 +844,20 @@ static void setServiceIds({
   _serviceGroupId = groupId;
   _serviceLocatorId = locatorId;
 
-  Log.d(
-    "BEACON PRESENCE => service ids set "
+  /*Log.d(
+    "BEACON_PRESENCE => service ids set "
     "group=$groupId locator=$locatorId",
-  );
+  );*/
 }
 static Future<void> startConnectionWatcher() async {
-Log.d("BEACON PRESENCE => startConnectionWatcher called");
+//Log.d("BEACON_PRESENCE => startConnectionWatcher called");
   final groupId = await IdentityService.getGroupId();
   final locatorId = await IdentityService.getLocatorId();
 	
-	Log.d(
-    "BEACON PRESENCE => watcher ids group=$groupId locator=$locatorId",
-  );
+	//Log.d("BEACON_PRESENCE => watcher ids group=$groupId locator=$locatorId",);
 
   if (groupId == null || locatorId == null) {
-    Log.d("BEACON PRESENCE => watcher missing group/locator");
+    //Log.d("BEACON_PRESENCE => watcher missing group/locator");
     return;
   }
 
@@ -605,7 +873,7 @@ Log.d("BEACON PRESENCE => startConnectionWatcher called");
   _connectedSub = connectedRef.onValue.listen((event) async {
     final connected =
         event.snapshot.value as bool? ?? false;
-	Log.d("BEACON PRESENCE => connected=$connected");
+	//Log.d("BEACON_PRESENCE => connected=$connected");
 
     if (!connected) return;
 
@@ -621,7 +889,7 @@ Log.d("BEACON PRESENCE => startConnectionWatcher called");
 			'offlineSince': null,
     });
 
-    Log.d("BEACON PRESENCE => onDisconnect armed");
+    //Log.d("BEACON_PRESENCE => onDisconnect armed");
   });
 }
 }

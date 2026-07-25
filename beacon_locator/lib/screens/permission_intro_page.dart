@@ -137,7 +137,7 @@ class _PermissionIntroPageState
 
 															try {
 																await IdentityService.setLocatorName(
-																	l10n.member,
+																	l10n.name,
 																);
 
 																await IdentityService.createLocatorId();

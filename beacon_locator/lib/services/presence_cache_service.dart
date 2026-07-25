@@ -184,9 +184,9 @@ class PresenceCacheService {
           ),
     };
 
-    Log.d(
+   /* Log.d(
       "BEACON PRESENCE CACHE => loaded",
-    );
+    );*/
 
     return data;
   }

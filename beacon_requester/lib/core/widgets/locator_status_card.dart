@@ -285,7 +285,7 @@ class _LocatorStatusCardState
 													? Icons.battery_4_bar_rounded
 													: widget.battery >= 20
 															? Icons.battery_2_bar_rounded
-															: Icons.battery_alert_rounded,
+															: Icons.battery_1_bar_rounded,
 										size: 18,
 										color: widget.battery < 20
 												? AppColors.danger

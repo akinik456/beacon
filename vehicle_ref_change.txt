@@ -1,10 +1,15 @@
+- locator de isim default üye idi isim yapıldı
+l10n.member-> l10n.name permission_intro_page,locator_home_page
+
+- FS de requester için name alanları var.'name': arat
+requester_list_card komple değişti
+
 - motion sürekli presence tetiklememesi için  
 SmartPresenceScheduler.boostOnly eklendi
 
 - presence services değişti ,AppLogService eklendi
 
-- locator de loc. status karta refreshmylocation butonu eklendi,
-presence de araçla hareket için iyileştirme yapıldı
+- presence de araçla hareket için iyileştirme yapıldı
 
 - +requesterde movement alert onDismiss değişti
 
@@ -16,3 +21,5 @@ index,main,fcm,notification services ,time_helper
 - +getAddressFromLatLng değişti loc,req
 
 - +movement.check değişti
+
+- +locator de loc. status karta refreshmylocation butonu eklendi,

@@ -15,9 +15,9 @@ class IdentityService {
     final locatorId = prefs.getString(_locatorIdKey);
 
     if (locatorId != null && locatorId.isNotEmpty) {
-      Log.d(
+      /*Log.d(
         "BEACON IDENTITY => locatorId found => $locatorId",
-      );
+      );*/
 
       return locatorId;
     }
