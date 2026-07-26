@@ -1,3 +1,7 @@
+- pending varsa tekrar join gönderilirse waiting sayfasına yönlendirildi
+group_service.dart
+final existingRequest eklendi
+
 - add locator page de manuel kod girerken taşma oluyordu body değişti
 
 - pairing request/approve akışı değişti

@@ -30,6 +30,9 @@ import 'utils/time_helper.dart';
 
 		await Firebase.initializeApp();
 
+	 await NotificationService.initialize();
+
+
 		Log.d(
 			"BEACON FCM BG => data => ${message.data}",
 		);

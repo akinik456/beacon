@@ -34,6 +34,14 @@ activeRequesterCount fazla arttı
 locator widget notu
 
 app linki , other apps check
+
+telefonu sallayarak callme?
+
+kayıp çalıntı telefon bulma
+
+telsiz özelliği - isharing sesli mesaj
+
+yüksek sesli siyal gönderme
 ******************
 
 Bu ayar gelecekte aynı sorunu yaşama ihtimalini ciddi şekilde azaltır.

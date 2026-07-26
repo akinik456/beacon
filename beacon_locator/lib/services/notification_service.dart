@@ -1,5 +1,6 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'notification_text_service.dart';
+import '../utils/log.dart';
 
 
 class NotificationService {
@@ -48,24 +49,44 @@ class NotificationService {
   }
 
   static Future<void> showCallMe({
-		required String title,
-		required String body,
-	}) async {
-		await _plugin.show(
-			_callMeNotificationId,
-			title,
-			body,
-			const NotificationDetails(
-				android: AndroidNotificationDetails(
-					_callMeChannelId,
-					'Call Me',
-					channelDescription: 'Call me notifications',
-					importance: Importance.max,
-					priority: Priority.high,
-				),
-			),
-		);
-	}
+  required String title,
+  required String body,
+}) async {
+  try {
+    Log.d(
+      "BEACON NOTIFICATION => "
+      "SHOW CALL ME START "
+      "id=$_callMeNotificationId",
+    );
+
+    await _plugin.show(
+      _callMeNotificationId,
+      title,
+      body,
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+          _callMeChannelId,
+          'Call Me',
+          channelDescription: 'Call me notifications',
+          importance: Importance.max,
+          priority: Priority.high,
+          ongoing: false,
+          autoCancel: true,
+        ),
+      ),
+    );
+
+    Log.d(
+      "BEACON NOTIFICATION => "
+      "SHOW CALL ME SUCCESS",
+    );
+  } catch (e, stack) {
+    Log.e(
+      "BEACON NOTIFICATION => "
+      "SHOW CALL ME ERROR => $e\n$stack",
+    );
+  }
+}
 
   static Future<void> showActiveWatchers({
 		required List<String> names,

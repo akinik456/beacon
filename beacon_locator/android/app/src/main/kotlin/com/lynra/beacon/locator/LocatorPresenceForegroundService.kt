@@ -13,6 +13,10 @@ import android.util.Log
 import io.flutter.plugin.common.MethodChannel
 
 class LocatorPresenceForegroundService : Service() {
+
+	private companion object {
+        const val FOREGROUND_NOTIFICATION_ID = 3001
+    }
 	private var flutterEngine: FlutterEngine? = null
 
     override fun onCreate() {
@@ -24,7 +28,7 @@ class LocatorPresenceForegroundService : Service() {
         )
 
         startForeground(
-            1001,
+            FOREGROUND_NOTIFICATION_ID,
             createNotification(),
         )
     }
