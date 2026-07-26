@@ -1,3 +1,10 @@
+- alerts de callme gibi queue eklendi
+- maxLocators,maxRequesters -> 5
+- locator de callme bildirimi sağa kaydırarak silinemiyordu düzeltildi
+main,Future<void> firebaseMessagingBackgroundHandler(
+showCallMe
+LocatorPresenceForegroundService.kt
+
 - pending varsa tekrar join gönderilirse waiting sayfasına yönlendirildi
 group_service.dart
 final existingRequest eklendi
