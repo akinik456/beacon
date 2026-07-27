@@ -307,17 +307,6 @@ Widget build(BuildContext context) {
                 );
               },
             ),
-const SizedBox(height: 10),
-
-_PermissionItem(
-	icon: Icons.notifications_active_rounded,
-	title: l10n.notifications,
-	subtitle: l10n.importantFor,
-	granted: notificationGranted,
-	onTap: () async {
-		await AppLogService.shareLog();
-	},
-),
 
             const SizedBox(height: 24),
 
@@ -351,6 +340,30 @@ _PermissionItem(
                 ),
               ),
             ),
+						
+						const SizedBox(height: 10),
+						TextButton.icon(
+								onPressed: () async {
+									await AppLogService.shareLog();
+								},
+								icon: Icon(
+									Icons.share_rounded,
+									size: 18,
+									color: AppColors.accent,
+								),
+								label: Row(
+									mainAxisSize: MainAxisSize.min,
+									children: [
+										Text(
+											l10n.shareLogs,
+											style: AppFonts.caption.copyWith(
+												color: AppColors.textPrimary,
+												fontWeight: FontWeight.w600,
+											),
+										),
+									],
+								),
+							),
 
             const SizedBox(height: 16),
           ],

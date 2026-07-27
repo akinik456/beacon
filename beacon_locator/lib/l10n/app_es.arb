@@ -198,6 +198,7 @@
 "sendPairingRequest": 								"Enviar solicitud de vinculación",
 "settings":														"ajustes",
 "settingsSaved": 											"Configuración guardada",
+"shareLogs":													"Compartir registro",
 "sixdigitcode": 											"Introduzca un código de 6 dígitos",
 "somePermissions": 										"Faltan algunos permisos. Abra la página de permisos y conceda los permisos requeridos.",
 "sva": 																"Guardar",

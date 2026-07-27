@@ -602,6 +602,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsSaved => 'Settings saved';
 
   @override
+  String get shareLogs => 'Share Logs';
+
+  @override
   String get sixdigitcode => 'Enter 6-digit code';
 
   @override

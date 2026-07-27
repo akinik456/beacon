@@ -602,6 +602,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get settingsSaved => 'Einstellungen gespeichert';
 
   @override
+  String get shareLogs => 'Share Logs';
+
+  @override
   String get sixdigitcode => '6-stelligen Code eingeben';
 
   @override

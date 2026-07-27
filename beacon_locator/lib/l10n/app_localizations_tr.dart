@@ -275,6 +275,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get lifeTimeAccess => 'Ömür boyu erişim';
 
   @override
+  String get liveTrack => 'Canlı Takip';
+
+  @override
   String get locationAccess => 'Konum Erişimi';
 
   @override
@@ -597,6 +600,9 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get settingsSaved => 'Ayarlar kaydedildi';
+
+  @override
+  String get shareLogs => 'Log Paylaş';
 
   @override
   String get sixdigitcode => '6 haneli kod giriniz';

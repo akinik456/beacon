@@ -107,7 +107,7 @@ await AppLogService.log(
 if (position != null){Log.d("BEACON_PRESENCE => position:$position,accuracy:${position.accuracy},speed:${position.speed}");}
   // Hatalı GPS konumunu hareket/konum hesabında kullanma.
   // Ancak pil veya GPS durumu değiştiyse aşağıda yine yazılabilir.
-	if (position != null && position.accuracy > 50) {
+	if (position != null && position.accuracy > 100) {
     Log.d(
       "BEACON_PRESENCE => "
       "ignore inaccurate position "
@@ -344,7 +344,7 @@ final expectedTravelMeters =
 // GPS accuracy payı + gerçek hareket payı.
 // 1.5 katsayısı hız/süre ölçümündeki küçük sapmalara tolerans verir.
 final confirmationDistanceLimit = math.max(
-  50.0,
+  100.0,
   firstPosition.accuracy +
       confirmation.accuracy +
       (expectedTravelMeters * 1.5),

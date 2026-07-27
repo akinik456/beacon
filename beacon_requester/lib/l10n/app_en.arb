@@ -198,6 +198,7 @@
 "sendPairingRequest":									"Send Pairing Request",
 "settings":														"Settings",
 "settingsSaved":											"Settings saved",
+"shareLogs":													"Share Logs",
 "sixdigitcode":												"Enter 6-digit code",
 "somePermissions":										"Some permissions are missing. Please open the permissions page and allow the required permissions.",
 "sva":																"Save",

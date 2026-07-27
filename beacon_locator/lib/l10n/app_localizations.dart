@@ -603,6 +603,12 @@ abstract class AppLocalizations {
   /// **'Lifetime access'**
   String get lifeTimeAccess;
 
+  /// No description provided for @liveTrack.
+  ///
+  /// In en, this message translates to:
+  /// **'Live Track'**
+  String get liveTrack;
+
   /// No description provided for @locationAccess.
   ///
   /// In en, this message translates to:
@@ -1226,6 +1232,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Settings saved'**
   String get settingsSaved;
+
+  /// No description provided for @shareLogs.
+  ///
+  /// In en, this message translates to:
+  /// **'Share Logs'**
+  String get shareLogs;
 
   /// No description provided for @sixdigitcode.
   ///

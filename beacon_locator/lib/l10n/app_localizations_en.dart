@@ -275,6 +275,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get lifeTimeAccess => 'Lifetime access';
 
   @override
+  String get liveTrack => 'Live Track';
+
+  @override
   String get locationAccess => 'Location Access';
 
   @override
@@ -597,6 +600,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsSaved => 'Settings saved';
+
+  @override
+  String get shareLogs => 'Share Logs';
 
   @override
   String get sixdigitcode => 'Enter 6-digit code';

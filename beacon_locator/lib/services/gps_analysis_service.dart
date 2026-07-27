@@ -166,9 +166,9 @@ if (!input.motionRecent &&
 	
 	GpsDecision decision;
 
-		if (gpsRiskScore >= 8) {
+		if (gpsRiskScore >= 12) {
 			decision = GpsDecision.suspicious;
-		} else if (gpsRiskScore >= 6) {
+		} else if (gpsRiskScore >= 9) {
 			decision = GpsDecision.verify;
 		} else {
 			decision = GpsDecision.safe;

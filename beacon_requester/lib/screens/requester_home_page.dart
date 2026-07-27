@@ -78,7 +78,6 @@ class _RequesterHomePageState
 	List<Map<String, dynamic>> _pendingCallMeQueue = [];
 	Map<String, dynamic>? _alertData;
 	List<Map<String, dynamic>> _pendingAlertQueue = [];
-	//Map<String, dynamic>? _movementAlertData;
 	late Future<Map<String, dynamic>?> _homeDataFuture;
 	
 	String? _groupId;
@@ -2084,28 +2083,7 @@ Widget build(BuildContext context) {
 																						: null;
 																			});
 																		},
-																	),
-																	/*if (_movementAlertData != null)
-																	AlertOverlay(
-																		data: _movementAlertData!,																		
-																		onDismiss: () async {
-																			final movementalertDocId = _alertData!['movementalertDocId'];
-																			final groupId = _alertData!['groupId'];
-																			final requesterId = _alertData!['targetRequesterId'];
-																			await FirebaseFirestore.instance
-																				.collection('groups')
-																				.doc(groupId)
-																				.collection('alerts')
-																				.doc(requesterId)
-																				.collection('items')
-																				.doc(movementalertDocId)
-																				.delete();
-																			if (!mounted) return;
-																			setState(() {
-																				_alertData = null;
-																			});
-																		},																		
-																	),*/
+																	),																	
 																	if (!_hasFullAccess && _hasGroup)
 																	SubscriptionExpiredOverlay(
 																		isMaster: _isMaster,

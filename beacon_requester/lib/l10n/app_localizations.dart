@@ -1233,6 +1233,12 @@ abstract class AppLocalizations {
   /// **'Settings saved'**
   String get settingsSaved;
 
+  /// No description provided for @shareLogs.
+  ///
+  /// In en, this message translates to:
+  /// **'Share Logs'**
+  String get shareLogs;
+
   /// No description provided for @sixdigitcode.
   ///
   /// In en, this message translates to:

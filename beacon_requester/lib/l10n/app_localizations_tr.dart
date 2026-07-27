@@ -602,6 +602,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get settingsSaved => 'Ayarlar kaydedildi';
 
   @override
+  String get shareLogs => 'Log Paylaş';
+
+  @override
   String get sixdigitcode => '6 haneli kod giriniz';
 
   @override

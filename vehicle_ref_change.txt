@@ -1,40 +1,10 @@
-- alerts de callme gibi queue eklendi
-- maxLocators,maxRequesters -> 5
-- locator de callme bildirimi sağa kaydırarak silinemiyordu düzeltildi
-main,Future<void> firebaseMessagingBackgroundHandler(
-showCallMe
-LocatorPresenceForegroundService.kt
-
-- pending varsa tekrar join gönderilirse waiting sayfasına yönlendirildi
-group_service.dart
-final existingRequest eklendi
-
-- add locator page de manuel kod girerken taşma oluyordu body değişti
-
-- pairing request/approve akışı değişti
-
-- locator de isim default üye idi isim yapıldı
-l10n.member-> l10n.name permission_intro_page,locator_home_page
-
-- FS de requester için name alanları var.'name': arat
-requester_list_card komple değişti
 
 - motion sürekli presence tetiklememesi için  
 SmartPresenceScheduler.boostOnly eklendi
-
 - presence services değişti ,AppLogService eklendi
-
 - presence de araçla hareket için iyileştirme yapıldı
 
-- +requesterde movement alert onDismiss değişti
+- +alerts gösterim sıralandı , son alert ilk gösterilir
+- +alerts de callme gibi queue eklendi
 
-- +geofence,movement settings,notify default enable yapıldı
 
-- +bildirim ve overlay de date&time eklendi
-index,main,fcm,notification services ,time_helper
-
-- +getAddressFromLatLng değişti loc,req
-
-- +movement.check değişti
-
-- +locator de loc. status karta refreshmylocation butonu eklendi,

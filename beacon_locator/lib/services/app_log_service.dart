@@ -1,8 +1,10 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
+
 import '../utils/log.dart';
 
 enum AppLogType {
@@ -13,7 +15,7 @@ enum AppLogType {
   watcher,
   network,
   fcm,
-	rtdb,
+  rtdb,
   permission,
   warning,
   error,
@@ -23,56 +25,139 @@ class AppLogService {
   AppLogService._();
 
   static File? _file;
-	
-	static Future<void> startSession({
-		required String source,
-	}) async {
-		await log(
-			type: AppLogType.presence,
-			source: source,
-			text:
-					"============================================================",
-		);
 
-		await log(
-			type: AppLogType.presence,
-			source: source,
-			text: "SESSION START",
-		);
+  static const int _maxSharedLogBytes =
+      2 * 1024 * 1024;
 
-		await log(
-			type: AppLogType.presence,
-			source: source,
-			text:
-					"============================================================",
-		);
-	}
-	
-	static Future<void> shareLog() async {
-		try {
-			final file = await _getFile();
+  static Future<void> startSession({
+    required String source,
+  }) async {
+    await log(
+      type: AppLogType.presence,
+      source: source,
+      text:
+          "============================================================",
+    );
 
-			if (!await file.exists()) {
-				Log.e("APP LOG => file not found");
-				return;
-			}
+    await log(
+      type: AppLogType.presence,
+      source: source,
+      text: "SESSION START",
+    );
 
-			await SharePlus.instance.share(
-				ShareParams(
-					files: [
-						XFile(file.path),
-					],
-				),
-			);
-		} catch (e) {
-			Log.e("APP LOG => share failed", e);
-		}
-	}
+    await log(
+      type: AppLogType.presence,
+      source: source,
+      text:
+          "============================================================",
+    );
+  }
+
+  static Future<void> shareLog() async {
+    try {
+      final file = await _getFile();
+
+      if (!await file.exists()) {
+        Log.e("APP LOG => file not found");
+        return;
+      }
+
+      final fileSize = await file.length();
+
+      File fileToShare = file;
+
+      if (fileSize > _maxSharedLogBytes) {
+        fileToShare = await _createTrimmedShareFile(
+          sourceFile: file,
+        );
+      }
+
+      await SharePlus.instance.share(
+        ShareParams(
+          files: [
+            XFile(fileToShare.path),
+          ],
+        ),
+      );
+    } catch (e) {
+      Log.e("APP LOG => share failed", e);
+    }
+  }
+
+  static Future<File> _createTrimmedShareFile({
+    required File sourceFile,
+  }) async {
+    final bytes = await sourceFile.readAsBytes();
+
+    int startIndex =
+        bytes.length - _maxSharedLogBytes;
+
+    if (startIndex < 0) {
+      startIndex = 0;
+    }
+
+    /*
+     * Dosyanın ortasındaki eksik bir log satırıyla
+     * başlamamak için ilk satır sonuna ilerliyoruz.
+     */
+    if (startIndex > 0) {
+      while (startIndex < bytes.length &&
+          bytes[startIndex] != 10) {
+        startIndex++;
+      }
+
+      if (startIndex < bytes.length) {
+        startIndex++;
+      }
+    }
+
+    final selectedBytes = bytes.sublist(
+      startIndex,
+    );
+
+    /*
+     * Kırpma işlemi bir UTF-8 karakterinin ortasına
+     * denk gelirse hata vermemesi için allowMalformed
+     * kullanıyoruz.
+     */
+    final selectedText = utf8.decode(
+      selectedBytes,
+      allowMalformed: true,
+    );
+
+    final tempDirectory =
+        await getTemporaryDirectory();
+
+    final shareFile = File(
+      p.join(
+        tempDirectory.path,
+        'lynra_log_share.txt',
+      ),
+    );
+
+    final header = startIndex > 0
+        ? '============================================================\n'
+            'LYNRA LOG\n'
+            'Showing the latest 2 MB of the log file.\n'
+            'Generated: ${DateTime.now().toIso8601String()}\n'
+            '============================================================\n\n'
+        : '';
+
+    await shareFile.writeAsString(
+      '$header$selectedText',
+      flush: true,
+    );
+
+    return shareFile;
+  }
 
   static Future<File> _getFile() async {
-    if (_file != null) return _file!;
+    if (_file != null) {
+      return _file!;
+    }
 
-    final directory = await getApplicationDocumentsDirectory();
+    final directory =
+        await getApplicationDocumentsDirectory();
 
     final filePath = p.join(
       directory.path,
@@ -82,7 +167,9 @@ class AppLogService {
     _file = File(filePath);
 
     if (!await _file!.exists()) {
-      await _file!.create(recursive: true);
+      await _file!.create(
+        recursive: true,
+      );
     }
 
     return _file!;
@@ -133,6 +220,20 @@ class AppLogService {
         '',
         flush: true,
       );
+
+      final tempDirectory =
+          await getTemporaryDirectory();
+
+      final shareFile = File(
+        p.join(
+          tempDirectory.path,
+          'lynra_log_share.txt',
+        ),
+      );
+
+      if (await shareFile.exists()) {
+        await shareFile.delete();
+      }
     } catch (_) {}
   }
 
