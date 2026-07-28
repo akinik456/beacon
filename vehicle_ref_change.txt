@@ -1,4 +1,6 @@
 
+
+- create grup cursor için eklendi autofocus
 - motion sürekli presence tetiklememesi için  
 SmartPresenceScheduler.boostOnly eklendi
 - presence services değişti ,AppLogService eklendi

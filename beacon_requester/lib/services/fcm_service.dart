@@ -101,28 +101,40 @@ static Future<void> initialize() async {
 			final data = message.data;
 			final type = data['type'];
 
-			if (type != 'call_me') return;
+			switch (type) {
+			case 'call_me':
 
-			final createdAtMillis = int.tryParse(
-				data['createdAt'] ?? '',
-			);
+				final createdAtMillis = int.tryParse(
+					data['createdAt'] ?? '',
+				);
 
-			final timeText = TimeHelper.formatDateTime(
-				createdAtMillis,
-			);
+				final timeText = TimeHelper.formatDateTime(
+					createdAtMillis,
+				);
 
-			final title = data['title'] ?? 'Call Me';
-			final messageBody =
-					data['body'] ?? 'Someone wants you to call.';
+				final title = data['title'] ?? 'Call Me';
+				final messageBody =
+						data['body'] ?? 'Someone wants you to call.';
 
-			final body = timeText.isNotEmpty
-					? '$messageBody\n$timeText'
-					: messageBody;
+				final body = timeText.isNotEmpty
+						? '$messageBody\n$timeText'
+						: messageBody;
 
-			await NotificationService.showCallMe(
-				title: title,
-				body: body,
-			);
+				await NotificationService.showCallMe(
+					title: title,
+					body: body,
+				);
+			break;
+			case 'sos':
+				await NotificationService.showSos(
+					title: data['title'] ?? 'SOS',
+					body: data['body'] ?? 'Emergency alert',
+				);
+				break;
+
+			default:
+				return;
+			}
 		});
 
 		// ================= APP OPENED FROM NOTIFICATION =================

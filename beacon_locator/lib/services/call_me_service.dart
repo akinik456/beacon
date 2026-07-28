@@ -41,42 +41,6 @@ class CallMeService {
     );
   }
 
-  static Future<void> createCallMeForAll({
-    required String groupId,
-    required List<String> requesterIds,
-  }) async {
-    final locatorId = await IdentityService.getLocatorId();
-    final locatorName = await IdentityService.getLocatorName();
-    final locatorCode = await IdentityService.getLocatorCode();
-
-    if (locatorId == null || requesterIds.isEmpty) {
-      return;
-    }
-
-    for (final requesterId in requesterIds) {
-      if (requesterId.isEmpty) continue;
-
-      final enabled = await _isCallMeEnabledForRequester(
-        groupId: groupId,
-        locatorId: locatorId,
-        requesterId: requesterId,
-      );
-
-      if (!enabled) {
-        Log.d("BEACON CALLME => skipped disabled requester => $requesterId");
-        continue;
-      }
-
-      await _createCallMeItem(
-        groupId: groupId,
-        locatorId: locatorId,
-        locatorName: locatorName,
-        locatorCode: locatorCode,
-        targetRequesterId: requesterId,
-      );
-    }
-  }
-
   static Future<bool> _isCallMeEnabledForRequester({
     required String groupId,
     required String locatorId,

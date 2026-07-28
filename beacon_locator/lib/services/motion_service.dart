@@ -15,8 +15,21 @@ class MotionService {
       DateTime.fromMillisecondsSinceEpoch(0);
 
   static double? _lastMagnitude;
+	
+	static int _shakeCount = 0;
 
-  static void start() {
+	static DateTime _firstShake =
+			DateTime.fromMillisecondsSinceEpoch(0);
+
+	static DateTime _lastShakeTrigger =
+			DateTime.fromMillisecondsSinceEpoch(0);
+			
+	static Future<void> Function()? _onShake;
+
+  static void start({
+		Future<void> Function()? onShake,
+	}) {
+		_onShake = onShake;
     Log.d("BEACON_MOTION => started");
 
     _sub?.cancel();
@@ -115,6 +128,10 @@ class MotionService {
     if (delta < 2.0) {
       return;
     }
+		
+		if (delta >= 6.0) {
+			_detectShake();
+		}
 
     Log.d(
       "MOTION => source=$source "
@@ -154,6 +171,36 @@ class MotionService {
 						.difference(_lastMotion)
 						.inSeconds <
 				withinSeconds;
-	}	
+	}
+
+	static void _detectShake() {
+		final now = DateTime.now();
+
+		if (now.difference(_lastShakeTrigger).inSeconds < 20) {
+			return;
+		}
+
+		if (_shakeCount == 0) {
+			_firstShake = now;
+		}
+
+		if (now.difference(_firstShake).inMilliseconds > 1000) {
+			_shakeCount = 0;
+			_firstShake = now;
+		}
+
+		_shakeCount++;
+
+		Log.d("SHAKE => count=$_shakeCount");
+
+		if (_shakeCount >= 3) {
+			_lastShakeTrigger = now;
+			_shakeCount = 0;
+
+			Log.d("🚨 SHAKE DETECTED 🚨");
+
+			_onShake?.call();
+		}
+	}
 	
 }

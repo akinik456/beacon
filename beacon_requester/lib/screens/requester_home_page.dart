@@ -58,6 +58,7 @@ import 'live_tracking_map_page.dart';
 import '../services/pending_pairing_manager.dart';
 import '../services/pending_pairing_service.dart';
 import '../services/pairing_response_service.dart';
+import '../core/widgets/sos_overlay.dart';
 
 
 class RequesterHomePage extends StatefulWidget {
@@ -78,6 +79,8 @@ class _RequesterHomePageState
 	List<Map<String, dynamic>> _pendingCallMeQueue = [];
 	Map<String, dynamic>? _alertData;
 	List<Map<String, dynamic>> _pendingAlertQueue = [];
+	Map<String, dynamic>? _sosData;
+	final List<Map<String, dynamic>> _pendingSosQueue = [];
 	late Future<Map<String, dynamic>?> _homeDataFuture;
 	
 	String? _groupId;
@@ -99,7 +102,11 @@ class _RequesterHomePageState
 	StreamSubscription<List<PurchaseDetails>>? _purchaseSub;
 	bool _isPremium = false;
 	bool _trialActive = false;
-	bool get _hasFullAccess => _isPremium || _trialActive;
+	bool _isEntitled = true;
+
+	bool get _hasFullAccess =>
+			(_isPremium || _trialActive) &&
+			(_isMaster || _isEntitled);
 	int _trialDaysLeft = 0;
 	//final Map<String, DateTime> _lastMovementAlert = {};
 	Timer? _requesterPositionTimer;
@@ -243,12 +250,44 @@ class _RequesterHomePageState
 		
 
 		await _initTrial();
-	Log.d("_startHome _initTrial ended");
+
+		bool isEntitled = true;
+
+		if (!_isMaster) {
+			final groupId = await GroupService.getLocalGroupId();
+			final requesterId = await IdentityService.getRequesterId();
+
+			if (groupId == null ||
+					groupId.isEmpty ||
+					requesterId == null ||
+					requesterId.isEmpty) {
+				isEntitled = false;
+			} else {
+				final deviceDoc = await FirebaseFirestore.instance
+						.collection('groups')
+						.doc(groupId)
+						.collection('devices')
+						.doc(requesterId)
+						.get();
+
+				isEntitled =
+						deviceDoc.data()?['isEntitled'] != false;
+			}
+
+			Log.d(
+				"BEACON SUBSCRIPTION => "
+				"requester isEntitled=$isEntitled",
+			);
+		}
 
 		if (!_hasFullAccess) {
-			Log.d("BEACON SUBSCRIPTION => inactive, skip server listeners");
-			Log.d(DateTime.now());
+			Log.d(
+				"BEACON SUBSCRIPTION => "
+				"inactive or not entitled, skip server listeners _hasFullAccess:$_hasFullAccess,isEntitled:$isEntitled",
+			);
+
 			if (!mounted) return;
+
 			setState(() {});
 			_hasGroup = true;
 			return;
@@ -358,6 +397,7 @@ Log.d("loadLocators called");
 		}
 	_listenCallMe();
 	_listenAlerts();
+	_listenSos();
 	}
 	
 	Future<void> _addActiveWatchers() async {
@@ -694,7 +734,63 @@ static Future<void> cleanupInvalidPairedLocators() async {
 
   _subscriptions.add(sub);
 }
-	
+void _listenSos() async {
+  final groupId =
+      await GroupService.getLocalGroupId();
+
+  final requesterId =
+      await IdentityService.getRequesterId();
+
+  if (groupId == null ||
+      requesterId == null) {
+    return;
+  }
+
+  final sub = FirebaseFirestore.instance
+      .collection('groups')
+      .doc(groupId)
+      .collection('sos')
+      .doc(requesterId)
+      .collection('items')
+      .snapshots()
+      .listen((snapshot) {
+        for (final change in snapshot.docChanges) {
+          if (change.type != DocumentChangeType.added) {
+            continue;
+          }
+
+          final data = change.doc.data();
+
+          if (data == null) continue;
+
+          if (data['status'] != 'pending') {
+            continue;
+          }
+
+          final item = {
+            ...data,
+            'sosId': change.doc.id,
+          };
+
+          if (!mounted) return;
+
+          setState(() {
+            final alreadyExists =
+                _pendingSosQueue.any(
+              (x) => x['sosId'] == item['sosId'],
+            );
+
+            if (!alreadyExists) {
+              _pendingSosQueue.add(item);
+            }
+
+            _sosData = item;
+          });
+        }
+      });
+
+  _subscriptions.add(sub);
+}	
 
   Future<void> _loadGroupCode() async {
 		final prefs = await SharedPreferences.getInstance();
@@ -2083,7 +2179,38 @@ Widget build(BuildContext context) {
 																						: null;
 																			});
 																		},
-																	),																	
+																	),
+																	if (_sosData != null)
+																	SosOverlay(
+																		data: _sosData!,
+																		onDismiss: () async {
+																			final sosId = _sosData!['sosId'];
+																			final groupId = _sosData!['groupId'];
+																			final requesterId =
+																					_sosData!['targetRequesterId'];
+
+																			await FirebaseFirestore.instance
+																					.collection('groups')
+																					.doc(groupId)
+																					.collection('sos')
+																					.doc(requesterId)
+																					.collection('items')
+																					.doc(sosId)
+																					.delete();
+
+																			if (!mounted) return;
+
+																			setState(() {
+																				_pendingSosQueue.removeWhere(
+																					(x) => x['sosId'] == sosId,
+																				);
+
+																				_sosData = _pendingSosQueue.isNotEmpty
+																						? _pendingSosQueue.last
+																						: null;
+																			});
+																		},
+																	),
 																	if (!_hasFullAccess && _hasGroup)
 																	SubscriptionExpiredOverlay(
 																		isMaster: _isMaster,

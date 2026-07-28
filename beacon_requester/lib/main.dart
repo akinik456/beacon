@@ -130,10 +130,41 @@ Future<void> firebaseMessagingBackgroundHandler(
 
 		return;
 	}
+	
+	if (type == 'sos') {
+		final prefs = await SharedPreferences.getInstance();
+		final langCode = prefs.getString('languageCode') ?? 'en';
+
+		final locatorName =
+				data['locatorName'] ?? 'Member';
+
+		final createdAt =
+				int.tryParse(data['createdAt'] ?? '');
+
+		final timeText =
+				TimeHelper.formatDateTime(createdAt);
+
+		final title = 'SOS';
+
+		final sosText = switch (langCode) {
+			'tr' => '$locatorName acil durum çağrısı gönderdi.',
+			'es' => '$locatorName envió una alerta SOS.',
+			_ => '$locatorName sent an SOS alert.',
+		};
+
+		final body = timeText.isNotEmpty
+				? '$sosText\n$timeText'
+				: sosText;
+
+		await NotificationService.showSos(
+			title: title,
+			body: body,
+		);
+
+		return;
+	}
 
 	if (type != 'alert') return;	
-
-  if (data['type'] != 'alert') return;
 
   final prefs = await SharedPreferences.getInstance();
   final langCode = prefs.getString('languageCode') ?? 'en';

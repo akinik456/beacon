@@ -21,6 +21,7 @@ import 'services/notification_service.dart';
 import 'services/native_presence_service.dart';
 import 'utils/log.dart';
 import 'utils/time_helper.dart';
+import 'services/sos_service.dart';
 
 	@pragma('vm:entry-point')
 	Future<void> firebaseMessagingBackgroundHandler(
@@ -127,7 +128,9 @@ import 'utils/time_helper.dart';
 		);
 		await ActiveWatcherService.start();
 		await PresenceService.startConnectionWatcher();
-		MotionService.start();
+		MotionService.start(
+			onShake: SosService.sendSosToAll,
+		);
 	}
 
 

@@ -29,7 +29,19 @@ class NotificationService {
         .resolvePlatformSpecificImplementation<
             AndroidFlutterLocalNotificationsPlugin>()
         ?.createNotificationChannel(channel);
-  }
+				
+		const sosChannel = AndroidNotificationChannel(
+			'sos',
+			'SOS',
+			description: 'Emergency notifications',
+			importance: Importance.max,
+		);
+
+		await _plugin
+				.resolvePlatformSpecificImplementation<
+						AndroidFlutterLocalNotificationsPlugin>()
+				?.createNotificationChannel(sosChannel);		
+			}
 	
 	static Future<void> showMovementAlert({
 		required String locatorName,
@@ -90,5 +102,25 @@ class NotificationService {
 			),
 		);
 	}
+	static Future<void> showSos({
+		required String title,
+		required String body,
+	}) async {
+		await _plugin.show(
+			DateTime.now().millisecondsSinceEpoch ~/ 1000,
+			title,
+			body,
+			const NotificationDetails(
+				android: AndroidNotificationDetails(
+					'sos',
+					'SOS',
+					channelDescription: 'Emergency notifications',
+					importance: Importance.max,
+					priority: Priority.max,
+				),
+			),
+		);
+	}
+	
 	
 }

@@ -304,3 +304,85 @@ exports.onActiveWatchersChanged = onValueWritten(
     }
   }
 );
+exports.onSosCreated  = onDocumentCreated(
+  "groups/{groupId}/sos/{targetId}/items/{sosId}",
+  async (event) => {
+    const data = event.data.data();
+		
+		const createdAtMillis =
+				data.createdAt?.toMillis?.() ?? Date.now();
+
+    const targetId = event.params.targetId;
+    const sosId = event.params.sosId;
+
+    const isLocatorToRequester =
+      data.targetRequesterId === targetId;
+
+    let topic = "";
+    let payload = {
+      type: "sos",
+      sosId,
+			createdAt: createdAtMillis.toString(),
+    };
+
+		const locatorName =
+			data.locatorName || "Member";
+		const locatorCode =
+			data.locatorCode || "";
+
+		topic = `requester_${targetId}`;
+		
+		payload = {
+			...payload,
+			locatorName,
+			locatorCode,
+		};
+    
+
+    console.log("CALL ME CREATED", data);
+    console.log("CALL ME FCM TOPIC", topic);
+
+		try {
+			let text = messages.en;
+
+			try {
+				const targetCollection = "requesters";
+
+				const countryCode = await getCountryCodeForTarget(
+					targetCollection,
+					targetId,
+					event.params.groupId,
+				);
+
+				const lang = getLanguageFromCountry(countryCode);
+				text = messages[lang] || messages.en;
+			} catch (error) {
+				console.error("CALL ME LOCALIZATION ERROR", error);
+			}
+
+			const notificationTitle = text.callMeTitle;
+
+			const callerName = data.locatorName || "Member";
+
+			const notificationBody = text.callMeBody(callerName);
+
+			const response = await admin.messaging().send({
+				topic,
+
+				android: {
+				priority: "high",
+			},
+
+			data: {
+				...payload,
+				title: "SOS",
+				body: `${locatorName} sent an SOS.`,
+			},
+		});
+
+			console.log("SOS FCM SENT", topic, response);
+		} catch (error) {
+			console.error("SOS FCM ERROR", error);
+		}
+  }
+);

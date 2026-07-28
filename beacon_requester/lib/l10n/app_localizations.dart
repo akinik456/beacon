@@ -441,6 +441,12 @@ abstract class AppLocalizations {
   /// **'Enter Member Name'**
   String get enterMemberName;
 
+  /// No description provided for @emergencyAlert.
+  ///
+  /// In en, this message translates to:
+  /// **'Emergency SOS Alert'**
+  String get emergencyAlert;
+
   /// No description provided for @familyHome.
   ///
   /// In en, this message translates to:

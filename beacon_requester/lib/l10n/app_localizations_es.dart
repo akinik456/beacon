@@ -188,6 +188,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get enterMemberName => 'Introducir nombre del miembro';
 
   @override
+  String get emergencyAlert => 'Alerta SOS de Emergencia';
+
+  @override
   String get familyHome => 'Familia, Hogar...';
 
   @override

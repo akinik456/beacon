@@ -54,6 +54,8 @@ import '../utils/address_helper.dart';
 import '../core/widgets/locator_status_card.dart';
 import '../services/app_log_service.dart';
 import '../services/presence_service.dart';
+import '../services/sos_service.dart';
+import '../services/sos_service.dart';
 
 class LocatorHomePage extends StatefulWidget {
   const LocatorHomePage({super.key});
@@ -82,12 +84,19 @@ class _LocatorHomePageState extends State<LocatorHomePage>
 	double? _lastUiLat;
 	double? _lastUiLng;
 	Stream<List<Map<String, String>>>? _pairedRequesterStream;
+	StreamSubscription<List<Map<String, String>>>? _pairedRequesterSub;
+	List<Map<String, String>> _pairedRequesters = [];
 	late Future<Map<String, String>> _locatorCodeDataFuture;
-	
+ 
  @override
 void initState() {
   super.initState();
 	_pairedRequesterStream = _watchPairedRequesterData().asBroadcastStream();
+	
+	_pairedRequesterSub =
+      _pairedRequesterStream!.listen((requesters) {
+    _pairedRequesters = requesters;
+  });
 	_locatorCodeDataFuture = _loadLocatorCodeData();
 	_loadTheme();
 	//MotionService.start();
@@ -136,7 +145,7 @@ Future<void> _startLocatorHome() async {
   final hasFullAccess = hasGroup
       ? await SubscriptionService.hasFullAccess()
       : true;
-
+Log.d("SubscriptionService hasFullAccess:$hasFullAccess");
   if (!mounted) return;
 
   setState(() {
@@ -191,6 +200,7 @@ Future<void> _startLocatorHome() async {
 		ActiveWatcherService.stop();
 		WidgetsBinding.instance.removeObserver(this);
 		_presenceTimer?.cancel();
+		_pairedRequesterSub?.cancel();
     super.dispose();
   }
 	
@@ -1271,7 +1281,40 @@ Widget _currentLocationCard() {
     ],
   );
 }
-
+Widget _sosButton() {
+  return Center(
+    child: GestureDetector(
+      onTap: () async {
+				await SosService.sendSosToAll();
+      },
+      child: Container(
+        width: 120,
+        height: 120,
+        decoration: BoxDecoration(
+          color: Colors.red.shade700,
+          shape: BoxShape.circle,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.red.withOpacity(0.35),
+              blurRadius: 24,
+              spreadRadius: 4,
+            ),
+          ],
+        ),
+        alignment: Alignment.center,
+        child: const Text(
+          "SOS",
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 36,
+            fontWeight: FontWeight.w900,
+            letterSpacing: 3,
+          ),
+        ),
+      ),
+    ),
+  );
+}
  @override
 Widget build(BuildContext context) {
 final l10n = AppLocalizations.of(context)!;
@@ -1450,11 +1493,14 @@ final l10n = AppLocalizations.of(context)!;
 													_activeWatchersCard(),
 													const SizedBox(height: 12),
 													_currentLocationCard(),
+													
 												],
 											),
 										),
 									),	
 									const SizedBox(height: 12),
+									_sosButton(),									
+									const SizedBox(height: 36),
 									_permissionsButton(),
 									const SizedBox(height: 70),
 									],	

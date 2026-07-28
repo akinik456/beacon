@@ -59,6 +59,7 @@
 "enteryourname":											"İsminiz (Diğer üyeler bu ismi görür)",
 "enterMemberCode":										"Üye Kodunu Girin",
 "enterMemberName":										"Üye İsmi Girin",
+"emergencyAlert":											"Acil SOS Çağrısı",
 "familyHome": 												"Aile,Ev...",
 "feedback":														"Geri Bildirim",
 "freeTrialDaysLeft": 									"Ücretsiz deneme: {days} gün kaldı",

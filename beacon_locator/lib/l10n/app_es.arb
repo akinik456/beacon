@@ -59,6 +59,7 @@
 "enteryourname": 											"Introduzca su nombre (otros miembros verán este nombre).",
 "enterMemberCode": 										"Introducir código del miembro",
 "enterMemberName": 										"Introducir nombre del miembro",
+"emergencyAlert":											"Alerta SOS de Emergencia",
 "familyHome": 												"Familia, Hogar...",
 "feedback": 													"Comentarios",
 "freeTrialDaysLeft": 									"Prueba gratuita: quedan {days} días",

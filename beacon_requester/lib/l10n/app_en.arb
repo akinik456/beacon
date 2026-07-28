@@ -59,6 +59,7 @@
 "enteryourname":											"Enter Your Name (Other members will see this name.)",
 "enterMemberCode":										"Enter Member Code",
 "enterMemberName":										"Enter Member Name",
+"emergencyAlert":											"Emergency SOS Alert",
 "familyHome": 												"Family,Home...",
 "feedback":														"Feedback",
 "freeTrialDaysLeft": 									"Free trial: {days} days left",

@@ -173,6 +173,7 @@ class JoinRequestCard extends StatelessWidget {
 																'role': 'requester',
 																'isMaster': false,
 																'active': true,
+																'isEntitled': true,
 																'authUid': joinData['authUid'] ?? '',
 																'pairedLocators': {},
 																'joinedAt': FieldValue.serverTimestamp(),

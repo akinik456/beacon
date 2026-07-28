@@ -64,6 +64,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                     controller: groupNameCtrl,
                     label: l10n.groupName,
                     hint: l10n.familyHome,
+										autofocus: true,
 										maxLength: 20,
                   ),
                   const SizedBox(height: 18),
@@ -132,12 +133,14 @@ class _InputField extends StatelessWidget {
   final TextEditingController controller;
   final String label;
   final String hint;
+	final bool autofocus;
 	final int? maxLength;
 
   const _InputField({
     required this.controller,
     required this.label,
     required this.hint,
+		this.autofocus = false,
 		this.maxLength,
   });
 
@@ -145,12 +148,13 @@ class _InputField extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextField(
       controller: controller,
+			autofocus: autofocus,
 			maxLength: maxLength,
       style: AppFonts.body,
       decoration: InputDecoration(
         labelText: label,
         hintText: hint,
-        labelStyle: AppFonts.caption,
+				labelStyle: AppFonts.caption,
         hintStyle: AppFonts.caption,
         enabledBorder: UnderlineInputBorder(
           borderSide: BorderSide(color: AppColors.border),

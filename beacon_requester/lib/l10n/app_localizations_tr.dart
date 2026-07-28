@@ -188,6 +188,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get enterMemberName => 'Üye İsmi Girin';
 
   @override
+  String get emergencyAlert => 'Acil SOS Çağrısı';
+
+  @override
   String get familyHome => 'Aile,Ev...';
 
   @override

@@ -82,9 +82,10 @@ class PairingApprovalService {
 
       tx.set(deviceRef, {
         'active': true,
-				'role': 'locator',
-				'locatorCode': locatorCode,
         'joinedAt': FieldValue.serverTimestamp(),
+				'isEntitled': true,
+				'locatorCode': locatorCode,
+				'role': 'locator',
       }, SetOptions(merge: true));
 
       tx.update(groupRef, {

@@ -176,17 +176,6 @@ Log.d("BEACON_PRESENCE => analysis.decision:${analysis.decision.name},score:${an
 		var finalAnalysis = analysis;
 		var confirmationAccepted = false;
 		
-		Log.d(
-  "BEACON_GPS => NO_VERIFY reasons=${analysis.reasons.join(',')}",
-);
-await AppLogService.log(
-  type: AppLogType.gps,
-  text:
-      "BEACON_GPS => NO_VERIFY"
-      "reasons=${analysis.reasons.join(',')}",
-);
-
-		
 		if (analysis.decision == GpsDecision.verify ||
     analysis.decision == GpsDecision.suspicious) {	
 Log.d("BEACON_PRESENCE => second analysis started");		

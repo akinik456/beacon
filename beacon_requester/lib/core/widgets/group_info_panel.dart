@@ -52,6 +52,7 @@ class GroupInfoPanel  extends StatelessWidget {
 			hintText: currentGroupName,
 			confirmText: l10n.sva,
 			cancelText: l10n.cancel,
+			autofocus: true,
 			maxLength: 20,
 			textCapitalization: TextCapitalization.words,
 		);
