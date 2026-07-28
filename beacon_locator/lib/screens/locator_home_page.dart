@@ -1561,7 +1561,7 @@ final l10n = AppLocalizations.of(context)!;
 									),	
 									const SizedBox(height: 12),
 									_sosButton(),									
-									const SizedBox(height: 36),
+									const SizedBox(height: 12),
 									_permissionsButton(),
 									const SizedBox(height: 30),
 									],	
