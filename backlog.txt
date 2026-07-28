@@ -1,3 +1,10 @@
+SOS butonunu uzun basmaya çevirme.
+📳 Güçlü titreşim / alarm sesi.
+
+Butonun etrafında kırmızı geri sayım halkası
+
+****************
+
 adb logcat | findstr LYNRA_SERVICE
 Foreground service destroyed
 **************
@@ -42,6 +49,10 @@ kayıp çalıntı telefon bulma
 telsiz özelliği - isharing sesli mesaj
 
 yüksek sesli sinyal gönderme
+
+loc birden fazla gruba girmemeli
+
+master üye silme de sorun oldu
 ******************
 
 Bu ayar gelecekte aynı sorunu yaşama ihtimalini ciddi şekilde azaltır.

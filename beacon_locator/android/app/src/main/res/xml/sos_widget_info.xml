@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<appwidget-provider
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:minWidth="96dp"
+    android:minHeight="84dp"
+    android:updatePeriodMillis="0"
+    android:initialLayout="@layout/call_me_widget"
+    android:resizeMode="horizontal|vertical"
+    android:widgetCategory="home_screen"
+    android:previewLayout="@layout/call_me_widget" />

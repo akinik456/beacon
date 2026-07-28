@@ -87,7 +87,11 @@ class _LocatorHomePageState extends State<LocatorHomePage>
 	StreamSubscription<List<Map<String, String>>>? _pairedRequesterSub;
 	List<Map<String, String>> _pairedRequesters = [];
 	late Future<Map<String, String>> _locatorCodeDataFuture;
- 
+  bool _sosCooldown = false;
+	double _sosProgress = 1.0;
+	Timer? _sosTimer;
+	
+	
  @override
 void initState() {
   super.initState();
@@ -201,6 +205,7 @@ Log.d("SubscriptionService hasFullAccess:$hasFullAccess");
 		WidgetsBinding.instance.removeObserver(this);
 		_presenceTimer?.cancel();
 		_pairedRequesterSub?.cancel();
+		_sosTimer?.cancel();
     super.dispose();
   }
 	
@@ -1284,33 +1289,83 @@ Widget _currentLocationCard() {
 Widget _sosButton() {
   return Center(
     child: GestureDetector(
-      onTap: () async {
-				await SosService.sendSosToAll();
+      onTap: _sosCooldown
+				? null
+				: () async {
+        if (_sosCooldown) return;
+
+        await SosService.sendSosToAll();
+
+        if (!mounted) return;
+
+        setState(() {
+          _sosCooldown = true;
+          _sosProgress = 1.0;
+        });
+
+        _sosTimer?.cancel();
+
+        _sosTimer = Timer.periodic(
+          const Duration(seconds: 1),
+          (timer) {
+            if (!mounted) {
+              timer.cancel();
+              return;
+            }
+
+            setState(() {
+              _sosProgress -= 1 / 20;
+
+              if (_sosProgress <= 0) {
+                _sosProgress = 1.0;
+                _sosCooldown = false;
+                timer.cancel();
+              }
+            });
+          },
+        );
       },
-      child: Container(
-        width: 120,
-        height: 120,
-        decoration: BoxDecoration(
-          color: Colors.red.shade700,
-          shape: BoxShape.circle,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.red.withOpacity(0.35),
-              blurRadius: 24,
-              spreadRadius: 4,
-            ),
-          ],
-        ),
+      child: Stack(
         alignment: Alignment.center,
-        child: const Text(
-          "SOS",
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 36,
-            fontWeight: FontWeight.w900,
-            letterSpacing: 3,
+        children: [
+          SizedBox(
+            width: 134,
+            height: 134,
+            child: CircularProgressIndicator(
+              value: _sosCooldown ? _sosProgress : 0,
+              strokeWidth: 5,
+              color: Colors.redAccent,
+              backgroundColor: Colors.transparent,
+            ),
           ),
-        ),
+          Container(
+            width: 120,
+            height: 120,
+            decoration: BoxDecoration(
+              color: _sosCooldown
+                  ? Colors.red.shade400
+                  : Colors.red.shade700,
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.red.withOpacity(0.35),
+                  blurRadius: 24,
+                  spreadRadius: 4,
+                ),
+              ],
+            ),
+            alignment: Alignment.center,
+            child: const Text(
+              'SOS',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 36,
+                fontWeight: FontWeight.w900,
+                letterSpacing: 3,
+              ),
+            ),
+          ),
+        ],
       ),
     ),
   );

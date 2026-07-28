@@ -4,8 +4,8 @@
     android:minWidth="96dp"
     android:minHeight="84dp"
     android:updatePeriodMillis="0"
-    android:initialLayout="@layout/call_me_widget"
+    android:initialLayout="@layout/sos_widget"
 		android:configure="com.lynra.beacon.locator.CallMeWidgetConfigActivity"
     android:resizeMode="horizontal|vertical"
     android:widgetCategory="home_screen"
-    android:previewLayout="@layout/call_me_widget" />
+    android:previewLayout="@layout/sos_widget" />
