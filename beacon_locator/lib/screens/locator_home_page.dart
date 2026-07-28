@@ -1293,6 +1293,12 @@ Widget _sosButton() {
 				? null
 				: () async {
         if (_sosCooldown) return;
+				final groupId = await IdentityService.getGroupId();
+				final locatorId = await IdentityService.getLocatorId();
+
+				if (groupId == null || locatorId == null) {
+					return;
+				}
 
         await SosService.sendSosToAll();
 
@@ -1329,8 +1335,8 @@ Widget _sosButton() {
         alignment: Alignment.center,
         children: [
           SizedBox(
-            width: 134,
-            height: 134,
+            width: 90,
+            height: 90,
             child: CircularProgressIndicator(
               value: _sosCooldown ? _sosProgress : 0,
               strokeWidth: 5,
@@ -1339,8 +1345,8 @@ Widget _sosButton() {
             ),
           ),
           Container(
-            width: 120,
-            height: 120,
+            width: 80,
+            height: 80,
             decoration: BoxDecoration(
               color: _sosCooldown
                   ? Colors.red.shade400
@@ -1359,7 +1365,7 @@ Widget _sosButton() {
               'SOS',
               style: TextStyle(
                 color: Colors.white,
-                fontSize: 36,
+                fontSize: 22,
                 fontWeight: FontWeight.w900,
                 letterSpacing: 3,
               ),
@@ -1557,7 +1563,7 @@ final l10n = AppLocalizations.of(context)!;
 									_sosButton(),									
 									const SizedBox(height: 36),
 									_permissionsButton(),
-									const SizedBox(height: 70),
+									const SizedBox(height: 30),
 									],	
                 ),
               );
