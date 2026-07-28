@@ -34,7 +34,7 @@
 "batteryAlertlevel":									"Pil Alarm Seviyesi",
 "batteryLowAlert":										"Düşük Pil Alarmı",
 "batteryOptimization":								"Pil Kısıtlaması",
-"batteryOptimizationDescription": 		"Arka planda çalışabilmesi için \"Kısıtlama Yok\" olarak ayarlayın",
+"batteryOptimizationDescription": 		"Pil ayarını \"Kısıtlama Yok\" olarak ayarlayın, ardından Uygulama Bilgisi > Pil bölümünden tekrar kontrol edin.",
 "beingWatched": 											"İzleniyorsun",
 "callme":															"Beni Ara",
 "callMeSent":													"Beni Ara Gönderildi",

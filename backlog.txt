@@ -1,8 +1,3 @@
-SOS butonunu uzun basmaya çevirme.
-📳 Güçlü titreşim / alarm sesi.
-
-Butonun etrafında kırmızı geri sayım halkası
-
 ****************
 
 adb logcat | findstr LYNRA_SERVICE
@@ -34,23 +29,17 @@ araç takipte locator rtdb ye adres yazıyor( sonradan eklendi) pahalıymış - 
 
 internet kapalı ise fcm gereksiz zorluyor
 
-bekleyen pairing request kilitliyor muhtemelen join de öyle
-
 activeRequesterCount fazla arttı 
 
 locator widget notu
 
 app linki , other apps check
 
-telefonu sallayarak callme?
-
 kayıp çalıntı telefon bulma
 
 telsiz özelliği - isharing sesli mesaj
 
 yüksek sesli sinyal gönderme
-
-loc birden fazla gruba girmemeli
 
 master üye silme de sorun oldu
 ******************

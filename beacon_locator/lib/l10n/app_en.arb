@@ -34,7 +34,7 @@
 "batteryAlertlevel":									"Battery Alert Level",
 "batteryLowAlert":										"Battery Low Alert",
 "batteryOptimization":								"Battery Optimization",
-"batteryOptimizationDescription": 		"Set to \"No Restrictions\" for background operation",
+"batteryOptimizationDescription": 		"Set the battery mode to \"No restrictions\", then check it again under App info > Battery.",
 "beingWatched": 											"Being watched",
 "callme":															"Call Me",
 "callMeSent":													"Call Me Sent",

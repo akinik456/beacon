@@ -34,7 +34,7 @@
 "batteryAlertlevel": 									"Nivel de alerta de batería",
 "batteryLowAlert": 										"Alerta de batería baja",
 "batteryOptimization": 								"Optimización de batería",
-"batteryOptimizationDescription": 		"Configurar como \"Sin restricciones\" para el funcionamiento en segundo plano",
+"batteryOptimizationDescription": 		"Configura el modo de batería en \"Sin restricciones\" y luego vuelve a comprobarlo en Información de la aplicación > Batería.",
 "beingWatched": 											"Te están observando",
 "callme": 														"Llámame",
 "callMeSent":													"Llamada solicitada.",

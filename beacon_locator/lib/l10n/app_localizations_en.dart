@@ -111,7 +111,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get batteryOptimization => 'Battery Optimization';
 
   @override
-  String get batteryOptimizationDescription => 'Set to \"No Restrictions\" for background operation';
+  String get batteryOptimizationDescription => 'Set the battery mode to \"No restrictions\", then check it again under App info > Battery.';
 
   @override
   String get beingWatched => 'Being watched';
@@ -186,6 +186,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get enterMemberName => 'Enter Member Name';
+
+  @override
+  String get emergencyAlert => 'Emergency SOS Alert';
 
   @override
   String get familyHome => 'Family,Home...';

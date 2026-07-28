@@ -294,7 +294,7 @@ abstract class AppLocalizations {
   /// No description provided for @batteryOptimizationDescription.
   ///
   /// In en, this message translates to:
-  /// **'Set to \"No Restrictions\" for background operation'**
+  /// **'Set the battery mode to \"No restrictions\", then check it again under App info > Battery.'**
   String get batteryOptimizationDescription;
 
   /// No description provided for @beingWatched.
@@ -440,6 +440,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Enter Member Name'**
   String get enterMemberName;
+
+  /// No description provided for @emergencyAlert.
+  ///
+  /// In en, this message translates to:
+  /// **'Emergency SOS Alert'**
+  String get emergencyAlert;
 
   /// No description provided for @familyHome.
   ///

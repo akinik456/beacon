@@ -111,7 +111,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get batteryOptimization => 'Pil Kısıtlaması';
 
   @override
-  String get batteryOptimizationDescription => 'Arka planda çalışabilmesi için \"Kısıtlama Yok\" olarak ayarlayın';
+  String get batteryOptimizationDescription => 'Pil ayarını \"Kısıtlama Yok\" olarak ayarlayın, ardından Uygulama Bilgisi > Pil bölümünden tekrar kontrol edin.';
 
   @override
   String get beingWatched => 'İzleniyorsun';
@@ -186,6 +186,9 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get enterMemberName => 'Üye İsmi Girin';
+
+  @override
+  String get emergencyAlert => 'Acil SOS Çağrısı';
 
   @override
   String get familyHome => 'Aile,Ev...';
