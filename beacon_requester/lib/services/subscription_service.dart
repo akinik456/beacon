@@ -168,7 +168,10 @@ static Future<void> markExpiredIfNeeded() async {
 
   final trialEndsAt =
       data['trialEndsAt'];
-
+			
+	//final expiredTest = data['expiredTest'];// ?*?
+      
+			
   if (purchaseStatus == 'lifetime') {
     Log.d(
       "markExpiredIfNeeded "
@@ -193,8 +196,8 @@ static Future<void> markExpiredIfNeeded() async {
     return;
   }
 
-  final expired =
-      DateTime.now().isAfter(
+  //expiredTest;//?*?
+     final expired =  DateTime.now().isAfter(
         trialEndsAt.toDate(),
       );
 

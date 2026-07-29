@@ -134,50 +134,130 @@ class _RequesterHomePageState
 		
 	
 		_purchaseSub =
-    InAppPurchase.instance.purchaseStream.listen((purchases) async {
-  for (final purchase in purchases) {
-    Log.d(
-      "BEACON IAP => product=${purchase.productID} "
-      "status=${purchase.status}",
-    );
+    InAppPurchase.instance.purchaseStream.listen(
+  (purchases) async {
+    for (final purchase in purchases) {
+      Log.d(
+        "BEACON IAP => "
+        "product=${purchase.productID} "
+        "status=${purchase.status} "
+        "purchaseId=${purchase.purchaseID} "
+        "pendingComplete=${purchase.pendingCompletePurchase}",
+      );
 
-    if (purchase.status == PurchaseStatus.purchased ||
-        purchase.status == PurchaseStatus.restored) {
-      final purchaseId = purchase.purchaseID;
+      bool purchaseProcessed = false;
 
-      if (purchaseId == null || purchaseId.isEmpty) {
-        Log.d(
-          "BEACON IAP => missing purchaseId "
-          "${purchase.productID}",
-        );
-      } else {
-        await SubscriptionService.processPurchase(
-          productId: purchase.productID,
-          purchaseId: purchaseId,
-        );
+      try {
+        if (purchase.status == PurchaseStatus.purchased ||
+            purchase.status == PurchaseStatus.restored) {
+          final purchaseId = purchase.purchaseID;
 
-        if (purchase.productID == 'lynrafamily_lifetime' &&
-            mounted) {
-          setState(() {
-            _isPremium = true;
-            _trialActive = false;
-          });
+          if (purchaseId == null || purchaseId.isEmpty) {
+            Log.d(
+              "BEACON IAP => missing purchaseId "
+              "${purchase.productID}",
+            );
+          } else {
+            await SubscriptionService.processPurchase(
+              productId: purchase.productID,
+              purchaseId: purchaseId,
+            );
+
+            purchaseProcessed = true;
+
+            if (purchase.productID ==
+                    'lynrafamily_lifetime' &&
+                mounted) {
+              setState(() {
+                _isPremium = true;
+                _trialActive = false;
+              });
+            }
+
+            Log.d(
+              "BEACON IAP => purchase processed "
+              "product=${purchase.productID} "
+              "purchaseId=$purchaseId",
+            );
+          }
         }
 
-        Log.d(
-          "BEACON IAP => purchase processed "
-          "${purchase.productID}",
+        if (purchase.status == PurchaseStatus.error) {
+          Log.d(
+            "BEACON IAP => purchase error "
+            "product=${purchase.productID} "
+            "code=${purchase.error?.code} "
+            "message=${purchase.error?.message}",
+          );
+        }
+
+        if (purchase.status == PurchaseStatus.canceled) {
+          Log.d(
+            "BEACON IAP => purchase canceled "
+            "product=${purchase.productID}",
+          );
+        }
+
+        if (purchase.pendingCompletePurchase) {
+          final canComplete =
+              purchase.status != PurchaseStatus.purchased &&
+                  purchase.status != PurchaseStatus.restored ||
+              purchaseProcessed;
+
+          if (canComplete) {
+            Log.d(
+              "BEACON IAP => completePurchase start "
+              "product=${purchase.productID} "
+              "purchaseId=${purchase.purchaseID}",
+            );
+
+            await InAppPurchase.instance.completePurchase(
+              purchase,
+            );
+
+            Log.d(
+              "BEACON IAP => completePurchase success "
+              "product=${purchase.productID} "
+              "purchaseId=${purchase.purchaseID}",
+            );
+          } else {
+            Log.d(
+              "BEACON IAP => completePurchase skipped "
+              "because processPurchase failed "
+              "product=${purchase.productID} "
+              "purchaseId=${purchase.purchaseID}",
+            );
+          }
+        }
+      } catch (e, stackTrace) {
+        Log.e(
+          "BEACON IAP => processing failed "
+          "product=${purchase.productID} "
+          "purchaseId=${purchase.purchaseID}",
+          e,
         );
+
+        Log.d(
+          "BEACON IAP => stackTrace=$stackTrace",
+        );
+
+        // processPurchase başarısızsa burada
+        // completePurchase çağrılmıyor.
       }
     }
+  },
+  onError: (Object error, StackTrace stackTrace) {
+    Log.e(
+      "BEACON IAP => purchase stream error",
+      error,
+    );
 
-    if (purchase.pendingCompletePurchase) {
-      await InAppPurchase.instance.completePurchase(
-        purchase,
-      );
-    }
-  }
-});
+    Log.d(
+      "BEACON IAP => purchase stream "
+      "stackTrace=$stackTrace",
+    );
+  },
+);
 		
 	}
 	

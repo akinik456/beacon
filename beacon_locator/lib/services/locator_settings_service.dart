@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'identity_service.dart';
 import '../utils/log.dart';
@@ -39,6 +40,25 @@ class LocatorSettingsService {
 	static bool get hasGeofenceNotifyTarget => _hasGeofenceNotifyTarget;
 	static bool get hasMovementNotifyTarget => _hasMovementNotifyTarget;
 	static bool get hasCallMeNotifyTarget => _hasCallMeNotifyTarget;
+	
+	static const _shakeSosEnabledKey = 'shake_sos_enabled';
+	
+	static Future<bool> isShakeSosEnabled() async {
+		final prefs = await SharedPreferences.getInstance();
+
+		return prefs.getBool(_shakeSosEnabledKey) ?? true;
+	}
+	
+	static Future<void> setShakeSosEnabled(
+		bool enabled,
+	) async {
+		final prefs = await SharedPreferences.getInstance();
+
+		await prefs.setBool(
+			_shakeSosEnabledKey,
+			enabled,
+		);
+	}
 	
 	static Future<void> startListeners() async {
 		final locatorId = await IdentityService.getLocatorId();

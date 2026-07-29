@@ -608,6 +608,12 @@ class AppLocalizationsTr extends AppLocalizations {
   String get shareLogs => 'Log Paylaş';
 
   @override
+  String get shakeToSendSos => 'SOS göndermek için salla';
+
+  @override
+  String get shakeToSendSosDescription => 'Telefonunuzu sallayarak eşleştirilmiş tüm aile üyelerine anında SOS uyarısı gönderin.';
+
+  @override
   String get sixdigitcode => '6 haneli kod giriniz';
 
   @override

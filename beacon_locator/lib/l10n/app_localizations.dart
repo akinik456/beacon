@@ -1245,6 +1245,18 @@ abstract class AppLocalizations {
   /// **'Share Logs'**
   String get shareLogs;
 
+  /// No description provided for @shakeToSendSos.
+  ///
+  /// In en, this message translates to:
+  /// **'Shake to send SOS'**
+  String get shakeToSendSos;
+
+  /// No description provided for @shakeToSendSosDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Shake your phone to instantly send an SOS alert to all paired family members.'**
+  String get shakeToSendSosDescription;
+
   /// No description provided for @sixdigitcode.
   ///
   /// In en, this message translates to:

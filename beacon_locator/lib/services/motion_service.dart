@@ -5,6 +5,7 @@ import 'package:sensors_plus/sensors_plus.dart';
 
 import 'smart_presence_scheduler.dart';
 import '../utils/log.dart';
+import 'locator_settings_service.dart';
 
 class MotionService {
   MotionService._();
@@ -129,8 +130,8 @@ class MotionService {
       return;
     }
 		
-		if (delta >= 6.0) {
-			_detectShake();
+		if (delta >= 10.0) {
+			unawaited(_detectShake());
 		}
 
     Log.d(
@@ -173,7 +174,15 @@ class MotionService {
 				withinSeconds;
 	}
 
-	static void _detectShake() {
+	static Future<void> _detectShake() async {
+	
+		final enabled =
+				await LocatorSettingsService.isShakeSosEnabled();
+
+		if (!enabled) {
+			return;
+		}
+
 		final now = DateTime.now();
 
 		if (now.difference(_lastShakeTrigger).inSeconds < 20) {

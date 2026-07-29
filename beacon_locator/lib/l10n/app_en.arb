@@ -200,6 +200,8 @@
 "settings":														"Settings",
 "settingsSaved":											"Settings saved",
 "shareLogs":													"Share Logs",
+"shakeToSendSos":											"Shake to send SOS",
+"shakeToSendSosDescription":					"Shake your phone to instantly send an SOS alert to all paired family members.",
 "sixdigitcode":												"Enter 6-digit code",
 "somePermissions":										"Some permissions are missing. Please open the permissions page and allow the required permissions.",
 "sva":																"Save",

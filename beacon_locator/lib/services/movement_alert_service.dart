@@ -17,7 +17,7 @@ enum _MovementState {
 class MovementAlertService {
   MovementAlertService._();
 
-  static const double _movementStartMeters = 50;
+  static const double _movementStartMeters = 70;
   static const double _maxAcceptableAccuracy = 80;
   static const Duration _stationaryAfter = Duration(minutes: 10);
 

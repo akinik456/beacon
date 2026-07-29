@@ -200,6 +200,8 @@
 "settings":														"ajustes",
 "settingsSaved": 											"Configuración guardada",
 "shareLogs":													"Compartir registro",
+"shakeToSendSos":											"Agitar para enviar SOS",
+"shakeToSendSosDescription":					"Agita tu teléfono para enviar al instante una alerta SOS a todos los familiares vinculados.",
 "sixdigitcode": 											"Introduzca un código de 6 dígitos",
 "somePermissions": 										"Faltan algunos permisos. Abra la página de permisos y conceda los permisos requeridos.",
 "sva": 																"Guardar",

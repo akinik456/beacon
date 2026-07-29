@@ -7,6 +7,8 @@ import '../services/locator_permission_service.dart';
 import '../l10n/app_localizations.dart';
 
 import '../services/app_log_service.dart';
+import '../services/locator_settings_service.dart';
+
 
 class LocatorPermissionPage extends StatefulWidget {
 		const LocatorPermissionPage({super.key});
@@ -35,6 +37,8 @@ class LocatorPermissionPage extends StatefulWidget {
 				autoStartGranted &&
 				memoryLockGranted;
 				
+		bool shakeEnabled = true;		
+				
 	@override
 	void initState() {
 		super.initState();
@@ -60,7 +64,15 @@ class LocatorPermissionPage extends StatefulWidget {
 		memoryLockGranted =
     await LocatorPermissionService.isMemoryLockMarkedOk();
 		
-		setState(() {});
+		final shake =
+      await LocatorSettingsService.isShakeSosEnabled();
+
+		if (!mounted) return;
+
+		setState(() {
+			shakeEnabled = shake;
+		});
+		
 	}	
 	
 
@@ -307,6 +319,41 @@ Widget build(BuildContext context) {
                 );
               },
             ),
+						
+						const SizedBox(height: 16),
+
+_SectionTitle(l10n.emergencyAlert),
+
+const SizedBox(height: 8),
+
+SwitchListTile(
+  contentPadding: EdgeInsets.zero,
+  secondary: Icon(
+    Icons.vibration_rounded,
+    color: AppColors.primary,
+  ),
+  title: Text(
+    l10n.shakeToSendSos,
+    style: AppFonts.subtitle,
+  ),
+  subtitle: Text(
+    l10n.shakeToSendSosDescription,
+    style: AppFonts.body.copyWith(
+      color: AppColors.textSecondary,
+    ),
+  ),
+	activeColor: AppColors.accent,
+  value: shakeEnabled,
+  onChanged: (value) async {
+    await LocatorSettingsService.setShakeSosEnabled(value);
+
+    if (!mounted) return;
+
+    setState(() {
+      shakeEnabled = value;
+    });
+  },
+),
 
             const SizedBox(height: 24),
 

@@ -51,6 +51,7 @@ class GroupService {
 
     await _firestore.runTransaction((tx) async {
       tx.set(groupRef, {
+				//'expiredTest':false,//?*?
 				'activeRequesterCount': 1,
 				'countryCode': countryCode,
         'createdAt': now,

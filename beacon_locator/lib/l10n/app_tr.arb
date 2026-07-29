@@ -200,6 +200,8 @@
 "settings":														"Ayarlar",
 "settingsSaved":											"Ayarlar kaydedildi",
 "shareLogs":													"Log Paylaş",
+"shakeToSendSos":											"SOS göndermek için salla",
+"shakeToSendSosDescription":					"Telefonunuzu sallayarak eşleştirilmiş tüm aile üyelerine anında SOS uyarısı gönderin.",
 "sixdigitcode":												"6 haneli kod giriniz",
 "somePermissions":										"Bazı izinler eksik. Lütfen izinler sayfasını açın ve gerekli izinleri verin.",
 "sva":																"Kaydet",

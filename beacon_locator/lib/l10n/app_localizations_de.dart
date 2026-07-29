@@ -608,6 +608,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get shareLogs => 'Share Logs';
 
   @override
+  String get shakeToSendSos => 'Shake to send SOS';
+
+  @override
+  String get shakeToSendSosDescription => 'Shake your phone to instantly send an SOS alert to all paired family members.';
+
+  @override
   String get sixdigitcode => '6-stelligen Code eingeben';
 
   @override
