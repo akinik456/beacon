@@ -66,16 +66,50 @@ class LocatorPresenceForegroundService : Service() {
 							flutterEngine!!.dartExecutor.binaryMessenger,
 							"lynra/presence_service",
 					).setMethodCallHandler { call, result ->
-							if (call.method == "getPresenceIds") {
-									result.success(
-											mapOf(
-													"groupId" to groupId,
-													"locatorId" to locatorId,
-											)
-									)
-							} else {
-									result.notImplemented()
-							}
+							when (call.method) {
+								"getPresenceIds" -> {
+										result.success(
+												mapOf(
+														"groupId" to groupId,
+														"locatorId" to locatorId,
+												)
+										)
+								}
+
+								"shakeSosFeedback" -> {
+										val powerManager =
+												getSystemService(android.os.PowerManager::class.java)
+
+										val wakeLock = powerManager.newWakeLock(
+												android.os.PowerManager.SCREEN_BRIGHT_WAKE_LOCK or
+														android.os.PowerManager.ACQUIRE_CAUSES_WAKEUP,
+												"lynra:shake_sos_feedback",
+										)
+
+										wakeLock.acquire(2000L)
+
+										val vibrator =
+												getSystemService(android.os.Vibrator::class.java)
+
+										if (android.os.Build.VERSION.SDK_INT >=
+												android.os.Build.VERSION_CODES.O
+										) {
+												vibrator.vibrate(
+														android.os.VibrationEffect.createOneShot(
+																300L,
+																android.os.VibrationEffect.DEFAULT_AMPLITUDE,
+														)
+												)
+										} else {
+												@Suppress("DEPRECATION")
+												vibrator.vibrate(300L)
+										}
+
+										result.success(true)
+								}
+
+								else -> result.notImplemented()
+						}
 					}
 
 					val flutterLoader = FlutterLoader()

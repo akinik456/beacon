@@ -1,5 +1,5 @@
-
-
+- processPurchase değişti subscription tümüyle check
+- SOS eklenmeli mi?
 - create grup cursor için eklendi autofocus
 - motion sürekli presence tetiklememesi için  
 SmartPresenceScheduler.boostOnly eklendi

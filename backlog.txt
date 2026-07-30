@@ -42,6 +42,8 @@ telsiz özelliği - isharing sesli mesaj
 yüksek sesli sinyal gönderme
 
 master üye silme de sorun oldu
+
+Shake feedback
 ******************
 
 Bu ayar gelecekte aynı sorunu yaşama ihtimalini ciddi şekilde azaltır.
@@ -81,6 +83,85 @@ Purchase Protection
 - Keep entitlements synchronized with Google Play.
 Support future products without changing the architecture.
 **********
+
+Anahtar Kelimeler
+
+aile takip,
+aile konum,
+aile konum takibi,
+canlı konum,
+canlı konum takibi,
+konum takip,
+konum paylaşımı,
+gps takip,
+gps konum,
+çocuk takip,
+çocuk konum,
+çocuk konum takibi,
+aile güvenliği,
+güvenli bölge,
+pil bildirimi,
+gps bildirimi,
+aile bulucu,
+konum bul,
+telefon konumu,
+yakınlarımı bul,
+
+family tracker,
+family locator,
+family location,
+live family tracking,
+live location,
+location sharing,
+gps tracker,
+gps locator,
+family gps,
+child tracker,
+kids tracker,
+child location,
+kids location,
+family safety,
+safe zones,
+battery alerts,
+gps alerts,
+location alerts,
+find family,
+track family,
+real time location,
+real time tracking,
+private family,
+family app,
+family connection,
+family monitoring,
+call me,
+emergency sos,
+sos alert,
+shake sos,
+home screen widget,
+location widget,
+
+rastreador familiar,
+localizador familiar,
+ubicación familiar,
+seguimiento familiar,
+seguimiento en vivo,
+ubicación en tiempo real,
+compartir ubicación,
+rastreador gps,
+gps familiar,
+rastreador de niños,
+ubicación de niños,
+seguridad familiar,
+zonas seguras,
+alertas gps,
+alertas de batería,
+alertas de ubicación,
+familia privada,
+grupo familiar,
+llámame,
+sos de emergencia,
+widget,
+widget de ubicación
 
 
 

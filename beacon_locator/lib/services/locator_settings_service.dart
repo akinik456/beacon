@@ -46,6 +46,8 @@ class LocatorSettingsService {
 	static Future<bool> isShakeSosEnabled() async {
 		final prefs = await SharedPreferences.getInstance();
 
+		await prefs.reload();
+
 		return prefs.getBool(_shakeSosEnabledKey) ?? true;
 	}
 	

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:sensors_plus/sensors_plus.dart';
+import 'package:flutter/services.dart';
 
 import 'smart_presence_scheduler.dart';
 import '../utils/log.dart';
@@ -24,6 +25,11 @@ class MotionService {
 
 	static DateTime _lastShakeTrigger =
 			DateTime.fromMillisecondsSinceEpoch(0);
+			
+	static DateTime _lastShakeHit =
+			DateTime.fromMillisecondsSinceEpoch(0);
+
+	static bool _checkingShake = false;
 			
 	static Future<void> Function()? _onShake;
 
@@ -175,40 +181,57 @@ class MotionService {
 	}
 
 	static Future<void> _detectShake() async {
-	
-		final enabled =
-				await LocatorSettingsService.isShakeSosEnabled();
+		if (_checkingShake) return;
+		_checkingShake = true;
 
-		if (!enabled) {
-			return;
-		}
+		try {
+			final enabled =
+					await LocatorSettingsService.isShakeSosEnabled();
 
-		final now = DateTime.now();
+			if (!enabled) {
+				_shakeCount = 0;
+				return;
+			}
 
-		if (now.difference(_lastShakeTrigger).inSeconds < 20) {
-			return;
-		}
+			final now = DateTime.now();
 
-		if (_shakeCount == 0) {
-			_firstShake = now;
-		}
+			if (now.difference(_lastShakeTrigger).inSeconds < 20) {
+				return;
+			}
 
-		if (now.difference(_firstShake).inMilliseconds > 1000) {
-			_shakeCount = 0;
-			_firstShake = now;
-		}
+			// Aynı fiziksel hareketin sensör örneklerini tekrar sayma.
+			if (now.difference(_lastShakeHit).inMilliseconds < 250) {
+				return;
+			}
 
-		_shakeCount++;
+			_lastShakeHit = now;
 
-		Log.d("SHAKE => count=$_shakeCount");
+			if (_shakeCount == 0 ||
+					now.difference(_firstShake).inMilliseconds > 1500) {
+				_shakeCount = 1;
+				_firstShake = now;
+			} else {
+				_shakeCount++;
+			}
 
-		if (_shakeCount >= 3) {
+			Log.d("BEACON SHAKE => count=$_shakeCount");
+
+			if (_shakeCount < 3) return;
+
 			_lastShakeTrigger = now;
 			_shakeCount = 0;
 
-			Log.d("🚨 SHAKE DETECTED 🚨");
+			Log.d("BEACON SHAKE => SOS TRIGGERED");
 
-			_onShake?.call();
+			await _onShake?.call();
+			const channel =
+					MethodChannel('lynra/presence_service');
+
+			await channel.invokeMethod(
+				'shakeSosFeedback',
+			);
+		} finally {
+			_checkingShake = false;
 		}
 	}
 	
