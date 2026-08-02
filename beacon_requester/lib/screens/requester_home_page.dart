@@ -1817,14 +1817,37 @@ Widget _buildGroupHome({
 																	const SizedBox(height: 4),
 
 																	Expanded(
-																		child: _locators.isEmpty
-																				? Center(
-																						child: Text(
-																							l10n.noPairedMemberYet,
-																							style: AppFonts.caption,
-																							textAlign: TextAlign.center,
+																	child: _locators.isEmpty
+																			? Center(
+																					child: Padding(
+																						padding: const EdgeInsets.symmetric(horizontal: 28),
+																						child: Column(
+																							mainAxisSize: MainAxisSize.min,
+																							children: [
+																								const Icon(
+																									Icons.group_add_rounded,
+																									size: 42,
+																									color: Color(0xFF8FD8FF),
+																								),
+																								const SizedBox(height: 14),
+																								Text(
+																									l10n.noPairedMemberYet,
+																									style: AppFonts.caption,
+																									textAlign: TextAlign.center,
+																								),
+																								const SizedBox(height: 10),
+																								Text(
+																									l10n.installMemberAppHint,
+																									style: AppFonts.caption.copyWith(
+																										color: Colors.white70,
+																										height: 1.45,
+																									),
+																									textAlign: TextAlign.center,
+																								),
+																							],
 																						),
-																					)
+																					),
+																				)
 																				: ListView.separated(
 																						itemCount: _locators.length,//itemCount: _locators.isEmpty ? 0 : 4,
 																						separatorBuilder: (_, __) =>

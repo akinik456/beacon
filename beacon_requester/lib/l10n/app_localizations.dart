@@ -294,7 +294,7 @@ abstract class AppLocalizations {
   /// No description provided for @batteryOptimizationDescription.
   ///
   /// In en, this message translates to:
-  /// **'Set to \"No Restrictions\" for background operation'**
+  /// **'Set the battery mode to \"No restrictions\", then check it again under App info > Battery.'**
   String get batteryOptimizationDescription;
 
   /// No description provided for @beingWatched.
@@ -548,6 +548,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Important for request visibility'**
   String get importantFor;
+
+  /// No description provided for @installMemberAppHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Install the \"LynraFamily Member\" app on your member\'s phone, then add them to your group from this screen.'**
+  String get installMemberAppHint;
 
   /// No description provided for @isWatchingYourLocation.
   ///
@@ -1244,6 +1250,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Share Logs'**
   String get shareLogs;
+
+  /// No description provided for @shakeToSendSos.
+  ///
+  /// In en, this message translates to:
+  /// **'Shake to send SOS'**
+  String get shakeToSendSos;
+
+  /// No description provided for @shakeToSendSosDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Shake your phone to instantly send an SOS alert to all paired family members.'**
+  String get shakeToSendSosDescription;
 
   /// No description provided for @sixdigitcode.
   ///

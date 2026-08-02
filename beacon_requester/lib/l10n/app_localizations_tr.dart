@@ -111,7 +111,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get batteryOptimization => 'Pil Kısıtlaması';
 
   @override
-  String get batteryOptimizationDescription => 'Arka planda çalışabilmesi için \"Kısıtlama Yok\" olarak ayarlayın';
+  String get batteryOptimizationDescription => 'Pil ayarını \"Kısıtlama Yok\" olarak ayarlayın, ardından Uygulama Bilgisi > Pil bölümünden tekrar kontrol edin.';
 
   @override
   String get beingWatched => 'İzleniyorsun';
@@ -244,6 +244,9 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get importantFor => 'Konum isteklerini görebilmek için gereklidir';
+
+  @override
+  String get installMemberAppHint => 'Üyenizin telefonuna \"LynraFamily Member\" uygulamasını yükleyin, ardından bu ekrandan grubunuza ekleyin.';
 
   @override
   String isWatchingYourLocation(Object name) {
@@ -606,6 +609,12 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get shareLogs => 'Log Paylaş';
+
+  @override
+  String get shakeToSendSos => 'SOS göndermek için salla';
+
+  @override
+  String get shakeToSendSosDescription => 'Telefonunuzu sallayarak eşleştirilmiş tüm aile üyelerine anında SOS uyarısı gönderin.';
 
   @override
   String get sixdigitcode => '6 haneli kod giriniz';

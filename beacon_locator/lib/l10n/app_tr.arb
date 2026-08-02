@@ -84,6 +84,7 @@
 "hoursAgo": 													"{count} saat önce",
 "isWatchingYourLocation": 						"{name} konumunu izliyor.",
 "importantFor":												"Konum isteklerini görebilmek için gereklidir",
+"installMemberAppHint": 							"Üyenizin telefonuna \"LynraFamily Member\" uygulamasını yükleyin, ardından bu ekrandan grubunuza ekleyin.",
 "iUnderstand":												"ANLADIM",
 "joinGroup": 													"Gruba katıl",
 "joinInstantlyWithCamera":						"Kamerayla anında katılın",

@@ -1,4 +1,3 @@
-- processPurchase değişti subscription tümüyle check
 - SOS eklenmeli mi?
 - create grup cursor için eklendi autofocus
 - motion sürekli presence tetiklememesi için  
@@ -6,6 +5,8 @@ SmartPresenceScheduler.boostOnly eklendi
 - presence services değişti ,AppLogService eklendi
 - presence de araçla hareket için iyileştirme yapıldı
 
+- +processPurchase değişti subscription tümüyle check test?
+- +loc başka gruba giremez test?
 - +alerts gösterim sıralandı , son alert ilk gösterilir
 - +alerts de callme gibi queue eklendi
 

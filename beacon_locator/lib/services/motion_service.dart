@@ -203,7 +203,11 @@ class MotionService {
 			if (now.difference(_lastShakeHit).inMilliseconds < 250) {
 				return;
 			}
-
+			
+			if (now.difference(_lastShakeHit).inMilliseconds < 250) {
+				return;
+			}
+			
 			_lastShakeHit = now;
 
 			if (_shakeCount == 0 ||

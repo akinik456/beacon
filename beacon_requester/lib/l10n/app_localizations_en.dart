@@ -111,7 +111,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get batteryOptimization => 'Battery Optimization';
 
   @override
-  String get batteryOptimizationDescription => 'Set to \"No Restrictions\" for background operation';
+  String get batteryOptimizationDescription => 'Set the battery mode to \"No restrictions\", then check it again under App info > Battery.';
 
   @override
   String get beingWatched => 'Being watched';
@@ -244,6 +244,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get importantFor => 'Important for request visibility';
+
+  @override
+  String get installMemberAppHint => 'Install the \"LynraFamily Member\" app on your member\'s phone, then add them to your group from this screen.';
 
   @override
   String isWatchingYourLocation(Object name) {
@@ -606,6 +609,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get shareLogs => 'Share Logs';
+
+  @override
+  String get shakeToSendSos => 'Shake to send SOS';
+
+  @override
+  String get shakeToSendSosDescription => 'Shake your phone to instantly send an SOS alert to all paired family members.';
 
   @override
   String get sixdigitcode => 'Enter 6-digit code';

@@ -234,8 +234,7 @@ final langCode =
 											try {
 											await IdentityService.setRequesterName(l10n.yourname);
 											await IdentityService.createRequesterId();
-											final authUid = await AuthService.ensureSignedIn();
-											await RequesterRegistryService.ensureRequesterAuthUid();
+											await AuthService.ensureSignedIn();
 
 											await RequesterRegistryService.registerRequester();
 

@@ -70,11 +70,13 @@ class RequesterRegistryService {
     Log.d(
       "BEACON REQUESTER REGISTRY => SUCCESS => $requesterId",
     );
-  } catch (e) {
-    Log.e(
-      "BEACON REQUESTER REGISTRY ERROR => $e",
-    );
-  }
+  } catch (e, stackTrace) {
+		Log.e(
+			"BEACON REQUESTER REGISTRY ERROR => $e\n$stackTrace",
+		);
+
+		rethrow;
+	}
 }
 
 static Future<void> ensureRequesterAuthUid() async {

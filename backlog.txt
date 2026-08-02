@@ -10,13 +10,7 @@ Foreground service destroyed
 - place i haritadan seçmek
 							
 
-dilek tel pil izni
-
 AppLogService genişletilip requester a da eklenmeli
-
-index getCountryCodeForTarget? US
-
-beni ara bildirimi sağa kaydırarak silinmiyor
 
 active watcher varsa bile skip small mov. çalışıyor ve yazmıyor rtdb ye? 
 battery +/-5 kontrol et
@@ -43,7 +37,7 @@ yüksek sesli sinyal gönderme
 
 master üye silme de sorun oldu
 
-Shake feedback
+grupta 2 loc 1 req var ancak activeloc 1 activereq 2
 ******************
 
 Bu ayar gelecekte aynı sorunu yaşama ihtimalini ciddi şekilde azaltır.

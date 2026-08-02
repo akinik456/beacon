@@ -246,6 +246,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get importantFor => 'Wichtig für die Sichtbarkeit von Anfragen';
 
   @override
+  String get installMemberAppHint => 'Install the \"LynraFamily Member\" app on your member\'s phone, then add them to your group from this screen.';
+
+  @override
   String isWatchingYourLocation(Object name) {
     return '$name is watching your location.';
   }
@@ -606,6 +609,12 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get shareLogs => 'Share Logs';
+
+  @override
+  String get shakeToSendSos => 'Shake to send SOS';
+
+  @override
+  String get shakeToSendSosDescription => 'Shake your phone to instantly send an SOS alert to all paired family members.';
 
   @override
   String get sixdigitcode => '6-stelligen Code eingeben';

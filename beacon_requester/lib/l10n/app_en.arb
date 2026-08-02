@@ -84,6 +84,7 @@
 "hoursAgo": 													"{count} hour ago",
 "iUnderstand":												"I UNDERSTAND",
 "importantFor":												"Important for request visibility",
+"installMemberAppHint": 							"Install the \"LynraFamily Member\" app on your member's phone, then add them to your group from this screen.",
 "isWatchingYourLocation":							"{name} is watching your location.",
 "joinGroup": 													"Join group",
 "joinInstantlyWithCamera":						"Join instantly with camera",

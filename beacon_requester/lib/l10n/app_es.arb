@@ -83,6 +83,7 @@
 "hello": 															"Hola",
 "hoursAgo": 													"hace {count} hora(s)",
 "importantFor": 											"Importante para la visibilidad de solicitudes",
+"installMemberAppHint": 							"Instala la aplicación \"LynraFamily Member\" en el teléfono de tu familiar y luego agrégalo a tu grupo desde esta pantalla.",
 "isWatchingYourLocation": 						"{name} está viendo tu ubicación.",
 "iUnderstand": 												"ENTIENDO",
 "joinGroup": 													"Unirse al grupo",
