@@ -1,6 +1,13 @@
 {
 "@@locale": 													"es",
 
+"howToAddMember": "Cómo añadir un miembro",
+"memberSetupStepOne": "Instala \"LynraFamily Member\" en el teléfono de la persona que compartirá su ubicación.",
+"memberSetupStepTwo": "Abre la aplicación Member y obtén el Código de Miembro o el código QR.",
+"memberSetupStepThree": "Pulsa Añadir miembro y envía una solicitud de vinculación.",
+"memberAppFreeHint": "\"LynraFamily Member\" es gratuita para los miembros de tu familia.",
+"memberAppInfo": "Los miembros de la familia utilizan la aplicación gratuita \"LynraFamily Member\" en sus propios teléfonos.",
+
 "actionRequired": 										"Acción requerida",
 "activeWatchers": 										"Observadores activos",
 "addAdmin": 													"Agregar administrador",

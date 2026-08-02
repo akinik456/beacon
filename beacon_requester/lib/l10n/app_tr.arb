@@ -1,6 +1,14 @@
 {
 "@@locale": 													"tr",
 
+"howToAddMember": "Üye nasıl eklenir?",
+"memberSetupStepOne": "Konumu paylaşılacak kişinin telefonuna \"LynraFamily Member\" uygulamasını yükleyin.",
+"memberSetupStepTwo": "Member uygulamasını açın ve Üye Kodunu veya QR kodunu alın.",
+"memberSetupStepThree": "Üye Ekle seçeneğine dokunup eşleştirme isteği gönderin.",
+"memberAppFreeHint": "\"LynraFamily Member\", aile üyeleriniz için ücretsizdir.",
+"memberAppInfo": "Aile üyeleri kendi telefonlarında ücretsiz \"LynraFamily Member\" uygulamasını kullanır.",
+
+
 "actionRequired":											"İşlem Gerekli",
 "activeWatchers":											"Aktif İzleyenler",
 "addMember":													"Üye Ekle",

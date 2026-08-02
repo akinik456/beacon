@@ -9,6 +9,24 @@ class AppLocalizationsEs extends AppLocalizations {
   AppLocalizationsEs([String locale = 'es']) : super(locale);
 
   @override
+  String get howToAddMember => 'Cómo añadir un miembro';
+
+  @override
+  String get memberSetupStepOne => 'Instala \"LynraFamily Member\" en el teléfono de la persona que compartirá su ubicación.';
+
+  @override
+  String get memberSetupStepTwo => 'Abre la aplicación Member y obtén el Código de Miembro o el código QR.';
+
+  @override
+  String get memberSetupStepThree => 'Pulsa Añadir miembro y envía una solicitud de vinculación.';
+
+  @override
+  String get memberAppFreeHint => '\"LynraFamily Member\" es gratuita para los miembros de tu familia.';
+
+  @override
+  String get memberAppInfo => 'Los miembros de la familia utilizan la aplicación gratuita \"LynraFamily Member\" en sus propios teléfonos.';
+
+  @override
   String get actionRequired => 'Acción requerida';
 
   @override
