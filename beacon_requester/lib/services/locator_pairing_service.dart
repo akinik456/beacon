@@ -49,8 +49,18 @@ class LocatorPairingService {
 
         locatorId = query.docs.first.id;
       } else {
-        locatorId = locatorInput.trim();
-      }
+				final locatorDoc = await _firestore
+						.collection('locators')
+						.doc(locatorInput.trim())
+						.get();
+
+				if (!locatorDoc.exists) {
+					Log.d("BEACON PAIRING => LOCATOR ID NOT FOUND");
+					return null;
+				}
+
+				locatorId = locatorInput.trim();
+			}
 			
 			if (groupId.isEmpty) {
 				Log.d("BEACON PAIRING => GROUP ID MISSING");
@@ -114,7 +124,7 @@ class LocatorPairingService {
 					.collection('locators')
 					.doc(locatorId)
 					.collection('pairing_requests')
-					.where('status', isEqualTo: 'pending')
+					.where('status', isEqualTo: 'pending')//?*? .where('requesterId', isEqualTo: requesterId) eklenmeli mi
 					.limit(1)
 					.get();
 

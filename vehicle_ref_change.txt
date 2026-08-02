@@ -1,3 +1,7 @@
+- req home da ekli üye yoksa member app install göster,
+create grup aşamasında 1 den fazla grup oluşabiliyordu 
+ayrıca authuid yazarken sorun oldu tedbir alındı
+
 - SOS eklenmeli mi?
 - create grup cursor için eklendi autofocus
 - motion sürekli presence tetiklememesi için  
