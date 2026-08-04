@@ -51,11 +51,6 @@ text: "updateOnline started reason=$reason",
           "updateOnline stopped: missing group/locator "
           "groupId=$groupId locatorId=$locatorId",
     );
-
-    /*Log.d(
-      "BEACON_PRESENCE => "
-      "missing group/locator",
-    );*/
     return;
   }
 

@@ -9,6 +9,7 @@ import 'code_service.dart';
 import 'requester_registry_service.dart';
 import '../services/firebase_authentication_service.dart';
 import '../utils/log.dart';
+import 'analytics_service.dart';
 
 class GroupService {
   GroupService._();
@@ -58,7 +59,11 @@ class GroupService {
   final countryCode = locale.countryCode;
 
   final now = FieldValue.serverTimestamp();
-
+Log.d(
+  "CREATE GROUP => "
+  "requesterId=$requesterId "
+  "authUid=${AuthService.uid}",
+);
   final resultGroupId =
       await _firestore.runTransaction<String>((tx) async {
     final requesterSnapshot =
@@ -78,6 +83,7 @@ class GroupService {
 
       return existingGroupId;
     }
+Log.d("CREATE GROUP => transaction starting");
 
     tx.set(groupRef, {
       'activeRequesterCount': 1,
@@ -125,15 +131,15 @@ class GroupService {
 
     return groupId;
   });
-
-  await RequesterRegistryService.registerRequester();
-
+Log.d("CREATE GROUP => transaction completed");
+//  await RequesterRegistryService.registerRequester();
+Log.d("CREATE GROUP => requester registered");
   final prefs = await SharedPreferences.getInstance();
   await prefs.setString(
     _groupIdKey,
     resultGroupId,
   );
-
+Log.d("CREATE GROUP => requester groupId written");
   if (resultGroupId == groupId) {
     await prefs.setString(
       'group_code',
@@ -168,7 +174,9 @@ class GroupService {
       "$resultGroupId",
     );
   }
-
+	await AnalyticsService.logEvent(
+		'group_created',
+	);
   return resultGroupId;
 }
 
@@ -241,7 +249,9 @@ class GroupService {
 				"BEACON GROUP => "
 				"existing pending join request restored",
 			);
-
+			await AnalyticsService.logEvent(
+				'join_request_sent',
+			);
 			return groupId;
 		}
 	}

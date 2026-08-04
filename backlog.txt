@@ -38,6 +38,8 @@ yüksek sesli sinyal gönderme
 master üye silme de sorun oldu
 
 grupta 2 loc 1 req var ancak activeloc 1 activereq 2
+
+gruptan req silinse bile loc notif. de kalıyor, silinen req için alert yazmaya devam ediyor
 ******************
 
 Bu ayar gelecekte aynı sorunu yaşama ihtimalini ciddi şekilde azaltır.

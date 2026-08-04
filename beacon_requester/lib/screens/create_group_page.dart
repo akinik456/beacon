@@ -8,6 +8,7 @@ import '../services/identity_service.dart';
 import '../services/requester_registry_service.dart';
 import '../l10n/app_localizations.dart';
 import '../utils/log.dart';
+import '../services/analytics_service.dart';
 
 
 class CreateGroupPage extends StatefulWidget {

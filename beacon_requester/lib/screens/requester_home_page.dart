@@ -59,6 +59,7 @@ import '../services/pending_pairing_manager.dart';
 import '../services/pending_pairing_service.dart';
 import '../services/pairing_response_service.dart';
 import '../core/widgets/sos_overlay.dart';
+import '../services/analytics_service.dart';
 
 
 class RequesterHomePage extends StatefulWidget {
@@ -314,11 +315,32 @@ class _RequesterHomePageState
 	}
 	Future<void> _startHome() async {
 	Log.d("_startHome called");
+/*final count = await FirebaseFirestore.instance
+	.collection('groups')
+	.count()
+	.get();
+Log.d("FIRESTORE_COUNT GROUPS COUNT => ${count.count}");
+
+final count1 = await FirebaseFirestore.instance
+	.collection('locators')
+	.count()
+	.get();
+Log.d("FIRESTORE_COUNT LOCATOR COUNT => ${count1.count}");
+	
+final count2 = await FirebaseFirestore.instance
+	.collection('requesters')
+	.count()
+	.get();
+Log.d("FIRESTORE_COUNT REQUESTER COUNT => ${count2.count}");*/
+	
 		await _loadGroupCode();
 
 		final groupId = await GroupService.getLocalGroupId();
 
 		if (groupId == null || groupId.isEmpty) {
+			await AnalyticsService.logEvent(
+				'no_group_home_view',
+			);
 			Log.d("BEACON SUBSCRIPTION => no group, skip subscription check");
 			return;
 		}
@@ -1481,6 +1503,9 @@ Widget _buildPendingHome({
                 height: 52,
                 child: ElevatedButton(
                   onPressed: () async {
+										await AnalyticsService.logEvent(
+											'create_group_clicked',
+										);
                     final changed = await Navigator.push<bool>(
                       context,
                       MaterialPageRoute(
@@ -1508,6 +1533,9 @@ Widget _buildPendingHome({
                 height: 52,
                 child: ElevatedButton(
                   onPressed: () async {
+									await AnalyticsService.logEvent(
+										'join_group_clicked',
+									);
                     final changed = await Navigator.push<bool>(
                       context,
                       MaterialPageRoute(
@@ -1534,7 +1562,7 @@ Widget _buildPendingHome({
     ),
   );
 }
-	
+
 Widget _buildGroupHome({
 	required String requesterName,
   required Map<String, dynamic> data,
@@ -1544,8 +1572,8 @@ Widget _buildGroupHome({
   final groupId = data['groupId'] ?? '';
   final requesterId = data['requesterId'] ?? '';
   final groupName = data['groupName'] ?? '-';
-
-  return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+	
+	return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
     stream: FirebaseFirestore.instance
         .collection('groups')
         .doc(groupId)
@@ -1750,6 +1778,9 @@ Widget _buildGroupHome({
 																			final isFull = activeLocatorCount >= maxLocators;
 																			return AppCard(
 																				onTap: () async {
+																				await AnalyticsService.logEvent(
+																					'add_member_opened',
+																				);
 																					final changed = await Navigator.push<bool>(
 																						context,
 																						MaterialPageRoute(

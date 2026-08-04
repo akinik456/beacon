@@ -18,7 +18,7 @@ import 'utils/log.dart';
 import 'services/firebase_test_service.dart';
 import 'services/fcm_service.dart';
 import 'services/active_watcher_service.dart';
-import 'screens/permission_intro_page.dart';
+import 'screens/RequesterStartupPage.dart';
 import 'screens/requester_home_page.dart';
 import 'services/identity_service.dart';
 import 'services/group_service.dart';
@@ -334,7 +334,7 @@ class _MyAppState extends State<MyApp> {
           final requesterId = data?['requesterId'];
 
           if (requesterId == null || requesterId.isEmpty) {
-            return const PermissionIntroPage();
+            return const RequesterStartupPage();
           }
 
           return const RequesterHomePage();

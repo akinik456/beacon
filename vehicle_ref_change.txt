@@ -2,12 +2,16 @@
 create grup aşamasında 1 den fazla grup oluşabiliyordu 
 ayrıca authuid yazarken sorun oldu tedbir alındı
 
+- registerRequester grupcreate de 2. kez çağrılıyordu , kaldırıldı
+
 - SOS eklenmeli mi?
-- create grup cursor için eklendi autofocus
-- motion sürekli presence tetiklememesi için  
+
+- +addlocator page de yanlış kod girilse bile request gönderilebiliyor idi düzeltildi
+- +create grup cursor için eklendi autofocus
+- +motion sürekli presence tetiklememesi için  
 SmartPresenceScheduler.boostOnly eklendi
-- presence services değişti ,AppLogService eklendi
-- presence de araçla hareket için iyileştirme yapıldı
+- +presence services değişti ,AppLogService eklendi
+- +presence de araçla hareket için iyileştirme yapıldı
 
 - +processPurchase değişti subscription tümüyle check test?
 - +loc başka gruba giremez test?
