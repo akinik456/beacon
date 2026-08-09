@@ -104,6 +104,7 @@ class _RequesterHomePageState
 	//final Map<String, DateTime> _lastMovementAlert = {};
 	Timer? _requesterPositionTimer;
 	DateTime? _lastRequesterLocationUpdate;
+	bool _locatorsLoaded = false;
 	
 		@override
 	void initState() {
@@ -439,7 +440,34 @@ Log.d("FIRESTORE_COUNT REQUESTER COUNT => ${count2.count}");
   _requesterId = await IdentityService.getRequesterId();
 
   Log.d("loadLocators called");
+	
+	// Önce locatorları yükle, kartlar hemen açılsın
+  final locators =
+      await LocatorListService.loadLocators();
+	
+	if (!mounted) return;
 
+  setState(() {
+    _locators = locators;
+		_locatorsLoaded = true;
+  });
+	
+	// Presence listener'ları başlat
+  for (final locator in locators) {
+    _listenLocatorPresence(
+      locator['locatorId'],
+    );
+  }
+	
+	  // Active watcher
+  await _addActiveWatchers();
+
+  _listenCallMe();
+  _listenAlerts();
+  _listenSos();
+
+
+  // GPS'i en sona bırak
   final position =
       await LocationHelper.getCurrentPosition();
 
@@ -451,24 +479,6 @@ Log.d("FIRESTORE_COUNT REQUESTER COUNT => ${count2.count}");
     "$_myLat, $_myLng",
   );
 
-  final locators =
-      await LocatorListService.loadLocators();
-
-  setState(() {
-    _locators = locators;
-  });
-
-  for (final locator in locators) {
-    _listenLocatorPresence(
-      locator['locatorId'],
-    );
-
-    await _addActiveWatchers();
-  }
-
-  _listenCallMe();
-  _listenAlerts();
-  _listenSos();
 }
 	
 	Future<void> _addActiveWatchers() async {
@@ -1179,58 +1189,99 @@ Widget _buildGroupHome({
 																			),
 																			
 																			const SizedBox(height: 6),
-																			InkWell(
-																				onTap: () {
-																					setState(() {
-																						_showGroupInfo = !_showGroupInfo;
-																					});
-																				},
-																				borderRadius: BorderRadius.circular(8),
-																				child: Padding(
-																					padding: const EdgeInsets.symmetric(vertical: 4),
-																					child: Row(
-																				mainAxisSize: MainAxisSize.min,
-																				children: [
-																					Icon(
-																						_showGroupInfo
-																								? Icons.keyboard_arrow_up_rounded
-																								: Icons.chevron_right_rounded,
-																						color: AppColors.primary,
-																						size: 22,
-																					),
-																					const SizedBox(width: 4),
-																					Text(
-																						l10n.groupInfo,
-																						style: AppFonts.subtitle.copyWith(
-																							color: AppColors.primary,
-																						),
-																					),
-																				],
-																			),
-																		),
-																	),
 
-																	AnimatedCrossFade(
-																		duration: const Duration(milliseconds: 250),
-																		crossFadeState: _showGroupInfo
-																				? CrossFadeState.showFirst
-																				: CrossFadeState.showSecond,
-																		firstChild: GroupInfoPanel(
-																			requesterName: requesterName,																			
-																			isMaster: true,
-																			langCode: langCode,
-																			onRequesterNameChanged: () {
-																				setState(() {
-																					_homeDataFuture = HomeDataService.loadHomeData();
-																				});
-																			},
-																			onLanguageChanged: () {
-																				setState(() {});
-																			},
-																			onChanged: _loadLocators,
-																		),
-																		secondChild: const SizedBox.shrink(),
-																	),																		
+Row(
+  children: [
+    Expanded(
+      child: InkWell(
+        borderRadius: BorderRadius.circular(12),
+        onTap: () async {
+          final changed =
+              await RequesterNameEditor.edit(context);
+
+          if (changed) {
+            setState(() {
+              _homeDataFuture =
+                  HomeDataService.loadHomeData();
+            });
+          }
+        },
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 6,
+            vertical: 6,
+          ),
+          child: Row(
+            children: [
+              Icon(
+                Icons.person_outline_rounded,
+                size: 18,
+                color: AppColors.textSecondary,
+              ),
+              const SizedBox(width: 6),
+              Flexible(
+                child: Text(
+                  requesterName,
+                  overflow: TextOverflow.ellipsis,
+                  style: AppFonts.title.copyWith(
+                    fontSize: 18,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 4),
+              Icon(
+                Icons.edit_rounded,
+                size: 16,
+                color: AppColors.textSecondary,
+              ),
+            ],
+          ),
+        ),
+      ),
+    ),
+
+    TextButton.icon(
+      onPressed: () async {
+        await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) =>
+                const LanguageSelectPage(),
+          ),
+        );
+
+        if (!context.mounted) return;
+
+        setState(() {});
+      },
+      icon: Icon(
+        Icons.language_rounded,
+        size: 18,
+        color: AppColors.accent,
+      ),
+      label: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            langCode,
+            style: AppFonts.caption.copyWith(
+              color: AppColors.accent,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          Icon(
+            Icons.arrow_drop_down,
+            size: 18,
+            color: AppColors.accent,
+          ),
+        ],
+      ),
+    ),
+  ],
+),
+
+const SizedBox(height: 12),								
 																			
 																		],
 																	),									
@@ -1339,7 +1390,11 @@ Widget _buildGroupHome({
 																	const SizedBox(height: 4),
 
 																	Expanded(
-																		child: _locators.isEmpty
+																		child: !_locatorsLoaded
+																				? const Center(
+																						child: CircularProgressIndicator(),
+																					)
+																				: _locators.isEmpty
 																				? Center(
 																						child: Padding(
 																							padding: const EdgeInsets.symmetric(horizontal: 24),

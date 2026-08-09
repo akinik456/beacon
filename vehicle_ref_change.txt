@@ -21,7 +21,7 @@
 
 vehicle - > family
 
--	req _loadLocators fonksiyonu değişti , progress indicator değişti
+-	+req _loadLocators fonksiyonu değişti , progress indicator değişti
 
 
 

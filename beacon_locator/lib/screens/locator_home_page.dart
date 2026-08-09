@@ -1305,66 +1305,134 @@ final l10n = AppLocalizations.of(context)!;
 													),
 													const SizedBox(height: 6),
 
-													InkWell(
-														onTap: () {
-															setState(() {
-																_showGroupInfo = !_showGroupInfo;
-															});
-														},
-														borderRadius: BorderRadius.circular(8),
-														child: Padding(
-															padding: const EdgeInsets.symmetric(vertical: 4),
-															child: Row(
-																mainAxisSize: MainAxisSize.min,
-																children: [
-																	Icon(
-																		_showGroupInfo
-																				? Icons.keyboard_arrow_up_rounded
-																				: Icons.chevron_right_rounded,
-																		color: AppColors.primary,
-																		size: 22,
-																	),
-																	const SizedBox(width: 4),
-																	Flexible(
-																		child: Text(
-																			l10n.groupInfo,
-																			overflow: TextOverflow.ellipsis,
-																			style: AppFonts.subtitle.copyWith(
-																				color: AppColors.primary,
-																			),
-																		),
-																	),
-																],
-															),
-														),
-													),
+Row(
+  children: [
+    Expanded(
+      child: InkWell(
+        borderRadius: BorderRadius.circular(12),
+        onTap: () async {
+          final changed =
+              await LocatorNameEditor.edit(context);
 
-													AnimatedCrossFade(
-														duration: const Duration(milliseconds: 250),
-														crossFadeState: _showGroupInfo
-																? CrossFadeState.showFirst
-																: CrossFadeState.showSecond,
-														firstChild: GroupInfoPanel(
-															locatorName: locatorName,
-															locatorCode: locatorCode,
-															langCode: langCode,
-															onLocatorNameChanged: () {
-																setState(() {
-																	_locatorCodeDataFuture = _loadLocatorCodeData();
-																});
-															},
-															onShowLocatorQr: () {
-																_showLocatorQrDialog(
-																	locatorId: locatorId,
-																	locatorCode: locatorCode,
-																);
-															},
-															onLanguageChanged: () {
-																setState(() {});
-															},
-														),
-														secondChild: const SizedBox.shrink(),
-													),
+          if (changed) {
+            setState(() {
+              _locatorCodeDataFuture =
+                  _loadLocatorCodeData();
+            });
+          }
+        },
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 6,
+            vertical: 6,
+          ),
+          child: Row(
+            children: [
+              Icon(
+                Icons.person_outline_rounded,
+                size: 18,
+                color: AppColors.textSecondary,
+              ),
+              const SizedBox(width: 6),
+              Flexible(
+                child: Text(
+                  locatorName,
+                  overflow: TextOverflow.ellipsis,
+                  style: AppFonts.title.copyWith(
+                    fontSize: 18,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 4),
+              Icon(
+                Icons.edit_rounded,
+                size: 16,
+                color: AppColors.textSecondary,
+              ),
+            ],
+          ),
+        ),
+      ),
+    ),
+
+    InkWell(
+      borderRadius: BorderRadius.circular(16),
+      onTap: () {
+        _showLocatorQrDialog(
+          locatorId: locatorId,
+          locatorCode: locatorCode,
+        );
+      },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 8,
+          vertical: 6,
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.qr_code_scanner_rounded,
+              color: AppColors.accent,
+              size: 22,
+            ),
+            const SizedBox(width: 4),
+            Text(
+              locatorCode,
+              style: AppFonts.subtitle.copyWith(
+                color: AppColors.textSecondary,
+                letterSpacing: 2,
+              ),
+            ),
+          ],
+        ),
+      ),
+    ),
+
+    const SizedBox(width: 6),
+
+    TextButton.icon(
+      onPressed: () async {
+        await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) =>
+                const LanguageSelectPage(),
+          ),
+        );
+
+        if (!context.mounted) return;
+
+        setState(() {});
+      },
+      icon: Icon(
+        Icons.language_rounded,
+        size: 18,
+        color: AppColors.accent,
+      ),
+      label: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            langCode,
+            style: AppFonts.caption.copyWith(
+              color: AppColors.accent,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          Icon(
+            Icons.arrow_drop_down,
+            size: 18,
+            color: AppColors.accent,
+          ),
+        ],
+      ),
+    ),
+  ],
+),
+
+const SizedBox(height: 12),
 									
 													const SizedBox(height: 12),
 													_buildPairingArea(),
