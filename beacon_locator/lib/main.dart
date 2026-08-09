@@ -111,7 +111,7 @@ import 'services/sos_service.dart';
 
 		if (ids != null) {
 			PresenceService.setServiceIds(
-				groupId: ids['groupId']!,
+				groupId: ids['locatorId']!,//ids['groupId']!,
 				locatorId: ids['locatorId']!,
 			);
 		}

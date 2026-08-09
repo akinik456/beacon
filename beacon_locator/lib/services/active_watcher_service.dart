@@ -48,7 +48,7 @@ class ActiveWatcherService {
     }
 
     final ref = FirebaseDatabase.instance.ref(
-      "presence/groups/$groupId/active_watchers/$locatorId",
+      "presence/active_watchers/$locatorId",
     );
 
     Log.d(
@@ -93,7 +93,7 @@ class ActiveWatcherService {
     }
 
     final ref = FirebaseDatabase.instance.ref(
-      "presence/groups/$groupId/active_watchers/$locatorId",
+      "presence/active_watchers/$locatorId",
     );
 
     final snapshot = await ref.get();

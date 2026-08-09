@@ -44,7 +44,7 @@ text: "updateOnline started reason=$reason",
 );
   final groupId = _serviceGroupId ?? await IdentityService.getGroupId();
   final locatorId = _serviceLocatorId ?? await IdentityService.getLocatorId();
-  if (groupId == null || locatorId == null) {
+  if (locatorId == null) {
     await AppLogService.log(
       type: AppLogType.warning,
       text:
@@ -54,7 +54,7 @@ text: "updateOnline started reason=$reason",
     return;
   }
 
-  final path = "presence/groups/$groupId/locators/$locatorId";
+  final path = 'presence/locators/$locatorId';
   final batteryLevel = await Battery().batteryLevel;
   final gpsEnabled = await Geolocator.isLocationServiceEnabled();			
 	final batteryChanged = _lastBatteryLevel == null || (batteryLevel - _lastBatteryLevel!).abs() >= 5;
@@ -671,7 +671,7 @@ Log.d("BEACON_PRESENCE => SkipSmallMove but deviceStatusChanged");
   // Buraya geldiysek geçerli ve anlamlı bir konum hareketi var.
   final placeData =
       await GeofenceService.checkPlaces(
-    groupId: groupId,
+    groupId: locatorId,//?*?groupId,
     locatorId: locatorId,
     lat: position.latitude,
     lng: position.longitude,

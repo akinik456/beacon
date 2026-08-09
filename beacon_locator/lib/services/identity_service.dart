@@ -151,7 +151,7 @@ class IdentityService {
 static Future<String?> getGroupId() async {
   final prefs = await SharedPreferences.getInstance();
 
-  final value = prefs.getString(_groupIdKey);
+  final value = '0ef2b956-c5de-4046-a1ed-ef368546e534';//prefs.getString(_groupIdKey);
 
   Log.d(
     "BEACON IDENTITY => getGroupId "

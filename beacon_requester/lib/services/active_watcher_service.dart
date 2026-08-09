@@ -11,7 +11,6 @@ class ActiveWatcherService {
   static Future<void> addWatcher({
 		required String requesterName,
 		required String requesterCode,
-    required String groupId,
     required String locatorId,
   }) async {
 	Log.d("addWatcher called");
@@ -21,7 +20,7 @@ class ActiveWatcherService {
 
       await _rtdb
           .ref(
-            'presence/groups/$groupId/active_watchers/$locatorId/$requesterId',
+            'presence/active_watchers/$locatorId/$requesterId',
           )
           .set({
 				'requesterName':requesterName,	
@@ -40,7 +39,6 @@ class ActiveWatcherService {
   }
 
   static Future<void> removeWatcher({
-    required String groupId,
     required String locatorId,
   }) async {
     try {
@@ -49,7 +47,7 @@ class ActiveWatcherService {
 
       await _rtdb
           .ref(
-            'presence/groups/$groupId/active_watchers/$locatorId/$requesterId',
+            'presence/active_watchers/$locatorId/$requesterId',
           )
           .remove();
 

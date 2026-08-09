@@ -78,8 +78,8 @@ String _getLocatorName(String locatorId) {
 			
 	void _listenPresence() {
   final path = _showAllMembers
-    ? 'presence/groups/${widget.groupId}/locators'
-    : 'presence/groups/${widget.groupId}/locators/${widget.locatorId}';
+    ? 'presence/locators'
+    : 'presence/locators/${widget.locatorId}';
 		
   Log.d('LIVE MAP => listening: $path');
 

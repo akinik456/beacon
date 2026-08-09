@@ -120,7 +120,7 @@ Future<void> _loadPlaces() async {
   if (groupId == null) return;
 
   final snapshot = await FirebaseDatabase.instance
-      .ref('presence/groups/$groupId/locators/${widget.locatorId}')
+      .ref('presence/locators/${widget.locatorId}')
       .get();
 
   if (!snapshot.exists || snapshot.value == null) return;

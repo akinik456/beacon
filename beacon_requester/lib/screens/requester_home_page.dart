@@ -499,7 +499,6 @@ Log.d("FIRESTORE_COUNT REQUESTER COUNT => ${count2.count}");
 }
 	
 	Future<void> _addActiveWatchers() async {
-		if (_groupId == null) return;
 		
 		final _requesterName = await IdentityService.getRequesterName();
 		final _requesterCode = await IdentityService.getRequesterCode();
@@ -513,7 +512,6 @@ Log.d("_addActiveWatchers IdentityService.getRequesterName");
 			await ActiveWatcherService.addWatcher(
 				requesterName: _requesterName!,
 				requesterCode: _requesterCode!,
-				groupId: _groupId!,
 				locatorId: locatorId,
 			);
 		}
@@ -521,7 +519,6 @@ Log.d("_addActiveWatchers IdentityService.getRequesterName");
 
 	Future<void> _removeActiveWatchers() async {
 	_stopRequesterPositionTimer();
-		if (_groupId == null) return;
 
 		for (final locator in _locators) {
 			final locatorId = locator['locatorId'];
@@ -529,7 +526,6 @@ Log.d("_addActiveWatchers IdentityService.getRequesterName");
 			if (locatorId == null) continue;
 
 			await ActiveWatcherService.removeWatcher(
-				groupId: _groupId!,
 				locatorId: locatorId,
 			);
 		}
@@ -637,11 +633,10 @@ static Future<void> cleanupInvalidPairedLocators() async {
 	
 	void _listenLocatorPresence(String locatorId) {
 	final l10n = AppLocalizations.of(context)!;
-		if (_groupId == null) return;
 
 		final sub = FirebaseDatabase.instance
 				.ref(
-					'presence/groups/$_groupId/locators/$locatorId',
+					'presence/locators/$locatorId',
 				)
 				.onValue
 				.listen((event) async {
@@ -1732,7 +1727,6 @@ Widget _buildGroupHome({
 																									if (result != true) return;
 																									
 																									await ActiveWatcherService.removeWatcher(
-																										groupId: _groupId!,
 																										locatorId: locatorId,
 																									);
 

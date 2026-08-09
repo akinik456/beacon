@@ -186,7 +186,7 @@ class LocatorListCard extends StatelessWidget {
 																		});
 																		await FirebaseDatabase.instance
 																				.ref(
-																					'presence/groups/$groupId/locators/$locatorId',
+																					'presence/locators/$locatorId',
 																				)
 																				.remove();
 
