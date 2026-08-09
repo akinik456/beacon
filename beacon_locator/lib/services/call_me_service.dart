@@ -10,7 +10,6 @@ class CallMeService {
   static final _firestore = FirebaseFirestore.instance;
 
   static Future<void> createCallMe({
-    required String groupId,
     required String targetRequesterId,
   }) async {
     final locatorId = await IdentityService.getLocatorId();
@@ -22,7 +21,6 @@ class CallMeService {
     }
 
     final enabled = await _isCallMeEnabledForRequester(
-      groupId: groupId,
       locatorId: locatorId,
       requesterId: targetRequesterId,
     );
@@ -33,7 +31,6 @@ class CallMeService {
     }
 
     await _createCallMeItem(
-      groupId: groupId,
       locatorId: locatorId,
       locatorName: locatorName,
       locatorCode: locatorCode,
@@ -42,14 +39,11 @@ class CallMeService {
   }
 
   static Future<bool> _isCallMeEnabledForRequester({
-    required String groupId,
     required String locatorId,
     required String requesterId,
   }) async {
     final notifyDoc = await _firestore
-        .collection('groups')
-        .doc(groupId)
-        .collection('devices')
+        .collection('locators')
         .doc(locatorId)
         .collection('notifyRequesters')
         .doc(requesterId)
@@ -61,7 +55,6 @@ class CallMeService {
   }
 
   static Future<void> _createCallMeItem({
-    required String groupId,
     required String locatorId,
     required String? locatorName,
     required String? locatorCode,
@@ -70,15 +63,12 @@ class CallMeService {
     final callMeId = const Uuid().v4();
 
     await _firestore
-        .collection('groups')
-        .doc(groupId)
         .collection('call_me')
         .doc(targetRequesterId)
         .collection('items')
         .doc(callMeId)
         .set({
       'callMeId': callMeId,
-      'groupId': groupId,
       'locatorId': locatorId,
       'locatorName': locatorName ?? 'Locator',
       'locatorCode': locatorCode ?? '------',

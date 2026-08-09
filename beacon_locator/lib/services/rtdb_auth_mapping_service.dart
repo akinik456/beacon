@@ -12,7 +12,6 @@ class RtdbAuthMappingService {
   static Future<void> syncLocatorAuth() async {
     final user = FirebaseAuth.instance.currentUser;
     final locatorId = await IdentityService.getLocatorId();
-		final groupId = await IdentityService.getGroupId();
 		
     if (user == null || locatorId == null) {
       Log.d("BEACON RTDB AUTH => locator mapping skipped");
@@ -21,14 +20,12 @@ class RtdbAuthMappingService {
 
     await _db.child("presence/auth/locators/$locatorId").update({
 			'authUid': user.uid,
-			'groupId': groupId,
 			'role': 'locator',
 			'updatedAt': ServerValue.timestamp,
 		});
 		
 		await _db.child("presence/auth/uids/${user.uid}").update({
 			'deviceId': locatorId,
-			'groupId': groupId,
 			'role': 'locator',
 			'updatedAt': ServerValue.timestamp,
 		});

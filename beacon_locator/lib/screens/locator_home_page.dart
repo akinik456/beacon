@@ -72,12 +72,10 @@ class _LocatorHomePageState extends State<LocatorHomePage>
 	Map<String, dynamic>? _callMeData;
 	List<Map<String, dynamic>> _pendingCallMeQueue = [];
 	final List<StreamSubscription> _subscriptions = [];
-	bool _hasGroup = false;
 	bool _hasFullAccess = true;
 	bool _showGroupInfo = false;
 	bool _showGuide = false;
 	bool _isDarkTheme = true;
-	bool _clearingGroupAfterUnpair = false;
 	bool _hadPairedRequester = false;
 	Map<String, dynamic> _cachedPresence = {};
 	String _currentAddress = '';	
@@ -130,30 +128,20 @@ Future<void> _startLocatorHome() async {
           .doc(locatorId)
           .get();
 
-      final serverGroupId = locatorDoc.data()?['groupId'];
-
-      await _syncLocalGroupWithServer();
     } catch (e) {
       Log.e(
         "BEACON LOCATOR HOME => "
-        "group sync error => $e",
+        "root sync error => $e",
       );
     }
   }
 
-  final groupId = await IdentityService.getGroupId();
 
-  final hasGroup =
-      groupId != null && groupId.isNotEmpty;
-
-  final hasFullAccess = hasGroup
-      ? await SubscriptionService.hasFullAccess()
-      : true;
+  final hasFullAccess = await SubscriptionService.hasFullAccess();
 Log.d("SubscriptionService hasFullAccess:$hasFullAccess");
   if (!mounted) return;
 
   setState(() {
-    _hasGroup = hasGroup;
     _hasFullAccess = hasFullAccess;
   });
 
@@ -164,16 +152,12 @@ Log.d("SubscriptionService hasFullAccess:$hasFullAccess");
     return;
   }
 
-  if (hasGroup) {
-    await RtdbAuthMappingService.syncLocatorAuth();
-  }
+  await RtdbAuthMappingService.syncLocatorAuth();
 
   await FCMService.initialize();
 
   _startNativePresenceIfAllowed();
 	
-	await cleanupInvalidPairedRequesters();
-
   LocatorSettingsService.startListeners();
 	
 	final prefs = await SharedPreferences.getInstance();
@@ -306,19 +290,17 @@ Future<void> _startNativePresenceIfAllowed() async {
     return;
   }
 
-  final groupId = await IdentityService.getGroupId();
   final locatorId = await IdentityService.getLocatorId();
 
-  if (groupId == null || locatorId == null) {
+  if (locatorId == null) {
     Log.d(
       "BEACON NATIVE SERVICE => missing ids, skip start "
-      "group=$groupId locator=$locatorId",
+      "locator=$locatorId",
     );
     return;
   }
 
   await NativePresenceService.start(
-    groupId: groupId,
     locatorId: locatorId,
   );
 }
@@ -337,78 +319,6 @@ Future<void> _startNativePresenceIfAllowed() async {
     }
   }
 	
-	static Future<void> cleanupInvalidPairedRequesters() async {
-  final groupId = await IdentityService.getGroupId();
-  final locatorId = await IdentityService.getLocatorId();
-
-  if (groupId == null || locatorId == null) {
-    Log.d("BEACON CLEANUP => missing group/locator");
-    return;
-  }
-
-  final locatorDeviceRef = FirebaseFirestore.instance
-      .collection('groups')
-      .doc(groupId)
-      .collection('devices')
-      .doc(locatorId);
-
-  final locatorDeviceSnap = await locatorDeviceRef.get();
-  final locatorDeviceData = locatorDeviceSnap.data();
-
-  if (locatorDeviceData == null) {
-    Log.d("BEACON CLEANUP => locator device doc not found");
-    return;
-  }
-
-  final pairedRequesters = Map<String, dynamic>.from(
-    locatorDeviceData['pairedRequesters'] ?? {},
-  );
-
-  if (pairedRequesters.isEmpty) {
-    Log.d("BEACON CLEANUP => no paired requesters");
-    return;
-  }
-
-  final batch = FirebaseFirestore.instance.batch();
-  int removedCount = 0;
-
-  for (final requesterId in pairedRequesters.keys) {
-    final requesterDeviceRef = FirebaseFirestore.instance
-        .collection('groups')
-        .doc(groupId)
-        .collection('devices')
-        .doc(requesterId);
-
-    final requesterDeviceSnap = await requesterDeviceRef.get();
-    final requesterData = requesterDeviceSnap.data();
-
-    final isValidRequester =
-        requesterDeviceSnap.exists &&
-        requesterData?['active'] == true &&
-        requesterData?['role'] == 'requester';
-
-    if (!isValidRequester) {
-      batch.update(locatorDeviceRef, {
-        'pairedRequesters.$requesterId': FieldValue.delete(),
-        'updatedAt': FieldValue.serverTimestamp(),
-      });
-
-      removedCount++;
-    }
-  }
-
-  if (removedCount == 0) {
-    Log.d("BEACON CLEANUP => paired requesters valid");
-    return;
-  }
-
-  await batch.commit();
-
-  Log.d(
-    "BEACON CLEANUP => removed invalid paired requesters count=$removedCount",
-  );
-}
-
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
@@ -498,17 +408,13 @@ Future<void> _startNativePresenceIfAllowed() async {
 	}
 	
 	void _listenCallMe() async {
-		final groupId = await IdentityService.getGroupId();
-
 		final locatorId = await IdentityService.getLocatorId();
 
-		if (groupId == null || locatorId == null) {
+		if (locatorId == null) {
 			return;
 		}
 
 		final sub = FirebaseFirestore.instance
-				.collection('groups')
-				.doc(groupId)
 				.collection('call_me')
 				.doc(locatorId)
 				.collection('items')
@@ -551,102 +457,28 @@ Future<void> _startNativePresenceIfAllowed() async {
 		_subscriptions.add(sub);
 	}
 
-Future<void> _clearLocatorGroupIfNoRequester() async {
-  if (_clearingGroupAfterUnpair) return;
-
-  _clearingGroupAfterUnpair = true;
-
-  try {
-    final locatorId = await IdentityService.getLocatorId();
-
-    if (locatorId == null || locatorId.isEmpty) return;
-
-    await FirebaseFirestore.instance
-        .collection('locators')
-        .doc(locatorId)
-        .set({
-          'groupId': FieldValue.delete(),
-          'updatedAt': FieldValue.serverTimestamp(),
-        }, SetOptions(merge: true));
-
-    Log.d("LOCATOR SYNC => groupId cleared because no paired requester");
-  } catch (e) {
-    Log.e("LOCATOR SYNC => clear groupId failed => $e");
-  } finally {
-    _clearingGroupAfterUnpair = false;
-  }
-}
-
-Future<void> _syncLocalGroupWithServer() async {
-  final locatorId = await IdentityService.getLocatorId();
-
-  if (locatorId == null || locatorId.isEmpty) return;
-
-  final locatorDoc = await FirebaseFirestore.instance
-      .collection('locators')
-      .doc(locatorId)
-      .get();
-
-  final serverGroupId = locatorDoc.data()?['groupId'];
-
-  if (serverGroupId == null ||
-      serverGroupId.toString().trim().isEmpty) {
-    await IdentityService.clearGroupId(
-      reason: 'locator_home_server_group_missing',
-    );
-
-    if (!mounted) return;
-
-    setState(() {
-      _hasGroup = false;
-    });
-
-    Log.d(
-      "BEACON LOCATOR HOME => "
-      "server groupId missing, local groupId cleared",
-    );
-  }
-}
 Future<Map<String, String>> _loadLocatorCodeData() async {
   final locatorId = await IdentityService.getLocatorId() ?? '';
   final locatorCode = await IdentityService.getLocatorCode() ?? '------';
   final locatorName = await IdentityService.getLocatorName() ?? 'Member';
 
-  final groupId = await IdentityService.getGroupId() ?? '';
-
-  String groupName = '';
-
-  if (groupId.isNotEmpty) {
-    final doc = await FirebaseFirestore.instance
-        .collection('groups')
-        .doc(groupId)
-        .get();
-
-    groupName = doc.data()?['groupName'] ?? '';
-  }
-
   return {
     'locatorId': locatorId,
     'locatorCode': locatorCode,
     'locatorName': locatorName,
-    'groupId': groupId,
-    'groupName': groupName,
   };
 }
 
 Stream<List<Map<String, String>>> _watchPairedRequesterData() async* {
-  final groupId = await IdentityService.getGroupId();
   final locatorId = await IdentityService.getLocatorId();
 
-  if (groupId == null || locatorId == null) {
+  if (locatorId == null) {
     yield [];
     return;
   }
 
   yield* FirebaseFirestore.instance
-      .collection('groups')
-      .doc(groupId)
-      .collection('devices')
+      .collection('locators')
       .doc(locatorId)
       .snapshots()
       .asyncMap((doc) async {
@@ -906,13 +738,8 @@ Widget _pairedRequesterCard() {
                       onPressed: requesterId.isEmpty
                           ? null
                           : () async {
-													final groupId =
-															await IdentityService.getGroupId();
-
-													if (groupId == null) return;
 
 													await CallMeService.createCallMe(
-														groupId: groupId,
 														targetRequesterId: requesterId,
 													);
 
@@ -945,10 +772,6 @@ Widget _pairedRequesterCard() {
               height: 48,
               child: OutlinedButton.icon(
                 onPressed: () async {
-                  final groupId =
-                      await IdentityService.getGroupId();
-
-                  if (groupId == null) return;
 
                   for (final requester in requesters) {
                     final requesterId =
@@ -957,7 +780,6 @@ Widget _pairedRequesterCard() {
                     if (requesterId.isEmpty) continue;
 
                     await CallMeService.createCallMe(
-                      groupId: groupId,
                       targetRequesterId: requesterId,
                     );
                   }
@@ -1293,10 +1115,9 @@ Widget _sosButton() {
 				? null
 				: () async {
         if (_sosCooldown) return;
-				final groupId = await IdentityService.getGroupId();
 				final locatorId = await IdentityService.getLocatorId();
 
-				if (groupId == null || locatorId == null) {
+				if (locatorId == null) {
 					return;
 				}
 
@@ -1391,8 +1212,6 @@ final l10n = AppLocalizations.of(context)!;
            final locatorId = snapshot.data?['locatorId'] ?? '';
             final locatorCode = snapshot.data?['locatorCode'] ?? '------';
             final locatorName = snapshot.data?['locatorName'] ?? l10n.name;
-						final groupId = snapshot.data?['groupId'] ?? '';
-						final groupName = snapshot.data?['groupName'] ?? '';
 						final langCode =
 						Localizations.localeOf(context).languageCode.toUpperCase();
             
@@ -1526,7 +1345,6 @@ final l10n = AppLocalizations.of(context)!;
 																? CrossFadeState.showFirst
 																: CrossFadeState.showSecond,
 														firstChild: GroupInfoPanel(
-															groupName: groupName,
 															locatorName: locatorName,
 															locatorCode: locatorCode,
 															langCode: langCode,
@@ -1686,13 +1504,9 @@ final l10n = AppLocalizations.of(context)!;
 							onDismiss: () async {
 								final callMeId = _callMeData!['callMeId'];
 
-								final groupId = _callMeData!['groupId'];
-
 								final locatorId = _callMeData!['targetLocatorId'];
 
 								await FirebaseFirestore.instance
-										.collection('groups')
-										.doc(groupId)
 										.collection('call_me')
 										.doc(locatorId)
 										.collection('items')
@@ -1710,7 +1524,7 @@ final l10n = AppLocalizations.of(context)!;
 							},
 						),	
 				),
-							if (!_hasFullAccess && _hasGroup)
+							if (!_hasFullAccess)
 								const LocatorSubscriptionExpiredOverlay(),
 						],
 						),

@@ -39,11 +39,10 @@ class ActiveWatcherService {
   }) async {
     await stop();
 
-    final groupId = await IdentityService.getGroupId();
     final locatorId = await IdentityService.getLocatorId();
 
-    if (groupId == null || locatorId == null) {
-      Log.d("BEACON WATCHER => missing group/locator");
+    if (locatorId == null) {
+      Log.d("BEACON WATCHER => missing locator");
       return;
     }
 
@@ -55,7 +54,6 @@ class ActiveWatcherService {
       "BEACON WATCHER => listening "
       "updateScheduler=$updateScheduler",
     );
-		Log.d("groupid:$groupId");
 
     _sub = ref.onValue.listen((event) async {
       final watchers = _parseWatchers(event.snapshot.value);
@@ -80,12 +78,11 @@ class ActiveWatcherService {
   }
 
   static Future<void> updateNotificationFromServer() async {
-    final groupId = await IdentityService.getGroupId();
     final locatorId = await IdentityService.getLocatorId();
 
-    if (groupId == null || locatorId == null) {
+    if (locatorId == null) {
       Log.d(
-        "BEACON WATCHER => notification skip missing group/locator",
+        "BEACON WATCHER => notification skip missing locator",
       );
 
       await NotificationService.cancelActiveWatchers();

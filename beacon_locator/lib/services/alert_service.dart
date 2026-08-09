@@ -70,13 +70,12 @@ class AlertService {
   required String type,
   Map<String, dynamic> extraData = const {},
 }) async {
-  final groupId = await IdentityService.getGroupId();
   final locatorId = await IdentityService.getLocatorId();
   final locatorName = await IdentityService.getLocatorName();
   final locatorCode = await IdentityService.getLocatorCode();
 
-  if (groupId == null || locatorId == null) {
-    Log.d("BEACON ALERT => missing group/locator");
+  if (locatorId == null) {
+    Log.d("BEACON ALERT => missing locator");
     return;
   }
 
@@ -88,9 +87,7 @@ class AlertService {
   }
 
   final locatorDeviceDoc = await _firestore
-      .collection('groups')
-      .doc(groupId)
-      .collection('devices')
+      .collection('locators')
       .doc(locatorId)
       .get();
 
@@ -114,9 +111,7 @@ class AlertService {
 
   for (final requesterId in pairedRequesters.keys) {
     final notifyDoc = await _firestore
-        .collection('groups')
-        .doc(groupId)
-        .collection('devices')
+        .collection('locators')
         .doc(locatorId)
         .collection('notifyRequesters')
         .doc(requesterId)
@@ -134,8 +129,6 @@ class AlertService {
 		
 		if (type != 'call_me') {
 			Query<Map<String, dynamic>> duplicateQuery = _firestore
-					.collection('groups')
-					.doc(groupId)
 					.collection('alerts')
 					.doc(requesterId)
 					.collection('items')
@@ -179,15 +172,12 @@ class AlertService {
     final alertId = const Uuid().v4();
 
     await _firestore
-        .collection('groups')
-        .doc(groupId)
         .collection('alerts')
         .doc(requesterId)
         .collection('items')
         .doc(alertId)
         .set({
       'alertId': alertId,
-      'groupId': groupId,
       'type': type,
       'locatorId': locatorId,
       'locatorName': locatorName ?? 'Locator',

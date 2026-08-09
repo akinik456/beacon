@@ -9,51 +9,92 @@ class SubscriptionService {
   static final _firestore = FirebaseFirestore.instance;
 
   static Future<bool> hasFullAccess() async {
-    final groupId = await IdentityService.getGroupId();
+    final locatorId =
+        await IdentityService.getLocatorId();
 
-    if (groupId == null || groupId.isEmpty) {
+    if (locatorId == null || locatorId.isEmpty) {
+      Log.d(
+        "BEACON SUBSCRIPTION => locatorId missing",
+      );
       return false;
     }
 
-    final doc = await _firestore
-        .collection('groups')
-        .doc(groupId)
+    final locatorDoc = await _firestore
+        .collection('locators')
+        .doc(locatorId)
         .get();
 
-    final data = doc.data();
+    final locatorData = locatorDoc.data();
 
-    if (data == null) {
+    if (locatorData == null) {
+      Log.d(
+        "BEACON SUBSCRIPTION => locator doc missing",
+      );
       return false;
     }
 
-    final purchaseStatus = data['purchaseStatus'];
-    final planStatus = data['planStatus'];
-    final trialEndsAt = data['trialEndsAt'];
-		
-		Log.d("hasFullAccess planStatus$planStatus");
-		
-    if (planStatus == 'trial' &&
-        trialEndsAt is Timestamp) {
-      return DateTime.now().isBefore(
-        trialEndsAt.toDate(),
+    final pairedRequesters =
+        Map<String, dynamic>.from(
+      locatorData['pairedRequesters'] ?? {},
+    );
+
+    // Henüz kimseyle eşleşmemiş locator serbest çalışsın.
+    if (pairedRequesters.isEmpty) {
+      Log.d(
+        "BEACON SUBSCRIPTION => no paired requester, access allowed",
       );
-    }	
-		
-		final locatorId =
-				await IdentityService.getLocatorId();
+      return true;
+    }
 
-		if (locatorId == null) {
-			return false;
-		}
+    for (final requesterId in pairedRequesters.keys) {
+      final requesterDoc = await _firestore
+          .collection('requesters')
+          .doc(requesterId)
+          .get();
 
+      final requesterData = requesterDoc.data();
 
-		final deviceDoc = await _firestore
-				.collection('groups')
-				.doc(groupId)
-				.collection('devices')
-				.doc(locatorId)
-				.get();
+      if (requesterData == null) {
+        continue;
+      }
 
-		return deviceDoc.data()?['isEntitled'] == true;
-		}
+      final purchaseStatus =
+          requesterData['purchaseStatus'];
+
+      final planStatus =
+          requesterData['planStatus'];
+
+      final trialEndsAt =
+          requesterData['trialEndsAt'];
+
+      Log.d(
+        "BEACON SUBSCRIPTION => "
+        "requester=$requesterId "
+        "plan=$planStatus "
+        "purchase=$purchaseStatus",
+      );
+
+      // Lifetime
+      if (purchaseStatus == 'lifetime') {
+        return true;
+      }
+
+      // Aktif trial
+      if (planStatus == 'trial' &&
+          trialEndsAt is Timestamp &&
+          DateTime.now().isBefore(
+            trialEndsAt.toDate(),
+          )) {
+        return true;
+      }
+    }
+
+    // Buraya geldiysek paired requester var
+    // ama hiçbirinde lifetime veya aktif trial yok.
+    Log.d(
+      "BEACON SUBSCRIPTION => all paired requesters expired",
+    );
+
+    return false;
+  }
 }

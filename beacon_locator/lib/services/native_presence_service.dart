@@ -8,21 +8,19 @@ class NativePresenceService {
       MethodChannel('lynra/presence_service');
 
   static Future<void> start({
-		required String groupId,
 		required String locatorId,
 	}) async {
 		try {
 			await _channel.invokeMethod(
 				'startPresenceService',
 				{
-					'groupId': groupId,
 					'locatorId': locatorId,
 				},
 			);
 
 			Log.d(
 				"NATIVE PRESENCE => service start requested "
-				"group=$groupId locator=$locatorId",
+				"locator=$locatorId",
 			);
 		} catch (e) {
 			Log.e(
@@ -37,15 +35,13 @@ class NativePresenceService {
 				'getPresenceIds',
 			);
 
-			final groupId = result?['groupId'] as String?;
 			final locatorId = result?['locatorId'] as String?;
 
-			if (groupId == null || locatorId == null) {
+			if (locatorId == null) {
 				return null;
 			}
 
 			return {
-				'groupId': groupId,
 				'locatorId': locatorId,
 			};
 		} catch (e) {

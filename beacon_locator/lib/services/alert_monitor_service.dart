@@ -37,10 +37,9 @@ class AlertMonitorService {
 	final batteryLowLevel =
 			LocatorSettingsService.batteryLowLevel;
 			
-		final groupId = await IdentityService.getGroupId();
 		final locatorId = await IdentityService.getLocatorId();	
 		
-		Log.d("groupid:$groupId,locatorId:$locatorId");
+		Log.d("locatorId:$locatorId");
 		
 	Log.d(
 		"BEACON ALERT MONITOR => "

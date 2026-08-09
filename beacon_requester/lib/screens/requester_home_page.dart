@@ -30,12 +30,9 @@ import '../services/fcm_service.dart';
 import 'locator_settings_page.dart';
 import '../utils/address_helper.dart';
 import '../services/active_watcher_service.dart';
-import '../services/join_request_service.dart';
 import 'locator_notify_page.dart';
 import '../core/widgets/call_me_overlay.dart';
 import '../core/widgets/alert_overlay.dart';
-import '../core/widgets/requester_list_card.dart';
-import '../core/widgets/join_request_card.dart';
 import 'language_select_page.dart';
 import '../l10n/app_localizations.dart';
 import '../services/subscription_service.dart';
@@ -82,9 +79,6 @@ class _RequesterHomePageState
 	final List<Map<String, dynamic>> _pendingSosQueue = [];
 	late Future<Map<String, dynamic>?> _homeDataFuture;
 	
-	String? _groupId;
-	String _groupCode = '------';
-	String? _groupName;
 	double? _myLat;
 	double? _myLng;
 	String? _requesterId;
@@ -313,11 +307,6 @@ class _RequesterHomePageState
 	}
 	Future<void> _startHome() async {
 	Log.d("_startHome called");
-final count = await FirebaseFirestore.instance
-	.collection('groups')
-	.count()
-	.get();
-Log.d("FIRESTORE_COUNT GROUPS COUNT => ${count.count}");
 
 final count1 = await FirebaseFirestore.instance
 	.collection('locators')
@@ -331,17 +320,7 @@ final count2 = await FirebaseFirestore.instance
 	.get();
 Log.d("FIRESTORE_COUNT REQUESTER COUNT => ${count2.count}");
 	
-		await _loadGroupCode();
-
-		final groupId = await GroupService.getLocalGroupId();
-
-		if (groupId == null || groupId.isEmpty) {
-			await AnalyticsService.logEvent(
-				'no_group_home_view',
-			);
-			Log.d("BEACON SUBSCRIPTION => no group, skip subscription check");
-			return;
-		}
+		
 		await RtdbAuthMappingService.syncRequesterAuth();
 		final isMaster = await GroupService.getLocalIsMaster();
 		_isMaster = isMaster;
@@ -354,19 +333,13 @@ Log.d("FIRESTORE_COUNT REQUESTER COUNT => ${count2.count}");
 		bool isEntitled = true;
 
 		if (!_isMaster) {
-			final groupId = await GroupService.getLocalGroupId();
 			final requesterId = await IdentityService.getRequesterId();
 
-			if (groupId == null ||
-					groupId.isEmpty ||
-					requesterId == null ||
+			if (requesterId == null ||
 					requesterId.isEmpty) {
 				isEntitled = false;
 			} else {
 				final deviceDoc = await FirebaseFirestore.instance
-						.collection('groups')
-						.doc(groupId)
-						.collection('devices')
 						.doc(requesterId)
 						.get();
 
@@ -560,18 +533,15 @@ Log.d("_updateRequesterPosition is called");
   });
 }	
 static Future<void> cleanupInvalidPairedLocators() async {
-  final groupId = await GroupService.getLocalGroupId();
   final requesterId = await IdentityService.getRequesterId();
 
-  if (groupId == null || requesterId == null) {
+  if (requesterId == null) {
     Log.d("BEACON CLEANUP REQ => missing group/requester");
     return;
   }
 
   final requesterDeviceRef = FirebaseFirestore.instance
-      .collection('groups')
-      .doc(groupId)
-      .collection('devices')
+			.collection('requesters')
       .doc(requesterId);
 
   final requesterSnap = await requesterDeviceRef.get();
@@ -596,18 +566,16 @@ static Future<void> cleanupInvalidPairedLocators() async {
 
   for (final locatorId in pairedLocators.keys) {
     final locatorDeviceRef = FirebaseFirestore.instance
-        .collection('groups')
-        .doc(groupId)
-        .collection('devices')
+				.collection('locators')
         .doc(locatorId);
 
     final locatorSnap = await locatorDeviceRef.get();
     final locatorData = locatorSnap.data();
 
-    final isValidLocator =
-        locatorSnap.exists &&
+    final isValidLocator = locatorSnap.exists;
+       /* locatorSnap.exists &&
         locatorData?['active'] == true &&
-        locatorData?['role'] == 'locator';
+        locatorData?['role'] == 'locator';?*? */
 
     if (!isValidLocator) {
       batch.update(requesterDeviceRef, {
@@ -704,20 +672,14 @@ static Future<void> cleanupInvalidPairedLocators() async {
 	
 	void _listenCallMe() async {
 
-		final groupId =
-				await GroupService.getLocalGroupId();
-
 		final requesterId =
 				await IdentityService.getRequesterId();
 
-		if (groupId == null ||
-				requesterId == null) {
+		if (requesterId == null) {
 			return;
 		}
 
 		final sub = FirebaseFirestore.instance
-				.collection('groups')
-				.doc(groupId)
 				.collection('call_me')
 				.doc(requesterId)
 				.collection('items')
@@ -760,16 +722,13 @@ static Future<void> cleanupInvalidPairedLocators() async {
 	}
 	
 	void _listenAlerts() async {
-  final groupId = await GroupService.getLocalGroupId();
   final requesterId = await IdentityService.getRequesterId();
 
-  if (groupId == null || requesterId == null) {
+  if (requesterId == null) {
     return;
   }
 
   final sub = FirebaseFirestore.instance
-      .collection('groups')
-      .doc(groupId)
       .collection('alerts')
       .doc(requesterId)
       .collection('items')
@@ -828,20 +787,15 @@ static Future<void> cleanupInvalidPairedLocators() async {
   _subscriptions.add(sub);
 }
 void _listenSos() async {
-  final groupId =
-      await GroupService.getLocalGroupId();
 
   final requesterId =
       await IdentityService.getRequesterId();
 
-  if (groupId == null ||
-      requesterId == null) {
+  if (requesterId == null) {
     return;
   }
 
   final sub = FirebaseFirestore.instance
-      .collection('groups')
-      .doc(groupId)
       .collection('sos')
       .doc(requesterId)
       .collection('items')
@@ -884,83 +838,6 @@ void _listenSos() async {
 
   _subscriptions.add(sub);
 }	
-
-  Future<void> _loadGroupCode() async {
-		final prefs = await SharedPreferences.getInstance();
-
-		if (!mounted) return;
-
-		setState(() {
-			_groupCode =
-					prefs.getString('group_code') ?? '------';
-		});
-	}
-	
-  void _showGroupQrDialog({
-		required BuildContext context,
-		required String groupId,
-		required String groupCode,
-	}) 
-	{
-		showDialog(
-			context: context,
-			builder: (dialogContext) {
-				final l10n =
-						AppLocalizations.of(dialogContext)!;
-
-				return Dialog(
-					backgroundColor: AppColors.surface,
-					shape: RoundedRectangleBorder(
-						borderRadius: BorderRadius.circular(24),
-					),
-					child: Padding(
-						padding: const EdgeInsets.all(24),
-						child: Column(
-							mainAxisSize: MainAxisSize.min,
-							children: [
-								Text(
-									l10n.groupQRCode,
-									style: AppFonts.title,
-								),
-
-								const SizedBox(height: 18),
-
-								Container(
-									padding: const EdgeInsets.all(16),
-									decoration: BoxDecoration(
-										color: Colors.white,
-										borderRadius: BorderRadius.circular(18),
-									),
-									child: QrImageView(
-										data: groupId,
-										size: 240,
-										backgroundColor: Colors.white,
-									),
-								),
-
-								const SizedBox(height: 18),
-
-								Text(
-									l10n.groupCode,
-									style: AppFonts.caption,
-								),
-
-								const SizedBox(height: 6),
-
-								Text(
-									groupCode,
-									style: AppFonts.title.copyWith(
-										color: AppColors.primary,
-										letterSpacing: 4,
-									),
-								),
-							],
-						),
-					),
-				);
-			},
-		);
-	}
 
 Future<void> _buy(String productId) async {
   Log.d("BEACON IAP => query start productId=$productId");
@@ -1199,79 +1076,6 @@ Widget _buildRejectedHome({
     ),
   );
 }
-
-Widget _buildPendingHome({
-  required String? pendingGroupId,
-  required String? requesterId,
-  required String requesterName,
-}) {
-  final l10n = AppLocalizations.of(context)!;
-
-  
-  return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-    stream: FirebaseFirestore.instance
-        .collection('groups')
-        .doc(pendingGroupId)
-        .collection('join_requests')
-        .doc(requesterId)
-        .snapshots(),
-    builder: (context, joinSnapshot) {
-      final status = joinSnapshot.data?.data()?['status'];
-			Log.d("JOIN WATCH => status=$status");
-
-      if (status != null && status != 'pending') {
-        Future.microtask(() async {
-  final future = HomeDataService.loadHomeData();
-
-  setState(() {
-    _homeDataFuture = future;
-  });
-
-  await future;
-
-  await _startHome();
-
-  if (!mounted) return;
-
-  setState(() {});
-});
-
-        return const SizedBox.shrink();
-      }
-
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: AppCard(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  Icons.hourglass_top_rounded,
-                  color: AppColors.primary,
-                  size: 48,
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  l10n.waitingForApproval,
-                  style: AppFonts.title,
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  l10n.yourrequest,
-                  textAlign: TextAlign.center,
-                  style: AppFonts.body.copyWith(
-                    color: AppColors.textSecondary,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
-    },
-  );
-}	
 	
 
 Widget _buildGroupHome({
@@ -1280,7 +1084,6 @@ Widget _buildGroupHome({
   required AppLocalizations l10n,
   required String langCode,
 }) {
-  final groupId = data['groupId'] ?? '';
   final requesterId = data['requesterId'] ?? '';
 	
 	return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
@@ -1407,29 +1210,19 @@ Widget _buildGroupHome({
 																		),
 																	),
 
-																	/*AnimatedCrossFade(
+																	AnimatedCrossFade(
 																		duration: const Duration(milliseconds: 250),
 																		crossFadeState: _showGroupInfo
 																				? CrossFadeState.showFirst
 																				: CrossFadeState.showSecond,
 																		firstChild: GroupInfoPanel(
-																			groupId: groupId,
-																			groupCode: _groupCode,
-																			groupName: groupName,
 																			requesterName: requesterName,																			
-																			isMaster: true
+																			isMaster: true,
 																			langCode: langCode,
 																			onRequesterNameChanged: () {
 																				setState(() {
 																					_homeDataFuture = HomeDataService.loadHomeData();
 																				});
-																			},
-																			onShowGroupQr: () {
-																				_showGroupQrDialog(
-																					context: context,
-																					groupId: groupId,
-																					groupCode: _groupCode,
-																				);
 																			},
 																			onLanguageChanged: () {
 																				setState(() {});
@@ -1437,7 +1230,7 @@ Widget _buildGroupHome({
 																			onChanged: _loadLocators,
 																		),
 																		secondChild: const SizedBox.shrink(),
-																	),*/																		
+																	),																		
 																			
 																		],
 																	),									
@@ -1678,7 +1471,6 @@ Widget _buildGroupHome({
 																										context,
 																										MaterialPageRoute(
 																											builder: (_) => LiveTrackingMapPage(
-																												groupId: groupId,
 																												locatorId: locatorId,
 																												locatorName: locatorName,
 																												latitude: lat,
@@ -1710,7 +1502,6 @@ Widget _buildGroupHome({
 																												locatorName: locatorName,
 																												locatorCode: locatorCode,
 																												address: locator['address'] ?? '',
-																												isMaster: true
 																											),
 																										),
 																									);
@@ -1802,31 +1593,11 @@ Widget build(BuildContext context) {
                   );
                 }
 
-                final requesterName = data['requesterName'] ?? '-';
-
-                if (data['isPending'] == true) {
-									return _buildPendingHome(
-										pendingGroupId: data['pendingGroupId'] as String?,
-										requesterId: data['requesterId'] as String?,
-										requesterName: requesterName,
-									);
-								}
-								if (data['isRejected'] == true) {
-									return _buildRejectedHome(
-										requesterName: requesterName,
-									);
-								}
-
-								
+                final requesterName = data['requesterName'] ?? '-';             
 								
 								_hasGroup =
 										data['hasGroup'] == true;					
 
-								/*if (!_hasGroup) {
-									return _buildNoGroupHome(
-										requesterName: requesterName,
-									);
-								}*/
 								
 								return _buildGroupHome(
 									requesterName: requesterName,
@@ -1979,15 +1750,10 @@ Widget build(BuildContext context) {
 																			final callMeId =
 																					_callMeData!['callMeId'];
 
-																			final groupId =
-																					_callMeData!['groupId'];
-
 																			final requesterId =
 																					_callMeData!['targetRequesterId'];
 
 																			await FirebaseFirestore.instance
-																		.collection('groups')
-																		.doc(groupId)
 																		.collection('call_me')
 																		.doc(requesterId)
 																		.collection('items')
@@ -2014,15 +1780,10 @@ Widget build(BuildContext context) {
 																			final alertDocId =
 																					_alertData!['alertDocId'];
 
-																			final groupId =
-																					_alertData!['groupId'];
-
 																			final requesterId =
 																					_alertData!['targetRequesterId'];
 
 																			await FirebaseFirestore.instance
-																					.collection('groups')
-																					.doc(groupId)
 																					.collection('alerts')
 																					.doc(requesterId)
 																					.collection('items')
@@ -2047,13 +1808,10 @@ Widget build(BuildContext context) {
 																		data: _sosData!,
 																		onDismiss: () async {
 																			final sosId = _sosData!['sosId'];
-																			final groupId = _sosData!['groupId'];
 																			final requesterId =
 																					_sosData!['targetRequesterId'];
 
 																			await FirebaseFirestore.instance
-																					.collection('groups')
-																					.doc(groupId)
 																					.collection('sos')
 																					.doc(requesterId)
 																					.collection('items')

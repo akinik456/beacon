@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../core/theme/app_colors.dart';
 import '../core/theme/app_fonts.dart';
 import '../core/widgets/app_card.dart';
-import '../services/group_service.dart';
 import '../services/identity_service.dart';
 import '../l10n/app_localizations.dart';
 import '../core/widgets/app_banner.dart';
@@ -46,19 +45,16 @@ class _LocatorNotifyPageState extends State<LocatorNotifyPage> {
   }
 
   Future<void> _loadData() async {
-    final groupId = await GroupService.getLocalGroupId();
     final requesterId = await IdentityService.getRequesterId();
 
-    if (groupId == null || requesterId == null) {
+    if (requesterId == null) {
       if (!mounted) return;
       setState(() => loading = false);
       return;
     }
 
     final configDoc = await FirebaseFirestore.instance
-        .collection('groups')
-        .doc(groupId)
-        .collection('devices')
+				.collection('locators')
         .doc(widget.locatorId)
         .collection('settings')
         .doc('config')
@@ -67,9 +63,7 @@ class _LocatorNotifyPageState extends State<LocatorNotifyPage> {
     final config = configDoc.data() ?? {};
 
     final notifyDoc = await FirebaseFirestore.instance
-        .collection('groups')
-        .doc(groupId)
-        .collection('devices')
+				.collection('locators')
         .doc(widget.locatorId)
         .collection('notifyRequesters')
         .doc(requesterId)
@@ -95,16 +89,13 @@ class _LocatorNotifyPageState extends State<LocatorNotifyPage> {
   }
 
   Future<void> _saveSettings() async {
-    final groupId = await GroupService.getLocalGroupId();
     final requesterId = await IdentityService.getRequesterId();
 		final l10n = AppLocalizations.of(context)!;
 		
-    if (groupId == null || requesterId == null) return;
+    if (requesterId == null) return;
 
     await FirebaseFirestore.instance
-        .collection('groups')
-        .doc(groupId)
-        .collection('devices')
+				.collection('locators')
         .doc(widget.locatorId)
         .collection('notifyRequesters')
         .doc(requesterId)

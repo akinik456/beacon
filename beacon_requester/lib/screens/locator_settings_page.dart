@@ -16,7 +16,6 @@ class LocatorSettingsPage extends StatefulWidget {
   final String locatorName;
   final String locatorCode;
   final String address;
-  final bool isMaster;
 
   const LocatorSettingsPage({
     super.key,
@@ -24,7 +23,6 @@ class LocatorSettingsPage extends StatefulWidget {
     required this.locatorName,
     required this.locatorCode,
     required this.address,
-    required this.isMaster,
   });
 
   @override
@@ -48,13 +46,9 @@ class _LocatorSettingsPageState extends State<LocatorSettingsPage> {
   }
 
   Future<void> _loadPlaceCount() async {
-    final groupId = await GroupService.getLocalGroupId();
-    if (groupId == null) return;
 
     final snapshot = await FirebaseFirestore.instance
-        .collection('groups')
-        .doc(groupId)
-        .collection('devices')
+        .collection('locators')
         .doc(widget.locatorId)
         .collection('places')
         .get();
@@ -68,13 +62,9 @@ class _LocatorSettingsPageState extends State<LocatorSettingsPage> {
 List<Map<String, dynamic>> _places = [];
 
 Future<void> _loadPlaces() async {
-  final groupId = await GroupService.getLocalGroupId();
-  if (groupId == null) return;
 
   final snapshot = await FirebaseFirestore.instance
-      .collection('groups')
-      .doc(groupId)
-      .collection('devices')
+			.collection('locators')
       .doc(widget.locatorId)
       .collection('places')
       .orderBy('createdAt')
@@ -96,7 +86,6 @@ Future<void> _loadPlaces() async {
   });
 }
   Future<void> _saveLocatorLocationAsPlace() async {
-  if (!widget.isMaster) return;
 
   final l10n = AppLocalizations.of(context)!;
 
@@ -116,9 +105,6 @@ Future<void> _loadPlaces() async {
     return;
   }
 
-  final groupId = await GroupService.getLocalGroupId();
-  if (groupId == null) return;
-
   final snapshot = await FirebaseDatabase.instance
       .ref('presence/locators/${widget.locatorId}')
       .get();
@@ -128,9 +114,7 @@ Future<void> _loadPlaces() async {
   final data = Map<String, dynamic>.from(snapshot.value as Map);
 
   final placeRef = FirebaseFirestore.instance
-      .collection('groups')
-      .doc(groupId)
-      .collection('devices')
+			.collection('locators')
       .doc(widget.locatorId)
       .collection('places')
       .doc();
@@ -158,13 +142,8 @@ Future<void> _loadPlaces() async {
 }
 
   Future<void> _loadSettings() async {
-    final groupId = await GroupService.getLocalGroupId();
-    if (groupId == null) return;
-
     final doc = await FirebaseFirestore.instance
-        .collection('groups')
-        .doc(groupId)
-        .collection('devices')
+				.collection('locators')
         .doc(widget.locatorId)
         .collection('settings')
         .doc('config')
@@ -216,16 +195,12 @@ Future<void> _loadPlaces() async {
       false;
 }
 Future<void> _deletePlace(String placeId, String placeName) async {
-  final groupId = await GroupService.getLocalGroupId();
-  if (groupId == null) return;
 
   final confirmed = await _confirmDeletePlace(placeName);
   if (!confirmed) return;
 
   await FirebaseFirestore.instance
-      .collection('groups')
-      .doc(groupId)
-      .collection('devices')
+			.collection('locators')
       .doc(widget.locatorId)
       .collection('places')
       .doc(placeId)
@@ -234,15 +209,10 @@ Future<void> _deletePlace(String placeId, String placeName) async {
   await _loadPlaces();
 }
   Future<void> _saveSettings() async {
-    if (!widget.isMaster) return;
     final l10n = AppLocalizations.of(context)!;
-    final groupId = await GroupService.getLocalGroupId();
-    if (groupId == null) return;
 
     await FirebaseFirestore.instance
-        .collection('groups')
-        .doc(groupId)
-        .collection('devices')
+				.collection('locators')
         .doc(widget.locatorId)
         .collection('settings')
         .doc('config')
@@ -262,11 +232,10 @@ Future<void> _deletePlace(String placeId, String placeName) async {
 		);
   }
 
-  bool get canSavePlace => widget.isMaster && geofenceAlert && _placeCount < 5;
+  bool get canSavePlace => geofenceAlert && _placeCount < 5;
 
   @override
   Widget build(BuildContext context) {
-    final readOnly = !widget.isMaster;
     final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -320,19 +289,8 @@ Future<void> _deletePlace(String placeId, String placeName) async {
                     ],
                   ),
                 ),
-                if (readOnly)
-                  Text(
-                    l10n.viewOnly,
-                    style: AppFonts.caption.copyWith(color: AppColors.warning),
-                  ),
               ],
             ),
-
-            if (readOnly) ...[
-              const SizedBox(height: 16),
-              AppCard(child: Text(l10n.onlyTheMaster, style: AppFonts.caption)),
-            ],
-
             const SizedBox(height: 12),
             _sectionTitle(l10n.alerts),
 
@@ -341,7 +299,6 @@ Future<void> _deletePlace(String placeId, String placeName) async {
               title: l10n.gpsOffAlert,
               subtitle: l10n.notifyGPS,
               value: gpsOffAlert,
-              enabled: widget.isMaster,
               onChanged: (v) => setState(() => gpsOffAlert = v),
             ),
 
@@ -350,7 +307,6 @@ Future<void> _deletePlace(String placeId, String placeName) async {
               title: l10n.batteryLowAlert,
               subtitle: l10n.notifyBattery,
               value: batteryLowAlert,
-              enabled: widget.isMaster,
               onChanged: (v) => setState(() => batteryLowAlert = v),
             ),
 
@@ -364,7 +320,7 @@ Future<void> _deletePlace(String placeId, String placeName) async {
                   Row(
                     children: [15, 20, 25].map((level) {
                       final selected = batteryLowLevel == level;
-                      final enabled = widget.isMaster && batteryLowAlert;
+                      final enabled = batteryLowAlert;
 
 											return Expanded(
 												child: Padding(
@@ -408,7 +364,6 @@ Future<void> _deletePlace(String placeId, String placeName) async {
 							title: l10n.movementAlert,
 							subtitle: l10n.notifyMovement,
 							value: movementAlert,
-							enabled: widget.isMaster,
 							onChanged: (v) => setState(() => movementAlert = v),
 						),
 
@@ -417,7 +372,6 @@ Future<void> _deletePlace(String placeId, String placeName) async {
               title: l10n.geofenceAlert,
               subtitle: l10n.notifyPlaces,
               value: geofenceAlert,
-              enabled: widget.isMaster,
               onChanged: (v) => setState(() => geofenceAlert = v),
             ),
 
@@ -465,27 +419,24 @@ Future<void> _deletePlace(String placeId, String placeName) async {
 													overflow: TextOverflow.ellipsis,
 													style: AppFonts.caption,
 												),
-												trailing: widget.isMaster
-														? IconButton(
-																icon: Icon(
-																	Icons.delete_outline_rounded,
-																	color: AppColors.danger,
-																),
-																onPressed: () {
-																	_deletePlace(
-																		place['placeId'],
-																		place['name'],
-																	);
-																},
-															)
-														: null,
+												trailing: IconButton(
+													icon: Icon(
+														Icons.delete_outline_rounded,
+														color: AppColors.danger,
+													),
+													onPressed: () {
+														_deletePlace(
+															place['placeId'],
+															place['name'],
+														);
+													},
+												),
 											);
 										}),
 									],
 								],
 							),
 						),
-						if (widget.isMaster) ...[
             const SizedBox(height: 4),
             SizedBox(
               width: double.infinity,
@@ -527,7 +478,7 @@ Future<void> _deletePlace(String placeId, String placeName) async {
               width: double.infinity,
               height: 36,
               child: ElevatedButton(
-                onPressed: widget.isMaster ? _saveSettings : null,
+                onPressed:  _saveSettings,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primary,
                   disabledBackgroundColor: AppColors.surface,
@@ -538,14 +489,11 @@ Future<void> _deletePlace(String placeId, String placeName) async {
                 child: Text(
                   l10n.saveSettings,
                   style: AppFonts.button.copyWith(
-                    color: widget.isMaster
-                        ? AppColors.background
-                        : AppColors.textSecondary,
+                    color: AppColors.textSecondary,
                   ),
                 ),
               ),
             ),
-						],
           ],
         ),
       ),
@@ -569,14 +517,12 @@ class _SwitchCard extends StatelessWidget {
   final String title;
   final String subtitle;
   final bool value;
-  final bool enabled;
   final ValueChanged<bool> onChanged;
 
   const _SwitchCard({
     required this.title,
     required this.subtitle,
     required this.value,
-    required this.enabled,
     required this.onChanged,
   });
 
@@ -596,7 +542,6 @@ class _SwitchCard extends StatelessWidget {
             ),
           ),
           IgnorePointer(
-						ignoring: !enabled,
 						child: Switch(
 							value: value,
 							onChanged: onChanged,

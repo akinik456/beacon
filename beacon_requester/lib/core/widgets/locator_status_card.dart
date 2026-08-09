@@ -239,15 +239,7 @@ class _LocatorStatusCardState
 								onPressed: widget.locatorId.isEmpty
 										? null
 										: () async {
-												final groupId =
-														await GroupService.getLocalGroupId();
-
-												if (groupId == null || groupId.isEmpty) {
-													return;
-												}
-
 												await CallMeService.createCallMe(
-													groupId: groupId,
 													targetLocatorId: widget.locatorId,
 												);
 												if (!context.mounted) return;

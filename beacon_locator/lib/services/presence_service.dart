@@ -22,7 +22,6 @@ class PresenceService {
 			
   static final _db = FirebaseDatabase.instance.ref();
 	static StreamSubscription<DatabaseEvent>? _connectedSub;
-	static String? _serviceGroupId;
 	static String? _serviceLocatorId;
 	static double? _lastLat;
 	static double? _lastLng;
@@ -42,14 +41,13 @@ await AppLogService.log(
 type: AppLogType.presence,
 text: "updateOnline started reason=$reason",
 );
-  final groupId = _serviceGroupId ?? await IdentityService.getGroupId();
   final locatorId = _serviceLocatorId ?? await IdentityService.getLocatorId();
   if (locatorId == null) {
     await AppLogService.log(
       type: AppLogType.warning,
       text:
-          "updateOnline stopped: missing group/locator "
-          "groupId=$groupId locatorId=$locatorId",
+          "updateOnline stopped: missinglocator "
+          "locatorId=$locatorId",
     );
     return;
   }
@@ -402,48 +400,6 @@ if (confirmationMatches) {
 				finalAnalysis.decision != GpsDecision.safe) {
 				
 			try {
-  /*final rejectedRef = _db
-      .child('gps_diagnostics')
-      .child(groupId)
-      .child(locatorId)
-      .child('rejected')
-      .push();
-
-  await rejectedRef.set({
-    'createdAt': ServerValue.timestamp,
-    'reason': reason,
-
-    'score': analysis.score,
-    'decision': analysis.decision.name,
-    'reasons': analysis.reasons,
-
-    'lat': position.latitude,
-    'lng': position.longitude,
-    'accuracy': position.accuracy,
-
-    'movedMeters': movedMeters,
-    'elapsedSeconds': elapsedSeconds,
-
-    'reportedSpeedKmh': speedKmh,
-    'calculatedSpeedKmh':
-        analysis.calculatedSpeedKmh,
-    'speedDifferenceKmh':
-        analysis.speedDifferenceKmh,
-    'speedJumpKmh':
-        analysis.speedJumpKmh,
-
-    'motionRecent': motionRecent,
-
-    'positionTimestamp':
-        position.timestamp.millisecondsSinceEpoch,
-  });*/
-
-  /*Log.d(
-    "BEACON_GPS_REJECTED => "
-    "diagnostic saved "
-    "score=${analysis.score} "
-    "moved=${movedMeters?.toStringAsFixed(1)}m",
-  );*/
 await AppLogService.log(
   type: AppLogType.gps,
   text: "BEACON_GPS_REJECTED => "
@@ -671,7 +627,6 @@ Log.d("BEACON_PRESENCE => SkipSmallMove but deviceStatusChanged");
   // Buraya geldiysek geçerli ve anlamlı bir konum hareketi var.
   final placeData =
       await GeofenceService.checkPlaces(
-    groupId: locatorId,//?*?groupId,
     locatorId: locatorId,
     lat: position.latitude,
     lng: position.longitude,
@@ -844,31 +799,22 @@ static Future<Position?> _getConfirmationPosition({
 }
 
 static void setServiceIds({
-  required String groupId,
   required String locatorId,
 }) {
-  _serviceGroupId = groupId;
   _serviceLocatorId = locatorId;
-
-  /*Log.d(
-    "BEACON_PRESENCE => service ids set "
-    "group=$groupId locator=$locatorId",
-  );*/
 }
 static Future<void> startConnectionWatcher() async {
 //Log.d("BEACON_PRESENCE => startConnectionWatcher called");
-  final groupId = await IdentityService.getGroupId();
   final locatorId = await IdentityService.getLocatorId();
 	
-	//Log.d("BEACON_PRESENCE => watcher ids group=$groupId locator=$locatorId",);
 
-  if (groupId == null || locatorId == null) {
-    //Log.d("BEACON_PRESENCE => watcher missing group/locator");
+  if (locatorId == null) {
+    //Log.d("BEACON_PRESENCE => watcher missing locator");
     return;
   }
 
   final locatorRef = _db.child(
-    "presence/groups/$groupId/locators/$locatorId",
+    "presence/locators/$locatorId",
   );
 
   final connectedRef =

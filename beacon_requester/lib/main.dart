@@ -317,10 +317,7 @@ class _MyAppState extends State<MyApp> {
       home: FutureBuilder<Map<String, String?>>(
         future: () async {
           final requesterId = await IdentityService.getRequesterId();
-
-          final groupId = await GroupService.getLocalGroupId();
-
-          return {'requesterId': requesterId, 'groupId': groupId};
+          return {'requesterId': requesterId};
         }(),
         builder: (context, snapshot) {
           if (snapshot.connectionState != ConnectionState.done) {

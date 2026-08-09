@@ -9,7 +9,6 @@ import '../theme/app_fonts.dart';
 class GroupInfoPanel extends StatelessWidget {
   const GroupInfoPanel({
     super.key,
-    required this.groupName,
     required this.locatorName,
     required this.locatorCode,
     required this.langCode,
@@ -18,7 +17,6 @@ class GroupInfoPanel extends StatelessWidget {
     required this.onLanguageChanged,
   });
 
-  final String groupName;
   final String locatorName;
   final String locatorCode;
   final String langCode;
@@ -123,18 +121,6 @@ class GroupInfoPanel extends StatelessWidget {
         children: [
           Row(
             children: [
-              Expanded(
-                child: Text(
-									groupName.isEmpty
-											? AppLocalizations.of(context)!.noGroupYet
-											: groupName,
-									overflow: TextOverflow.ellipsis,
-									style: AppFonts.title.copyWith(
-										fontSize: 20,
-										color: AppColors.textSecondary,
-									),
-								),
-              ),
               Expanded(
 								child: InkWell(
 									borderRadius: BorderRadius.circular(12),

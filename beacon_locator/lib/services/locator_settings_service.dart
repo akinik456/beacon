@@ -64,19 +64,16 @@ class LocatorSettingsService {
 	
 	static Future<void> startListeners() async {
 		final locatorId = await IdentityService.getLocatorId();
-		final groupId = await IdentityService.getGroupId();
 
-		if (locatorId == null || groupId == null) {
-			Log.d("LOCATOR SETTINGS => missing locatorId/groupId");
+		if (locatorId == null) {
+			Log.d("LOCATOR SETTINGS => missing locatorId");
 			return;
 		}
 
 		await stopListeners();
 
 		final locatorRef = _firestore
-				.collection('groups')
-				.doc(groupId)
-				.collection('devices')
+				.collection('locators')
 				.doc(locatorId);
 
 		_settingsSub = locatorRef
@@ -151,16 +148,13 @@ class LocatorSettingsService {
 
   static Future<Map<String, dynamic>> loadSettings() async {
     final locatorId = await IdentityService.getLocatorId();
-    final groupId = await IdentityService.getGroupId();
 
-    if (locatorId == null || groupId == null) {
+    if (locatorId == null) {
       return _defaultSettings();
     }
 
     final doc = await _firestore
-        .collection('groups')
-        .doc(groupId)
-        .collection('devices')
+        .collection('locators')
         .doc(locatorId)
         .collection('settings')
         .doc('config')

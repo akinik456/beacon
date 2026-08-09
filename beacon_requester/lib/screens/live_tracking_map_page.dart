@@ -10,7 +10,6 @@ import '../core/theme/app_colors.dart';
 
 
 class LiveTrackingMapPage extends StatefulWidget {
-	final String groupId;
   final String locatorId;
   final String locatorName;
   final double latitude;
@@ -20,7 +19,6 @@ class LiveTrackingMapPage extends StatefulWidget {
 
   const LiveTrackingMapPage({
     super.key,
-		required this.groupId,
     required this.locatorId,
     required this.locatorName,
     required this.latitude,

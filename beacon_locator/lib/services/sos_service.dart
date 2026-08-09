@@ -10,7 +10,6 @@ class SosService {
   static final _firestore = FirebaseFirestore.instance;
 
   static Future<void> createSos({
-		required String groupId,
 		required String targetRequesterId,
 	}) async {
 		final locatorId = await IdentityService.getLocatorId();
@@ -24,15 +23,12 @@ class SosService {
 		final sosId = const Uuid().v4();
 
 		await _firestore
-				.collection('groups')
-				.doc(groupId)
 				.collection('sos')
 				.doc(targetRequesterId)
 				.collection('items')
 				.doc(sosId)
 				.set({
 			'sosId': sosId,
-			'groupId': groupId,
 			'locatorId': locatorId,
 			'locatorName': locatorName ?? 'Member',
 			'locatorCode': locatorCode ?? '------',
@@ -46,18 +42,15 @@ class SosService {
 		);
 	}
 	static Future<void> sendSosToAll() async {
-  final groupId = await IdentityService.getGroupId();
   final locatorId = await IdentityService.getLocatorId();
 
-  if (groupId == null || locatorId == null) {
-    Log.d("BEACON SOS => groupId/locatorId missing");
+  if (locatorId == null) {
+    Log.d("BEACON SOS => locatorId missing");
     return;
   }
 
   final locatorDoc = await _firestore
-      .collection('groups')
-      .doc(groupId)
-      .collection('devices')
+      .collection('locators')
       .doc(locatorId)
       .get();
 
@@ -79,7 +72,6 @@ class SosService {
 
   for (final requesterId in pairedRequesters.keys) {
     await createSos(
-      groupId: groupId,
       targetRequesterId: requesterId,
     );
   }

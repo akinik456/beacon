@@ -12,7 +12,6 @@ class GeofenceService {
 
 
   static Future<Map<String, dynamic>> checkPlaces({
-    required String groupId,
     required String locatorId,
     required double lat,
     required double lng,
@@ -25,9 +24,7 @@ class GeofenceService {
 		
     try {
       final placesSnapshot = await FirebaseFirestore.instance
-          .collection('groups')
-          .doc(groupId)
-          .collection('devices')
+          .collection('locators')
           .doc(locatorId)
           .collection('places')
           .where('isActive', isEqualTo: true)
@@ -71,7 +68,7 @@ class GeofenceService {
         }
 
         final stateKey =
-						'geofence_inside_${groupId}_${locatorId}_$placeId';
+						'geofence_inside_${locatorId}_$placeId';
 
 				final previousInside =
 						prefs.getBool(stateKey);

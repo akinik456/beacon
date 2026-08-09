@@ -11,103 +11,160 @@ import 'code_service.dart';
 import 'firebase_authentication_service.dart';
 import '../utils/log.dart';
 
-
 class RequesterRegistryService {
   RequesterRegistryService._();
 
   static final _firestore = FirebaseFirestore.instance;
 
   static Future<void> registerRequester() async {
-  final packageInfo = await PackageInfo.fromPlatform();
+    final packageInfo = await PackageInfo.fromPlatform();
 
-  final deviceInfo = DeviceInfoPlugin();
-  final androidInfo = await deviceInfo.androidInfo;
-  final locale = PlatformDispatcher.instance.locale;
+    final deviceInfo = DeviceInfoPlugin();
+    final androidInfo = await deviceInfo.androidInfo;
+    final locale = PlatformDispatcher.instance.locale;
 
-  final countryCode = locale.countryCode;
+    final countryCode = locale.countryCode;
 
-  try {
+    try {
+      final requesterId =
+          await IdentityService.getRequesterId();
+
+      final requesterCode =
+          await IdentityService.getRequesterCode();
+
+      final requesterName =
+          await IdentityService.getRequesterName();
+
+      Log.d(
+        "registerRequester IdentityService.getRequesterName",
+      );
+
+      String? token;
+
+      try {
+        token = await FirebaseMessaging.instance.getToken();
+      } catch (e) {
+        Log.e(
+          "BEACON REQUESTER REGISTRY FCM TOKEN ERROR => $e",
+        );
+      }
+
+      final requesterRef =
+          _firestore.collection('requesters').doc(requesterId);
+
+      final requesterSnap = await requesterRef.get();
+
+      final now = FieldValue.serverTimestamp();
+
+      final Map<String, dynamic> data = {
+        'active': true,
+        'authUid': AuthService.uid,
+        'updatedAt': now,
+        'platform': Platform.operatingSystem,
+        'requesterCode': requesterCode,
+        'requesterName': requesterName,
+
+        'appVersion': packageInfo.version,
+        'buildNumber': packageInfo.buildNumber,
+        'androidVersion': androidInfo.version.release,
+        'sdkInt': androidInfo.version.sdkInt,
+
+        'brand': androidInfo.brand,
+        'manufacturer': androidInfo.manufacturer,
+        'model': androidInfo.model,
+        'device': androidInfo.device,
+        'countryCode': countryCode,
+      };
+
+      // Sadece requester ilk kez oluşturulurken yazılır.
+      // Böylece register/reset sırasında trial tekrar başlamaz.
+      if (!requesterSnap.exists) {
+        data.addAll({
+          'createdAt': now,
+
+          'pairedLocators': <String, dynamic>{},
+
+          'maxRequesters': 1,
+          'maxLocators': 1,
+
+          'planStatus': 'trial',
+          'purchaseStatus': 'none',
+          'purchaseOwnerRequesterId': null,
+          'purchasedAt': null,
+
+          'trialStartedAt': now,
+          'trialEndsAt': Timestamp.fromDate(
+            DateTime.now().add(
+              const Duration(days: 7),
+            ),
+          ),
+
+          'entitlementUpdatedAt': now,
+        });
+      }
+
+      await requesterRef.set(
+        data,
+        SetOptions(merge: true),
+      );
+
+      Log.d(
+        "BEACON REQUESTER REGISTRY => SUCCESS => "
+        "$requesterId new=${!requesterSnap.exists}",
+      );
+    } catch (e, stackTrace) {
+      Log.e(
+        "BEACON REQUESTER REGISTRY ERROR => "
+        "$e\n$stackTrace",
+      );
+
+      rethrow;
+    }
+  }
+
+  static Future<void> ensureRequesterAuthUid() async {
     final requesterId =
         await IdentityService.getRequesterId();
 
-    final requesterCode =
-        await IdentityService.getRequesterCode();
+    final authUid = AuthService.uid;
 
-    final requesterName =
-        await IdentityService.getRequesterName();
-
-    Log.d("registerRequester IdentityService.getRequesterName");
-
-    String? token;
-
-    try {
-      token = await FirebaseMessaging.instance.getToken();
-    } catch (e) {
-      Log.e("BEACON REQUESTER REGISTRY FCM TOKEN ERROR => $e");
+    if (requesterId == null || requesterId.isEmpty) {
+      Log.d(
+        "BEACON AUTH MIGRATION => requesterId missing",
+      );
+      return;
     }
 
-    await _firestore.collection('requesters').doc(requesterId).set({
-      'active': true,
-			'authUid': AuthService.uid,
-      'createdAt': FieldValue.serverTimestamp(),
-      'updatedAt': FieldValue.serverTimestamp(),
-      'platform': Platform.operatingSystem,
-      'requesterCode': requesterCode,
-      'requesterName': requesterName,
+    if (authUid == null || authUid.isEmpty) {
+      Log.d(
+        "BEACON AUTH MIGRATION => authUid missing",
+      );
+      return;
+    }
 
-      'appVersion': packageInfo.version,
-      'buildNumber': packageInfo.buildNumber,
-      'androidVersion': androidInfo.version.release,
-      'sdkInt': androidInfo.version.sdkInt,
+    final requesterRef =
+        _firestore.collection('requesters').doc(requesterId);
 
-      'brand': androidInfo.brand,
-      'manufacturer': androidInfo.manufacturer,
-      'model': androidInfo.model,
-      'device': androidInfo.device,
-      'countryCode': countryCode,
+    final doc = await requesterRef.get();
+
+    final currentAuthUid =
+        doc.data()?['authUid'];
+
+    if (currentAuthUid != null &&
+        currentAuthUid.toString().isNotEmpty) {
+      Log.d(
+        "BEACON AUTH MIGRATION => "
+        "requester authUid already exists",
+      );
+      return;
+    }
+
+    await requesterRef.set({
+      'authUid': authUid,
     }, SetOptions(merge: true));
 
     Log.d(
-      "BEACON REQUESTER REGISTRY => SUCCESS => $requesterId",
+      "BEACON AUTH MIGRATION => requester authUid written",
     );
-  } catch (e, stackTrace) {
-		Log.e(
-			"BEACON REQUESTER REGISTRY ERROR => $e\n$stackTrace",
-		);
-
-		rethrow;
-	}
-}
-
-static Future<void> ensureRequesterAuthUid() async {
-  final requesterId = await IdentityService.getRequesterId();
-  final authUid = AuthService.uid;
-
-  if (requesterId == null || requesterId.isEmpty) {
-    Log.d("BEACON AUTH MIGRATION => requesterId missing");
-    return;
   }
-
-  if (authUid == null || authUid.isEmpty) {
-    Log.d("BEACON AUTH MIGRATION => authUid missing");
-    return;
-  }
-
-  final requesterRef =
-      _firestore.collection('requesters').doc(requesterId);
-
-  final doc = await requesterRef.get();
-  final currentAuthUid = doc.data()?['authUid'];
-
-  if (currentAuthUid != null && currentAuthUid.toString().isNotEmpty) {
-    Log.d("BEACON AUTH MIGRATION => requester authUid already exists");
-    return;
-  }
-
-  await requesterRef.set({
-    'authUid': authUid,
-  }, SetOptions(merge: true));
-
-  Log.d("BEACON AUTH MIGRATION => requester authUid written");
-}
 }
