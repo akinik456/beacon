@@ -1,0 +1,13 @@
+FIRESTORE
+
+requesters
+	alerts
+	callme
+	sos
+
+locators
+	callme
+	notifyRequesters
+	pairing_requests
+	places
+	settings

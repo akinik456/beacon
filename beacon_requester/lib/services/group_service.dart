@@ -16,521 +16,186 @@ class GroupService {
 
   static final _firestore = FirebaseFirestore.instance;
 
-  static const _groupIdKey = 'group_id';
-	
-	static const _isMasterKey = 'is_master';
-	
-	static const _pendingGroupIdKey = 'pending_group_id';
+  static Future<void> addPairedLocatorToRequester({
+    required String locatorId,
+  }) async {
+    final requesterId = await IdentityService.getRequesterId();
 
-	static Future<void> setLocalIsMaster(bool value) async {
-		final prefs = await SharedPreferences.getInstance();
-		await prefs.setBool(_isMasterKey, value);
-	}
-
-	static Future<bool> getLocalIsMaster() async {
-		final prefs = await SharedPreferences.getInstance();
-		return prefs.getBool(_isMasterKey) ?? false;
-	}
-	
-
-  static Future<String> createGroup({
-  required String groupName,
-}) async {
-  final requesterId = await IdentityService.getRequesterId();
-  final requesterCode = await IdentityService.getRequesterCode();
-
-  if (requesterId == null || requesterId.isEmpty) {
-    throw Exception('Requester ID not found');
-  }
-
-  final groupId = const Uuid().v4();
-  final groupCode = CodeService.shortCodeFromId(groupId);
-
-  final groupRef =
-      _firestore.collection('groups').doc(groupId);
-
-  final requesterDeviceRef =
-      groupRef.collection('devices').doc(requesterId);
-
-  final globalRequesterRef =
-      _firestore.collection('requesters').doc(requesterId);
-
-  final locale = PlatformDispatcher.instance.locale;
-  final countryCode = locale.countryCode;
-
-  final now = FieldValue.serverTimestamp();
-Log.d(
-  "CREATE GROUP => "
-  "requesterId=$requesterId "
-  "authUid=${AuthService.uid}",
-);
-  final resultGroupId =
-      await _firestore.runTransaction<String>((tx) async {
-    final requesterSnapshot =
-        await tx.get(globalRequesterRef);
-
-    final existingGroupId =
-        requesterSnapshot.data()?['groupId']
-            ?.toString()
-            .trim();
-
-    if (existingGroupId != null &&
-        existingGroupId.isNotEmpty) {
+    if (requesterId == null) {
       Log.d(
-        "BEACON GROUP => CREATE BLOCKED => "
-        "existingGroupId=$existingGroupId",
+        "BEACON PAIRING => paired locator update failed",
       );
-
-      return existingGroupId;
-    }
-Log.d("CREATE GROUP => transaction starting");
-
-    tx.set(groupRef, {
-      'activeRequesterCount': 1,
-      'countryCode': countryCode,
-      'createdAt': now,
-      'entitlementUpdatedAt': now,
-      'groupId': groupId,
-      'groupCode': groupCode,
-      'groupName': groupName.trim(),
-      'masterRequesterId': requesterId,
-      'maxRequesters': 5,
-      'maxLocators': 5,
-      'planStatus': 'trial',
-      'purchaseStatus': 'none',
-      'purchaseOwnerRequesterId': null,
-      'purchasedAt': null,
-      'trialStartedAt': now,
-      'trialEndsAt': Timestamp.fromDate(
-        DateTime.now().add(
-          const Duration(days: 7),
-        ),
-      ),
-    });
-
-    tx.set(requesterDeviceRef, {
-      'active': true,
-      'authUid': AuthService.uid,
-      'isMaster': true,
-      'joinedAt': now,
-      'pairedLocators': {},
-      'requesterCode': requesterCode,
-      'requesterId': requesterId,
-      'role': 'requester',
-      'updatedAt': now,
-    });
-
-    tx.set(
-      globalRequesterRef,
-      {
-        'groupId': groupId,
-        'updatedAt': now,
-      },
-      SetOptions(merge: true),
-    );
-
-    return groupId;
-  });
-Log.d("CREATE GROUP => transaction completed");
-//  await RequesterRegistryService.registerRequester();
-Log.d("CREATE GROUP => requester registered");
-  final prefs = await SharedPreferences.getInstance();
-  await prefs.setString(
-    _groupIdKey,
-    resultGroupId,
-  );
-Log.d("CREATE GROUP => requester groupId written");
-  if (resultGroupId == groupId) {
-    await prefs.setString(
-      'group_code',
-      groupCode,
-    );
-
-    Log.d(
-      "BEACON GROUP => CREATE SUCCESS => "
-      "$resultGroupId",
-    );
-  } else {
-    final existingGroupSnapshot =
-        await _firestore
-            .collection('groups')
-            .doc(resultGroupId)
-            .get();
-
-    final existingGroupCode =
-        existingGroupSnapshot.data()?['groupCode']
-            ?.toString();
-
-    if (existingGroupCode != null &&
-        existingGroupCode.isNotEmpty) {
-      await prefs.setString(
-        'group_code',
-        existingGroupCode,
-      );
+      return;
     }
 
-    Log.d(
-      "BEACON GROUP => EXISTING GROUP RETURNED => "
-      "$resultGroupId",
-    );
-  }
-	await AnalyticsService.logEvent(
-		'group_created',
-	);
-  return resultGroupId;
-}
+    final locatorSnap = await _firestore
+        .collection('locators')
+        .doc(locatorId)
+        .get();
 
-  static Future<String?> getLocalGroupId() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString(_groupIdKey);
-  }
+    final locatorData = locatorSnap.data() ?? {};
 
-  static Future<String?> joinGroup({
-  required String groupCode,
-  required String requesterName,
-}) async {
-  final requesterId = await IdentityService.getRequesterId();
-  final requesterCode = await IdentityService.getRequesterCode();
+    final locatorCode =
+        locatorData['locatorCode'] ?? '------';
 
-  if (requesterId == null) {
-    Log.d("BEACON GROUP => requesterId not found");
-    return null;
-  }
-
-  final normalizedCode =
-      CodeService.normalizeCode(groupCode);
-
-  final query = await _firestore
-      .collection('groups')
-      .where('groupCode', isEqualTo: normalizedCode)
-      .limit(1)
-      .get();
-
-  if (query.docs.isEmpty) {
-    Log.d("BEACON GROUP => group not found");
-    return null;
-  }
-
-  final groupDoc = query.docs.first;
-  final groupId = groupDoc.id;
-
-  final joinRequestRef = _firestore
-      .collection('groups')
-      .doc(groupId)
-      .collection('join_requests')
-      .doc(requesterId);
-
-  final existingRequest = await joinRequestRef.get();
-
-	if (existingRequest.exists) {
-		final data = existingRequest.data();
-		final status = data?['status'];
-
-		if (status == 'pending') {
-			final prefs =
-					await SharedPreferences.getInstance();
-
-			await prefs.setString(
-				'pending_group_id',
-				groupId,
-			);
-
-			await prefs.setString(
-				'group_code',
-				normalizedCode,
-			);
-
-			await prefs.setString(
-				'join_status',
-				'pending',
-			);
-
-			Log.d(
-				"BEACON GROUP => "
-				"existing pending join request restored",
-			);
-			await AnalyticsService.logEvent(
-				'join_request_sent',
-			);
-			return groupId;
-		}
-	}
-
-  await joinRequestRef.set({
-    'requesterCode': requesterCode,
-    'requesterName': requesterName.trim(),
-		'authUid': AuthService.uid,
-    'status': 'pending',
-    'createdAt': FieldValue.serverTimestamp(),
-    'updatedAt': FieldValue.serverTimestamp(),
-  }, SetOptions(merge: true));
-
-  final prefs = await SharedPreferences.getInstance();
-
-  await prefs.setString('pending_group_id', groupId);
-	await prefs.setString('group_code', normalizedCode);
-	await prefs.setString('join_status', 'pending');
-
-  Log.d("BEACON GROUP => JOIN REQUEST SENT => $groupId");
-
-  return groupId;
-}
-  static Future<String?> getLocalGroupCode() async {
-    final prefs = await SharedPreferences.getInstance();
-
-    final groupCode = prefs.getString('group_code');
-
-    if (groupCode != null && groupCode.isNotEmpty) {
-      Log.d(
-        "BEACON GROUP => groupCode found => "
-        "$groupCode",
-      );
-
-      return groupCode;
-    }
-
-    Log.d("BEACON GROUP => groupCode not found");
-
-    return null;
-  }
-	
-static Future<void> addPairedLocatorToRequester({
-  required String locatorId,
-}) async {
-
-  final requesterId =
-      await IdentityService.getRequesterId();
-
-  final groupId =
-      await getLocalGroupId();
-
-  if (requesterId == null ||
-      groupId == null) {
-
-    Log.d(
-      "BEACON GROUP => "
-      "paired locator update failed",
-    );
-
-    return;
-  }
-
-  final locatorSnap =
-      await _firestore
-          .collection('locators')
-          .doc(locatorId)
-          .get();
-
-  final locatorData =
-      locatorSnap.data() ?? {};
-
-
-  final locatorCode =
-      locatorData['locatorCode'] ?? '------';
-
-  await _firestore
-      .collection('groups')
-      .doc(groupId)
-      .collection('devices')
-      .doc(requesterId)
-      .set({
-    'pairedLocators': {
-      locatorId: {
-        'locatorCode': locatorCode,
-				'pairedAt': FieldValue.serverTimestamp(),
-      },
-    },
-
-    'updatedAt':
-        FieldValue.serverTimestamp(),
-
-  }, SetOptions(merge: true));
-
-  Log.d(
-    "BEACON GROUP => "
-    "paired locator added => $locatorId",
-  );
-}
-
-static Future<void> addPairedRequesterToLocator({
-  required String locatorId,
-}) async {
-  final requesterId =
-      await IdentityService.getRequesterId();
-
-  final groupId =
-      await getLocalGroupId();
-			
-	final requesterCode =
-    await IdentityService.getRequesterCode();
-
-  if (requesterId == null || groupId == null) {
-    Log.d(
-      "BEACON GROUP => "
-      "paired requester update failed",
-    );
-    return;
-  }
-
-  await _firestore
-      .collection('groups')
-      .doc(groupId)
-      .collection('devices')
-      .doc(locatorId)
-      .set({
-    'pairedRequesters': {
-			requesterId: {
-				'pairedAt': FieldValue.serverTimestamp(),
-				'requesterCode': requesterCode,
-			},
-		},
-    'updatedAt': FieldValue.serverTimestamp(),
-  }, SetOptions(merge: true));
-
-  Log.d(
-    "BEACON GROUP => "
-    "paired requester added => $requesterId",
-  );
-}
-
-static Future<void> ensureLocatorDefaultSettings({
-  required String locatorId,
-}) async {
-  final groupId = await getLocalGroupId();
-
-  if (groupId == null) {
-    Log.d("GROUP SERVICE => groupId missing");
-    return;
-  }
-
-  await FirebaseFirestore.instance
-      .collection('groups')
-      .doc(groupId)
-      .collection('devices')
-      .doc(locatorId)
-      .collection('settings')
-      .doc('config')
-      .set({
-    'gpsOffAlert': true,
-    'batteryLowAlert': true,
-    'batteryLowLevel': 20,
-    'geofenceAlert': true,
-		'movementAlert': true,
-    'createdAt': FieldValue.serverTimestamp(),
-    'updatedAt': FieldValue.serverTimestamp(),
-  }, SetOptions(merge: true));
-}
-
-static Future<void> ensureRequesterNotifySettings({
-  required String locatorId,
-}) async {
-  final groupId = await getLocalGroupId();
-  final requesterId = await IdentityService.getRequesterId();
-
-  if (groupId == null || requesterId == null) {
-    Log.d("GROUP SERVICE => groupId/requesterId missing");
-    return;
-  }
-
-  await FirebaseFirestore.instance
-      .collection('groups')
-      .doc(groupId)
-      .collection('devices')
-      .doc(locatorId)
-      .collection('notifyRequesters')
-      .doc(requesterId)
-      .set({
-    'callMe': true,
-    'gpsOff': true,
-    'batteryLow': true,
-    'geofence': true,
-		'movement': true,
-    'createdAt': FieldValue.serverTimestamp(),
-    'updatedAt': FieldValue.serverTimestamp(),
-  }, SetOptions(merge: true));
-}
-
-static Future<void> removePairedLocator({
-  required String locatorId,
-}) async {
-  final groupId = await getLocalGroupId();
-  final requesterId = await IdentityService.getRequesterId();
-
-  if (groupId == null || requesterId == null) {
-    Log.d("GROUP SERVICE => remove locator missing ids");
-    return;
-  }
-
-  final groupRef = _firestore.collection('groups').doc(groupId);
-
-  final requesterDeviceRef =
-      groupRef.collection('devices').doc(requesterId);
-
-  final locatorDeviceRef =
-      groupRef.collection('devices').doc(locatorId);
-
-  final locatorRef =
-      _firestore.collection('locators').doc(locatorId);
-
-  await _firestore.runTransaction((tx) async {
-    final locatorDeviceSnap = await tx.get(locatorDeviceRef);
-
-    final locatorData = locatorDeviceSnap.data() ?? {};
-
-    final pairedRequesters =
-        Map<String, dynamic>.from(
-          locatorData['pairedRequesters'] ?? {},
-        );
-    pairedRequesters.remove(requesterId);
-    tx.set(requesterDeviceRef, {
+    await _firestore
+        .collection('requesters')
+        .doc(requesterId)
+        .set({
       'pairedLocators': {
-        locatorId: FieldValue.delete(),
+        locatorId: {
+          'locatorCode': locatorCode,
+          'pairedAt': FieldValue.serverTimestamp(),
+        },
       },
       'updatedAt': FieldValue.serverTimestamp(),
     }, SetOptions(merge: true));
 
-    if (pairedRequesters.isEmpty) {
-      tx.delete(locatorDeviceRef);
+    Log.d(
+      "BEACON PAIRING => paired locator added => $locatorId",
+    );
+  }
 
-      /*tx.set(locatorRef, {
-        'groupId': FieldValue.delete(),
-        'updatedAt': FieldValue.serverTimestamp(),
-      }, SetOptions(merge: true));*/
+  static Future<void> addPairedRequesterToLocator({
+    required String locatorId,
+  }) async {
+    final requesterId = await IdentityService.getRequesterId();
+    final requesterCode = await IdentityService.getRequesterCode();
 
-      tx.update(groupRef, {
-        'activeLocatorCount': FieldValue.increment(-1),
-        'updatedAt': FieldValue.serverTimestamp(),
-      });
-    } else {
-      tx.set(locatorDeviceRef, {
-        'pairedRequesters': {
-          requesterId: FieldValue.delete(),
-        },
-        'updatedAt': FieldValue.serverTimestamp(),
-      }, SetOptions(merge: true));
+    if (requesterId == null) {
+      Log.d(
+        "BEACON PAIRING => paired requester update failed",
+      );
+      return;
     }
-  });
 
-  await _firestore
-      .collection('groups')
-      .doc(groupId)
-      .collection('devices')
-      .doc(locatorId)
-      .collection('notifyRequesters')
-      .doc(requesterId)
-      .delete();
+    await _firestore
+        .collection('locators')
+        .doc(locatorId)
+        .set({
+      'pairedRequesters': {
+        requesterId: {
+          'pairedAt': FieldValue.serverTimestamp(),
+          'requesterCode': requesterCode,
+        },
+      },
+      'updatedAt': FieldValue.serverTimestamp(),
+    }, SetOptions(merge: true));
 
-  Log.d("GROUP SERVICE => locator removed => $locatorId");
+    Log.d(
+      "BEACON PAIRING => paired requester added => $requesterId",
+    );
+  }
+
+  static Future<void> ensureLocatorDefaultSettings({
+    required String locatorId,
+  }) async {
+    await _firestore
+        .collection('locators')
+        .doc(locatorId)
+        .collection('settings')
+        .doc('config')
+        .set({
+      'gpsOffAlert': true,
+      'batteryLowAlert': true,
+      'batteryLowLevel': 20,
+      'geofenceAlert': true,
+      'movementAlert': true,
+      'createdAt': FieldValue.serverTimestamp(),
+      'updatedAt': FieldValue.serverTimestamp(),
+    }, SetOptions(merge: true));
+  }
+
+  static Future<void> ensureRequesterNotifySettings({
+    required String locatorId,
+  }) async {
+    final requesterId = await IdentityService.getRequesterId();
+
+    if (requesterId == null) {
+      Log.d(
+        "BEACON PAIRING => requesterId missing for notify settings",
+      );
+      return;
+    }
+
+    await _firestore
+        .collection('locators')
+        .doc(locatorId)
+        .collection('notifyRequesters')
+        .doc(requesterId)
+        .set({
+      'callMe': true,
+      'gpsOff': true,
+      'batteryLow': true,
+      'geofence': true,
+      'movement': true,
+      'createdAt': FieldValue.serverTimestamp(),
+      'updatedAt': FieldValue.serverTimestamp(),
+    }, SetOptions(merge: true));
+  }
+
+  static Future<void> removePairedLocator({
+    required String locatorId,
+  }) async {
+    final requesterId = await IdentityService.getRequesterId();
+
+    if (requesterId == null) {
+      Log.d(
+        "BEACON PAIRING => remove locator requesterId missing",
+      );
+      return;
+    }
+
+    final requesterRef =
+        _firestore.collection('requesters').doc(requesterId);
+
+    final locatorRef =
+        _firestore.collection('locators').doc(locatorId);
+
+    await _firestore.runTransaction((tx) async {
+      tx.set(
+        requesterRef,
+        {
+          'pairedLocators': {
+            locatorId: FieldValue.delete(),
+          },
+          'updatedAt': FieldValue.serverTimestamp(),
+        },
+        SetOptions(merge: true),
+      );
+
+      tx.set(
+        locatorRef,
+        {
+          'pairedRequesters': {
+            requesterId: FieldValue.delete(),
+          },
+          'updatedAt': FieldValue.serverTimestamp(),
+        },
+        SetOptions(merge: true),
+      );
+    });
+
+    await locatorRef
+        .collection('notifyRequesters')
+        .doc(requesterId)
+        .delete();
+
+    Log.d(
+      "BEACON PAIRING => locator removed => $locatorId",
+    );
+  }
+	
+	static Future<String?> getLocalGroupId() async {
+    final String Id="0ef2b956-c5de-4046-a1ed-ef368546e534";
+		return Id;
+  }
+	
+	static Future<bool> getLocalIsMaster() async {
+		return true;
+	}
+	
+	static Future<void> clearLocalGroup() async {
 }
-
-static Future<void> clearLocalGroup() async {
-  final prefs = await SharedPreferences.getInstance();
-
-  await prefs.remove(_groupIdKey);
-  await prefs.remove('group_code');
-  await prefs.remove('join_status');
-  await prefs.remove(_isMasterKey);
-	await prefs.remove(_pendingGroupIdKey);
-}
-
+	
 }

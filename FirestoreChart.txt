@@ -58,7 +58,3 @@ RTDB
 					
 					
 					
-	notifyRequesters 	createdAt gereksiz
-	places da 2.placeId var updated yok
-	callmeid - (callmeid 2. gereksiz
-	alertid - (alertid 2. gereksiz

@@ -102,7 +102,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
 												groupName: groupNameCtrl.text,
 											);
 
-											await GroupService.setLocalIsMaster(true);
+											//await GroupService.setLocalIsMaster(true);
 
 											if (!context.mounted) return;
 

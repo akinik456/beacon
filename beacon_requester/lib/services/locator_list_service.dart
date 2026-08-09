@@ -13,68 +13,63 @@ class LocatorListService {
 	static final _rtdb = FirebaseDatabase.instance;
 	
   static Future<List<Map<String, dynamic>>> loadLocators() async {
-    try {
-      final groupId = await GroupService.getLocalGroupId();
-      final requesterId = await IdentityService.getRequesterId();
-			Log.d("BEACON LOCATOR LIST => groupId=$groupId requesterId=$requesterId");
+  try {
+    final requesterId = await IdentityService.getRequesterId();
 
-      if (groupId == null || requesterId == null) {
-        return [];
-      }
+    Log.d(
+      "BEACON LOCATOR LIST => requesterId=$requesterId",
+    );
 
-      final requesterDoc = await _firestore
-          .collection('groups')
-          .doc(groupId)
-          .collection('devices')
-          .doc(requesterId)
+    if (requesterId == null) {
+      return [];
+    }
+
+    final requesterDoc = await _firestore
+        .collection('requesters')
+        .doc(requesterId)
+        .get();
+
+    Log.d(
+      "BEACON LOCATOR LIST => requesterDoc exists=${requesterDoc.exists}",
+    );
+
+    if (!requesterDoc.exists) {
+      return [];
+    }
+
+    final requesterData = requesterDoc.data()!;
+
+    final pairedLocators =
+        Map<String, dynamic>.from(
+      requesterData['pairedLocators'] ?? {},
+    );
+
+    final List<Map<String, dynamic>> result = [];
+
+    for (final locatorId in pairedLocators.keys) {
+      final pairData =
+          pairedLocators[locatorId] is Map
+              ? Map<String, dynamic>.from(
+                  pairedLocators[locatorId],
+                )
+              : <String, dynamic>{};
+
+      final locatorDoc = await _firestore
+          .collection('locators')
+          .doc(locatorId)
           .get();
-			Log.d(
-				"BEACON LOCATOR LIST => requesterDoc exists=${requesterDoc.exists}",
-			);
-      if (!requesterDoc.exists) {
-        return [];
-      }
 
-      final requesterData = requesterDoc.data()!;
+      if (!locatorDoc.exists) continue;
 
-      final pairedLocators =
-          Map<String, dynamic>.from(
-        requesterData['pairedLocators'] ?? {},
-      );
+      final locatorData = locatorDoc.data() ?? {};
 
-      final List<Map<String, dynamic>> result = [];
-
-      for (final locatorId in pairedLocators.keys) {
-			final pairData =
-			pairedLocators[locatorId] is Map
-        ? Map<String, dynamic>.from(
-            pairedLocators[locatorId],
-          )
-        : <String, dynamic>{};
-        final locatorDoc = await _firestore
-            .collection('groups')
-            .doc(groupId)
-            .collection('devices')
-            .doc(locatorId)
-            .get();
-
-        if (!locatorDoc.exists) continue;
-				
-				final rootLocatorDoc = await _firestore
-						.collection('locators')
-						.doc(locatorId)
-						.get();
-
-				final rootLocatorData = rootLocatorDoc.data() ?? {};
-
-				final locatorName =
-						rootLocatorData['locatorName'] ??
-						locatorDoc.data()?['locatorName'] ??
-						pairData['locatorName'] ??
-						'-';
+      final locatorName =
+          locatorData['locatorName'] ??
+          pairData['locatorName'] ??
+          '-';
 
         final presenceSnapshot = await _rtdb
-						.ref('presence/groups/$groupId/locators/$locatorId')
+						.ref('presence/locators/$locatorId')
 						.get();
 
 				final presenceData = presenceSnapshot.value is Map
@@ -82,25 +77,21 @@ class LocatorListService {
 						: <String, dynamic>{};
 						
 				final settingsDoc = await _firestore
-						.collection('groups')
-						.doc(groupId)
-						.collection('devices')
-						.doc(locatorId)
-						.collection('settings')
-						.doc('config')
-						.get();
+					.collection('locators')
+					.doc(locatorId)
+					.collection('settings')
+					.doc('config')
+					.get();
 
 				final settingsData = settingsDoc.data() ?? {};
 
 				final notifyDoc = await _firestore
-						.collection('groups')
-						.doc(groupId)
-						.collection('devices')
-						.doc(locatorId)
-						.collection('notify')
-						.doc(requesterId)
-						.get();
-
+					.collection('locators')
+					.doc(locatorId)
+					.collection('notifyRequesters')
+					.doc(requesterId)
+					.get();
+					
 				final notifyData = notifyDoc.data() ?? {};		
 
 				result.add({

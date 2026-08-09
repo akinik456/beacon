@@ -19,8 +19,6 @@ import '../core/theme/app_fonts.dart';
 import '../core/widgets/app_card.dart';
 import '../services/home_data_service.dart';
 import 'add_locator_page.dart';
-import 'create_group_page.dart';
-import 'join_group_page.dart';
 import '../services/locator_list_service.dart';
 import '../services/group_service.dart';
 import '../core/widgets/locator_status_card.dart';
@@ -105,9 +103,9 @@ class _RequesterHomePageState
 	bool _trialActive = false;
 	bool _isEntitled = true;
 
-	bool get _hasFullAccess =>
-			(_isPremium || _trialActive) &&
-			(_isMaster || _isEntitled);
+	bool get _hasFullAccess => true;
+			/*?*?(_isPremium || _trialActive) &&
+			(_isMaster || _isEntitled);*/
 	int _trialDaysLeft = 0;
 	//final Map<String, DateTime> _lastMovementAlert = {};
 	Timer? _requesterPositionTimer;
@@ -315,7 +313,7 @@ class _RequesterHomePageState
 	}
 	Future<void> _startHome() async {
 	Log.d("_startHome called");
-/*final count = await FirebaseFirestore.instance
+final count = await FirebaseFirestore.instance
 	.collection('groups')
 	.count()
 	.get();
@@ -331,7 +329,7 @@ final count2 = await FirebaseFirestore.instance
 	.collection('requesters')
 	.count()
 	.get();
-Log.d("FIRESTORE_COUNT REQUESTER COUNT => ${count2.count}");*/
+Log.d("FIRESTORE_COUNT REQUESTER COUNT => ${count2.count}");
 	
 		await _loadGroupCode();
 
@@ -464,43 +462,41 @@ Log.d("FIRESTORE_COUNT REQUESTER COUNT => ${count2.count}");*/
 		);
 	}
 	
-	Future<void> _loadLocators() async {
-		_groupId = await GroupService.getLocalGroupId();
-		_requesterId = await IdentityService.getRequesterId();
-Log.d("loadLocators called");
-		if (_groupId == null || _groupId!.isEmpty) {
-			Log.d("BEACON HOME => no group yet, skip locator load");
-			return;
-		}
+	Future _loadLocators() async {
+  _requesterId = await IdentityService.getRequesterId();
 
-		final position =
-				await LocationHelper.getCurrentPosition();
+  Log.d("loadLocators called");
 
-		_myLat = position?.latitude;
-		_myLng = position?.longitude;
+  final position =
+      await LocationHelper.getCurrentPosition();
 
-		Log.d(
-			"BEACON REQUESTER POS => "
-			"$_myLat, $_myLng",
-		);
+  _myLat = position?.latitude;
+  _myLng = position?.longitude;
 
-		final locators =
-				await LocatorListService.loadLocators();
-						
+  Log.d(
+    "BEACON REQUESTER POS => "
+    "$_myLat, $_myLng",
+  );
 
-				setState(() {
-					_locators = locators;
-				});
-				for (final locator in locators) {
-			_listenLocatorPresence(
-				locator['locatorId'],
-			);
-		await _addActiveWatchers();	
-		}
-	_listenCallMe();
-	_listenAlerts();
-	_listenSos();
-	}
+  final locators =
+      await LocatorListService.loadLocators();
+
+  setState(() {
+    _locators = locators;
+  });
+
+  for (final locator in locators) {
+    _listenLocatorPresence(
+      locator['locatorId'],
+    );
+
+    await _addActiveWatchers();
+  }
+
+  _listenCallMe();
+  _listenAlerts();
+  _listenSos();
+}
 	
 	Future<void> _addActiveWatchers() async {
 		if (_groupId == null) return;
@@ -1216,15 +1212,7 @@ Widget _buildPendingHome({
 }) {
   final l10n = AppLocalizations.of(context)!;
 
-  if (pendingGroupId == null ||
-      pendingGroupId.isEmpty ||
-      requesterId == null ||
-      requesterId.isEmpty) {
-    return _buildNoGroupHome(
-      requesterName: requesterName,
-    );
-  }
-
+  
   return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
     stream: FirebaseFirestore.instance
         .collection('groups')
@@ -1288,280 +1276,8 @@ Widget _buildPendingHome({
       );
     },
   );
-}
+}	
 	
-	Widget _buildNoGroupHome({
-  required String requesterName,
-	}) {
-  final l10n = AppLocalizations.of(context)!;
-			final langCode =
-			Localizations.localeOf(context).languageCode.toUpperCase();
-  return Padding(
-    padding: const EdgeInsets.all(10),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Column(
-          children: [
-            RichText(
-							text: TextSpan(
-								style: AppFonts.title.copyWith(
-									fontSize: 24,
-									color: AppColors.primary,
-								),
-								children: [
-									TextSpan(text: l10n.title),
-									if (_isMaster)
-									TextSpan(
-										text: '  M*',//' Ⓜ',
-										style: AppFonts.title.copyWith(
-											fontSize: 14, // biraz daha küçük
-											color: AppColors.primary,
-										),
-									),
-								],
-							),
-						),
-
-            const SizedBox(height: 6),
-
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      l10n.groupName,
-                      overflow: TextOverflow.ellipsis,
-                      style: AppFonts.title.copyWith(
-                        fontSize: 20,
-                        color: AppColors.textSecondary,
-                      ),
-                    ),
-                  ),
-
-                  Expanded(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [                      
-												Expanded(
-													child: InkWell(
-														borderRadius: BorderRadius.circular(12),
-														onTap: () async {
-															final changed =
-																	await RequesterNameEditor.edit(context);
-
-															if (changed && mounted) {
-																		setState(() {
-																			_homeDataFuture =
-																					HomeDataService.loadHomeData();
-																		});
-																	}
-														},
-														child: Padding(
-															padding: const EdgeInsets.symmetric(
-																horizontal: 6,
-																vertical: 6,
-															),
-															child: Row(
-																mainAxisAlignment: MainAxisAlignment.end,
-																children: [
-																	Flexible(
-																		child: Text(
-																			requesterName,
-																			overflow: TextOverflow.ellipsis,
-																			textAlign: TextAlign.right,
-																			style: AppFonts.title.copyWith(
-																				fontSize: 20,
-																				color: AppColors.textSecondary,
-																			),
-																		),
-																	),
-																	const SizedBox(width: 4),
-																	Icon(
-																		Icons.edit_rounded,
-																		size: 18,
-																		color: AppColors.textSecondary,
-																	),
-																],
-															),
-														),
-													),										
-												),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-
-        Row(
-          children: [
-           /* const SizedBox(width: 8),
-            Text(
-              l10n.adminName,
-              style: AppFonts.caption,
-            ),*/
-            const Spacer(),
-            TextButton.icon(
-              onPressed: () async {
-                await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const LanguageSelectPage(),
-                  ),
-                );
-
-                if (!mounted) return;
-                setState(() {});
-              },
-              icon: Icon(
-                Icons.language_rounded,
-                size: 18,
-                color: AppColors.accent,
-              ),
-              label: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-										langCode,
-										style: AppFonts.caption.copyWith(
-											color: AppColors.accent,
-											fontWeight: FontWeight.w600,
-										),
-									),
-                  Icon(
-                    Icons.arrow_drop_down,
-                    size: 18,
-                    color: AppColors.accent,
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-
-        const SizedBox(height: 8),
-
-        AppCard(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                l10n.noGroupYet,
-                style: AppFonts.subtitle,
-              ),
-
-              const SizedBox(height: 8),
-
-              Text(
-                l10n.createOrJoin,
-                style: AppFonts.body.copyWith(
-                  color: AppColors.textSecondary,
-                ),
-              ),
-							
-							const SizedBox(height: 12),
-
-							Container(
-								width: double.infinity,
-								padding: const EdgeInsets.all(12),
-								decoration: BoxDecoration(
-									color: AppColors.primary.withValues(alpha: 0.08),
-									borderRadius: BorderRadius.circular(12),
-									border: Border.all(
-										color: AppColors.primary.withValues(alpha: 0.15),
-									),
-								),
-								child: Row(
-									crossAxisAlignment: CrossAxisAlignment.start,
-									children: [
-										Icon(
-											Icons.info_outline_rounded,
-											size: 20,
-											color: AppColors.primary,
-										),
-										const SizedBox(width: 10),
-										Expanded(
-											child: Text(
-												l10n.memberAppInfo,
-												style: AppFonts.caption.copyWith(
-													height: 1.4,
-												),
-											),
-										),
-									],
-								),
-							),
-
-              const SizedBox(height: 20),
-
-              SizedBox(
-                width: double.infinity,
-                height: 52,
-                child: ElevatedButton(
-                  onPressed: () async {
-										await AnalyticsService.logEvent(
-											'create_group_clicked',
-										);
-                    final changed = await Navigator.push<bool>(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => CreateGroupPage(),
-                      ),
-                    );
-
-                    if (changed == true && context.mounted) {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => const RequesterHomePage(),
-                        ),
-                      );
-                    }
-                  },
-                  child: Text(l10n.createNewGroup),
-                ),
-              ),
-
-              const SizedBox(height: 12),
-
-              SizedBox(
-                width: double.infinity,
-                height: 52,
-                child: ElevatedButton(
-                  onPressed: () async {
-									await AnalyticsService.logEvent(
-										'join_group_clicked',
-									);
-                    final changed = await Navigator.push<bool>(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => JoinGroupPage(),
-                      ),
-                    );
-
-                    if (changed == true && context.mounted) {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => const RequesterHomePage(),
-                        ),
-                      );
-                    }
-                  },
-                  child: Text(l10n.joinGroup),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    ),
-  );
-}
 
 Widget _buildGroupHome({
 	required String requesterName,
@@ -1571,14 +1287,11 @@ Widget _buildGroupHome({
 }) {
   final groupId = data['groupId'] ?? '';
   final requesterId = data['requesterId'] ?? '';
-  final groupName = data['groupName'] ?? '-';
 	
 	return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
     stream: FirebaseFirestore.instance
-        .collection('groups')
-        .doc(groupId)
-        .collection('devices')
-        .doc(requesterId)
+        .collection('requesters')
+				.doc(requesterId)
         .snapshots(),
     builder: (context, requesterSnapshot) {
       										final requesterData =
@@ -1589,23 +1302,6 @@ Widget _buildGroupHome({
 													requesterData['pairedLocators'] ?? {},
 												);
 										
-										if (requesterSnapshot.hasData && !requesterSnapshot.data!.exists) {
-											Future.microtask(() async {
-												await GroupService.clearLocalGroup();
-
-												if (!context.mounted) return;
-
-												Navigator.pushReplacement(
-													context,
-													MaterialPageRoute(
-														builder: (_) => const RequesterHomePage(),
-													),
-												);
-											});
-
-											return const SizedBox.shrink();
-										}
-
 										return Padding(
 											padding: const EdgeInsets.all(10),
 											child: Column(
@@ -1626,14 +1322,6 @@ Widget _buildGroupHome({
 																								),
 																								children: [
 																									TextSpan(text: l10n.title),
-																									if (_isMaster)
-																									TextSpan(
-																										text: '  M*',//' Ⓜ',
-																										style: AppFonts.title.copyWith(
-																											fontSize: 14, // biraz daha küçük
-																											color: AppColors.primary,
-																										),
-																									),
 																								],
 																							),
 																						),
@@ -1724,7 +1412,7 @@ Widget _buildGroupHome({
 																		),
 																	),
 
-																	AnimatedCrossFade(
+																	/*AnimatedCrossFade(
 																		duration: const Duration(milliseconds: 250),
 																		crossFadeState: _showGroupInfo
 																				? CrossFadeState.showFirst
@@ -1734,7 +1422,7 @@ Widget _buildGroupHome({
 																			groupCode: _groupCode,
 																			groupName: groupName,
 																			requesterName: requesterName,																			
-																			isMaster: _isMaster,
+																			isMaster: true
 																			langCode: langCode,
 																			onRequesterNameChanged: () {
 																				setState(() {
@@ -1754,29 +1442,13 @@ Widget _buildGroupHome({
 																			onChanged: _loadLocators,
 																		),
 																		secondChild: const SizedBox.shrink(),
-																	),																		
+																	),*/																		
 																			
 																		],
 																	),									
 																			
 																	const SizedBox(height: 4),
-
-																	if (_isMaster && _groupId != null)
-																		JoinRequestCard(
-																			groupId: _groupId!,
-																		),
-																		
-																	StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-																		stream: FirebaseFirestore.instance
-																				.collection('groups')
-																				.doc(groupId)
-																				.snapshots(),
-																		builder: (context, snapshot) {
-																			final data = snapshot.data?.data();
-																			final maxLocators = data?['maxLocators'] ?? 1;
-																			final activeLocatorCount = data?['activeLocatorCount'] ?? 0;
-																			final isFull = activeLocatorCount >= maxLocators;
-																			return AppCard(
+																	AppCard(
 																				onTap: () async {
 																				await AnalyticsService.logEvent(
 																					'add_member_opened',
@@ -1875,9 +1547,7 @@ Widget _buildGroupHome({
 																						],
 																					),
 																				),																			
-																			);
-																		},
-																	),
+																			),
 																	const SizedBox(height: 4),
 
 																	Expanded(
@@ -2045,7 +1715,7 @@ Widget _buildGroupHome({
 																												locatorName: locatorName,
 																												locatorCode: locatorCode,
 																												address: locator['address'] ?? '',
-																												isMaster: _isMaster,
+																												isMaster: true
 																											),
 																										),
 																									);
@@ -2061,8 +1731,6 @@ Widget _buildGroupHome({
 																									);
 																									if (result != true) return;
 																									
-																									if (_groupId == null) return;
-
 																									await ActiveWatcherService.removeWatcher(
 																										groupId: _groupId!,
 																										locatorId: locatorId,
@@ -2160,11 +1828,11 @@ Widget build(BuildContext context) {
 								_hasGroup =
 										data['hasGroup'] == true;					
 
-								if (!_hasGroup) {
+								/*if (!_hasGroup) {
 									return _buildNoGroupHome(
 										requesterName: requesterName,
 									);
-								}
+								}*/
 								
 								return _buildGroupHome(
 									requesterName: requesterName,
@@ -2219,7 +1887,6 @@ Widget build(BuildContext context) {
 																								),
 																								),
 																								const SizedBox(width: 8),
-																								if (_isMaster)
 																									TextButton(
 																										onPressed: _showPurchaseMenu,
 																										style: TextButton.styleFrom(
@@ -2414,7 +2081,7 @@ Widget build(BuildContext context) {
 																	),
 																	if (!_hasFullAccess && _hasGroup)
 																	SubscriptionExpiredOverlay(
-																		isMaster: _isMaster,
+																		isMaster: true,
 																		onUpgrade: () {
 																			_showPurchaseMenu();
 																		},
