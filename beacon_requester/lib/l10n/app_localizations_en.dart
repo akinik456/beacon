@@ -27,6 +27,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get memberAppInfo => 'Family members use the free \"LynraFamily Member\" app on their own phones.';
 
   @override
+  String get shareMemberApp => 'Share Member App';
+
+  @override
   String get actionRequired => 'Action Required';
 
   @override

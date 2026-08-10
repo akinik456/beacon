@@ -8,12 +8,10 @@ import '../../utils/log.dart';
 
 
 class SubscriptionExpiredOverlay extends StatelessWidget {
-  final bool isMaster;
   final VoidCallback onUpgrade;
 
   const SubscriptionExpiredOverlay({
     super.key,
-    required this.isMaster,
     required this.onUpgrade,
   });
 
@@ -48,16 +46,13 @@ class SubscriptionExpiredOverlay extends StatelessWidget {
                   const SizedBox(height: 8),
 
                   Text(
-                    isMaster
-                        ? l10n.upgradeToContinue
-                        : l10n.askTheGroup,
+                    l10n.upgradeToContinue,
                     style: AppFonts.body.copyWith(
                       color: AppColors.textSecondary,
                     ),
                     textAlign: TextAlign.center,
                   ),
 
-                  if (isMaster) ...[
                     const SizedBox(height: 22),
                     SizedBox(
                       width: double.infinity,
@@ -67,7 +62,6 @@ class SubscriptionExpiredOverlay extends StatelessWidget {
                         child: Text(l10n.goPremium),
                       ),
                     ),
-                  ],
                 ],
               ),
             ),

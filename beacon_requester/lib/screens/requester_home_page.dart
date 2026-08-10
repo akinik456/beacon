@@ -13,6 +13,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../core/theme/app_colors.dart';
 import '../core/theme/app_fonts.dart';
@@ -37,7 +38,6 @@ import 'language_select_page.dart';
 import '../l10n/app_localizations.dart';
 import '../services/subscription_service.dart';
 import '../core/widgets/subscription_expired_overlay.dart';
-import '../core/widgets/group_info_panel.dart';
 import '../services/requester_name_editor.dart';
 import '../core/widgets/guide_panel.dart';
 import '../services/notification_service.dart';
@@ -83,10 +83,8 @@ class _RequesterHomePageState
 	double? _myLng;
 	String? _requesterId;
 	String _requesterName = '';
-	bool _isMaster = false;
 	Timer? _timeRefreshTimer;
 	String _appVersion = '';
-	bool _hasGroup = false;
 	bool _showGroupInfo = false;
 	bool _showGuide = false;
 	bool _appInForeground = true;
@@ -96,10 +94,7 @@ class _RequesterHomePageState
 	bool _isPremium = false;
 	bool _trialActive = false;
 	bool _isEntitled = true;
-
-	bool get _hasFullAccess => true;
-			/*?*?(_isPremium || _trialActive) &&
-			(_isMaster || _isEntitled);*/
+	bool _hasFullAccess = true;
 	int _trialDaysLeft = 0;
 	//final Map<String, DateTime> _lastMovementAlert = {};
 	Timer? _requesterPositionTimer;
@@ -111,7 +106,6 @@ class _RequesterHomePageState
 		WidgetsBinding.instance.addObserver(this);
 		super.initState();
 		Log.d("RequesterHome initState");
-	Log.d("state _hasFullAccess $_hasFullAccess ,_isPremium $_isPremium ,_trialActive $_trialActive"); 
 		_homeDataFuture = HomeDataService.loadHomeData();
 		_loadTheme();
 		unawaited(_startHome());
@@ -323,8 +317,6 @@ Log.d("FIRESTORE_COUNT REQUESTER COUNT => ${count2.count}");
 	
 		
 		await RtdbAuthMappingService.syncRequesterAuth();
-		final isMaster = await GroupService.getLocalIsMaster();
-		_isMaster = isMaster;
 		
 		await cleanupInvalidPairedLocators();
 		
@@ -333,26 +325,45 @@ Log.d("FIRESTORE_COUNT REQUESTER COUNT => ${count2.count}");
 
 		bool isEntitled = true;
 
-		if (!_isMaster) {
-			final requesterId = await IdentityService.getRequesterId();
+		final requesterId =
+    await IdentityService.getRequesterId();
 
-			if (requesterId == null ||
-					requesterId.isEmpty) {
-				isEntitled = false;
-			} else {
-				final deviceDoc = await FirebaseFirestore.instance
-						.doc(requesterId)
-						.get();
+if (requesterId == null ||
+    requesterId.isEmpty) {
+  isEntitled = false;
+} else {
+  final requesterDoc =
+      await FirebaseFirestore.instance
+          .collection('requesters')
+          .doc(requesterId)
+          .get();
 
-				isEntitled =
-						deviceDoc.data()?['isEntitled'] != false;
-			}
+  final data = requesterDoc.data();
 
-			Log.d(
-				"BEACON SUBSCRIPTION => "
-				"requester isEntitled=$isEntitled",
-			);
-		}
+  final purchaseStatus =
+      data?['purchaseStatus'];
+
+  final planStatus =
+      data?['planStatus'];
+
+  final trialEndsAt =
+      data?['trialEndsAt'];
+
+  isEntitled =
+      purchaseStatus == 'lifetime' ||
+      (
+        planStatus == 'trial' &&
+        trialEndsAt is Timestamp &&
+        DateTime.now().isBefore(
+          trialEndsAt.toDate(),
+        )
+      );
+}
+
+Log.d(
+  "BEACON SUBSCRIPTION => "
+  "requester isEntitled=$isEntitled",
+);
 
 		if (!_hasFullAccess) {
 			Log.d(
@@ -363,7 +374,6 @@ Log.d("FIRESTORE_COUNT REQUESTER COUNT => ${count2.count}");
 			if (!mounted) return;
 
 			setState(() {});
-			_hasGroup = true;
 			return;
 		}
 
@@ -905,6 +915,8 @@ Future<void> _initTrial() async {
     _isPremium = info.isPremium; Log.d("_initTrial _isPremium $_isPremium");
     _trialActive = info.trialActive;Log.d("_initTrial _trialActive $_trialActive");
     _trialDaysLeft = info.trialDaysLeft;Log.d("_initTrial _trialDaysLeft $_trialDaysLeft");
+		_hasFullAccess =
+			info.isPremium || info.trialActive;
   });
 }
 
@@ -1452,6 +1464,31 @@ const SizedBox(height: 12),
 																												height: 1.4,
 																											),
 																										),
+																										const SizedBox(height: 16),
+
+SizedBox(
+  width: double.infinity,
+  child: OutlinedButton.icon(
+    onPressed: () async {
+      const memberAppUrl =
+          'https://play.google.com/store/apps/details?id=com.lynra.beacon.locator';
+
+      await SharePlus.instance.share(
+        ShareParams(
+          text: memberAppUrl,
+        ),
+      );
+    },
+    icon: const Icon(
+      Icons.share_rounded,
+      size: 20,
+    ),
+    label: Text(
+      l10n.shareMemberApp,
+    ),
+  ),
+),
+																										
 																									],
 																								),
 																							),
@@ -1650,10 +1687,6 @@ Widget build(BuildContext context) {
 
                 final requesterName = data['requesterName'] ?? '-';             
 								
-								_hasGroup =
-										data['hasGroup'] == true;					
-
-								
 								return _buildGroupHome(
 									requesterName: requesterName,
 									data: data,
@@ -1679,7 +1712,6 @@ Widget build(BuildContext context) {
 																				children: [
 																					Row(
 																						children: [
-																							if (_hasGroup) ...[
 																								Expanded(
 																								child: Text(
 																									_isPremium
@@ -1693,7 +1725,6 @@ Widget build(BuildContext context) {
 																									),
 																								),
 																								),
-																							],
 																							const SizedBox(width: 32),						
 																							if (_appVersion.isNotEmpty)
 																								Flexible(
@@ -1886,9 +1917,8 @@ Widget build(BuildContext context) {
 																			});
 																		},
 																	),
-																	if (!_hasFullAccess && _hasGroup)
+																	if (!_hasFullAccess)
 																	SubscriptionExpiredOverlay(
-																		isMaster: true,
 																		onUpgrade: () {
 																			_showPurchaseMenu();
 																		},

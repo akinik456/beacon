@@ -7,6 +7,8 @@
 "memberSetupStepThree": "Tap Add Member and send a pairing request.",
 "memberAppFreeHint": "\"LynraFamily Member\" is free for your family members.",
 "memberAppInfo": "Family members use the free \"LynraFamily Member\" app on their own phones.",
+"shareMemberApp": "Share Member App",
+
 
 "actionRequired":											"Action Required",
 "activeWatchers":											"Active Watchers",

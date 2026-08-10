@@ -27,6 +27,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get memberAppInfo => 'Aile üyeleri kendi telefonlarında ücretsiz \"LynraFamily Member\" uygulamasını kullanır.';
 
   @override
+  String get shareMemberApp => 'Üye Uygulamasını Paylaş';
+
+  @override
   String get actionRequired => 'İşlem Gerekli';
 
   @override

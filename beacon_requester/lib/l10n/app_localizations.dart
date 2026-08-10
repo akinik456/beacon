@@ -135,6 +135,12 @@ abstract class AppLocalizations {
   /// **'Family members use the free \"LynraFamily Member\" app on their own phones.'**
   String get memberAppInfo;
 
+  /// No description provided for @shareMemberApp.
+  ///
+  /// In en, this message translates to:
+  /// **'Share Member App'**
+  String get shareMemberApp;
+
   /// No description provided for @actionRequired.
   ///
   /// In en, this message translates to:

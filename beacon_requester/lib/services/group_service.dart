@@ -190,11 +190,7 @@ class GroupService {
     final String Id="0ef2b956-c5de-4046-a1ed-ef368546e534";
 		return Id;
   }
-	
-	static Future<bool> getLocalIsMaster() async {
-		return true;
-	}
-	
+
 	static Future<void> clearLocalGroup() async {
 }
 	
