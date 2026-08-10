@@ -8,7 +8,7 @@
 "memberAppFreeHint": "\"LynraFamily Member\" is free for your family members.",
 "memberAppInfo": "Family members use the free \"LynraFamily Member\" app on their own phones.",
 "shareMemberApp": "Share Member App",
-
+"requesterVersionRequirement": "LynraFamily version 2.0.1 or later is required.",
 
 "actionRequired":											"Action Required",
 "activeWatchers":											"Active Watchers",

@@ -81,6 +81,7 @@ class _RequesterHomePageState
 	
 	double? _myLat;
 	double? _myLng;
+	String myaddress = '';
 	String? _requesterId;
 	String _requesterName = '';
 	Timer? _timeRefreshTimer;
@@ -481,8 +482,17 @@ Log.d(
   final position =
       await LocationHelper.getCurrentPosition();
 
-  _myLat = position?.latitude;
-  _myLng = position?.longitude;
+  _myLat = position?.latitude.toDouble();
+	_myLng = position?.longitude.toDouble();
+	
+	
+
+if (_myLat != null && _myLng != null) {
+  myaddress = await AddressHelper.getAddressFromLatLng(
+    lat: _myLat!,
+    lng: _myLng!,
+  );
+}
 
   Log.d(
     "BEACON REQUESTER POS => "
@@ -660,7 +670,7 @@ static Future<void> cleanupInvalidPairedLocators() async {
 						lng: lng,
 					);
 				}
-
+				
 				if (!mounted) return;
 
 				setState(() {
@@ -1200,105 +1210,103 @@ Widget _buildGroupHome({
 																				secondChild: const SizedBox.shrink(),
 																			),
 																			
-																			const SizedBox(height: 6),
+																			const SizedBox(height: 4),
 
-Row(
-  children: [
-    Expanded(
-      child: InkWell(
-        borderRadius: BorderRadius.circular(12),
-        onTap: () async {
-          final changed =
-              await RequesterNameEditor.edit(context);
+																			Row(
+																				children: [
+																					Expanded(
+																						child: InkWell(
+																							borderRadius: BorderRadius.circular(12),
+																							onTap: () async {
+																								final changed =
+																										await RequesterNameEditor.edit(context);
 
-          if (changed) {
-            setState(() {
-              _homeDataFuture =
-                  HomeDataService.loadHomeData();
-            });
-          }
-        },
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 6,
-            vertical: 6,
-          ),
-          child: Row(
-            children: [
-              Icon(
-                Icons.person_outline_rounded,
-                size: 18,
-                color: AppColors.textSecondary,
-              ),
-              const SizedBox(width: 6),
-              Flexible(
-                child: Text(
-                  requesterName,
-                  overflow: TextOverflow.ellipsis,
-                  style: AppFonts.title.copyWith(
-                    fontSize: 18,
-                    color: AppColors.textSecondary,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 4),
-              Icon(
-                Icons.edit_rounded,
-                size: 16,
-                color: AppColors.textSecondary,
-              ),
-            ],
-          ),
-        ),
-      ),
-    ),
+																								if (changed) {
+																									setState(() {
+																										_homeDataFuture =
+																												HomeDataService.loadHomeData();
+																									});
+																								}
+																							},
+																							child: Padding(
+																								padding: const EdgeInsets.symmetric(
+																									horizontal: 6,
+																									vertical: 6,
+																								),
+																								child: Row(
+																									children: [
+																										Icon(
+																											Icons.person_outline_rounded,
+																											size: 18,
+																											color: AppColors.textSecondary,
+																										),
+																										const SizedBox(width: 6),
+																										Flexible(
+																											child: Text(
+																												requesterName,
+																												overflow: TextOverflow.ellipsis,
+																												style: AppFonts.title.copyWith(
+																													fontSize: 18,
+																													color: AppColors.textSecondary,
+																												),
+																											),
+																										),
+																										const SizedBox(width: 4),
+																										Icon(
+																											Icons.edit_rounded,
+																											size: 16,
+																											color: AppColors.textSecondary,
+																										),
+																									],
+																								),
+																							),
+																						),
+																					),
 
-    TextButton.icon(
-      onPressed: () async {
-        await Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) =>
-                const LanguageSelectPage(),
-          ),
-        );
+																					TextButton.icon(
+																						onPressed: () async {
+																							await Navigator.push(
+																								context,
+																								MaterialPageRoute(
+																									builder: (_) =>
+																											const LanguageSelectPage(),
+																								),
+																							);
 
-        if (!context.mounted) return;
+																							if (!context.mounted) return;
 
-        setState(() {});
-      },
-      icon: Icon(
-        Icons.language_rounded,
-        size: 18,
-        color: AppColors.accent,
-      ),
-      label: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            langCode,
-            style: AppFonts.caption.copyWith(
-              color: AppColors.accent,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          Icon(
-            Icons.arrow_drop_down,
-            size: 18,
-            color: AppColors.accent,
-          ),
-        ],
-      ),
-    ),
-  ],
-),
-
-const SizedBox(height: 12),								
+																							setState(() {});
+																						},
+																						icon: Icon(
+																							Icons.language_rounded,
+																							size: 18,
+																							color: AppColors.accent,
+																						),
+																						label: Row(
+																							mainAxisSize: MainAxisSize.min,
+																							children: [
+																								Text(
+																									langCode,
+																									style: AppFonts.caption.copyWith(
+																										color: AppColors.accent,
+																										fontWeight: FontWeight.w600,
+																									),
+																								),
+																								Icon(
+																									Icons.arrow_drop_down,
+																									size: 18,
+																									color: AppColors.accent,
+																								),
+																							],
+																						),
+																					),
+																				],
+																			),
 																			
 																		],
 																	),									
 																			
-																	const SizedBox(height: 4),
+																	const SizedBox(height: 2),
 																	AppCard(
 																				onTap: () async {
 																				await AnalyticsService.logEvent(
@@ -1343,7 +1351,7 @@ const SizedBox(height: 12),
 																				},
 																				
 																				child: SizedBox(
-																					height: 44,
+																					height: 36,
 																					child: Row(
 																						children: [
 																							Icon(
@@ -1407,10 +1415,15 @@ const SizedBox(height: 12),
 																						child: CircularProgressIndicator(),
 																					)
 																				: _locators.isEmpty
-																				? Center(
+																				? SingleChildScrollView(
 																						child: Padding(
-																							padding: const EdgeInsets.symmetric(horizontal: 24),
-																							child: AppCard(
+																							padding: const EdgeInsets.symmetric(
+																								horizontal: 24,
+																								vertical: 12,
+																							),
+																							child: Column(
+																								children: [																							
+																								AppCard(
 																								child: Column(
 																									mainAxisSize: MainAxisSize.min,
 																									crossAxisAlignment: CrossAxisAlignment.start,
@@ -1434,28 +1447,28 @@ const SizedBox(height: 12),
 																											],
 																										),
 
-																										const SizedBox(height: 16),
+																										const SizedBox(height: 12),
 
 																										_MemberSetupStep(
 																											number: '1',
 																											text: l10n.memberSetupStepOne,
 																										),
 
-																										const SizedBox(height: 12),
+																										const SizedBox(height: 8),
 
 																										_MemberSetupStep(
 																											number: '2',
 																											text: l10n.memberSetupStepTwo,
 																										),
 
-																										const SizedBox(height: 12),
+																										const SizedBox(height: 8),
 
 																										_MemberSetupStep(
 																											number: '3',
 																											text: l10n.memberSetupStepThree,
 																										),
 
-																										const SizedBox(height: 14),
+																										const SizedBox(height: 10),
 
 																										Text(
 																											l10n.memberAppFreeHint,
@@ -1464,33 +1477,106 @@ const SizedBox(height: 12),
 																												height: 1.4,
 																											),
 																										),
-																										const SizedBox(height: 16),
-
-SizedBox(
-  width: double.infinity,
-  child: OutlinedButton.icon(
-    onPressed: () async {
-      const memberAppUrl =
-          'https://play.google.com/store/apps/details?id=com.lynra.beacon.locator';
-
-      await SharePlus.instance.share(
-        ShareParams(
-          text: memberAppUrl,
-        ),
-      );
-    },
-    icon: const Icon(
-      Icons.share_rounded,
-      size: 20,
-    ),
-    label: Text(
-      l10n.shareMemberApp,
-    ),
-  ),
-),
-																										
+																										const SizedBox(height: 12),
+																										SizedBox(
+																											width: double.infinity,
+																											child: OutlinedButton.icon(
+																												onPressed: () async {
+																													const memberAppUrl =
+																															'https://play.google.com/store/apps/details?id=com.lynra.beacon.locator';
+																													await SharePlus.instance.share(
+																														ShareParams(
+																															text: memberAppUrl,
+																														),
+																													);
+																												},
+																												icon: const Icon(
+																													Icons.share_rounded,
+																													size: 20,
+																												),
+																												label: Text(
+																													l10n.shareMemberApp,
+																												),
+																											),
+																										),
 																									],
 																								),
+																							),
+																							const SizedBox(height: 16),
+																							
+																								LocatorStatusCard(
+																								locatorId: 'demo',
+																								locatorName: 'Demo',
+																								locatorCode: '',
+
+																								status: 'online',
+
+																								battery: 82,
+																								gpsEnabled: true,																						
+																								addressText: 
+																										_myLat != null && _myLng != null
+																												? myaddress
+																												: l10n.addressNotAvailable,
+
+																								geoInside: false,
+																								placeName: '',
+
+																								lastSeenText: l10n.justNow,
+
+																								distanceText:
+																										_myLat != null && _myLng != null
+																												? '0 m'
+																												: '-',
+
+																								stationarySince: null,
+																								offlineSince: null,
+
+																								onOpenMaps: () async {
+																									if (_myLat == null ||
+																											_myLng == null) {
+																										return;
+																									}
+
+																									await MapHelper.openInMaps(
+																										lat: _myLat!,
+																										lng: _myLng!,
+																									);
+																								},
+
+																								onLiveTrack: () {
+																									if (_myLat == null || _myLng == null) return;
+
+																									Navigator.push(
+																										context,
+																										MaterialPageRoute(
+																											builder: (_) => LiveTrackingMapPage(
+																												locatorId: 'demo',
+																												locatorName: 'Demo Member',
+																												latitude: _myLat!,
+																												longitude: _myLng!,
+																												address: myaddress.isNotEmpty
+																														? myaddress
+																														: l10n.addressNotAvailable,
+																												locatorNames: const {
+																													'demo': 'Demo',
+																												},
+																											),
+																										),
+																									);
+																								},
+																								onNotificationSettings: () {
+																									// Demo
+																								},
+
+																								onSettings: () {
+																									// Demo
+																								},
+
+																								onRemove: () {
+																									// Demo
+																								},
+																							),
+																							],
 																							),
 																						),
 																					)

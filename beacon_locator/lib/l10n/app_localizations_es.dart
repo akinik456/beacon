@@ -9,6 +9,30 @@ class AppLocalizationsEs extends AppLocalizations {
   AppLocalizationsEs([String locale = 'es']) : super(locale);
 
   @override
+  String get howToAddMember => 'Cómo añadir un miembro';
+
+  @override
+  String get memberSetupStepOne => 'Instala \"LynraFamily Member\" en el teléfono de la persona que compartirá su ubicación.';
+
+  @override
+  String get memberSetupStepTwo => 'Abre la aplicación Member y obtén el Código de Miembro o el código QR.';
+
+  @override
+  String get memberSetupStepThree => 'Pulsa Añadir miembro y envía una solicitud de vinculación.';
+
+  @override
+  String get memberAppFreeHint => '\"LynraFamily Member\" es gratuita para los miembros de tu familia.';
+
+  @override
+  String get memberAppInfo => 'Los miembros de la familia utilizan la aplicación gratuita \"LynraFamily Member\" en sus propios teléfonos.';
+
+  @override
+  String get shareMemberApp => 'Compartir aplicación para miembros';
+
+  @override
+  String get requesterVersionRequirement => 'Se requiere LynraFamily 2.0.1 o una versión posterior.';
+
+  @override
   String get actionRequired => 'Acción requerida';
 
   @override
@@ -244,6 +268,9 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get importantFor => 'Importante para la visibilidad de solicitudes';
+
+  @override
+  String get installMemberAppHint => 'Instala la aplicación \"LynraFamily Member\" en el teléfono de tu familiar y luego agrégalo a tu grupo desde esta pantalla.';
 
   @override
   String isWatchingYourLocation(Object name) {

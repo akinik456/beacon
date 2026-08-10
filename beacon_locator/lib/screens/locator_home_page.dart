@@ -41,7 +41,6 @@ import '../services/motion_service.dart';
 import '../services/subscription_service.dart';
 import '../core/widgets/locator_subscription_expired_overlay.dart';
 import '../services/notification_service.dart';
-import '../core/widgets/group_info_panel.dart';
 import '../services/locator_name_editor.dart';
 import '../core/widgets/guide_panel.dart';
 import '../core/widgets/app_banner.dart';
@@ -681,9 +680,24 @@ Widget _pairedRequesterCard() {
 			}
 			if (requesters.isEmpty) {
 				return AppCard(
-					child: Text(
-						l10n.noPairedRequester,
-						style: AppFonts.subtitle,
+					child: Column(
+						crossAxisAlignment: CrossAxisAlignment.start,
+						children: [
+							Text(
+								l10n.noPairedRequester,
+								style: AppFonts.subtitle,
+							),
+
+							const SizedBox(height: 8),
+
+							Text(
+								l10n.requesterVersionRequirement,
+								style: AppFonts.caption.copyWith(
+									color: AppColors.danger,
+									height: 1.4,
+								),
+							),
+						],
 					),
 				);
 			}

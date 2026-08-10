@@ -1,4 +1,6 @@
 - SOS eklenmeli mi?
+- loc. "requesterVersionRequirement": "LynraFamily 2.0.1 veya daha yeni bir sürüm gereklidir.", 
+- loc. permission_intro_page değişti
 
 - +req home da ekli üye yoksa member app install göster,
 	create grup aşamasında 1 den fazla grup oluşabiliyordu 

@@ -8,6 +8,7 @@
 "memberAppFreeHint": "\"LynraFamily Member\", aile üyeleriniz için ücretsizdir.",
 "memberAppInfo": "Aile üyeleri kendi telefonlarında ücretsiz \"LynraFamily Member\" uygulamasını kullanır.",
 "shareMemberApp": "Üye Uygulamasını Paylaş",
+"requesterVersionRequirement": "LynraFamily 2.0.1 veya daha yeni bir sürüm gereklidir.",
 
 "actionRequired":											"İşlem Gerekli",
 "activeWatchers":											"Aktif İzleyenler",
