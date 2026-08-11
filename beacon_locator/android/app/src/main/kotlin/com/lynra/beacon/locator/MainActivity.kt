@@ -20,30 +20,28 @@ class MainActivity : FlutterActivity() {
 
             if (call.method == "startPresenceService") {
 
-						val groupId =
-								call.argument<String>("groupId")
+                val locatorId =
+                    call.argument<String>("locatorId")
 
-						val locatorId =
-								call.argument<String>("locatorId")
+                val serviceIntent = Intent(
+                    this,
+                    LocatorPresenceForegroundService::class.java,
+                ).apply {
+                    putExtra("locatorId", locatorId)
+                }
 
-						val serviceIntent = Intent(
-								this,
-								LocatorPresenceForegroundService::class.java,
-						).apply {
-								putExtra("groupId", groupId)
-								putExtra("locatorId", locatorId)
-						}
+                if (
+                    Build.VERSION.SDK_INT >=
+                    Build.VERSION_CODES.O
+                ) {
+                    startForegroundService(serviceIntent)
+                } else {
+                    startService(serviceIntent)
+                }
 
-						if (Build.VERSION.SDK_INT >=
-								Build.VERSION_CODES.O
-						) {
-								startForegroundService(serviceIntent)
-						} else {
-								startService(serviceIntent)
-						}
+                result.success(true)
 
-						result.success(true)
-				} else {
+            } else {
                 result.notImplemented()
             }
         }

@@ -17,19 +17,9 @@ object SosWidgetService {
         context: Context,
         appWidgetId: Int,
     ) {
-        val widgetPrefs = context.getSharedPreferences(
-            "sos_widget",
-            Context.MODE_PRIVATE,
-        )
-
         val identityPrefs = context.getSharedPreferences(
             "FlutterSharedPreferences",
             Context.MODE_PRIVATE,
-        )
-
-        val groupId = identityPrefs.getString(
-            "flutter.group_id",
-            null,
         )
 
         val locatorId = identityPrefs.getString(
@@ -47,38 +37,32 @@ object SosWidgetService {
             "------",
         ) ?: "------"
 
-        if (
-            groupId.isNullOrEmpty() ||
-            locatorId.isNullOrEmpty()
-        ) {
+        if (locatorId.isNullOrEmpty()) {
             Log.e(
-                "sos_WIDGET",
-                "send failed: missing groupId or locatorId",
+                "SOS_WIDGET",
+                "send failed: missing locatorId",
             )
             return
         }
 
-				sendToAll(
-						groupId = groupId,
-						locatorId = locatorId,
-						locatorName = locatorName,
-						locatorCode = locatorCode,
-				)
+        sendToAll(
+            locatorId = locatorId,
+            locatorName = locatorName,
+            locatorCode = locatorCode,
+        )
     }
 
     private fun sendToAll(
-        groupId: String,
         locatorId: String,
         locatorName: String,
         locatorCode: String,
     ) {
         firestore
-            .collection("groups")
-            .document(groupId)
-            .collection("devices")
+            .collection("locators")
             .document(locatorId)
             .get()
             .addOnSuccessListener { snapshot ->
+
                 val paired =
                     snapshot.get("pairedRequesters")
 
@@ -90,7 +74,7 @@ object SosWidgetService {
 
                 if (pairedRequesters.isEmpty()) {
                     Log.e(
-                        "sos_WIDGET",
+                        "SOS_WIDGET",
                         "send all skipped: no paired requesters",
                     )
                     return@addOnSuccessListener
@@ -98,7 +82,6 @@ object SosWidgetService {
 
                 for (requesterId in pairedRequesters.keys) {
                     sendToRequester(
-                        groupId = groupId,
                         locatorId = locatorId,
                         locatorName = locatorName,
                         locatorCode = locatorCode,
@@ -108,7 +91,7 @@ object SosWidgetService {
             }
             .addOnFailureListener { error ->
                 Log.e(
-                    "sos_WIDGET",
+                    "SOS_WIDGET",
                     "send all read failed",
                     error,
                 )
@@ -116,32 +99,42 @@ object SosWidgetService {
     }
 
     private fun sendToRequester(
-        groupId: String,
         locatorId: String,
         locatorName: String,
         locatorCode: String,
         requesterId: String,
     ) {
-		val sosId =
-				UUID.randomUUID().toString()
-		firestore
-				.collection("groups")
-				.document(groupId)
-				.collection("sos")
-				.document(requesterId)
-				.collection("items")
-				.document(sosId)
-				.set(
-						mapOf(
-								"sosId" to sosId,
-								"groupId" to groupId,
-								"locatorId" to locatorId,
-								"locatorName" to locatorName,
-								"locatorCode" to locatorCode,
-								"targetRequesterId" to requesterId,
-								"status" to "pending",
-								"createdAt" to FieldValue.serverTimestamp(),
-						)
-				)
+        val sosId =
+            UUID.randomUUID().toString()
+
+        firestore
+            .collection("sos")
+            .document(requesterId)
+            .collection("items")
+            .document(sosId)
+            .set(
+                mapOf(
+                    "sosId" to sosId,
+                    "locatorId" to locatorId,
+                    "locatorName" to locatorName,
+                    "locatorCode" to locatorCode,
+                    "targetRequesterId" to requesterId,
+                    "status" to "pending",
+                    "createdAt" to FieldValue.serverTimestamp(),
+                )
+            )
+            .addOnSuccessListener {
+                Log.e(
+                    "SOS_WIDGET",
+                    "sent requester=$requesterId sosId=$sosId",
+                )
+            }
+            .addOnFailureListener { error ->
+                Log.e(
+                    "SOS_WIDGET",
+                    "send failed requester=$requesterId",
+                    error,
+                )
+            }
     }
 }

@@ -1,7 +1,9 @@
 package com.lynra.beacon.locator
+
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.embedding.engine.dart.DartExecutor
 import io.flutter.embedding.engine.loader.FlutterLoader
+
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -10,14 +12,16 @@ import android.content.Intent
 import android.os.Build
 import android.os.IBinder
 import android.util.Log
+
 import io.flutter.plugin.common.MethodChannel
 
 class LocatorPresenceForegroundService : Service() {
 
-	private companion object {
+    private companion object {
         const val FOREGROUND_NOTIFICATION_ID = 3001
     }
-	private var flutterEngine: FlutterEngine? = null
+
+    private var flutterEngine: FlutterEngine? = null
 
     override fun onCreate() {
         super.onCreate()
@@ -38,127 +42,148 @@ class LocatorPresenceForegroundService : Service() {
         flags: Int,
         startId: Int,
     ): Int {
-				
-				val groupId = intent?.getStringExtra("groupId")
-				val locatorId = intent?.getStringExtra("locatorId")
 
-				Log.e(
-						"LYNRA_SERVICE",
-						"groupId=$groupId locatorId=$locatorId",
-				)
-		
+        val locatorId =
+            intent?.getStringExtra("locatorId")
+
+        Log.e(
+            "LYNRA_SERVICE",
+            "locatorId=$locatorId",
+        )
+
         Log.e(
             "LYNRA_SERVICE",
             "Foreground service started action=${intent?.action}",
         )
 
-				if (flutterEngine == null) {
+        if (flutterEngine == null) {
 
-					Log.e(
-							"LYNRA_SERVICE",
-							"Starting FlutterEngine",
-					)
+            Log.e(
+                "LYNRA_SERVICE",
+                "Starting FlutterEngine",
+            )
 
-					flutterEngine =
-							FlutterEngine(applicationContext)
-							
-					MethodChannel(
-							flutterEngine!!.dartExecutor.binaryMessenger,
-							"lynra/presence_service",
-					).setMethodCallHandler { call, result ->
-							when (call.method) {
-								"getPresenceIds" -> {
-										result.success(
-												mapOf(
-														"groupId" to groupId,
-														"locatorId" to locatorId,
-												)
-										)
-								}
+            flutterEngine =
+                FlutterEngine(applicationContext)
 
-								"shakeSosFeedback" -> {
-										val powerManager =
-												getSystemService(android.os.PowerManager::class.java)
+            MethodChannel(
+                flutterEngine!!.dartExecutor.binaryMessenger,
+                "lynra/presence_service",
+            ).setMethodCallHandler { call, result ->
 
-										val wakeLock = powerManager.newWakeLock(
-												android.os.PowerManager.SCREEN_BRIGHT_WAKE_LOCK or
-														android.os.PowerManager.ACQUIRE_CAUSES_WAKEUP,
-												"lynra:shake_sos_feedback",
-										)
+                when (call.method) {
 
-										wakeLock.acquire(2000L)
+                    "getPresenceIds" -> {
+                        result.success(
+                            mapOf(
+                                "locatorId" to locatorId,
+                            )
+                        )
+                    }
 
-										val vibrator =
-												getSystemService(android.os.Vibrator::class.java)
+                    "shakeSosFeedback" -> {
 
-										if (android.os.Build.VERSION.SDK_INT >=
-												android.os.Build.VERSION_CODES.O
-										) {
-												vibrator.vibrate(
-														android.os.VibrationEffect.createOneShot(
-																300L,
-																android.os.VibrationEffect.DEFAULT_AMPLITUDE,
-														)
-												)
-										} else {
-												@Suppress("DEPRECATION")
-												vibrator.vibrate(300L)
-										}
+                        val powerManager =
+                            getSystemService(
+                                android.os.PowerManager::class.java
+                            )
 
-										result.success(true)
-								}
+                        val wakeLock =
+                            powerManager.newWakeLock(
+                                android.os.PowerManager.SCREEN_BRIGHT_WAKE_LOCK or
+                                    android.os.PowerManager.ACQUIRE_CAUSES_WAKEUP,
+                                "lynra:shake_sos_feedback",
+                            )
 
-								else -> result.notImplemented()
-						}
-					}
+                        wakeLock.acquire(2000L)
 
-					val flutterLoader = FlutterLoader()
+                        val vibrator =
+                            getSystemService(
+                                android.os.Vibrator::class.java
+                            )
 
-					flutterLoader.startInitialization(
-							applicationContext,
-					)
+                        if (
+                            android.os.Build.VERSION.SDK_INT >=
+                            android.os.Build.VERSION_CODES.O
+                        ) {
+                            vibrator.vibrate(
+                                android.os.VibrationEffect.createOneShot(
+                                    300L,
+                                    android.os.VibrationEffect.DEFAULT_AMPLITUDE,
+                                )
+                            )
+                        } else {
+                            @Suppress("DEPRECATION")
+                            vibrator.vibrate(300L)
+                        }
 
-					flutterLoader.ensureInitializationComplete(
-							applicationContext,
-							null,
-					)
+                        result.success(true)
+                    }
 
-					val bundlePath =
-							flutterLoader.findAppBundlePath()
+                    else -> result.notImplemented()
+                }
+            }
 
-					flutterEngine!!
-							.dartExecutor
-							.executeDartEntrypoint(
-									DartExecutor.DartEntrypoint(
-											bundlePath,
-											"locatorPresenceServiceMain",
-									)
-							)
-			}
+            val flutterLoader =
+                FlutterLoader()
+
+            flutterLoader.startInitialization(
+                applicationContext,
+            )
+
+            flutterLoader.ensureInitializationComplete(
+                applicationContext,
+                null,
+            )
+
+            val bundlePath =
+                flutterLoader.findAppBundlePath()
+
+            flutterEngine!!
+                .dartExecutor
+                .executeDartEntrypoint(
+                    DartExecutor.DartEntrypoint(
+                        bundlePath,
+                        "locatorPresenceServiceMain",
+                    )
+                )
+        }
+
         return START_STICKY
     }
 
-    override fun onBind(intent: Intent?): IBinder? {
+    override fun onBind(
+        intent: Intent?,
+    ): IBinder? {
         return null
     }
 
     private fun createNotification(): Notification {
 
-        val channelId = "lynra_presence_service"
+        val channelId =
+            "lynra_presence_service"
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                channelId,
-								getString(R.string.presence_service_channel_name),
-								NotificationManager.IMPORTANCE_LOW,
-            )
+        if (
+            Build.VERSION.SDK_INT >=
+            Build.VERSION_CODES.O
+        ) {
+            val channel =
+                NotificationChannel(
+                    channelId,
+                    getString(
+                        R.string.presence_service_channel_name
+                    ),
+                    NotificationManager.IMPORTANCE_LOW,
+                )
 
             val manager =
                 getSystemService(
                     NotificationManager::class.java,
                 )
 
-            manager.createNotificationChannel(channel)
+            manager.createNotificationChannel(
+                channel,
+            )
         }
 
         return Notification.Builder(
@@ -166,12 +191,18 @@ class LocatorPresenceForegroundService : Service() {
             channelId,
         )
             .setContentTitle(
-								getString(R.string.presence_service_notification_title),
-						)
-						.setContentText(
-								getString(R.string.presence_service_notification_body),
-						)
-            .setSmallIcon(android.R.drawable.ic_menu_mylocation)
+                getString(
+                    R.string.presence_service_notification_title
+                ),
+            )
+            .setContentText(
+                getString(
+                    R.string.presence_service_notification_body
+                ),
+            )
+            .setSmallIcon(
+                android.R.drawable.ic_menu_mylocation
+            )
             .build()
     }
 }

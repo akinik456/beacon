@@ -37,11 +37,6 @@ object CallMeWidgetService {
             null,
         )
 
-        val groupId = identityPrefs.getString(
-            "flutter.group_id",
-            null,
-        )
-
         val locatorId = identityPrefs.getString(
             "flutter.locator_id",
             null,
@@ -57,20 +52,16 @@ object CallMeWidgetService {
             "------",
         ) ?: "------"
 
-        if (
-            groupId.isNullOrEmpty() ||
-            locatorId.isNullOrEmpty()
-        ) {
+        if (locatorId.isNullOrEmpty()) {
             Log.e(
                 "CALL_ME_WIDGET",
-                "send failed: missing groupId or locatorId",
+                "send failed: missing locatorId",
             )
             return
         }
 
         if (askEverybody) {
             sendToAll(
-                groupId = groupId,
                 locatorId = locatorId,
                 locatorName = locatorName,
                 locatorCode = locatorCode,
@@ -85,7 +76,6 @@ object CallMeWidgetService {
             }
 
             sendToRequester(
-                groupId = groupId,
                 locatorId = locatorId,
                 locatorName = locatorName,
                 locatorCode = locatorCode,
@@ -95,18 +85,16 @@ object CallMeWidgetService {
     }
 
     private fun sendToAll(
-        groupId: String,
         locatorId: String,
         locatorName: String,
         locatorCode: String,
     ) {
         firestore
-            .collection("groups")
-            .document(groupId)
-            .collection("devices")
+            .collection("locators")
             .document(locatorId)
             .get()
             .addOnSuccessListener { snapshot ->
+
                 val paired =
                     snapshot.get("pairedRequesters")
 
@@ -126,7 +114,6 @@ object CallMeWidgetService {
 
                 for (requesterId in pairedRequesters.keys) {
                     sendToRequester(
-                        groupId = groupId,
                         locatorId = locatorId,
                         locatorName = locatorName,
                         locatorCode = locatorCode,
@@ -144,21 +131,19 @@ object CallMeWidgetService {
     }
 
     private fun sendToRequester(
-        groupId: String,
         locatorId: String,
         locatorName: String,
         locatorCode: String,
         requesterId: String,
     ) {
         firestore
-            .collection("groups")
-            .document(groupId)
-            .collection("devices")
+            .collection("locators")
             .document(locatorId)
             .collection("notifyRequesters")
             .document(requesterId)
             .get()
             .addOnSuccessListener { notifySnapshot ->
+
                 val enabled =
                     notifySnapshot.getBoolean("callMe") == true
 
@@ -174,8 +159,6 @@ object CallMeWidgetService {
                     UUID.randomUUID().toString()
 
                 firestore
-                    .collection("groups")
-                    .document(groupId)
                     .collection("call_me")
                     .document(requesterId)
                     .collection("items")
@@ -183,7 +166,6 @@ object CallMeWidgetService {
                     .set(
                         mapOf(
                             "callMeId" to callMeId,
-                            "groupId" to groupId,
                             "locatorId" to locatorId,
                             "locatorName" to locatorName,
                             "locatorCode" to locatorCode,

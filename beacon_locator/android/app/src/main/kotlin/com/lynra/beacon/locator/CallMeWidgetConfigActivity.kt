@@ -58,11 +58,6 @@ class CallMeWidgetConfigActivity : Activity() {
             MODE_PRIVATE,
         )
 
-        val groupId = prefs.getString(
-            "flutter.group_id",
-            null,
-        )
-
         val locatorId = prefs.getString(
             "flutter.locator_id",
             null,
@@ -70,34 +65,25 @@ class CallMeWidgetConfigActivity : Activity() {
 
         Log.e(
             "CALL_ME_WIDGET",
-            "groupId=$groupId locatorId=$locatorId",
+            "locatorId=$locatorId",
         )
 
-        if (
-            groupId.isNullOrEmpty() ||
-            locatorId.isNullOrEmpty()
-        ) {
+        if (locatorId.isNullOrEmpty()) {
             Log.e(
                 "CALL_ME_WIDGET",
-                "Missing groupId or locatorId",
+                "MissinglocatorId",
             )
             return
         }
 
-        loadRequesterOptions(
-            groupId,
-            locatorId,
-        )
+        loadRequesterOptions(locatorId)
     }
 
     private fun loadRequesterOptions(
-        groupId: String,
         locatorId: String,
     ) {
         firestore
-            .collection("groups")
-            .document(groupId)
-            .collection("devices")
+            .collection("locators")
             .document(locatorId)
             .get()
             .addOnSuccessListener { snapshot ->
